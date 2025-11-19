@@ -43,6 +43,10 @@ inline bool ComponentRegister::RegisterGUI(T* owner){
             owner->AddComponent<JumpComponent>();
             return true;
         }
+        if(ImGui::Button("ColorList / 色リスト")){
+            owner->AddComponent<ColorListComponent>();
+            return true;
+        }
         if(ImGui::Button("ColorControl / 色制御")){
             owner->AddComponent<ColorControlComponent>();
             return true;
@@ -137,6 +141,10 @@ inline void ComponentRegister::LoadComponents(T* owner, const nlohmann::json& js
         } else if(componentType == "Jump"){
             auto* jumpComponent = owner->AddComponent<JumpComponent>();
             jumpComponent->LoadFromJson(json);
+
+        } else if(componentType == "ColorList"){
+            auto* colorControlComponent = owner->AddComponent<ColorListComponent>();
+            colorControlComponent->LoadFromJson(json);
 
         } else if(componentType == "ColorControl"){
             auto* colorControlComponent = owner->AddComponent<ColorControlComponent>();

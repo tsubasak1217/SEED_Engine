@@ -98,12 +98,32 @@ void AudioManager::BeginFrame(){
     }
 
     // 終了している音声の削除
+    std::vector<AudioHandle> erasedHandle;
     std::erase_if(instance_->sourceVoices_,
-        [](auto& kv){
+        [&](auto& kv){
+
+        // 音声の状態を取得
         XAUDIO2_VOICE_STATE state{};
         kv.second->GetState(&state);
-        return state.BuffersQueued == 0;
+
+        // 終了していたら削除リストに追加
+        if(state.BuffersQueued == 0){
+            erasedHandle.push_back(kv.first);
+            return true;
+        }
+
+        return false;
     });
+
+    // 削除リストに基づき、各種マップから要素を削除
+    for(auto handle : erasedHandle){
+        instance_->isPlaying_.erase(handle);
+        instance_->volumeMap_.erase(handle);
+        instance_->loopFlagMap_.erase(handle);
+        instance_->sampleOffsets_.erase(handle);
+        instance_->filenameMap_.erase(handle);
+    }
+
 }
 
 
@@ -162,9 +182,8 @@ AudioHandle AudioManager::PlayAudio(
     buf.pAudioData = soundData.pBuffer;
     buf.AudioBytes = soundData.bufferSize;
     buf.Flags = XAUDIO2_END_OF_STREAM;
-
-    // ここがポイント！
-    buf.PlayBegin = sampleOffset; // ← 再生開始位置を設定（サンプル単位）
+    buf.PlayBegin = sampleOffset; // 再生開始位置を設定（サンプル単位）
+    sampleOffsets_[nextAudioHandle_] = sampleOffset;
 
     if(loop){
         buf.LoopCount = XAUDIO2_LOOP_INFINITE;
@@ -174,7 +193,6 @@ AudioHandle AudioManager::PlayAudio(
     hr = sourceVoices_[nextAudioHandle_]->SubmitSourceBuffer(&buf);
     assert(SUCCEEDED(hr));
     hr = sourceVoices_[nextAudioHandle_]->SetVolume(volume * systemVolumeRate_);
-    volumeMap_[nextAudioHandle_] = volume;
     assert(SUCCEEDED(hr));
     hr = sourceVoices_[nextAudioHandle_]->Start();
     assert(SUCCEEDED(hr));
@@ -198,25 +216,16 @@ AudioHandle AudioManager::PlayAudio(const std::string& filename, bool loop, floa
 
     // 再生フラグを立てる
     instance_->isPlaying_[handle] = true;
+    // ループフラグを記録
+    instance_->loopFlagMap_[handle] = loop;
+    // 音量を記録
+    instance_->volumeMap_[handle] = volume;
     // ファイル名を記録
-    instance_->filenameToHandle_[filename] = handle;
-
+    instance_->filenameMap_[handle] = filename;
 
     return handle;
 }
 
-/// <summary>
-/// 再生中の音声ハンドルをファイル名から取得する関数
-/// </summary>
-/// <param name="filename">ファイル名</param>
-/// <param name="loop">ループ可否</param>
-AudioHandle AudioManager::GetAudioHandle(const std::string& filename){
-
-    if(instance_->filenameToHandle_.find(filename) == instance_->filenameToHandle_.end()){
-        return UINT32_MAX;
-    }
-    return instance_->filenameToHandle_[filename];
-}
 
 /////////////////////////////////////////////////////////////////////////////////////
 
@@ -246,12 +255,14 @@ void AudioManager::EndAudio(AudioHandle handle){
     // 要素の削除
     instance_->sourceVoices_.erase(handle);
     instance_->isPlaying_.erase(handle);
+    instance_->loopFlagMap_.erase(handle);
     instance_->volumeMap_.erase(handle);
+    instance_->sampleOffsets_.erase(handle);
 
     // ファイル名マッピングを削除
-    for(auto it = instance_->filenameToHandle_.begin(); it != instance_->filenameToHandle_.end();){
-        if(it->second == handle){
-            it = instance_->filenameToHandle_.erase(it);
+    for(auto it = instance_->filenameMap_.begin(); it != instance_->filenameMap_.end();){
+        if(it->first == handle){
+            it = instance_->filenameMap_.erase(it);
         } else{
             ++it;
         }
@@ -276,7 +287,9 @@ void AudioManager::EndAllAudio(){
     // 要素の削除
     instance_->sourceVoices_.clear();
     instance_->isPlaying_.clear();
+    instance_->loopFlagMap_.clear();
     instance_->volumeMap_.clear();
+    instance_->sampleOffsets_.clear();
 }
 
 /// <summary>
@@ -360,6 +373,65 @@ void AudioManager::SetAudioVolume(AudioHandle handle, float volume){
 
 
 /// <summary>
+/// 音声の再生時間を取得する。
+/// </summary>
+/// <param name="handle"></param>
+/// <returns></returns>
+float AudioManager::GetAudioPlayTime(AudioHandle handle){
+    // まず sourceVoice を取得
+    auto itVoice = instance_->sourceVoices_.find(handle);
+    if(itVoice == instance_->sourceVoices_.end()){
+        return 0.0f;
+    }
+
+    IXAudio2SourceVoice* voice = itVoice->second;
+    if(!voice){
+        return 0.0f;
+    }
+
+    // 再生状態を取得
+    XAUDIO2_VOICE_STATE state{};
+    voice->GetState(&state);
+    uint64_t samplesPlayed = state.SamplesPlayed + instance_->sampleOffsets_[handle];
+
+    // 音源データを取得（handle がどのファイル鍵か必要）
+    // 例: audioHandle → keyName を保持している場合
+    const std::string& key = instance_->filenameMap_.at(handle);
+
+    auto itAudio = instance_->audios_.find(key);
+    if(itAudio == instance_->audios_.end()){
+        return 0.0f;
+    }
+
+    const SoundData& data = itAudio->second;
+
+    // 現在再生秒数
+    float sec = static_cast<float>(samplesPlayed) / data.wfex.nSamplesPerSec;
+    return sec;
+}
+
+
+/// <summary>
+/// 音声の再生時間を設定する。
+/// </summary>
+/// <param name="time"></param>
+void AudioManager::SetAudioPlayTime(AudioHandle& handle, float time){
+    auto itVoice = instance_->sourceVoices_.find(handle);
+    if(itVoice == instance_->sourceVoices_.end()) return;
+
+    // 元の情報を取得
+    std::string filename = instance_->filenameMap_[handle];
+    bool loop = instance_->loopFlagMap_[handle];
+    float volume = instance_->volumeMap_[handle];
+
+    // 一度音声を停止して再生し直す
+    EndAudio(handle);
+    handle = PlayAudio(filename,loop,volume,time);
+}
+
+
+
+/// <summary>
 /// 音声が再生中かどうか取得
 /// </summary>
 /// <param name="filename">ファイル名</param>
@@ -374,19 +446,6 @@ bool AudioManager::IsPlayingAudio(AudioHandle handle){
     return instance_->isPlaying_[handle];
 }
 
-/// <summary>
-/// 音声が再生中かどうか取得
-/// </summary>
-/// <param name="filename">ファイル名</param>
-/// <returns>音声が再生されているか</returns>
-bool AudioManager::IsPlayingAudio(const std::string& filename){
-
-    if(instance_->filenameToHandle_.find(filename) == instance_->filenameToHandle_.end()){
-        return false;
-    }
-    AudioHandle handle = instance_->filenameToHandle_[filename];
-    return IsPlayingAudio(handle);
-}
 
 /////////////////////////////////////////////////////////////////////////////////////
 

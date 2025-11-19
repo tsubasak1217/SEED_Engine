@@ -69,6 +69,8 @@ private:
     std::list<TempoData> tempoDataList_;
     float songOffsetTime_ = 0.0f;// 曲全体のオフセット時間
 
+    Timer debugTimer_ = Timer(2.0f,2.0f);
+
 public:
 #ifdef _DEBUG
     void Edit();

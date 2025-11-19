@@ -36,15 +36,6 @@
             "time": 3.0
         },
         {
-            "duration": 1.1399999856948853,
-            "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
-            "layer": 1,
-            "noteType": "warning",
-            "time": 3.0
-        },
-        {
             "holdTime": 1.5,
             "isExtraNote": false,
             "lane": 2,

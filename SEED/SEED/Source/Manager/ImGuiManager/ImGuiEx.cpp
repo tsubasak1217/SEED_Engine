@@ -88,6 +88,10 @@ bool ImGui::ColorEdit4(const std::string& label, float col[4], ImGuiColorEditFla
     return ImGui::ColorEdit4(label.c_str(), col, flags);
 }
 
+bool ImGui::ColorPicker4(const std::string& label, float col[4], ImGuiColorEditFlags flags, const float* ref_col){
+    return ImGui::ColorPicker4(label.c_str(), col, flags, ref_col);
+}
+
 bool ImGui::CollapsingHeader(const std::string& label, ImGuiTreeNodeFlags flags){
     return ImGui::CollapsingHeader(label.c_str(), flags);
 }

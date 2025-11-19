@@ -74,11 +74,11 @@ void NotesData::Update(){
         // 条件を満たすノーツの削除
         DeleteNotes();
 
-        // 音源の再生
-        PlayAudio();
-
         // 譜面の時間を進める
         songTimer_.Update();
+
+        // 音源の再生
+        PlayAudio();
 
     } else{
         // 待機時間を進める
@@ -322,12 +322,27 @@ void NotesData::AppearNotes(){
 //////////////////////////////////////////////////////////////////////
 void NotesData::PlayAudio(){
 
+    debugTimer_.Update();
+
     if(songTimer_.currentTime >= startOffsetTime_){
         // 再生されていないなら再生
         if(!isSongStarted_){
             AudioManager::EndAudio(songAudioHandle_); // 前の音源を終了
             songAudioHandle_ = AudioManager::PlayAudio(songFilePath_, false, 1.0f, songTimer_.currentTime - startOffsetTime_);
             isSongStarted_ = true;
+
+        } else{
+            if(!isEnd_){
+                // 音ズレの許容時間と比較してズレていたら補正
+                static float toleranceTime = 1.0f / 60.0f;
+                float dif = std::fabsf((songTimer_.currentTime - startOffsetTime_) - AudioManager::GetAudioPlayTime(songAudioHandle_));
+
+                // ずれを確認して補正
+                if(dif > toleranceTime){
+                    debugTimer_.Reset();
+                    AudioManager::SetAudioPlayTime(songAudioHandle_, songTimer_.currentTime - startOffsetTime_);
+                }
+            }
         }
 
     } else{
@@ -605,7 +620,7 @@ void NotesData::Edit(){
             FromJson(songData_);
 
         } else{
-            if(!isStopped_){
+            if(!isStopped_ && !isEnd_){
                 if(songTimer_.currentTime >= startOffsetTime_){
                     if(!AudioManager::IsPlayingAudio(songAudioHandle_)){
                         songAudioHandle_ =
@@ -617,11 +632,21 @@ void NotesData::Edit(){
             }
         }
 
+        // 音ズレの表示
+        if(isSongStarted_){
+            float dif = std::fabsf((songTimer_.currentTime - startOffsetTime_) - AudioManager::GetAudioPlayTime(songAudioHandle_));
+            ImGui::Text("音ズレ: %.4f 秒", dif);
+        }
+
+        if(debugTimer_.GetProgress() != 1.0f){
+            ImGui::Text("音ズレ修正した");
+        }
 
         // ホットリロードのボタン
         if(ImGui::Button("譜面をホットリロード")){
             HotReload();
         }
+
 
         ImGui::End();
     }

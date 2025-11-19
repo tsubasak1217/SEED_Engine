@@ -1444,6 +1444,7 @@
     <ClCompile Include="Game\Objects\Judgement\MouseVectorCircle.cpp" />
     <ClCompile Include="SEED\Source\Manager\InputManager\RawInput.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.cpp" />
+    <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\ColorListComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.h" />
@@ -1465,5 +1466,6 @@
     <ClInclude Include="Game\Objects\SongSelect\SongSelectUtils.h" />
     <ClInclude Include="SEED\Source\Manager\InputManager\RawInput.h" />
     <ClInclude Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.h" />
+    <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\ColorListComponent.h" />
   </ItemGroup>
 </Project>

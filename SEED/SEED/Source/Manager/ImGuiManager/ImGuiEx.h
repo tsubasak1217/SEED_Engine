@@ -33,6 +33,7 @@ namespace ImGui{
     bool InputInt(const std::string& label, int* v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0);
     // 色編集系
     bool ColorEdit4(const std::string& label, float col[4], ImGuiColorEditFlags flags = 0);
+    bool ColorPicker4(const std::string& label, float col[4], ImGuiColorEditFlags flags = 0, const float* ref_col = nullptr);
     // その他
     bool CollapsingHeader(const std::string& label, ImGuiTreeNodeFlags flags = 0);
     // popup系

@@ -27,5 +27,5 @@ public:
     }
 private:
     static inline std::unordered_map<std::string, std::string> dict{};
-    static inline std::string jsonFilePath_ = "Resources/Jsons/Dictionary/LayerDictionary.json";
+    static inline std::string jsonFilePath_ = "Resources/Jsons/Dictionary/AudioDictionary.json";
 };

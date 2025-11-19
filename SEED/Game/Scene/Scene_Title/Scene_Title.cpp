@@ -128,7 +128,7 @@ void Scene_Title::Update(){
         // 開始タイマーが終了した直後の処理
         if(titleStartTimer_.IsFinishedNow()){
             pressSpace_->SetIsActive(true);
-            bgmHandle_ = AudioManager::PlayAudio("BGM/NETHMi_title.wav", true, 0.5f);
+            bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("TitleBGM"), true, 0.5f);
             cameraParents_->GetChild(0)->GetComponent<Routine3DComponent>()->Reset();
         }
 

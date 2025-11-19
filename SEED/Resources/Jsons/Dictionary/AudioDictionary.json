@@ -1,0 +1,10 @@
+{
+  "SelectBGM": "BGM/NETHMi_select.wav",
+  "TitleBGM": "BGM/NETHMi_title.wav",
+  "ResultBGM": "BGM/NETHMi_result.wav",
+
+  "ItemSelect": "SE/select1.wav",
+  "Return": "SE/cancel.wav",
+  "Metronome": "SE/metronome.mp3",
+  "Answer": "SE/answer.mp3"
+}

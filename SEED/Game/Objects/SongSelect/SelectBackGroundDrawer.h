@@ -1,5 +1,6 @@
 #pragma once
 #include <Game/Objects/SongSelect/SongInfo.h>
+#include <SEED/Source/Basic/Object/GameObject.h>
 
 /// <summary>
 /// セレクトシーンの背景を描画するクラス
@@ -16,8 +17,12 @@ public:
     void Draw();
 
 public:
-    bool isGrooveStart_ = false;
+    inline static bool isGrooveStart_ = false;
     inline static TrackDifficulty currentDifficulty; // 現在の難易度
+
+private:
+    GameObject* bgColorListObj_ = nullptr;
+    std::array<Color, (int)TrackDifficulty::kMaxDifficulty> clearColors_;
 
 private:
     // スクロールする背景の描画

@@ -13,6 +13,7 @@ GameState_Select::GameState_Select(Scene_Base* pScene) : SceneState_Base(pScene)
 
     // 背景描画クラスの初期化
     backGroundDrawer_ = std::make_unique<SelectBackGroundDrawer>();
+    backGroundDrawer_->Initialize();
 
     // ポストプロセスの設定
     PostEffectSystem::DeleteAll();

@@ -21,7 +21,7 @@ public:// 基礎関数
 public:
     const Color& GetColor(const std::string& name) const;
     const Color& GetColor(uint32_t index) const;
-    const std::vector<Color>& GetColorName() const{ return colorList_; }
+    const std::vector<Color>& GetColors() const{ return colorList_; }
 
 public:// 入出力
     // GUI編集

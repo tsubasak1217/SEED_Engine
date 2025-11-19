@@ -56,8 +56,6 @@ private:
 
     // 音源関連
     std::string songFilePath_;// 曲のファイルパス
-    std::string metronomeFilePath_;// メトロノームのファイルパス
-    std::string answerSEFilePath_;// 正解SEのファイルパス
     AudioHandle songAudioHandle_;// 曲の音源ハンドル
     bool isSongStarted_ = false;// 曲が開始されたかどうか
 

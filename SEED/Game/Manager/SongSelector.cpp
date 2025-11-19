@@ -132,6 +132,10 @@ void SongSelector::Update(){
         if(isShiftItem_){
             ShiftItem();
         }
+
+        // 背景描画情報の更新
+        UpdateBGDrawerInfo();
+
     } else{
         PlayWaitUpdate();
     }
@@ -320,6 +324,7 @@ void SongSelector::InitializeUIs(){
     difficultySelectButtonUI_ = hierarchy->LoadObject2D("SelectScene/ui_WS_2.prefab");
     backButtonUI_ = hierarchy->LoadObject2D("SelectScene/escUI.prefab");
     modeChangeButtonUI_ = hierarchy->LoadObject2D("SelectScene/ui_QE.prefab");
+
 }
 
 ///////////////////////////////////////////////////////////////
@@ -605,7 +610,7 @@ void SongSelector::UpdateVisibleSongs(bool isPlayAudio, bool isUpdateUIs){
         } else{
             AudioManager::EndAudio(songHandle_);
             songHandle_ = AudioManager::PlayAudio(
-                defaultSelectBGMPath_,
+                AudioDictionary::Get("SelectBGM"),
                 true, 0.5f
             );
         }
@@ -796,7 +801,7 @@ void SongSelector::SelectSong(){
             AudioManager::EndAudio(songHandle_);
             preSongName_.clear();
             songHandle_ = AudioManager::PlayAudio(
-                defaultSelectBGMPath_,
+                AudioDictionary::Get("SelectBGM"),
                 true, 0.5f
             );
 
@@ -1493,6 +1498,30 @@ void SongSelector::UpdateSelectButtonUIs(){
     // プレイ待機中は選択ボタンを非アクティブにする
     if(isPlayWaiting_){
         songSelectButtonUI_->SetIsActive(false);
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// 背景描画情報の更新
+//////////////////////////////////////////////////////////////////////////////////
+void SongSelector::UpdateBGDrawerInfo(){
+    SelectBackGroundDrawer::currentDifficulty = currentDifficulty;
+
+    // 入力があった際にグルーブさせる
+    if(verticalInput_.Trigger()){
+        SelectBackGroundDrawer::isGrooveStart_ = true;
+    
+    } else if(holozontalInput_.Trigger()){
+        SelectBackGroundDrawer::isGrooveStart_ = true;
+
+    } else if(modeChangeInput_.Trigger()){
+        SelectBackGroundDrawer::isGrooveStart_ = true;
+    
+    } else if(decideInput_.Trigger()){
+        SelectBackGroundDrawer::isGrooveStart_ = true;
+    
+    } else if(backInput_.Trigger()){
+        SelectBackGroundDrawer::isGrooveStart_ = true;
     }
 }
 

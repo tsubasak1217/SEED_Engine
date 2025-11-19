@@ -27,10 +27,8 @@ NotesData::NotesData(){
     waitTimer_.Initialize(6.0f);
 
     // 音源情報の初期化
-    metronomeFilePath_ = "SE/metronome.mp3"; // メトロノームのファイルパス
-    answerSEFilePath_ = "SE/answer.mp3"; // 正解音のファイルパス
-    AudioManager::LoadAudio(metronomeFilePath_); // メトロノームのロード
-    AudioManager::LoadAudio(answerSEFilePath_); // アンサー音のロード
+    AudioManager::LoadAudio(AudioDictionary::Get("Metronome")); // メトロノームのロード
+    AudioManager::LoadAudio(AudioDictionary::Get("Answer")); // アンサー音のロード
 }
 
 
@@ -365,7 +363,7 @@ void NotesData::PlayAudio(){
         // 拍のラインを超えた瞬間であればメトロノームを鳴らす
         if((signatureCount[0] != signatureCount[1])){
             // メトロノームの再生
-            AudioManager::PlayAudio(metronomeFilePath_, false);
+            AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false);
         }
     }
 
@@ -388,7 +386,7 @@ void NotesData::PlayAudio(){
         // ボーダー時間内を超えたばかりならアンサー音を鳴らす
         if(*it <= borderTime[0] && *it > borderTime[1]){
             // 鳴らしたら削除
-            AudioManager::PlayAudio(answerSEFilePath_, false);
+            AudioManager::PlayAudio(AudioDictionary::Get("Answer"), false);
             it = answerTimes_.erase(it);
 
         } else{

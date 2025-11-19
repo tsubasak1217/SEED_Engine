@@ -8,9 +8,9 @@ void AudioDictionary::Initialize() {
 
     if(!j.empty()){
         for(auto& element : j.items()){
-            std::string layerName = element.key();
-            std::string layerValue = element.value();
-            dict[layerName] = layerValue;
+            std::string audioName = element.key();
+            std::string audioPath = element.value();
+            dict[audioName] = audioPath;
         }
     }
 }

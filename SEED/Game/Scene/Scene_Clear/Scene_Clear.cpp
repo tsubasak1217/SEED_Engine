@@ -42,7 +42,7 @@ void Scene_Clear::Update(){
     Scene_Base::Update();
 
     if(bgmHandle_ == -1){
-        bgmHandle_ = AudioManager::PlayAudio("BGM/NETHMi_Result.wav", true, 0.5f);
+        bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ResultBGM"), true, 0.5f);
     }
 
     // タイマーの更新

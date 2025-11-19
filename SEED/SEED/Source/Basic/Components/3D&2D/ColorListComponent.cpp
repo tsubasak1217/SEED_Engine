@@ -101,8 +101,10 @@ void ColorListComponent::EditGUI(){
         // 名前と色の編集
         ImGui::SameLine();
         ImFunc::InputText("名前##" + hash, colorNameList_[i]);
-        ImGui::SameLine();
-        ImGui::ColorPicker4("色##" + hash, &colorList_[i].value.x);
+        ImGui::Indent();
+        ImGui::ColorEdit4("色##" + hash, &colorList_[i].value.x);
+        ImGui::Unindent();
+        ImGui::Spacing();
     }
 
     // 色の追加

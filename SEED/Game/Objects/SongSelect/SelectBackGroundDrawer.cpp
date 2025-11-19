@@ -7,15 +7,31 @@
 #include <SEED/Lib/Functions/ShapeMath.h>
 #include <SEED/Source/SEED.h>
 #include <SEED/Lib/Functions/Easing.h>
+#include <Game/GameSystem.h>
 
 SelectBackGroundDrawer::SelectBackGroundDrawer(){
 
 }
 
 void SelectBackGroundDrawer::Initialize(){
+    // 色オブジェクトから色を取得
+    auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    bgColorListObj_ = hierarchy->LoadObject("SelectScene/bgColorList.prefab");
+    auto& colorList = bgColorListObj_->GetComponent<ColorListComponent>()->GetColors();
+    for(int i = 0; i < (int)TrackDifficulty::kMaxDifficulty; i++){
+        if(colorList.size() <= i){ break; }
+        clearColors_[i] = colorList[i];
+    }
 }
 
 void SelectBackGroundDrawer::Update(){
+
+    auto& colorList = bgColorListObj_->GetComponent<ColorListComponent>()->GetColors();
+    for(int i = 0; i < (int)TrackDifficulty::kMaxDifficulty; i++){
+        if(colorList.size() <= i){ break; }
+        clearColors_[i] = colorList[i];
+    }
+
     if(Input::IsTriggerKey(DIK_G)){
         isGrooveStart_ = true;
     }
@@ -54,21 +70,15 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
     static float scrollSpeed = 20.0f; // スクロール速度
     static Quad2D backQuad = MakeQuad2D(kWindowSize); // 背景のQuad
 
-    // 背景Quadの色を設定
-    static std::array<Vector4, (int)TrackDifficulty::kMaxDifficulty> backColors = {
-        MyMath::FloatColor(0x11a4a3ff),
-        MyMath::FloatColor(0xefcd00ff),
-        MyMath::FloatColor(0xef0059ff),
-        MyMath::FloatColor(0xbe00bdff)
-    };
-
     // 初期化がまだならグリッドの位置を計算
     if(!isInitialized){
+
         Vector2 center = kWindowCenter;
         backQuad.translate = center; // 背景Quadの位置を中央に設定
         backQuad.drawLocation = DrawLocation::Back; // 背景Quadの描画位置を設定
         backQuad.layer = 0;
         backQuad.isApplyViewMat = false;
+        backQuad.color = clearColors_[(int)currentDifficulty];
 
         // 格納可能な縦横数を計算
         int rows = int((kWindowSize.y * 0.5f) / kGridSize) * 2 + 3;
@@ -168,7 +178,7 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
 
     {// 色の更新
 
-        Color aimColor = MyMath::RGB_to_HSV(backColors[(int)currentDifficulty]);
+        Color aimColor = clearColors_[(int)currentDifficulty].ToHSVA();
         Color curColor = MyMath::RGB_to_HSV(backQuad.color.value);
         static float lerpRate = 0.2f;
 
@@ -267,7 +277,7 @@ void SelectBackGroundDrawer::DrawGrooveObjects(){
                 float t = 1.0f - 1.0f * (timeDist / timeRange);
                 float ease = EaseOutQuad(t);
                 grooveObjects[i][j].quad.scale = { ease,ease };
-                grooveObjects[i][j].quad.color = MyMath::HSV_to_RGB(grooveObjects[i][j].time / (kGrooveTime * 0.2f), 1.0f, 1.0f, 0.2f);
+                grooveObjects[i][j].quad.color = MyMath::HSV_to_RGB(grooveObjects[i][j].time / (kGrooveTime * 0.2f), 1.0f, 1.0f, 0.1f);
 
                 // 描画
                 SEED::DrawQuad2D(grooveObjects[i][j].quad);

@@ -55,9 +55,6 @@ NotesEditor::NotesEditor(){
     laneTextureNameMap_[LaneBit::RECTFLICK_RB_EX] = "rf_RB_EX";
     laneTextureNameMap_[LaneBit::RECTFLICK_ALL] = "rf_ALL";
 
-    // アンサー音
-    answerSEFileName_ = "SE/answer.mp3";
-    metronomeSEFileName_ = "SE/metronome.mp3";
 }
 
 
@@ -1459,7 +1456,7 @@ void NotesEditor::PlayMetronome(){
 
             // データが切り替わった瞬間の場合
             if(preLanetime < tempoData.time){
-                AudioManager::PlayAudio(metronomeSEFileName_, false, 2.0f); // メトロノーム音を再生
+                AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false, 2.0f); // メトロノーム音を再生
             } else{
                 float beatDuration = 60.0f / tempoData.bpm; // 一拍の長さを計算
                 int beatCount[2] = {
@@ -1470,9 +1467,9 @@ void NotesEditor::PlayMetronome(){
                 // ビート数が変わった場合のみメトロノーム音を再生
                 if(beatCount[0] != beatCount[1]){
                     if(beatCount[0] % tempoData.timeSignature_numerator == 0){
-                        AudioManager::PlayAudio(metronomeSEFileName_, false, 2.0f); // メトロノーム音を再生
+                        AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false, 2.0f); // メトロノーム音を再生
                     } else{
-                        AudioManager::PlayAudio(metronomeSEFileName_, false, 1.0f); // メトロノーム音を再生（弱拍）
+                        AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false, 1.0f); // メトロノーム音を再生（弱拍）
                     }
                 }
             }
@@ -1496,7 +1493,7 @@ void NotesEditor::PlayAnswerSE(){
         if(it != notes_.begin()){
             --it; // 1つ前のノーツを取得
             if(it->get()->time_ + answerOffsetTime_ > preLaneTime){
-                AudioManager::PlayAudio(answerSEFileName_, false, 1.0f); // 判定音を再生
+                AudioManager::PlayAudio(AudioDictionary::Get("Answer"), false, 1.0f); // 判定音を再生
             } else{
                 break;
             }

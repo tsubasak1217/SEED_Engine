@@ -1,7 +1,7 @@
 {
     "postProcesses": [
         {
-            "blurRadius": 12,
+            "blurRadius": 9,
             "focusDepth": 0.00010001000191550702,
             "focusDistance": 0.10000000149011612,
             "focusRange": 1.0,

@@ -160,8 +160,6 @@ private:
 
     // 音声情報
     std::string audioFilePath_;
-    std::string answerSEFileName_;
-    std::string metronomeSEFileName_;
     AudioHandle audioHandle_;
 
     // 入出力ファイル名

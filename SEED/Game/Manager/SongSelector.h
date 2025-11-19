@@ -51,6 +51,7 @@ private:// 更新関連
     void ToDifficultySelectUpdate(float timeScale);
     void PlayWaitUpdate();
     void UpdateSelectButtonUIs();
+    void UpdateBGDrawerInfo();
 
 private:// 入出力
     void Edit();
@@ -122,11 +123,9 @@ private:
 
     // 音声
     AudioHandle songHandle_;
-    std::string defaultSelectBGMPath_ = "BGM/NETHMi_select.wav";
 
     // 色
     std::array<Color, (int)TrackDifficulty::kMaxDifficulty> uiBackColors_;
-    std::array<Color, (int)TrackDifficulty::kMaxDifficulty> clearColors_;
 
     // その他細かいもの
     BaseCamera* camera_ = nullptr; // カメラ

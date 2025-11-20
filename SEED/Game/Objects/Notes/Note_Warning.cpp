@@ -17,6 +17,19 @@ void Note_Warning::Update(){
 void Note_Warning::Draw(float currentTime, float appearLength){
     if(!start_){ return; }
 
+    // 警告オブジェクトの生成
+    if(isEmitWarningObj_){
+        auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+
+        if(layer_ == UpDown::UP){
+            hierarchy->LoadObject2D("PlayScene/Effects/warning_Up.prefab");
+        } else if(layer_ == UpDown::DOWN){
+            hierarchy->LoadObject2D("PlayScene/Effects/warning_Down.prefab");
+        }
+
+        isEmitWarningObj_ = false;
+    }
+
     // 描画用の矩形を計算
     static Quad noteRect;
     noteRect = PlayField::GetInstance()->GetNoteQuad(0.0f, lane_, layer_, 1.0f);
@@ -55,12 +68,14 @@ nlohmann::json Note_Warning::ToJson(){
     nlohmann::json json = Note_Base::ToJson();
     json["noteType"] = "warning"; // タイプを指定
     json["duration"] = duration_;
+    json["isEmitWarningObj"] = isEmitWarningObj_;
     return json;
 }
 
 void Note_Warning::FromJson(const nlohmann::json& json){
     Note_Base::FromJson(json);
     duration_ = json["duration"];
+    isEmitWarningObj_ = json.value("isEmitWarningObj", true);
     timer_.Initialize(duration_);
 }
 
@@ -70,5 +85,7 @@ void Note_Warning::Edit(){
     if(ImGui::DragFloat("Duration", &duration_, 0.02f)){
         duration_ = (std::max)(0.0f, duration_);
     }
+
+    ImGui::Checkbox("Emit Warning Object", &isEmitWarningObj_);
 }
 #endif // _DEBUG

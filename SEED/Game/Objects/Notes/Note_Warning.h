@@ -24,4 +24,5 @@ public:
     float duration_ = 0.0f;
     Timer timer_;
     bool start_ = false;
+    bool isEmitWarningObj_ = true;
 };

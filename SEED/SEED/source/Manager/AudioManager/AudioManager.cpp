@@ -238,7 +238,7 @@ AudioHandle AudioManager::PlayAudio(const std::string& filename, bool loop, floa
 /// </summary>
 /// <param name="filename">ファイル名</param>
 void AudioManager::EndAudio(AudioHandle handle){
-    // 指定要素がなければアサート
+    // 指定要素がなければ何もしない
     if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){
         return;
     };
@@ -364,8 +364,10 @@ void AudioManager::RestartAll(){
 /// <param name="filename">ファイル名</param>
 /// <param name="volume">音量。0.0: 無音  1.0: デフォルト。 1より大きくしすぎると音割れポッターになる</param>
 void AudioManager::SetAudioVolume(AudioHandle handle, float volume){
-    // 指定要素がなければアサート
-    assert(instance_->sourceVoices_.find(handle) != instance_->sourceVoices_.end());
+    // 指定要素がなければ何もしない
+    if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){
+        return;
+    }
     // 設定
     instance_->sourceVoices_[handle]->SetVolume(volume * systemVolumeRate_);
     instance_->volumeMap_[handle] = volume;
@@ -429,6 +431,42 @@ void AudioManager::SetAudioPlayTime(AudioHandle& handle, float time){
     handle = PlayAudio(filename,loop,volume,time);
 }
 
+/// <summary>
+/// 音声の長さを取得する。
+/// </summary>
+/// <param name="handle"></param>
+/// <returns></returns>
+float AudioManager::GetDuration(AudioHandle handle){
+    // 名前を取得
+    const std::string& key = instance_->filenameMap_.at(handle);
+
+    // fileNameから取得
+    return GetDuration(key);
+}
+
+/// <summary>
+/// 音源の長さを取得する(ファイル名から)
+/// </summary>
+/// <param name="audioName"></param>
+/// <returns></returns>
+float AudioManager::GetDuration(const std::string& audioName){
+    // あるか確認
+    auto itAudio = instance_->audios_.find(audioName);
+    if(itAudio == instance_->audios_.end()){
+        return 0.0f;
+    }
+
+    // 音源データを取得
+    const SoundData& data = itAudio->second;
+    const WAVEFORMATEX& wf = data.wfex;
+    // 1フレームのバイト数
+    uint32_t bytesPerFrame = wf.nBlockAlign;
+    // 総サンプル数（フレーム数）
+    uint32_t totalSamples = data.bufferSize / bytesPerFrame;
+    // 秒に変換
+    return static_cast<float>(totalSamples) / wf.nSamplesPerSec;
+}
+
 
 
 /// <summary>
@@ -459,7 +497,12 @@ void AudioManager::LoadAudio(const std::string& filename){
     // 要素がなければ
     if(instance_->audios_.find(filename) == instance_->audios_.end()){
         // 音をロードして追加
-        std::filesystem::path fullPath = MyFunc::ToFullPath(directoryPath_ + filename);
+        std::filesystem::path fullPath;
+        if(filename.starts_with("Resources")){
+            fullPath = MyFunc::ToFullPath(filename);
+        } else{
+            fullPath = MyFunc::ToFullPath(directoryPath_ + filename);
+        }
 
         // 拡張子を取得
         std::string extention = fullPath.extension().string();

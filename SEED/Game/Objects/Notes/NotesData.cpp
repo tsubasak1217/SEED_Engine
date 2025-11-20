@@ -332,7 +332,7 @@ void NotesData::PlayAudio(){
         } else{
             if(!isEnd_){
                 // 音ズレの許容時間と比較してズレていたら補正
-                static float toleranceTime = 1.0f / 60.0f;
+                static float toleranceTime = 1.0f / 30.0f;
                 float dif = std::fabsf((songTimer_.currentTime - startOffsetTime_) - AudioManager::GetAudioPlayTime(songAudioHandle_));
 
                 // ずれを確認して補正

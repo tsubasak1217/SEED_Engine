@@ -5,6 +5,7 @@
 #include <SEED/Source/Manager/ParticleManager/CPUParticle/ParticleManager.h>
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
+#include <SEED/Source/Basic/SceneTransition/HexagonTransition.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -37,6 +38,7 @@ void Scene_Title::Initialize(){
     // Timerの初期化
     titleStartTimer_.Initialize(2.0f);
     titleEndTimer_.Initialize(0.5f);
+    sceneOutTimer_.Initialize(1.0f,0.0f,true);
 
     // videoPlayerの初期化
     videoPlayer_ = std::make_unique<VideoPlayer>("Tutorials/tmp.mp4", false);
@@ -166,6 +168,9 @@ void Scene_Title::Update(){
                     // フェードオブジェクトを読み込む
                     hierarchy_->LoadObject2D("Title/fade.prefab")->masterColor_ = Color(0.0f);
                 }
+
+                // 音声再生
+                AudioManager::PlayAudio(AudioDictionary::Get("DecideTitle"), false, 0.5f);
             }
 
         } else{
@@ -194,8 +199,16 @@ void Scene_Title::Update(){
                         item_yes->UpdateMatrix();
                         item_no->UpdateMatrix();
                     } else{
-                        // チュートリアル選択処理
-                        SelectTutorial();
+                        if(sceneOutTimer_.isStop){
+                            // チュートリアル選択処理
+                            SelectTutorial();
+                        } else{
+                            // シーン遷移処理
+                            sceneOutTimer_.Update();
+                            if(sceneOutTimer_.IsFinishedNow()){
+                                sceneChangeOrder_ = true;
+                            }
+                        }
                     }
                 }
 
@@ -325,11 +338,20 @@ void Scene_Title::SelectTutorial(){
         // アニメーションを逆再生
         item_yes->GetComponent<Routine2DComponent>()->RevercePlay();
         item_no->GetComponent<Routine2DComponent>()->RevercePlay();
+
+        // 音声再生
+        AudioManager::PlayAudio(AudioDictionary::Get("TutorialSelect"), false, 0.5f);
     }
 
     // 決定処理
     if(decideButtonInput_.Trigger()){
         // シーン遷移フラグを立てる
-        sceneChangeOrder_ = true;
+        sceneOutTimer_.Restart();
+        auto* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+        transition->SetHexagonInfo(32.0f);
+        transition->StartTransition(sceneOutTimer_.duration - ClockManager::DeltaTime() , 1.0f);
+
+        // 音声再生
+        AudioManager::PlayAudio(AudioDictionary::Get("DecideTutorial"), false, 0.5f);
     }
 }

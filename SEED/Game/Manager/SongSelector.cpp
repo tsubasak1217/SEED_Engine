@@ -7,6 +7,7 @@
 #include <Game/Scene/Scene_Game/State/GameState_Play.h>
 #include <Game/Scene/Scene_Clear/Scene_Clear.h>
 #include <Game/Objects/SongSelect/SelectBackGroundDrawer.h>
+#include <SEED/Source/Basic/SceneTransition/HexagonTransition.h>
 
 // state
 #include <Game/Scene/Scene_Game/State/GameState_SelectMenu.h>
@@ -57,6 +58,7 @@ void SongSelector::Initialize(){
     buttonUIPressScaleTimer_Down_.Initialize(0.3f);
     buttonUIPressScaleTimer_Q_.Initialize(0.3f);
     buttonUIPressScaleTimer_E_.Initialize(0.3f);
+    sceneOutTimer_.Initialize(1.0f, 0.0f, true);
 
     // 初期位置に移動
     ShiftItem(true);
@@ -747,6 +749,10 @@ void SongSelector::SelectSong(){
             shiftDirection_ = verticalValue;
             UpdateVisibleSongs();
             itemShiftTimer_.Reset();
+
+            // 音声再生
+            AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
+
             return;
         }
 
@@ -768,6 +774,10 @@ void SongSelector::SelectSong(){
             // 項目の更新
             UpdateVisibleSongs();
             UpdateUIContents();
+
+            // 音声再生
+            AudioManager::PlayAudio(AudioDictionary::Get("ChangeMode"), false, 0.5f);
+
             return;
         }
 
@@ -782,6 +792,9 @@ void SongSelector::SelectSong(){
             for(auto& ui : difficultyUIs){
                 ui->SetIsActive(true, false);
             }
+
+            // 音声再生
+            AudioManager::PlayAudio(AudioDictionary::Get("DecideSong"), false, 0.5f);
 
             return;
         }
@@ -804,6 +817,9 @@ void SongSelector::SelectSong(){
                 AudioDictionary::Get("SelectBGM"),
                 true, 0.5f
             );
+
+            // 音声再生
+            AudioManager::PlayAudio(AudioDictionary::Get("Return"), false, 0.5f);
 
             // UIのアクティブ状態を切り替え
             for(auto& ui : groupUIs){
@@ -839,6 +855,10 @@ void SongSelector::SelectGroup(){
             shiftDirection_ = verticalValue;
             itemShiftTimer_.Reset();
             UpdateVisibleGroups();
+
+            // 音声再生
+            AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
+
             return;
         }
 
@@ -858,6 +878,10 @@ void SongSelector::SelectGroup(){
         // 項目の更新
         UpdateVisibleGroups();
         UpdateUIContents();
+
+        // 音声再生
+        AudioManager::PlayAudio(AudioDictionary::Get("ChangeMode"), false, 0.5f);
+
         return;
     }
 
@@ -884,6 +908,9 @@ void SongSelector::SelectGroup(){
                 ui->SetIsActive(false);
             }
 
+            // 音声再生
+            AudioManager::PlayAudio(AudioDictionary::Get("DecideSong"), false, 0.5f);
+
             return;
         }
 
@@ -891,6 +918,9 @@ void SongSelector::SelectGroup(){
         if(backInput_.Trigger()){
             auto* scene = GameSystem::GetScene();
             scene->CauseEvent(new GameState_SelectMenu(scene));
+
+            // 音声再生
+            AudioManager::PlayAudio(AudioDictionary::Get("OpenSelectMenu"), false, 0.5f);
 
             return;
         }
@@ -925,6 +955,9 @@ void SongSelector::SelectDifficulty(){
 
                 // currentSongを現在の難易度に合わせて更新
                 currentSong = { currentSong.first,currentDifficulty };
+
+                // 音声再生
+                AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
             }
             return;
         }
@@ -939,6 +972,10 @@ void SongSelector::SelectDifficulty(){
         // 決定入力があればプレイシーンへ移行
         if(decideInput_.Trigger()){
             isPlayWaiting_ = true;
+
+            // 音声再生
+            AudioManager::PlayAudio(AudioDictionary::Get("ToPlay"), false, 0.5f);
+
             return;
         }
 
@@ -958,6 +995,9 @@ void SongSelector::SelectDifficulty(){
             for(auto& ui : songUIs){
                 ui->SetIsActive(true, false);
             }
+
+            // 音声再生
+            AudioManager::PlayAudio(AudioDictionary::Get("Return"), false, 0.5f);
 
             return;
         }
@@ -1365,6 +1405,16 @@ void SongSelector::PlayWaitUpdate(){
 
     // タイマーが終了したらシーン遷移フラグを立てる
     if(playWaitTimer_.IsFinishedNow()){
+        // トランジション演出開始
+        sceneOutTimer_.Restart();
+        auto* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+        transition->SetHexagonInfo(32.0f);
+        transition->StartTransition(sceneOutTimer_.duration - ClockManager::DeltaTime(), 1.0f);
+    }
+
+    // 遷移タイマー
+    sceneOutTimer_.Update();
+    if(sceneOutTimer_.IsFinished()){
         changeSceneOrder_ = true;
     }
 }
@@ -1510,16 +1560,16 @@ void SongSelector::UpdateBGDrawerInfo(){
     // 入力があった際にグルーブさせる
     if(verticalInput_.Trigger()){
         SelectBackGroundDrawer::isGrooveStart_ = true;
-    
+
     } else if(holozontalInput_.Trigger()){
         SelectBackGroundDrawer::isGrooveStart_ = true;
 
     } else if(modeChangeInput_.Trigger()){
         SelectBackGroundDrawer::isGrooveStart_ = true;
-    
+
     } else if(decideInput_.Trigger()){
         SelectBackGroundDrawer::isGrooveStart_ = true;
-    
+
     } else if(backInput_.Trigger()){
         SelectBackGroundDrawer::isGrooveStart_ = true;
     }

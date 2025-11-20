@@ -42,7 +42,7 @@ public:
     // 六角形の情報セット
     void SetHexagonInfo(
         float hexagonRadius, // 六角形の半径
-        const std::vector<Vector4>& colorList = { {0.0f,0.0f,0.0f,1.0f} }// 色リスト
+        const std::vector<Color>& colorList = { {0.0f,0.0f,0.0f,1.0f} }// 色リスト
     );
 
 private:
@@ -51,7 +51,7 @@ private:
 private:
     // リスト
     std::vector<TransitionHexagon> hexagons_;
-    std::vector<Vector4> colorList_;
+    std::vector<Color> colorList_;
 
     // パラメータ
     float hexagonRadius_ = 80.0f;

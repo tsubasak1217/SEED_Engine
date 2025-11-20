@@ -113,6 +113,7 @@ private:
     Timer buttonUIPressScaleTimer_Down_;
     Timer buttonUIPressScaleTimer_Q_;
     Timer buttonUIPressScaleTimer_E_;
+    Timer sceneOutTimer_;
 
     // フラグ類
     static inline bool isFirstPlay_ = true;

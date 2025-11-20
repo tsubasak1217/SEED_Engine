@@ -107,3 +107,45 @@ void WindowInfo::Present(UINT syncInterval, UINT flags){
     // バックバッファのインデックスを取得
     backBufferIndex = swapChain->GetCurrentBackBufferIndex();
 }
+
+
+// フルスクリーンの切り替え
+void WindowInfo::ToggleFullScreen(){
+    if(!isFullScreen){
+        // 現在の位置とサイズを保存
+        GetWindowRect(windowHandle, &windowRect);
+
+        // ウィンドウスタイルを変更（タイトルバー・枠を消す）
+        LONG style = GetWindowLong(windowHandle, GWL_STYLE);
+        SetWindowLong(windowHandle, GWL_STYLE, style & ~(WS_OVERLAPPEDWINDOW));
+
+        // モニタのサイズを取得
+        HMONITOR hMonitor = MonitorFromWindow(windowHandle, MONITOR_DEFAULTTONEAREST);
+        MONITORINFO mi = { sizeof(mi) };
+        GetMonitorInfo(hMonitor, &mi);
+
+        // 全画面化
+        SetWindowPos(
+            windowHandle, HWND_TOP,
+            mi.rcMonitor.left, mi.rcMonitor.top,
+            mi.rcMonitor.right - mi.rcMonitor.left,
+            mi.rcMonitor.bottom - mi.rcMonitor.top,
+            SWP_NOOWNERZORDER | SWP_FRAMECHANGED
+        );
+    } else{
+        // スタイルを元に戻す
+        LONG style = GetWindowLong(windowHandle, GWL_STYLE);
+        SetWindowLong(windowHandle, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+
+        // 保存した位置・サイズに戻す
+        SetWindowPos(
+            windowHandle, NULL,
+            windowRect.left, windowRect.top,
+            windowRect.right - windowRect.left,
+            windowRect.bottom - windowRect.top,
+            SWP_NOOWNERZORDER | SWP_FRAMECHANGED
+        );
+    }
+
+    isFullScreen = !isFullScreen;
+}

@@ -90,6 +90,8 @@ public:// エンジンで利用できる関数
     static void SetAudioVolume(AudioHandle handle, float volume);
     static float GetAudioPlayTime(AudioHandle handle);
     static void SetAudioPlayTime(AudioHandle& handle, float time);
+    static float GetDuration(AudioHandle handle);
+    static float GetDuration(const std::string& audioName);
     static bool IsPlayingAudio(AudioHandle handle);
     static void LoadAudio(const std::string& filename);
     static void UnloadAudio(const std::string& filename);

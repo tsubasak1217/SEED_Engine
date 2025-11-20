@@ -131,6 +131,9 @@ void GameState_Pause::ManageState(){
                 for(int32_t i = 0; i < menus_.size(); i++){
                     menus_[i]->GetComponent<Routine2DComponent>()->RevercePlay();
                 }
+
+                // 音声再生
+                AudioManager::PlayAudio(AudioDictionary::Get("Return"), false, 0.5f);
             }
         }
 
@@ -208,5 +211,8 @@ void GameState_Pause::SelectMenuItem(){
                 menus_[i]->GetComponent<ColorControlComponent>()->SetIsActive(true);
             }
         }
+
+        // 音声再生
+        AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
     }
 }

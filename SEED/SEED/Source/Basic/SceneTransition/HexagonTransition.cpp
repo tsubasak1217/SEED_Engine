@@ -56,6 +56,7 @@ void HexagonTransition::Draw(){
                 BlendMode::NORMAL,
                 DrawLocation::Front,
                 300,
+                false,
                 false
             );
         }
@@ -63,7 +64,7 @@ void HexagonTransition::Draw(){
 }
 
 
-void HexagonTransition::SetHexagonInfo(float hexagonRadius, const std::vector<Vector4>& colorList){
+void HexagonTransition::SetHexagonInfo(float hexagonRadius, const std::vector<Color>& colorList){
     // 六角形の半径を設定
     hexagonRadius_ = hexagonRadius;
 

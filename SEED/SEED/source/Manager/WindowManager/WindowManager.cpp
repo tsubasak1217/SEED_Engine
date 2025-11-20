@@ -68,6 +68,17 @@ int WindowManager::ProcessMessage(){
     return instance_->msg.message;
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+// フルスク ↔ ウィンドウモードの切り替え
+///////////////////////////////////////////////////////////////////////////////////
+void WindowManager::ToggleFullScreen(const std::wstring& windowName){
+    if(instance_->windowList_.find(windowName) == instance_->windowList_.end()){ 
+        return;
+    }
+
+    // フルスク ↔ ウィンドウモードの切り替え
+    instance_->windowList_[windowName]->ToggleFullScreen();
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -143,6 +154,11 @@ void WindowManager::Update(){
     // ウインドウ情報の更新
     for(auto& windowInfo : instance_->windowList_){
         windowInfo.second->Update();
+    }
+
+    // メインウィンドウのフルスク ↔ ウィンドウモード切り替え
+    if(Input::IsTriggerKey(DIK_F11)){
+        ToggleFullScreen(SEED::GetInstance()->windowTitle_);
     }
 }
 

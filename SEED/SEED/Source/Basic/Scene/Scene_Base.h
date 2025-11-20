@@ -4,6 +4,7 @@
 #include <SEED/Source/Manager/Hierarchy/Hierarchy.h>
 #include <SEED/Source/Manager/PostEffectSystem/PostEffectSystem.h>
 #include <SEED/Source/Manager/ParticleManager/CPUParticle/ParticleManager.h>
+#include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
 #include <SEED/Source/SEED.h>
 
 class GameObject;

@@ -55,6 +55,10 @@ inline bool ComponentRegister::RegisterGUI(T* owner){
             owner->AddComponent<LifetimeComponent>();
             return true;
         }
+        if(ImGui::Button("Audio / 音声")){
+            owner->AddComponent<AudioComponent>();
+            return true;
+        }
 
         ImGui::Unindent();
     }
@@ -153,6 +157,10 @@ inline void ComponentRegister::LoadComponents(T* owner, const nlohmann::json& js
         } else if(componentType == "Lifetime"){
             auto* lifetimeComponent = owner->AddComponent<LifetimeComponent>();
             lifetimeComponent->LoadFromJson(json);
+        
+        } else if(componentType == "Audio"){
+            auto* audioComponent = owner->AddComponent<AudioComponent>();
+            audioComponent->LoadFromJson(json);
         }
     }
 

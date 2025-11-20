@@ -129,7 +129,7 @@ struct ImFunc{
     // アクティブボタンの表示
     static bool ActivateImageButton(const std::string& label,bool& isActive, ImTextureID activeIcon, ImTextureID inactiveIcon, const ImVec2& size = ImVec2(30, 30));
     // 再生バーの表示
-    static bool PlayBar(const std::string& label, Timer & timer);
+    static bool PlayBar(const std::string& label, Timer & timer,bool isSliderReturnsTrue = false);
     // 折りたたみヘッダーの拡張関数
     static bool CollapsingHeader(const std::string& label, const ImU32& color = 0, ImGuiTreeNodeFlags flags = 0);
     // 文字列を折り返す関数

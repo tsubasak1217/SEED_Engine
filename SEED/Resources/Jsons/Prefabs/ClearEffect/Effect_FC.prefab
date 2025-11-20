@@ -29,6 +29,7 @@
                                         "y": 1.0,
                                         "z": 1.0
                                     },
+                                    "cullMode": 3,
                                     "drawLocation": 2,
                                     "flipX": false,
                                     "flipY": false,
@@ -207,10 +208,12 @@
                                         "y": 1.0,
                                         "z": 1.0
                                     },
+                                    "drawLocation": 2,
                                     "fontName": "Resources/Fonts/DefaultAssets/Digital/nicokaku-plus_v2.5\\nicokaku_v2-5.ttf",
                                     "fontSize": 100.0,
                                     "glyphSpacing": 8.0,
                                     "isApplyViewMat": false,
+                                    "isStaticDraw": false,
                                     "layer": 10,
                                     "lineSpacing": 8.0,
                                     "name": "text0",
@@ -228,6 +231,7 @@
                                     },
                                     "text": "FULL COBO",
                                     "textBoxVisible": false,
+                                    "textDisplayRate": 1.0,
                                     "transform": {
                                         "rotate": 0.0,
                                         "scale": {
@@ -338,9 +342,13 @@
                                 }
                             ],
                             "defaultPaused": false,
+                            "disableRotate": false,
+                            "disableScale": false,
+                            "disableTranslate": false,
                             "duration": 3.0,
                             "easingType": 0,
                             "interpolationType": 1,
+                            "isConnectEdge": false,
                             "isLoop": false,
                             "timePoints": [
                                 0.0,
@@ -520,6 +528,7 @@
                                         "y": 0.0,
                                         "z": 0.0
                                     },
+                                    "cullMode": 3,
                                     "drawLocation": 2,
                                     "flipX": false,
                                     "flipY": false,
@@ -676,9 +685,13 @@
                                 }
                             ],
                             "defaultPaused": false,
+                            "disableRotate": false,
+                            "disableScale": false,
+                            "disableTranslate": false,
                             "duration": 3.0,
                             "easingType": 0,
                             "interpolationType": 1,
+                            "isConnectEdge": false,
                             "isLoop": false,
                             "timePoints": [
                                 0.0,
@@ -701,14 +714,41 @@
                     "transform": {
                         "rotate": 0.0,
                         "scale": {
-                            "x": 1.5,
-                            "y": 0.9758809804916382
+                            "x": 6.0,
+                            "y": 0.0
                         },
                         "translate": {
                             "x": 640.0,
                             "y": 360.0
                         }
                     }
+                }
+            ],
+            "components": [
+                {
+                    "audioList": [
+                        {
+                            "filePath": "Resources/Audios/SE/FC.mp3",
+                            "isLoop": false,
+                            "name": "",
+                            "playDelayTime": 0.0,
+                            "playOffsetTime": 0.0,
+                            "startTime": 0.0,
+                            "volume": 0.5
+                        },
+                        {
+                            "filePath": "Resources/Audios/SE/voice.mp3",
+                            "isLoop": false,
+                            "name": "",
+                            "playDelayTime": 0.0,
+                            "playOffsetTime": 0.0,
+                            "startTime": 0.0,
+                            "volume": 0.5
+                        }
+                    ],
+                    "componentID": 107,
+                    "componentTag": "Audio_ID:107",
+                    "componentType": "Audio"
                 }
             ],
             "isParentRotate": true,

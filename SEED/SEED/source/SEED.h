@@ -165,7 +165,8 @@ public:
         const Color& color = { 1.0f,1.0f,1.0f,1.0f },
         BlendMode blendMode = BlendMode::NORMAL,
         DrawLocation drawLocation = DrawLocation::Front,
-        int32_t layer = 0, bool isApplyViewMat = true
+        int32_t layer = 0, bool isApplyViewMat = true,
+        bool isStaticDraw = false
     );
 
     static void DrawHexagonFrame(
@@ -173,7 +174,8 @@ public:
         const Color& color = { 1.0f,1.0f,1.0f,1.0f },
         BlendMode blendMode = BlendMode::NORMAL,
         DrawLocation drawLocation = DrawLocation::Front,
-        int32_t layer = 0, bool isApplyViewMat = true
+        int32_t layer = 0, bool isApplyViewMat = true,
+        bool isStaticDraw = false
     );
 
     // 球の描画関数

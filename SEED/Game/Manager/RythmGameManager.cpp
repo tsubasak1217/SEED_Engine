@@ -95,6 +95,7 @@ void RythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
     isPaused_ = false;
 
     // チュートリアルであればチュートリアルマネージャの初期化
+    tutorialManager_.reset();
     if(songData["songName"] == "都立チュートリアル中学校"){
         tutorialManager_ = std::make_unique<TutorialObjectManager>(notesData_->GetSongTimerPtr());
         tutorialManager_.value()->Initialize();
@@ -157,10 +158,24 @@ void RythmGameManager::EndFrame(){
             auto* hierarchy = scene->GetHierarchy();
             hierarchy;
             if(playResult_.isAllPerfect){
+                // APエフェクト
                 hierarchy->LoadObject2D("ClearEffect/Effect_AP.prefab");
+
             } else{
                 if(playResult_.isFullCombo){
+                    // FCエフェクト
                     hierarchy->LoadObject2D("ClearEffect/Effect_FC.prefab");
+
+                } else{
+                    ScoreRank rank = ScoreRankUtils::GetScoreRank(playResult_.score);
+                    if(rank >= ScoreRank::B){
+                        // クリアエフェクト
+                        hierarchy->LoadObject2D("ClearEffect/Effect_Clear.prefab");
+
+                    } else {
+                        // 終了エフェクト
+                        hierarchy->LoadObject2D("ClearEffect/Effect_Finish.prefab");
+                    }
                 }
             }
 
@@ -215,6 +230,9 @@ void RythmGameManager::EndFrame(){
         if(playEndTimer_.IsFinished()){
             // Inputのカーソルを表示状態に戻す
             Input::SetMouseCursorVisible(true);
+
+            // チュートリアルマネージャの解放
+            tutorialManager_.reset();
 
             // リザルト画面へ移行
             GameSystem::ChangeScene("Clear");

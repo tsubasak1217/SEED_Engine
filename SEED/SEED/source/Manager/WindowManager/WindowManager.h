@@ -85,9 +85,13 @@ public:// アクセッサ
         return instance_->GetWindow(windowName)->GetRtvHandle();
     }
 
+    static void ToggleFullScreen(const std::wstring& windowName);
+
     static void Present(const std::wstring& windowName, UINT syncInterval, UINT flags){
         instance_->GetWindow(windowName)->Present(syncInterval, flags);
     }
+
+
 
 private:
     HINSTANCE hInstance_;

@@ -146,6 +146,10 @@ void GameState_SelectMenu::ManageState(){
                     for(int32_t i = 0; i < menus_.size(); i++){
                         menus_[i]->GetComponent<Routine2DComponent>()->RevercePlay();
                     }
+
+                    // 音声再生
+                    AudioManager::PlayAudio(AudioDictionary::Get("OpenSelectMenu"), false, 0.5f);
+
                 } else{
                     // optionページを閉じる
                     isInOptionPage_ = false;
@@ -168,6 +172,7 @@ void GameState_SelectMenu::ManageState(){
 
                 case BackToTitle:// タイトルに戻る
                     pScene_->ChangeScene("Title");
+
                     return;
 
                 default:
@@ -212,6 +217,9 @@ void GameState_SelectMenu::SelectMenuItem(){
                 menus_[i]->masterColor_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
             }
         }
+
+        // 音声再生
+        AudioManager::PlayAudio(AudioDictionary::Get("SelecrMenuSelect"), false, 0.5f);
     }
 }
 

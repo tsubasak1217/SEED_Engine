@@ -93,10 +93,10 @@ ComPtr<IDxcBlob> CompileShader(
     // 成功したログを出す
     Log(MyFunc::ConvertString(std::format(L"Compile Succeeded, path: {}, profile:{}\n", filePath, profile)));
     // もう使わないリソースを解放
-    shaderSource->Release();
-    shaderResult->Release();
+    shaderSource.Reset();
+    shaderResult.Reset();
     if(shaderError){
-        shaderError->Release();
+        shaderError.Reset();
     }
 
     // 実行用のバイナリを返却

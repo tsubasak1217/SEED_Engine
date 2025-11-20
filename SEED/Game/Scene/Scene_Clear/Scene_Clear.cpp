@@ -46,7 +46,7 @@ void Scene_Clear::Update(){
     }
 
     // タイマーの更新
-    if(Input::IsTriggerKey(DIK_SPACE)){
+    if(Input::IsTriggerAnyKey()){
         step_++;
         stepTimer_.Reset();
     
@@ -103,7 +103,7 @@ void Scene_Clear::EndFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::CheckStep(){
     if(step_ >= kMaxStep_){
-        if(Input::IsTriggerKey(DIK_SPACE)){
+        if(Input::IsTriggerAnyKey()){
             sceneChangeOrder = true;
         }
     }

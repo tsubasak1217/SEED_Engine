@@ -37,6 +37,7 @@ public:
     Vector2 GetWindowScale()const{ return windowScale; }
     ID3D12Resource* GetBackBuffer()const{ return swapChainResources[backBufferIndex].Get(); }
     const D3D12_CPU_DESCRIPTOR_HANDLE& GetRtvHandle()const{ return doubleBufferRtvHandles[backBufferIndex]; }
+    void ToggleFullScreen();
 
 private:
     HWND windowHandle;
@@ -44,6 +45,8 @@ private:
     Vector2 originalWindowSize;
     Vector2 currentWindowSize;
     Vector2 windowScale;
+    RECT windowRect;
+    bool isFullScreen = false;
 
     // swapChainの情報
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};

@@ -58,7 +58,7 @@ private:
     float offset_answerSE_ = 0.0f;// アンサー音のオフセット
     float baseOffset_answerSE_ = -0.16f;// 基本アンサー音オフセット
     // カーソル設定
-    float baseCursorSensitivity_ = 0.5f;// 基本カーソル感度
+    float baseCursorSensitivity_ = 0.3625f;// 基本カーソル感度
     float cursorSenstivity_ = 1.0f;// カーソルの感度
     // 反転設定
     bool isReverseLR_ = false;// 左右反転

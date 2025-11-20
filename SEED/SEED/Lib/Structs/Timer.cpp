@@ -1,15 +1,16 @@
 #include "Timer.h"
 
 // コンストラクタ
-Timer::Timer(float _duration, float current){
-    Initialize(_duration, current);
+Timer::Timer(float _duration, float current, bool defaultStop){
+    Initialize(_duration, current,defaultStop);
 }
 
 // 初期化
-void Timer::Initialize(float _duration, float current){
+void Timer::Initialize(float _duration, float current, bool defaultStop){
     this->duration = _duration;
     currentTime = current;
     prevTime = current;
+    isStop = defaultStop;
 }
 
 // 進捗を取得(0~1)
@@ -33,6 +34,11 @@ float Timer::GetEase(Easing::Type easeType){
 
 float Timer::GetPrevProgress() const{
     return prevTime / duration;
+}
+
+// 残り時間を取得
+float Timer::GetLeftTime() const{
+    return duration - currentTime;
 }
 
 // 完了しているかどうか

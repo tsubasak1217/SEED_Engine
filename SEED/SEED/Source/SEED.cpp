@@ -18,7 +18,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 SEED* SEED::instance_ = nullptr;
-std::wstring SEED::windowTitle_ = L"SEED::GameWindow";
+std::wstring SEED::windowTitle_ = L"NETHMi";
 std::wstring SEED::systemWindowTitle_ = L"SEED::System";
 uint32_t SEED::windowBackColor_ = MyMath::IntColor(27,27,27,255);
 
@@ -496,7 +496,8 @@ void SEED::DrawOBB2D(const OBB2D& obb, const Color& color, bool isIgnoreDepth){
 void SEED::DrawHexagon(
     const Vector2& center, float radius, float theta,
     const Color& color, BlendMode blendMode,
-    DrawLocation drawLocation, int32_t layer, bool isApplyViewMat
+    DrawLocation drawLocation, int32_t layer, bool isApplyViewMat,
+    bool isStaticDraw
 ){
     Triangle2D tri;
     tri.GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
@@ -507,6 +508,7 @@ void SEED::DrawHexagon(
     tri.rotate = 0.0f;
     tri.isStaticDraw = false;
     tri.isApplyViewMat = isApplyViewMat;
+    tri.isStaticDraw = isStaticDraw;
 
     static std::array<Vector2,6> vertices;
     for(int i = 0; i < 6; ++i){
@@ -527,7 +529,8 @@ void SEED::DrawHexagon(
 void SEED::DrawHexagonFrame(
     const Vector2& center, float radius, float theta, float frameWidthRate, 
     const Color& color, BlendMode blendMode,
-    DrawLocation drawLocation, int32_t layer, bool isApplyViewMat
+    DrawLocation drawLocation, int32_t layer, bool isApplyViewMat,
+    bool isStaticDraw
 ){
     Quad2D quad;
     quad.GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
@@ -536,6 +539,7 @@ void SEED::DrawHexagonFrame(
     quad.layer = layer;
     quad.blendMode = blendMode;
     quad.isApplyViewMat = isApplyViewMat;
+    quad.isStaticDraw = isStaticDraw;
 
     static std::array<Vector2,6> vertices[2];
     for(int i = 0; i < 6; ++i){

@@ -23,3 +23,4 @@
 #include <SEED/Source/Basic/Components/3D&2D/ColorListComponent.h>
 #include <SEED/Source/Basic/Components/3D&2D/ColorControlComponent.h>
 #include <SEED/Source/Basic/Components/3D&2D/LifetimeComponent.h>
+#include <SEED/Source/Basic/Components/3D&2D/AudioComponent.h>

@@ -1,11 +1,13 @@
 {
     "clearIcon": {
         "Basic": 2,
-        "Expert": 1
+        "Expert": 1,
+        "Master": 2
     },
     "score": {
         "Basic": 100.0,
         "Expert": 99.09091186523438,
-        "Parallel": 97.83197784423828
+        "Master": 100.0,
+        "Parallel": 98.17073059082031
     }
 }

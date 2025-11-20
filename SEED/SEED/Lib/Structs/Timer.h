@@ -9,14 +9,15 @@
 /// </summary>
 struct Timer{
     Timer() = default;
-    Timer(float _duration,float current = 0.0f);
+    Timer(float _duration,float current = 0.0f,bool defaultStop = false);
 
 public:
-    void Initialize(float _duration,float current = 0.0f);
+    void Initialize(float _duration,float current = 0.0f, bool defaultStop = false);
     float GetProgress() const;
     float GetDuration() const;
     float GetEase(Easing::Type easeType);
     float GetPrevProgress() const;
+    float GetLeftTime() const;
     bool IsFinished() const;
     bool IsFinishedNow() const;
     bool IsLoopedNow() const;

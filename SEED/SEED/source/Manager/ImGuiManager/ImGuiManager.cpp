@@ -715,7 +715,7 @@ bool ImFunc::ActivateImageButton(
 /////////////////////////////////////////////////////////////////
 // 再生バー表示関数
 /////////////////////////////////////////////////////////////////
-bool ImFunc::PlayBar(const std::string& label, Timer& timer){
+bool ImFunc::PlayBar(const std::string& label, Timer& timer, bool isSliderReturnsTrue){
     static bool isTextureLoaded = false;
     static ImTextureID playIcon;
     static ImTextureID pauseIcon;
@@ -729,11 +729,27 @@ bool ImFunc::PlayBar(const std::string& label, Timer& timer){
     }
 
     // 再生・一時停止ボタン
-    isClicked = ActivateImageButton("再生ボタン" + label, timer.isStop, pauseIcon, playIcon, { 20,20 });
+    if(ActivateImageButton("再生ボタン" + label, timer.isStop, pauseIcon, playIcon, { 20,20 })){
+        isClicked = true;
+        // 終端でもう一度再生ボタンが押されたら最初から再生
+        if(timer.GetProgress() == 1.0f && !timer.isStop){
+            timer.Reset();
+        }
+    }
 
-    // スライダー
+    // スライダー表示
     ImGui::SameLine();
-    ImGui::SliderFloat(label, &timer.currentTime, 0.0f, timer.duration);
+    if(ImGui::SliderFloat(label, &timer.currentTime, 0.0f, timer.duration)){
+        // スライダーの変更でtrueを返す場合
+        if(isSliderReturnsTrue){
+            isClicked = true;
+        }
+
+        // スライダーを動かしたら一時停止にする
+        timer.Stop();
+    }
+
+
     return isClicked;
 }
 

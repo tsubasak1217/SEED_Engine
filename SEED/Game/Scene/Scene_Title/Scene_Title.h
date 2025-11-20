@@ -45,6 +45,7 @@ private:
     // タイマー類
     Timer titleStartTimer_;
     Timer titleEndTimer_;
+    Timer sceneOutTimer_;
     float totalTime_ = 0.0f;
     float cameraParentTime_ = 3.0f;
 

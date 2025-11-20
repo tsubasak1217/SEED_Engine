@@ -69,7 +69,7 @@ void MouseVectorCircle::Update(){
                 mouseVec = prevMouseVec_;
             }
 
-            // 赤色に徐々に戻す
+            // 黄色に徐々に戻す
             circleObj_->masterColor_.AddHue(-2.0f * ClockManager::DeltaTime(), true);
         }
 

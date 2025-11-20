@@ -15,6 +15,7 @@ void Note_RectFlick::Draw(float currentTime, float appearLength){
     Quad2D q;
     float timeRatio = 1.0f - ((time_ - currentTime) / (appearLength * 0.2f));
     float alpha = 0.0f;
+
     std::vector<DIRECTION8> dirs;
     if(laneBit_ & LaneBit::RECTFLICK_LT){ dirs.push_back(DIRECTION8::LEFTTOP); }
     if(laneBit_ & LaneBit::RECTFLICK_LB){ dirs.push_back(DIRECTION8::LEFTBOTTOM); }
@@ -33,6 +34,12 @@ void Note_RectFlick::Draw(float currentTime, float appearLength){
         q = PlayField::GetInstance()->GetRectFlickQuad(timeRatio, dirs[i], 0.05f);
         // 描画
         q.color = { 1.0f,1.0f,0.0f,alpha };
+        SEED::DrawQuad2D(q);
+
+        // 予告矩形の描画
+        q = PlayField::GetInstance()->GetRectFlickQuad(1.05f, dirs[i], 0.1f);
+        q.color = { 1.0f,0.0f,0.0f,alpha };
+        q.blendMode = BlendMode::ADD;
         SEED::DrawQuad2D(q);
     }
 }

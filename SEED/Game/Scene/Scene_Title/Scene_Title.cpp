@@ -41,7 +41,7 @@ void Scene_Title::Initialize(){
     sceneOutTimer_.Initialize(1.0f,0.0f,true);
 
     // videoPlayerの初期化
-    videoPlayer_ = std::make_unique<VideoPlayer>("Tutorials/tmp.mp4", false);
+    videoPlayer_ = std::make_unique<VideoPlayer>("demoMovie.mp4", false);
     videoPlayer_->Play(0.0f, 1.0f, true);
 
     //logoの読み込み

@@ -37,7 +37,7 @@ void Note_RectFlick::Draw(float currentTime, float appearLength){
         SEED::DrawQuad2D(q);
 
         // 予告矩形の描画
-        q = PlayField::GetInstance()->GetRectFlickQuad(1.05f, dirs[i], 0.1f);
+        q = PlayField::GetInstance()->GetRectFlickQuad(1.0f + 0.15f * std::sinf(3.14f * timeRatio), dirs[i], 0.025f + 0.025f * std::clamp(timeRatio,0.0f,1.0f));
         q.color = { 1.0f,0.0f,0.0f,alpha };
         q.blendMode = BlendMode::ADD;
         SEED::DrawQuad2D(q);

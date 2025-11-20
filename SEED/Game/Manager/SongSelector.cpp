@@ -1528,7 +1528,7 @@ void SongSelector::UpdateSelectButtonUIs(){
 
     } else{
         if(selectMode_ == SelectMode::Group){
-            backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "メニュー";
+            backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "プレイ設定/メニュー";
             modeChangeButtonUI_->SetIsActive(true);
             auto& text = modeChangeButtonUI_->GetChild("modeText")->GetComponent<UIComponent>()->GetText(0);
             text.text = ModeUtil::groupModeNames[(int)currentGroupMode];

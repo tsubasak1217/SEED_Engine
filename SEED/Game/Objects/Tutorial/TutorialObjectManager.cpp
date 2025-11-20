@@ -21,10 +21,10 @@ TutorialObjectManager::~TutorialObjectManager(){
 //////////////////////////////////////////////////////////////////////////////
 void TutorialObjectManager::Initialize(){
     // ビデオファイルパスの設定
-    tutorials_[TutorialName::Tap].tutorialVideoFilePath = "Tutorials/tap.mp4";
-    tutorials_[TutorialName::Hold].tutorialVideoFilePath = "Tutorials/hold.mp4";
-    tutorials_[TutorialName::Wheel].tutorialVideoFilePath = "Tutorials/wheel.mp4";
-    tutorials_[TutorialName::Frame].tutorialVideoFilePath = "Tutorials/frame.mp4";
+    tutorials_[TutorialName::Tap].tutorialVideoFilePath = "Tutorials/tutorial_tap.mp4";
+    tutorials_[TutorialName::Hold].tutorialVideoFilePath = "Tutorials/tutorial_hold.mp4";
+    tutorials_[TutorialName::Wheel].tutorialVideoFilePath = "Tutorials/tutorial_wheel.mp4";
+    tutorials_[TutorialName::Frame].tutorialVideoFilePath = "Tutorials/tutorial_frame.mp4";
 
     // 開始時間の設定
     tutorials_[TutorialName::Tap].startTime = 4.0f;

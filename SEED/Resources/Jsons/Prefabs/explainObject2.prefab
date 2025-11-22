@@ -1,0 +1,502 @@
+{
+    "gameObjects": [
+        {
+            "components": [
+                {
+                    "componentID": 0,
+                    "componentTag": "EmitterGroup3D_ID:0",
+                    "componentType": "EmitterGroup3D",
+                    "emitterGroup": {
+                        "emitters": [
+                            {
+                                "baseDirection": {
+                                    "x": 0.0,
+                                    "y": 1.0,
+                                    "z": 0.0
+                                },
+                                "blendMode": 4,
+                                "center": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "colorCurve": {
+                                    "channel": 3,
+                                    "curves": [
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 0.5121433138847351,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.3809523582458496
+                                            },
+                                            {
+                                                "x": 0.26016995310783386,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 0.5151790976524353,
+                                                "y": 0.5105820298194885
+                                            },
+                                            {
+                                                "x": 0.758044958114624,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.3809523582458496
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 0.7064359784126282,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.0
+                                            }
+                                        ]
+                                    ],
+                                    "type": 19,
+                                    "unitBorder": 1.0
+                                },
+                                "colorMode": 1,
+                                "colors": [
+                                    [
+                                        1.0,
+                                        0.0,
+                                        0.7876448631286621,
+                                        1.0
+                                    ],
+                                    [
+                                        1.0,
+                                        0.8130021095275879,
+                                        0.011583030223846436,
+                                        1.0
+                                    ],
+                                    [
+                                        0.0,
+                                        0.9189190864562988,
+                                        1.0,
+                                        1.0
+                                    ]
+                                ],
+                                "directionRange": 0.029999999329447746,
+                                "emitModelFilePath": "DefaultAssets/Plane/Plane.obj",
+                                "emitRange": {
+                                    "x": 31.799999237060547,
+                                    "y": 1.75,
+                                    "z": 11.899999618530273
+                                },
+                                "emitType": 1,
+                                "emitterType": "Emitter3D",
+                                "goalPosition": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "gravity": 0.0,
+                                "initUpdateTime": 0.0,
+                                "interval": 2.1700000762939453,
+                                "isBillboard": true,
+                                "isRotateRandomInit": true,
+                                "isSetEndPosition": false,
+                                "isUseGravity": false,
+                                "isUseRotate": true,
+                                "kMaxEmitCount": 5,
+                                "lifeTimeRange": {
+                                    "max": 1.649999976158142,
+                                    "min": 1.0
+                                },
+                                "lightingType": 0,
+                                "numEmitEvery": 32,
+                                "positionInterpolationCurve": {
+                                    "channel": 0,
+                                    "curves": [
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ]
+                                    ],
+                                    "type": 0,
+                                    "unitBorder": 1.0
+                                },
+                                "radiusRange": {
+                                    "max": 3.0,
+                                    "min": 0.5
+                                },
+                                "rotate": {
+                                    "w": 1.0,
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 0.0
+                                },
+                                "rotateCurve": {
+                                    "channel": 0,
+                                    "curves": [
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 0.520933985710144,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ]
+                                    ],
+                                    "type": 19,
+                                    "unitBorder": 1.0
+                                },
+                                "rotateDirection": {
+                                    "x": 0.0,
+                                    "y": 0.0,
+                                    "z": 1.0
+                                },
+                                "rotateSpeedRange": {
+                                    "max": 9.3100004196167,
+                                    "min": -9.699999809265137
+                                },
+                                "scaleCurve": {
+                                    "channel": 2,
+                                    "curves": [
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 0.27294689416885376,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 0.520933985710144,
+                                                "y": 0.48148149251937866
+                                            },
+                                            {
+                                                "x": 0.7334944009780884,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 0.2697262763977051,
+                                                "y": 0.4920634925365448
+                                            },
+                                            {
+                                                "x": 0.5209339261054993,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 0.7367149591445923,
+                                                "y": 0.45502644777297974
+                                            },
+                                            {
+                                                "x": 0.8848631381988525,
+                                                "y": 0.6613756418228149
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 0.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ]
+                                    ],
+                                    "type": 19,
+                                    "unitBorder": 1.0
+                                },
+                                "scaleRange": {
+                                    "max": {
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
+                                    },
+                                    "min": {
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
+                                    }
+                                },
+                                "speedRange": {
+                                    "max": 22.1200008392334,
+                                    "min": 5.0
+                                },
+                                "textureHandles": [
+                                    "Resources/Textures/ParticleTextures/particle.png",
+                                    "Resources/Textures/ParticleTextures/rectRing.png",
+                                    "Resources/Textures/ParticleTextures/star.png",
+                                    "Resources/Textures/ParticleTextures/normalBlockFrame.png"
+                                ],
+                                "useDefaultTexture": false,
+                                "useRotateDirection": true,
+                                "velosityCurve": {
+                                    "channel": 0,
+                                    "curves": [
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                "x": 0.0,
+                                                "y": 0.0
+                                            },
+                                            {
+                                                "x": 1.0,
+                                                "y": 1.0
+                                            }
+                                        ]
+                                    ],
+                                    "type": 0,
+                                    "unitBorder": 1.0
+                                }
+                            }
+                        ],
+                        "initUpdateTime": 0.0
+                    },
+                    "isActive": true,
+                    "isParentToOwner": true
+                },
+                {
+                    "animationName": "",
+                    "animationSpeedRate": 1.0,
+                    "blendMode": 3,
+                    "componentID": 1,
+                    "componentTag": "ModelRender_ID:1",
+                    "componentType": "ModelRender",
+                    "cullMode": 3,
+                    "isAnimation": false,
+                    "isAnimationLoop": false,
+                    "kAnimLerpTime": 0.20000000298023224,
+                    "lightingType": 2,
+                    "masterColor": {
+                        "w": 1.0,
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "modelFilePath": "Resources/Models/DefaultAssets/Boy/Boy.glb",
+                    "transform": {
+                        "rotate": {
+                            "w": -0.004203708376735449,
+                            "x": 0.0,
+                            "y": 0.9999911785125732,
+                            "z": -0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "translate": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        }
+                    }
+                },
+                {
+                    "color": [
+                        0.9599588513374329,
+                        0.3899613618850708,
+                        1.0,
+                        1.0
+                    ],
+                    "componentID": 2,
+                    "componentTag": "SpotLight_ID:2",
+                    "componentType": "SpotLight",
+                    "cosAngle": 0.5094937086105347,
+                    "cosFallofStart": 0.588171660900116,
+                    "decay": 2.0,
+                    "direction": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "distance": 32.0,
+                    "intensity": 8.5,
+                    "isParentRotate": true,
+                    "position": {
+                        "x": 0.0,
+                        "y": 16.40220069885254,
+                        "z": 0.0
+                    }
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "Object_0",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 2.369999885559082,
+                    "y": 2.369999885559082,
+                    "z": 2.369999885559082
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        }
+    ]
+}

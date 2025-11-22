@@ -15,7 +15,7 @@ class NotesData{
 public:
     NotesData();
     ~NotesData();
-    void Initialize(const nlohmann::json& songData);
+    void Initialize(const nlohmann::json& songData,const std::string& jsonPath);
     void Update();
     void Draw();
     void BeginFrame();
@@ -45,6 +45,7 @@ private:// 入出力
 private:
     // 譜面データ(ファイル)
     nlohmann::json songData_;// 譜面データ
+    std::string jsonPath_;// 譜面データのファイルパス
 
     // タイマー関連
     Timer songTimer_;// 曲の再生時間

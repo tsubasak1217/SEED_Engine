@@ -42,7 +42,7 @@ NotesData::~NotesData(){
 ////////////////////////////////////////////////////////////////////
 // ノーツデータの初期化
 ////////////////////////////////////////////////////////////////////
-void NotesData::Initialize(const nlohmann::json& songData){
+void NotesData::Initialize(const nlohmann::json& songData, const std::string& jsonPath){
     // 譜面の長さを初期化
     songTimer_.Reset();
 
@@ -53,6 +53,9 @@ void NotesData::Initialize(const nlohmann::json& songData){
 
     // jsonからノーツデータを読み込む
     FromJson(songData);
+
+    // 譜面データのファイルパスを保存
+    jsonPath_ = jsonPath;
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -559,7 +562,8 @@ void NotesData::FromJson(const nlohmann::json& songData){
 void NotesData::HotReload(){
     // 譜面データがなければアサート
     if(songData_.empty()){
-        assert(false);
+        // jsonPathからもう一度読み込む
+        songData_ = nlohmann::json::parse(std::ifstream(jsonPath_));
     }
 
     // JSONファイルを読み込む

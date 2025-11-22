@@ -17,8 +17,17 @@ void SongInfo::Initialize(const std::string& _folderName){
     for(int i = 0; i < diffcultySize; i++){
 
         // JSONファイルを読み込む
-        nlohmann::json noteData = MyFunc::GetJson(directoryPath + difficultyName[i] + ".json");
+        nlohmann::json noteData = MyFunc::GetJson(directoryPath + difficultyName[i] + ".json",true);
         noteDatas[i] = noteData;
+
+        if(noteData.empty()){
+            artistName = "";
+            songName = "";
+            bpm = 0.0f;
+            genre = (SongGenre)0;
+            audioFilePath = "";
+            continue;
+        }
 
         // アーティスト名を取得
         if(artistName.empty()){
@@ -66,7 +75,9 @@ void SongInfo::Initialize(const std::string& _folderName){
             // スコアの取得
             if(scoreData.contains("score")){
                 nlohmann::json scoreJson = scoreData["score"];
-                score[i] = scoreJson.value(difficultyName[i], 0.0f);
+                if(scoreJson[difficultyName[i]].is_number()){
+                    score[i] = scoreJson[difficultyName[i]].get<float>();
+                }
                 ranks[i] = ScoreRankUtils::GetScoreRank(score[i]);
             }
 

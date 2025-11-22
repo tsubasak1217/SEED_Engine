@@ -206,6 +206,11 @@ AudioHandle AudioManager::PlayAudio(
 /// <param name="filename">ファイル名</param>
 /// <param name="loop">ループ可否</param>
 AudioHandle AudioManager::PlayAudio(const std::string& filename, bool loop, float volume, float time){
+
+    if(filename.empty()){
+        return -1;
+    }
+
     // 指定要素がなければアサート
     if(instance_->audios_.find(filename) == instance_->audios_.end()){
         LoadAudio(filename);

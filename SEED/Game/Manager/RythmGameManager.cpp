@@ -65,8 +65,10 @@ void RythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
     playResult_.songData = songData;
 
     // 譜面データの初期化
+    static std::string difficultyName[4] = { "Basic", "Expert", "Master", "Parallel" };
+    std::string jsonPath = "Resources/NoteDatas/" + songInfo.folderName + "/" + difficultyName[difficulty] + ".json";
     notesData_ = std::make_unique<NotesData>();
-    notesData_->Initialize(songData);
+    notesData_->Initialize(songData,jsonPath);
     playResult_.totalCombo = notesData_->GetTotalCombo();
 
     // Inputの初期化
@@ -96,7 +98,7 @@ void RythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
 
     // チュートリアルであればチュートリアルマネージャの初期化
     tutorialManager_.reset();
-    if(songData["songName"] == "都立チュートリアル中学校"){
+    if(songInfo.songName == "都立チュートリアル中学校"){
         tutorialManager_ = std::make_unique<TutorialObjectManager>(notesData_->GetSongTimerPtr());
         tutorialManager_.value()->Initialize();
     }
@@ -172,7 +174,7 @@ void RythmGameManager::EndFrame(){
                         // クリアエフェクト
                         hierarchy->LoadObject2D("ClearEffect/Effect_Clear.prefab");
 
-                    } else {
+                    } else{
                         // 終了エフェクト
                         hierarchy->LoadObject2D("ClearEffect/Effect_Finish.prefab");
                     }
@@ -225,7 +227,7 @@ void RythmGameManager::EndFrame(){
         if(!isPaused_){
             playEndTimer_.Update();
         }
-        
+
         // タイマーが終了したらシーン遷移
         if(playEndTimer_.IsFinished()){
             // Inputのカーソルを表示状態に戻す
@@ -250,8 +252,12 @@ void RythmGameManager::Update(){
         // Inputの更新
         PlayerInput::GetInstance()->Update();
 
-        // 譜面データの更新
-        notesData_->Update();
+
+        // 譜面データが空の場合は処理しない
+        if(!songInfo_.noteDatas[playDifficulty_].empty()){
+            // 譜面データの更新
+            notesData_->Update();
+        }
 
         // ノーツの判定
         Judgement::GetInstance()->Judge(notesData_.get());

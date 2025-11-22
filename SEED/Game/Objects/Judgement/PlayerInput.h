@@ -87,4 +87,7 @@ private:
     std::unordered_set<int32_t> holdLane_;
     std::unordered_set<int32_t> tapLane_;
     std::unordered_set<int32_t> releaseLane_;
+
+    // カーソル位置に表示するアイコンオブジェクト
+    GameObject2D* cursorIconObj_ = nullptr;
 };

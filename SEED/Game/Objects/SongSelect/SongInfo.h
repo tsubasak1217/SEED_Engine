@@ -23,6 +23,7 @@ struct SongInfo{
     std::string audioFilePath;
     std::optional<SongGenre> genre;
     float bpm;
+    bool isInitialized = false;
 
     // 難易度ごとの情報
     static const int diffcultySize = (int)TrackDifficulty::kMaxDifficulty;

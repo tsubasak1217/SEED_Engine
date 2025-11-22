@@ -207,6 +207,9 @@ void PlayerInput::Initialize(){
         cursorLine_[i].color = { 1.0f,1.0f,0.0f,1.0f };
     }
 
+    auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    cursorIconObj_ = hierarchy->LoadObject2D("PlayScene/cursorIcon.prefab");
+
     // パラメータの初期化
     flickDeadZone_ = 30.0f;// フリックのデッドゾーン
 
@@ -271,6 +274,9 @@ void PlayerInput::Update(){
     // マウスベクトル表示UIの更新
     mouseVectorCircle_->Update();
 
+    // カーソルアイコンの位置更新
+    cursorIconObj_->SetWorldTranslate(Vector2(cursorPos_,kWindowCenter.y));
+    cursorIconObj_->UpdateMatrix();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -279,8 +285,6 @@ void PlayerInput::Update(){
 void PlayerInput::Draw(){
     // カーソルの描画
     for(int i = 0; i < 2; i++){
-        //SEED::DrawTriangle(cursor_[i]);
-        //SEED::DrawTriangle2D(cursor2D_[i]);
         SEED::DrawQuad(cursorLine_[i]);
     }
 

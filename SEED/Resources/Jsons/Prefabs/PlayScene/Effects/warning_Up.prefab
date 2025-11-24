@@ -285,6 +285,12 @@
                     "isMultiply": false,
                     "time": 1.0,
                     "timeScale": 1.0
+                },
+                {
+                    "componentID": 109,
+                    "componentTag": "Lifetime_ID:109",
+                    "componentType": "Lifetime",
+                    "time": 1.0
                 }
             ],
             "isParentRotate": true,

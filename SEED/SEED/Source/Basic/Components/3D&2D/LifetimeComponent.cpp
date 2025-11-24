@@ -11,11 +11,6 @@ LifetimeComponent::LifetimeComponent(std::variant<GameObject*, GameObject2D*> pO
     if(tagName == ""){
         componentTag_ = "Lifetime_ID:" + std::to_string(componentID_);
     }
-
-#ifdef _DEBUG
-    // デバッグ時はstayAliveをデフォルトでtrueにしておく
-    stayAlive_ = true;
-#endif // _DEBUG
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +48,16 @@ void LifetimeComponent::Draw(){
 void LifetimeComponent::EndFrame(){
 
     // 生存状態の確認
-    if(/*!stayAlive_ && */timer_.IsFinished()){
+    if(timer_.IsFinished()){
+
+        // デバッグ時はstayAliveがtrueならオーナーを終了状態にしない
+        #ifdef _DEBUG
+        if(stayAlive_){
+            return;
+        }
+        #endif // DEBUG
+
+
         // オーナーを終了状態にする
         if(owner_.is2D){
             owner_.owner2D->SetIsAlive(false);

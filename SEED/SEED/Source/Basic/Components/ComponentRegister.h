@@ -52,7 +52,10 @@ inline bool ComponentRegister::RegisterGUI(T* owner){
             return true;
         }
         if(ImGui::Button("Lifetime / 寿命")){
-            owner->AddComponent<LifetimeComponent>();
+            LifetimeComponent* cmp = owner->AddComponent<LifetimeComponent>();
+            // エディターから追加した場合は消えない状態にしておく
+            cmp->SetStayAlive(true);
+
             return true;
         }
         if(ImGui::Button("Audio / 音声")){

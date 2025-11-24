@@ -34,8 +34,8 @@ public:
     static void Release();
 
 public:
-    const FontData* LoadFont(const std::string& filename,bool isTextureCreate = true);// 失敗したらnullptr
-    const FontData& GetFont(const std::string& filename);
+    const FontData* LoadFont(const std::filesystem::path& filename,bool isTextureCreate = true);// 失敗したらnullptr
+    const FontData& GetFont(const std::filesystem::path& filename);
     const GlyphData* GetGlyphData(const std::string& fontName, int32_t codePoint);// フォント名と文字コードからグリフデータを取得
     int TextCharFromUtf8(unsigned int* out_char, const char* in_text, const char* in_text_end); // UTF-8文字列から文字コードを取得
     std::vector<uint32_t> Utf8ToCodepoints(const std::string& utf8text); // UTF-8文字列から文字コードのリストを取得

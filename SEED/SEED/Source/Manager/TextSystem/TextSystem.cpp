@@ -286,14 +286,14 @@ uint32_t TextSystem::CreateFontTexture(const std::string& fontName, const uint8_
 ///////////////////////////////////////////////////////////////////
 // フォントを読み込む
 ///////////////////////////////////////////////////////////////////
-const FontData* TextSystem::LoadFont(const std::string& filename, bool isTextureCreate){
+const FontData* TextSystem::LoadFont(const std::filesystem::path& filename, bool isTextureCreate){
     // すでに読み込まれている場合はそのポインタを返す
     std::filesystem::path path;
 
-    if(filename.starts_with("Resources")){
+    if(filename.string().starts_with("Resources")){
         path = filename; // すでにディレクトリが付加されている場合
     } else{
-        path = directory_ + filename; // ディレクトリを付加
+        path = directory_ / filename; // ディレクトリを付加
     }
 
     // 読み込み状況を確認
@@ -388,13 +388,13 @@ const FontData* TextSystem::LoadFont(const std::string& filename, bool isTexture
 ///////////////////////////////////////////////////////////////////
 // フォントデータを取得する関数
 ///////////////////////////////////////////////////////////////////
-const FontData& TextSystem::GetFont(const std::string& filename){
+const FontData& TextSystem::GetFont(const std::filesystem::path& filename){
 
-    std::string fullPath;
-    if(filename.starts_with("Resources")){
+    std::filesystem::path fullPath;
+    if(filename.string().starts_with("Resources")){
         fullPath = filename; // すでにディレクトリが付加されている場合
     } else{
-        fullPath = directory_ + filename; // ディレクトリを付加
+        fullPath = directory_ / filename; // ディレクトリを付加
     }
 
     std::filesystem::path pathObj = fullPath;

@@ -32,7 +32,7 @@ void Note_Wheel::Draw(float currentTime, float appearLength){
     noteAuraRect.blendMode = BlendMode::ADD; // ブレンドモードを加算に設定
 
     // 描画用の矩形を計算
-    noteFloorRect = PlayField::GetInstance()->GetWheelFloorQuad(timeRatio, layer_, 0.005f);
+    noteFloorRect = PlayField::GetInstance()->GetWheelFloorQuad(timeRatio, layer_, 0.005f * (4.0f/appearLength));
     noteDirectionRect = PlayField::GetInstance()->GetWheelDirectionQuad(timeRatio, layer_);
     noteAuraRect = noteDirectionRect;
 

@@ -34,8 +34,9 @@ PlayField::~PlayField(){
 void PlayField::Initialize(){
     // ゲームカメラの取得
     BaseCamera* gameCamera_ = SEED::GetCamera("gameCamera");
+    gameCamera_->SetZFar(2000.0f);
 
-    farZ_ = 600.0f;// プレイフィールドの奥行き
+    farZ_ = 2000.0f;// プレイフィールドの奥行き
     nearZ_ = 50.0f;// プレイフィールドの手前
 
     // プレイフィールドの4点を求める

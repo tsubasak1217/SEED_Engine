@@ -203,7 +203,7 @@ void PlayerInput::Initialize(){
         //cursor2D_[i].color = { 1.0f,0.0f,1.0f,1.0f };
 
         cursorLine_[i] = Quad();
-        cursorLine_[i].GH = TextureManager::LoadTexture("PlayField/lineAura.png");
+        cursorLine_[i].GH = TextureManager::LoadTexture("PlayField/cursorLine.png");
         cursorLine_[i].color = { 1.0f,1.0f,0.0f,1.0f };
     }
 
@@ -236,8 +236,8 @@ void PlayerInput::Update(){
 
     // カーソル矩形の位置を更新
     cursor_[0].localVertex[0] = corsorWorldPos + MyMath::Normalize(farPos[0] - corsorWorldPos) * dist * zRate;
-    cursor_[0].localVertex[1] = corsorWorldPos + Vector3(keyWidth * keyWidthRate,0.0f,0.0f);
-    cursor_[0].localVertex[2] = corsorWorldPos - Vector3(keyWidth * keyWidthRate,0.0f,0.0f);
+    cursor_[0].localVertex[1] = corsorWorldPos + Vector3(keyWidth * keyWidthRate, 0.0f, 0.0f);
+    cursor_[0].localVertex[2] = corsorWorldPos - Vector3(keyWidth * keyWidthRate, 0.0f, 0.0f);
     cursor_[1].localVertex[0] = corsorWorldPos + MyMath::Normalize(farPos[1] - corsorWorldPos) * dist * zRate;
     cursor_[1].localVertex[1] = corsorWorldPos - Vector3(keyWidth * keyWidthRate, 0.0f, 0.0f);
     cursor_[1].localVertex[2] = corsorWorldPos + Vector3(keyWidth * keyWidthRate, 0.0f, 0.0f);
@@ -248,7 +248,7 @@ void PlayerInput::Update(){
         cursor_[1].localVertex[i].z -= 0.1f;
     }
 
-    float lineWidthRate = 0.5f;
+    float lineWidthRate = 0.1125f;
     cursorLine_[0].localVertex[0] = farPos[0];
     cursorLine_[0].localVertex[1] = farPos[0];
     cursorLine_[0].localVertex[2] = corsorWorldPos - Vector3(keyWidth * lineWidthRate, 0.0f, 0.0f);
@@ -275,7 +275,7 @@ void PlayerInput::Update(){
     mouseVectorCircle_->Update();
 
     // カーソルアイコンの位置更新
-    cursorIconObj_->SetWorldTranslate(Vector2(cursorPos_,kWindowCenter.y));
+    cursorIconObj_->SetWorldTranslate(Vector2(cursorPos_, kWindowCenter.y));
     cursorIconObj_->UpdateMatrix();
 }
 
@@ -513,11 +513,12 @@ void PlayerInput::SetNotesData(const NotesData* pNotesData){
 void PlayerInput::DecideLaneInput(){
 
     // マウス右ボタン押していればループ、押していなければクランプ
+    float margin = PlayField::kKeyWidth_ * 0.25f;
     if(Input::IsPressMouse(MOUSE_BUTTON::RIGHT)){
         isLooped_ = cursorPos_ < edgePos_[(int)LR::LEFT] || cursorPos_ > edgePos_[(int)LR::RIGHT];
-        cursorPos_ = MyFunc::Spiral(cursorPos_, edgePos_[(int)LR::LEFT], edgePos_[(int)LR::RIGHT]);
+        cursorPos_ = MyFunc::Spiral(cursorPos_, edgePos_[(int)LR::LEFT] + margin, edgePos_[(int)LR::RIGHT] - margin);
     } else{
-        cursorPos_ = std::clamp(cursorPos_, edgePos_[(int)LR::LEFT], edgePos_[(int)LR::RIGHT]);
+        cursorPos_ = std::clamp(cursorPos_, edgePos_[(int)LR::LEFT] + margin, edgePos_[(int)LR::RIGHT] - margin);
     }
 
     // ホールドしているレーンを取得

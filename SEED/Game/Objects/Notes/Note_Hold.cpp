@@ -34,8 +34,8 @@ void Note_Hold::Draw(float currentTime, float appearLength){
     float timeRatio[2] = { (time_ - currentTime) / appearLength,((time_ + kHoldTime_) - currentTime) / appearLength };
 
     // 描画用の矩形を計算
-    noteRect[0] = PlayField::GetInstance()->GetNoteQuad(timeRatio[0], lane_, layer_, 0.01f);
-    noteRect[1] = PlayField::GetInstance()->GetNoteQuad(timeRatio[1], lane_, layer_, 0.01f);
+    noteRect[0] = PlayField::GetInstance()->GetNoteQuad(timeRatio[0], lane_, layer_, 0.01f * (4.0f/appearLength));
+    noteRect[1] = PlayField::GetInstance()->GetNoteQuad(timeRatio[1], lane_, layer_, 0.01f * (4.0f/appearLength));
 
     // 始点から終点までの間の部分の頂点
     noteRect[2].localVertex[0] = noteRect[1].localVertex[2];

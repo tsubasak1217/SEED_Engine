@@ -24,6 +24,7 @@ public:
     // ノーツの出現時間
     float GetLaneNoteAppearTime() const{ return kNoteAppearTime * (1.0f/ std::clamp(laneNoteSpeedRate_,0.01f,FLT_MAX)); }
     float GetKNoteAppearTime() const{ return kNoteAppearTime; }
+    float GetFrameNoteAppearTime() const{ return kFrameNoteAppearTime * (1.0f / std::clamp(laneNoteSpeedRate_, 0.01f, FLT_MAX)); }
     // 判定のオフセット
     float GetOffsetJudge() const{ return offset_judge_; }
     void SetOffsetJudge(float offset){ offset_judge_ = offset; }
@@ -49,7 +50,8 @@ public:
 
 private:
     // ノーツスピード
-    float kNoteAppearTime = 4.0f;// レーン上にノーツが出現している時間(奥から手前に達するまでの時間)
+    float kNoteAppearTime = 8.0f;// レーン上にノーツが出現している時間(奥から手前に達するまでの時間)
+    float kFrameNoteAppearTime = 4.0f;// フレーム換算のノーツ出現時間
     float laneNoteSpeedRate_ = 1.0f;// レーン上のノーツのスピード割合
 
     //判定のオフセット

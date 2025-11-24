@@ -145,7 +145,7 @@ void NotesData::Draw(){
     for(auto& note : std::ranges::reverse_view(onFieldNotes_)){
         if(auto notePtr = note.lock()){
             if(notePtr->noteType_ == NoteType::RectFlick){
-                notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetKNoteAppearTime());
+                notePtr->Draw(songTimer_.currentTime, PlaySettings::GetInstance()->GetFrameNoteAppearTime());
             }
         }
     }

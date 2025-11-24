@@ -29,11 +29,11 @@ void TextSystem::Initialize(){
 ///////////////////////////////////////////////////////////////////
 void TextSystem::StartupLoad(){
 
-    std::vector<std::string> fontFiles = MyFunc::GetFileList("Resources/Fonts/", { ".ttf",".otf" });
+    auto fontFiles = MyFunc::GetFileList("Resources/Fonts/", { ".ttf",".otf" });
 
     // 存在するフォントをアトラスデータだけ先に読み込む
     for(const auto& fontFile : fontFiles){
-        LoadFont(fontFile, false);
+        LoadFont(fontFile.generic_string(), false);
     }
 
     fontFiles;
@@ -288,18 +288,16 @@ uint32_t TextSystem::CreateFontTexture(const std::string& fontName, const uint8_
 ///////////////////////////////////////////////////////////////////
 const FontData* TextSystem::LoadFont(const std::string& filename, bool isTextureCreate){
     // すでに読み込まれている場合はそのポインタを返す
-    std::string fullPath;
-    std::filesystem::path pathObj;
+    std::filesystem::path path;
 
     if(filename.starts_with("Resources")){
-        fullPath = filename; // すでにディレクトリが付加されている場合
+        path = filename; // すでにディレクトリが付加されている場合
     } else{
-        fullPath = directory_ + filename; // ディレクトリを付加
+        path = directory_ + filename; // ディレクトリを付加
     }
 
     // 読み込み状況を確認
-    pathObj = fullPath;
-    auto it = fontDataMap_.find(pathObj.filename().string());
+    auto it = fontDataMap_.find(path.filename().string());
     bool atlasCreated = false;
     if(it != fontDataMap_.end()){
         atlasCreated = true;
@@ -311,7 +309,7 @@ const FontData* TextSystem::LoadFont(const std::string& filename, bool isTexture
 
     if(!atlasCreated){
         // フォントファイル読み込み（バイナリとして）
-        std::vector<unsigned char> fontBuffer = ParseTTF(fullPath.c_str());
+        std::vector<unsigned char> fontBuffer = ParseTTF(path.generic_string().c_str());
         if(fontBuffer.empty()){
             return nullptr; // 読み込み失敗
         }
@@ -336,7 +334,7 @@ const FontData* TextSystem::LoadFont(const std::string& filename, bool isTexture
             fontData->atlases.emplace_back();
             FontAtlas* atlas = &fontData->atlases.back();
 
-            std::string atlasName = fullPath + "_atlas" + std::to_string(pages++);
+            std::string atlasName = path.generic_string() + "_atlas" + std::to_string(pages++);
             CreateFontAtlas(*atlas, atlasName, fontData.get(), font, codePoints);
 
             // offsetを更新
@@ -355,7 +353,7 @@ const FontData* TextSystem::LoadFont(const std::string& filename, bool isTexture
         }
 
         // フォントデータをマップに追加
-        auto [insertedIt, success] = fontDataMap_.emplace(pathObj.filename().string(), std::move(fontData));
+        auto [insertedIt, success] = fontDataMap_.emplace(path.filename().generic_string(), std::move(fontData));
 
         // glyphをマップに追加(moveした後じゃないと無効になります)
         for(auto& atlas : insertedIt->second->atlases){

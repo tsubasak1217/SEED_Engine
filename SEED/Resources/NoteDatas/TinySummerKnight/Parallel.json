@@ -2,7 +2,7 @@
     "artist": "キリギリス楽団",
     "audioPath": "../../Resources/NoteDatas\\TinySummerKnight\\TinySummerKnight.wav",
     "bpm": 160.0,
-    "difficulty": 8,
+    "difficulty": 9,
     "difficultyName": "Parallel",
     "genre": 1,
     "jsonFilePath": "Resources/NoteDatas/TinySummerKnight/Parallel.json",
@@ -37,6 +37,7 @@
         },
         {
             "duration": 1.1399999856948853,
+            "isEmitWarningObj": true,
             "isExtraNote": false,
             "lane": 2,
             "laneBit": 4,

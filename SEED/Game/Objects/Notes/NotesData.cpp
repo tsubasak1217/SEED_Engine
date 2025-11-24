@@ -78,6 +78,11 @@ void NotesData::Update(){
         // 譜面の時間を進める
         songTimer_.Update();
 
+        // 譜面が終了したらプレイ終了
+        if(songTimer_.IsFinished()){
+            isEnd_ = true;
+        }
+
         // 音源の再生
         PlayAudio();
 
@@ -92,10 +97,6 @@ void NotesData::Update(){
         }
     }
 
-    // 譜面が終了したらプレイ終了
-    if(songTimer_.IsFinished()){
-        isEnd_ = true;
-    }
 
     // 出現させるノーツの確認
     AppearNotes();
@@ -335,13 +336,16 @@ void NotesData::PlayAudio(){
         } else{
             if(!isEnd_){
                 // 音ズレの許容時間と比較してズレていたら補正
-                static float toleranceTime = 1.0f / 30.0f;
-                float dif = std::fabsf((songTimer_.currentTime - startOffsetTime_) - AudioManager::GetAudioPlayTime(songAudioHandle_));
+                static float toleranceTime = 1.0f / 60.0f;
+                float audioTime = AudioManager::GetAudioPlayTime(songAudioHandle_);
 
-                // ずれを確認して補正
-                if(dif > toleranceTime){
-                    debugTimer_.Reset();
-                    AudioManager::SetAudioPlayTime(songAudioHandle_, songTimer_.currentTime - startOffsetTime_);
+                // タイマーを音源に合わせる
+                float dif = (songTimer_.currentTime - startOffsetTime_) - audioTime;
+                if(std::fabsf(dif) > toleranceTime){
+                    if(audioTime > 0.5f){
+                        debugTimer_.Reset();
+                        songTimer_.currentTime -= dif;
+                    }
                 }
             }
         }

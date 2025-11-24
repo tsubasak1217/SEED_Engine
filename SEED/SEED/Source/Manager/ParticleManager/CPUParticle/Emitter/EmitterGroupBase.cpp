@@ -130,8 +130,8 @@ void EmitterGroupBase::Edit(){
 void EmitterGroupBase::OutputGUI(){
 #ifdef _DEBUG
 
-    std::string outputDir = "";
-
+    std::filesystem::path outputDir = "";
+    
     // 型に応じて保存先を変更
     if(EmitterGroup3D* group3D = dynamic_cast<EmitterGroup3D*>(this)){
         outputDir = MyFunc::OpenSaveFileDialog("Resources/Jsons/Particle/3D", ".emtg3", outputFileName_);

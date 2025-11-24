@@ -46,11 +46,6 @@ void VideoPlayer::LoadVideo(const std::string& filename, bool isUseAudio){
         ViewManager::UnloadView(HEAP_TYPE::SRV_CBV_UAV, videoItem_->frameTextureRGBA_.GetUAVIndex());
     }
 
-    // Media Foundationの初期化
-    HRESULT hr;
-    hr = MFStartup(MF_VERSION);
-    assert(SUCCEEDED(hr));
-
     // ソースリーダーの作成
     CreateReader(pDevice, videoData_.filePath);
 
@@ -267,9 +262,16 @@ void VideoPlayer::CreateReader(ID3D12Device* pDevice, const std::string& filePat
     attr->SetUINT32(MF_SOURCE_READER_DISABLE_DXVA, TRUE);  // ← GPUデコード無効化
 
     // SourceReader の作成はこれ一度だけ
-    std::filesystem::path fullPath = MyFunc::ToFullPath(filePath);
+    std::filesystem::path path;
+
+    if(filePath.starts_with("Resources")){
+        path = filePath;
+    } else{
+        path = "Resources/Videos/" + filePath;
+    }
+
     hr = MFCreateSourceReaderFromURL(
-        fullPath.c_str(),
+        path.c_str(),
         attr.Get(),
         &videoItem_->reader_
     );

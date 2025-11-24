@@ -359,7 +359,7 @@ PostEffectHandle PostEffectSystem::Load(const std::string& fileName){
     if(fileName.starts_with("Resources")){
         filePath = fileName;
     } else{
-        filePath = MyFunc::ToFullPath(rootPath / fileName);
+        filePath = rootPath / fileName;
     }
 
     // 読み込む

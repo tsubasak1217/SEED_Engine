@@ -145,15 +145,14 @@ DirectX::ScratchImage LoadTextureImage(const std::string& filePath){
     DirectX::ScratchImage image{};
     DirectX::ScratchImage mipImages{};
 
-    std::filesystem::path fullPath = MyFunc::ToFullPath(filePath);
-    std::wstring filePathW = fullPath.wstring();// wstring型に変換
+    std::filesystem::path path = filePath;
     // ファイルを読み込む
     HRESULT hr = S_FALSE;
     
-    if(!filePathW.ends_with(L".dds")){
+    if(!path.string().ends_with(".dds")){
         // 通常ファイルを読み込む  
         DirectX::LoadFromWICFile(
-            filePathW.c_str(),
+            path.generic_wstring().c_str(),
             DirectX::WIC_FLAGS_DEFAULT_SRGB,
             nullptr,
             image
@@ -161,7 +160,7 @@ DirectX::ScratchImage LoadTextureImage(const std::string& filePath){
     } else{
         // DDSファイルを読み込む
         hr = DirectX::LoadFromDDSFile(
-            filePathW.c_str(),
+            path.generic_wstring().c_str(),
             DirectX::DDS_FLAGS_NONE,
             nullptr,
             image

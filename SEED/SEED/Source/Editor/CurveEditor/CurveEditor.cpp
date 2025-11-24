@@ -416,11 +416,11 @@ void CurveEditor::ContextMenuSelect(){
     // 出力
     if(ImGui::MenuItem("ファイル出力")){
         operation_ = Operation::None;
-        outputFilename_ = MyFunc::OpenSaveFileDialog("Resources/Jsons/Curves", ".curve", outputFilename_);
+        outputFilename_ = MyFunc::OpenSaveFileDialog("Resources/Jsons/Curves", ".curve", outputFilename_.string());
         if(!outputFilename_.empty()){
             MyFunc::CreateJsonFile(outputFilename_, ToJson());
             // outputFilename_をファイル名のみに戻す
-            outputFilename_ = std::filesystem::path(outputFilename_).filename().stem().string();
+            outputFilename_ = outputFilename_.filename().stem().string();
         }
         ImGui::CloseCurrentPopup();
     }

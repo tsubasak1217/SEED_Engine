@@ -79,7 +79,7 @@ public:
     //===================================================================================
     // ヘルパー関数
     //===================================================================================
-    static void OpenExplorerMenu(const std::string& itemPath,const std::string& menuName);
+    static void OpenExplorerMenu(const std::filesystem::path& itemPath,const std::string& menuName);
 private:
     void ExprolerMenu();
 
@@ -93,7 +93,7 @@ private:
     std::list<GuizmoInfo> guizmoInfo3D_; // ImGuizmoで操作するTransformのリスト
     std::list<GuizmoInfo> guizmoInfo2D_; // ImGuizmoで操作するTransformのリスト
     bool isInputNow_ = false;
-    std::string explorerItemPath_;
+    std::filesystem::path explorerItemPath_;
     bool explolerMenuOpenOrder_ = false; // エクスプローラーメニューを開く指示
     std::string menuName_;
 };

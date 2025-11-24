@@ -3,6 +3,9 @@
         "Parallel": 2
     },
     "score": {
-        "Parallel": null
+        "Basic": 90.30612182617188,
+        "Expert": 98.33333587646484,
+        "Master": 99.46581268310547,
+        "Parallel": 99.94131469726563
     }
 }

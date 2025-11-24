@@ -11,6 +11,10 @@ const std::string AudioManager::directoryPath_ = "resources/audios/";
 
 // デストラクタ
 AudioManager::~AudioManager(){
+
+    // 音声関連の解放
+    MFShutdown();
+
     if(instance_){
         delete instance_;
         instance_ = nullptr;
@@ -102,13 +106,19 @@ void AudioManager::BeginFrame(){
     std::erase_if(instance_->sourceVoices_,
         [&](auto& kv){
 
+        // 非ループ音源のみ判定
+        AudioHandle handle = kv.first;
+        if(!instance_->loopFlagMap_[handle]){
+            return false;
+        }
+
         // 音声の状態を取得
         XAUDIO2_VOICE_STATE state{};
         kv.second->GetState(&state);
 
-        // 終了していたら削除リストに追加
+        // 終了判定
         if(state.BuffersQueued == 0){
-            erasedHandle.push_back(kv.first);
+            erasedHandle.push_back(handle);
             return true;
         }
 
@@ -502,25 +512,25 @@ void AudioManager::LoadAudio(const std::string& filename){
     // 要素がなければ
     if(instance_->audios_.find(filename) == instance_->audios_.end()){
         // 音をロードして追加
-        std::filesystem::path fullPath;
+        std::filesystem::path path;
         if(filename.starts_with("Resources")){
-            fullPath = MyFunc::ToFullPath(filename);
+            path = filename;
         } else{
-            fullPath = MyFunc::ToFullPath(directoryPath_ + filename);
+            path = directoryPath_ + filename;
         }
 
         // 拡張子を取得
-        std::string extention = fullPath.extension().string();
+        std::string extention = path.extension().string();
 
         // 拡張子に応じて処理
         if(extention == ".wav"){
-            instance_->audios_[filename] = instance_->LoadWave(fullPath.generic_string().c_str());
+            instance_->audios_[filename] = instance_->LoadWave(path.generic_string().c_str());
 
         } else if(extention == ".mp3" or extention == ".m4a"){
-            instance_->audios_[filename] = instance_->LoadMP3(fullPath.generic_wstring().c_str());
+            instance_->audios_[filename] = instance_->LoadMP3(path.generic_wstring().c_str());
 
         } else if(extention == ".mp4"){
-            instance_->audios_[filename] = instance_->LoadMP4(fullPath.generic_wstring().c_str());
+            instance_->audios_[filename] = instance_->LoadMP4(path.generic_wstring().c_str());
 
         } else{
             assert(false);
@@ -606,18 +616,12 @@ SoundData AudioManager::LoadWave(const char* filename){
 // MP3ファイルの読み込み
 SoundData AudioManager::LoadMP3(const wchar_t* filename){
 
-    HRESULT hr = InitializeMediaFoundation();
-    if(FAILED(hr)){
-        throw std::runtime_error("Media Foundation initialization failed.");
-    }
-
     IMFSourceReader* pReader = nullptr;
     IMFMediaType* pOutputType = nullptr;
 
     // MP3ファイルのSource Readerを作成
-    hr = MFCreateSourceReaderFromURL(filename, nullptr, &pReader);
+    HRESULT hr = MFCreateSourceReaderFromURL(filename, nullptr, &pReader);
     if(FAILED(hr)){
-        MFShutdown();
         throw std::runtime_error("Failed to create Source Reader.");
     }
 
@@ -625,7 +629,6 @@ SoundData AudioManager::LoadMP3(const wchar_t* filename){
     hr = MFCreateMediaType(&pOutputType);
     if(FAILED(hr)){
         pReader->Release();
-        MFShutdown();
         throw std::runtime_error("Failed to create output media type.");
     }
 
@@ -636,7 +639,6 @@ SoundData AudioManager::LoadMP3(const wchar_t* filename){
     if(FAILED(hr)){
         pOutputType->Release();
         pReader->Release();
-        MFShutdown();
         throw std::runtime_error("Failed to set media type.");
     }
 
@@ -690,31 +692,24 @@ SoundData AudioManager::LoadMP3(const wchar_t* filename){
     // 後始末
     pOutputType->Release();
     pReader->Release();
-    MFShutdown();
 
     return soundData;
 }
 
 // mp4ファイルから音声を取り出して読み込む関数
 SoundData AudioManager::LoadMP4(const wchar_t* filename){
-    // MP4ファイルの読み込みはMedia Foundationを利用する
-    HRESULT hr = InitializeMediaFoundation();
-    if(FAILED(hr)){
-        throw std::runtime_error("Media Foundation initialization failed.");
-    }
+
     IMFSourceReader* pReader = nullptr;
     IMFMediaType* pOutputType = nullptr;
     // MP4ファイルのSource Readerを作成
-    hr = MFCreateSourceReaderFromURL(filename, nullptr, &pReader);
+    HRESULT hr = MFCreateSourceReaderFromURL(filename, nullptr, &pReader);
     if(FAILED(hr)){
-        MFShutdown();
         throw std::runtime_error("Failed to create Source Reader.");
     }
     // 出力タイプをPCM (WAV) に設定
     hr = MFCreateMediaType(&pOutputType);
     if(FAILED(hr)){
         pReader->Release();
-        MFShutdown();
         throw std::runtime_error("Failed to create output media type.");
     }
     hr = pOutputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
@@ -723,7 +718,6 @@ SoundData AudioManager::LoadMP4(const wchar_t* filename){
     if(FAILED(hr)){
         pOutputType->Release();
         pReader->Release();
-        MFShutdown();
         throw std::runtime_error("Failed to set media type.");
     }
     pOutputType->Release();
@@ -749,11 +743,13 @@ SoundData AudioManager::LoadMP4(const wchar_t* filename){
         pMFMediaBuffer->Release();
         pMFSample->Release();
     }
+
     // SoundDataにデータを格納
     SoundData soundData;
     soundData.pBuffer = new BYTE[audioData.size()];
     std::copy(audioData.begin(), audioData.end(), soundData.pBuffer);
     soundData.bufferSize = static_cast<uint32_t>(audioData.size());
+
     // フォーマット情報を取得
     hr = pOutputType->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, (UINT32*)&soundData.wfex.nChannels);
     hr = pOutputType->GetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, (UINT32*)&soundData.wfex.nSamplesPerSec);
@@ -761,10 +757,11 @@ SoundData AudioManager::LoadMP4(const wchar_t* filename){
     soundData.wfex.wFormatTag = WAVE_FORMAT_PCM;
     soundData.wfex.nBlockAlign = soundData.wfex.nChannels * soundData.wfex.wBitsPerSample / 8;
     soundData.wfex.nAvgBytesPerSec = soundData.wfex.nSamplesPerSec * soundData.wfex.nBlockAlign;
+
     // 後始末
     pOutputType->Release();
     pReader->Release();
-    MFShutdown();
+
     return soundData;
 }
 

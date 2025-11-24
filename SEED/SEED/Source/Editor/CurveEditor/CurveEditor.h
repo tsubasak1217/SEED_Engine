@@ -60,7 +60,7 @@ private:
     float editorScale_ = 0.9f;
     std::string tag_;
     //出力用
-    std::string outputFilename_;
+    filesystem::path outputFilename_;
     // チャンネルを貫通して編集するか
     bool editAllChannel_ = false;
 };

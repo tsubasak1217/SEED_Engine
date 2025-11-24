@@ -114,7 +114,7 @@ void PostProcessGroup::Edit(){
     {
         if(ImGui::Button("ポストプロセスグループの保存" + hash)){
             // 保存ボタンが押されたら保存ダイアログを開く
-            std::string fillename = MyFunc::OpenSaveFileDialog("Resources/Jsons/PostProcess/", ".json");
+            auto fillename = MyFunc::OpenSaveFileDialog("Resources/Jsons/PostProcess/", ".json");
 
             // ダイアログ上で保存ボタンが押されたら保存処理を行う
             if(!fillename.empty()){

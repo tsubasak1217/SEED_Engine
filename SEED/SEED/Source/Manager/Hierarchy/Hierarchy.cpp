@@ -656,8 +656,8 @@ void Hierarchy::InOutOnGUI(){
 #ifdef _DEBUG
     // Jsonファイルへの出力
     {
-        static std::string outputFileDirectory = "Resources/jsons/Scenes/";
-        static std::string filename = "";
+        static std::filesystem::path outputFileDirectory = "Resources/jsons/Scenes/";
+        static std::filesystem::path filename = "";
 
         if(ImGui::Button("シーンをJsonファイルへ出力")){
             // 最前面表示
@@ -713,8 +713,8 @@ void Hierarchy::InOutOnGUI(){
 
 void Hierarchy::OutputPrefab(GameObject* gameObject){
     // Jsonファイルへの出力
-    static std::string outputFileDirectory = "Resources/jsons/Prefabs/";
-    static std::string filename = "";
+    static std::filesystem::path outputFileDirectory = "Resources/jsons/Prefabs/";
+    static std::filesystem::path filename = "";
     static bool isSaveOnWorldOrigin = true;// 
 
     if(ImGui::Button("オブジェクトをJsonファイルへ出力")){
@@ -759,7 +759,7 @@ void Hierarchy::OutputPrefab(GameObject* gameObject){
 void Hierarchy::OutputPrefab(GameObject2D* gameObject){
     // Jsonファイルへの出力
     static std::string outputFileDirectory = "Resources/jsons/Prefabs/";
-    static std::string filename = "";
+    static std::filesystem::path filename = "";
     static bool isSaveOnWorldOrigin = true;// 
 
     if(ImGui::Button("オブジェクトをJsonファイルへ出力")){

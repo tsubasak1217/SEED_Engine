@@ -471,40 +471,52 @@ bool MyFunc::CompareStr(const std::string& str1, const std::string& str2){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // entry階層以下のフォルダリストを取得する関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<std::string> MyFunc::GetFolderList(const std::string& entryPath, bool isRelative){
+std::vector<std::filesystem::path> MyFunc::GetFolderList(const std::filesystem::path& entryPath, bool isRelative, bool isRecursive){
 
-    std::filesystem::path path = entryPath;
-    std::vector<std::string> folderList;
+    std::vector<std::filesystem::path> folderList;
 
-    for(const auto& cur : fs::recursive_directory_iterator(path)){
-        // ディレクトリのみを探す
-        if(cur.is_directory()){
-            if(isRelative){
-                folderList.push_back(fs::relative(cur.path(), path).generic_string()); // 相対パスを格納
-            } else{
-                folderList.push_back(cur.path().generic_string()); // 絶対パスを格納
+    if(isRecursive){
+        for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
+            // ディレクトリのみを探す
+            if(cur.is_directory()){
+                if(isRelative){
+                    folderList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
+                } else{
+                    folderList.push_back(cur.path().generic_string()); // 絶対パスを格納
+                }
+            }
+        }
+    } else{
+        for(const auto& cur : fs::directory_iterator(entryPath)){
+            // ディレクトリのみを探す
+            if(cur.is_directory()){
+                if(isRelative){
+                    folderList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
+                } else{
+                    folderList.push_back(cur.path().generic_string()); // 絶対パスを格納
+                }
             }
         }
     }
+
     return folderList;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // entry階層以下の拡張子の合致するファイルリストを取得する関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<std::string> MyFunc::GetFileList(
-    const std::string& entryPath, std::initializer_list<std::string>extensions, bool isRelative
+std::vector<std::filesystem::path> MyFunc::GetFileList(
+    const std::filesystem::path& entryPath, std::initializer_list<std::string>extensions, bool isRelative
 ){
-    std::filesystem::path path = entryPath;
-    std::vector<std::string> fileList;
+    std::vector<std::filesystem::path> fileList;
 
-    for(const auto& cur : fs::recursive_directory_iterator(path)){
+    for(const auto& cur : fs::recursive_directory_iterator(entryPath)){
         // 拡張子が合致するファイルを探す
         for(const auto& ext : extensions){
             if(cur.is_regular_file() && cur.path().extension() == ext){
                 // ファイル名を格納
                 if(isRelative){
-                    fileList.push_back(fs::relative(cur.path(), path).generic_string()); // 相対パスを格納
+                    fileList.push_back(fs::relative(cur.path(), entryPath).generic_string()); // 相対パスを格納
                 } else{
                     fileList.push_back(cur.path().generic_string()); // 絶対パスを格納
                 }
@@ -515,69 +527,17 @@ std::vector<std::string> MyFunc::GetFileList(
     return fileList;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-// entry階層以下のディレクトリオブジェクトを取得する関数
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<std::string> MyFunc::GetDirectoryNameList(const std::string& entryPath, bool isRelative, bool isRecursive){
 
-    std::filesystem::path path = entryPath;
-    std::vector<std::string> dirList;
-    if(isRecursive){
-        for(const auto& cur : fs::recursive_directory_iterator(path)){
-            // ディレクトリのみを探す
-            if(cur.is_directory()){
-                if(isRelative){
-                    dirList.push_back(fs::relative(cur.path(), path).generic_string()); // 相対パスを格納
-                } else{
-                    dirList.push_back(cur.path().generic_string()); // 絶対パスを格納
-                }
-            }
-        }
-    } else{
-        for(const auto& cur : fs::directory_iterator(path)){
-            // ディレクトリのみを探す
-            if(cur.is_directory()){
-                if(isRelative){
-                    dirList.push_back(fs::relative(cur.path(), path).generic_string()); // 相対パスを格納
-                } else{
-                    dirList.push_back(cur.path().generic_string()); // 絶対パスを格納
-                }
-            }
-        }
-    }
-    return dirList;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-// entry階層以下のディレクトリエントリを取得する関数
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-std::vector<std::filesystem::directory_entry> MyFunc::GetDirectoryEntryList(const std::string& entryPath, bool isRecursive){
-
-    std::filesystem::path path = entryPath;
-    std::vector<std::filesystem::directory_entry> entryList;
-    if(isRecursive){
-        for(const auto& cur : fs::recursive_directory_iterator(path)){
-            // ディレクトリエントリを格納
-            entryList.push_back(cur);
-        }
-    } else{
-        for(const auto& cur : fs::directory_iterator(path)){
-            // ディレクトリエントリを格納
-            entryList.push_back(cur);
-        }
-    }
-    return entryList;
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // entry階層以下に指定したファイル名が存在するかを確認し、あればそのパスを返す関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-std::string MyFunc::FindFile(const std::string& entryPath, const std::string& filePath, bool isRelative){
+std::filesystem::path MyFunc::FindFile(const std::filesystem::path& entryPath, const std::string& filename, bool isRelative){
 
     std::filesystem::path path = entryPath;
     for(const auto& cur : fs::recursive_directory_iterator(path)){
         // 名前の合致するファイルを探す
-        if(cur.is_regular_file() && cur.path().filename() == filePath){
+        if(cur.is_regular_file() && cur.path().filename() == filename){
             // 存在する場合はパスを返す
             if(isRelative){
                 return fs::relative(cur.path(), path).generic_string(); // 相対パスを返す
@@ -608,53 +568,11 @@ std::filesystem::path MyFunc::GetProjectDirectory(){
     return exeDir;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ファイル名のみ抜き出す関数
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-std::string MyFunc::ExtractFileName(const std::string& filePath, bool isContainExt){
-    // ファイルパスからファイル名を取得
-    std::filesystem::path path(filePath);
-    std::string fileName = path.filename().generic_string(); // ファイル名を取得
-    if(isContainExt){
-        return fileName; // 拡張子を含む場合はそのまま返す
-    } else{
-        // 拡張子を除去して返す
-        return path.stem().generic_string(); // 拡張子を除去したファイル名を返す
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ProjectDirからの相対パスをユーザーのフルパスに変換する関数
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-std::string MyFunc::ToFullPath(const std::string& relativePath){
-    // すでにフルパスの場合はそのまま返す
-    std::filesystem::path checkPath(relativePath);
-    if(checkPath.is_absolute()){
-        return checkPath.generic_string();
-    }
-
-    // フルパスを正規化して返す
-    std::string fullPath = GetProjectDirectory().generic_string() + "/" + relativePath;
-    return std::filesystem::canonical(fullPath).generic_string();
-}
-
-std::wstring MyFunc::ToFullPath(const std::wstring& relativePath){
-    // すでにフルパスの場合はそのまま返す
-    std::filesystem::path checkPath(relativePath);
-    if(checkPath.is_absolute()){
-        return checkPath.generic_wstring();
-    }
-
-    // フルパスを正規化して返す
-    std::wstring fullPath = GetProjectDirectory().generic_wstring() + L"/" + relativePath;
-    return std::filesystem::canonical(fullPath).generic_wstring();
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Jsonファイル関連
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-nlohmann::json MyFunc::GetJson(const std::string& filePath, bool createFile){
+nlohmann::json MyFunc::GetJson(const std::filesystem::path& filePath, bool createFile){
 
     // ファイルを開く
     std::ifstream file(filePath);
@@ -687,10 +605,10 @@ nlohmann::json MyFunc::GetJson(const std::string& filePath, bool createFile){
 }
 
 // Jsonファイルを作成する関数
-void MyFunc::CreateJsonFile(const std::string& filePath, const nlohmann::json& jsonData){
+void MyFunc::CreateJsonFile(const std::filesystem::path& filePath, const nlohmann::json& jsonData){
 
     // 親ディレクトリを作成（なければ）
-    fs::path path(filePath);
+    std::filesystem::path path(filePath);
     if(path.has_parent_path()){
         fs::create_directories(path.parent_path());
     }
@@ -710,60 +628,49 @@ void MyFunc::CreateJsonFile(const std::string& filePath, const nlohmann::json& j
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ファイル名の変更
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool MyFunc::RenameFile(const std::string& oldFilePath, const std::string& newFilePath){
-
-    // wstringに変換
-    std::string fixedOldPath = oldFilePath.c_str();
-    std::string fixedNewPath = newFilePath.c_str();
-    std::replace(fixedOldPath.begin(), fixedOldPath.end(), '/', '\\');
-    std::replace(fixedNewPath.begin(), fixedNewPath.end(), '/', '\\');
-    std::wstring wOldPath = ConvertString(fixedOldPath);
-    std::wstring wNewPath = ConvertString(fixedNewPath);
+bool MyFunc::RenameFile(const std::filesystem::path& oldFilePath, const std::filesystem::path& newFilePath){
 
     // 同じなら何もしない
-    if(wOldPath == wNewPath){
+    if(oldFilePath.generic_wstring() == newFilePath.generic_wstring()){
         return true;
     }
 
-    // パスにする
-    fs::path src(wOldPath);
-    fs::path dst(wNewPath);
-
     // ディレクトリと拡張子・基本名を分解
-    fs::path dir = dst.parent_path();
-    std::wstring stem = dst.stem().wstring();     // 拡張子を除いたファイル名
-    std::wstring ext = dst.extension().wstring(); // ".txt" など
+    std::filesystem::path dir = newFilePath.parent_path();
+    std::wstring stem = newFilePath.stem().wstring();     // 拡張子を除いたファイル名
+    std::wstring ext = newFilePath.extension().wstring(); // ".txt" など
 
-    fs::path finalPath = dst;
+    std::filesystem::path finalPath = newFilePath;
     int counter = 1;
 
     // 既に存在する場合は "(n)" を付けて回避
     while(fs::exists(finalPath)){
-        finalPath = dir / fs::path(stem + L"(" + std::to_wstring(counter++) + L")" + ext);
+        finalPath = dir / std::filesystem::path(stem + L"(" + std::to_wstring(counter++) + L")" + ext);
     }
 
-    fs::rename(src, finalPath);
+    fs::rename(oldFilePath, finalPath);
     return true;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // エクスプローラーで開く
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-void MyFunc::OpenInExplorer(const std::string& path){
+void MyFunc::OpenInExplorer(const std::filesystem::path& path){
+
     // '/'を'\\'に変換
-    std::string fixedPath = path.c_str();
-    std::replace(fixedPath.begin(), fixedPath.end(), '/', '\\');
-    std::wstring wpath = ConvertString(fixedPath);
+    std::string pathStr = path.string();
+    std::replace(pathStr.begin(), pathStr.end(), '/', '\\');
+    std::filesystem::path pathFixed(pathStr);
 
-    // パスからファイル名を除去
-    fs::path fsPath(wpath);
-
-    if(fs::is_directory(fsPath)){
+    // フォルダかファイルかで場合分け
+    if(fs::is_directory(pathFixed)){
         // フォルダの場合はそのフォルダを開く
-        ShellExecuteA(NULL, "open", fsPath.string().c_str(), NULL, NULL, SW_SHOW);
-    } else if(fs::is_regular_file(fsPath)){
+        ShellExecuteA(NULL, "open", pathFixed.string().c_str(), NULL, NULL, SW_SHOW);
+
+    } else if(fs::is_regular_file(pathFixed)){
         // ファイルの場合はそのファイルの場所を開く(parentPath)
-        ShellExecuteA(NULL, "open", fsPath.parent_path().string().c_str(), NULL, NULL, SW_SHOW);
+        auto parentPath = pathFixed.parent_path();
+        ShellExecuteA(NULL, "open", parentPath.string().c_str(), NULL, NULL, SW_SHOW);
 
     } else{
         assert(false && "指定したパスが存在しません");
@@ -773,20 +680,15 @@ void MyFunc::OpenInExplorer(const std::string& path){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ファイルを削除する
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool MyFunc::DeleteFileObject(const std::string& path){
-
-    // '/'を'\\'に変換
-    std::string fixedPath = path.c_str();
-    std::replace(fixedPath.begin(), fixedPath.end(), '/', '\\');
-    std::wstring wpath = ConvertString(fixedPath);
+bool MyFunc::DeleteFileObject(const std::filesystem::path& path){
 
     // パスが存在するか確認
-    if(!std::filesystem::exists(wpath)){
+    if(!std::filesystem::exists(path)){
         return false;
     }
 
     // 削除確認メッセージを出す
-    std::wstring message = L"次のファイル（またはフォルダ）を削除しますか？\n\n" + wpath;
+    std::wstring message = L"次のファイル（またはフォルダ）を削除しますか？\n\n" + path.generic_wstring();
     int res = MessageBoxW(nullptr, message.c_str(), L"削除の確認",
         MB_YESNO | MB_ICONWARNING | MB_DEFBUTTON2);
     if(res != IDYES){
@@ -795,7 +697,7 @@ bool MyFunc::DeleteFileObject(const std::string& path){
 
     // 実際の削除
     std::error_code ec; // エラーコードを受け取るための変数
-    fs::remove_all(wpath, ec);
+    fs::remove_all(path, ec);
     if(ec){
         // エラーが発生した場合
         std::wstring errorMessage = L"ファイル（またはフォルダ）の削除に失敗しました。\n\nエラー内容: " + ConvertString(ec.message());
@@ -809,7 +711,7 @@ bool MyFunc::DeleteFileObject(const std::string& path){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ファイルを保存するダイアログを表示する関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-std::string MyFunc::OpenSaveFileDialog(const std::string& directory, const std::string& ext, const std::string& initialName){
+std::filesystem::path MyFunc::OpenSaveFileDialog(const std::filesystem::path& directory, const std::string& ext, const std::string& initialName){
     // 保存ダイアログを表示するラムダ関数
     auto ShowSaveFileDialog = [](const std::wstring& title = L"名前を付けて保存",
         const std::wstring& filter = L"すべてのファイル (*.*)\0*.*\0",
@@ -850,13 +752,8 @@ std::string MyFunc::OpenSaveFileDialog(const std::string& directory, const std::
         return std::wstring(); // キャンセル時
     };
 
-    // 絶対パスに変換
-    std::string absDirectory = ToFullPath(directory);
-    // '/'を'\\'に変換
-    std::replace(absDirectory.begin(), absDirectory.end(), '/', '\\');
-
     // directoryが存在しなければreturn
-    if(!fs::exists(absDirectory)){
+    if(!fs::exists(directory)){
         return "";
     }
 
@@ -879,37 +776,29 @@ std::string MyFunc::OpenSaveFileDialog(const std::string& directory, const std::
     filter.push_back(L'\0');
     filter.push_back(L'\0'); // ← 末尾のダブルヌル終端
 
-    std::wstring initialDir = ConvertString(absDirectory);
     std::wstring initName = ConvertString(initialName);
-    return ConvertString(ShowSaveFileDialog(L"名前を付けて保存", filter, wext.substr(1), initialDir, initName));
+    return ShowSaveFileDialog(L"名前を付けて保存", filter, wext.substr(1), directory.generic_wstring(), initName);
 }
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 新しいフォルダを作成する関数
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool MyFunc::CreateNewFolder(const std::string& directory, const std::string& folderName){
-    // 絶対パスに変換
-    std::string absDirectory = ToFullPath(directory);
-
-    // '/'を'\\'に変換
-    std::replace(absDirectory.begin(), absDirectory.end(), '/', '\\');
+bool MyFunc::CreateNewFolder(const std::filesystem::path& directory, const std::string& folderName){
 
     // directoryが存在しなければreturn
-    if(!fs::exists(absDirectory)){
+    if(!fs::exists(directory)){
         return false;
     }
 
     // wstring 変換
-    std::wstring wAbsDir = ConvertString(absDirectory);
-    std::wstring wFolder = ConvertString(folderName);
-    fs::path newPath = fs::path(wAbsDir) / fs::path(wFolder);
+    std::filesystem::path newPath = directory / folderName;
     int counter = 1;
 
     // 既に存在する場合は "(n)" を付けて回避
     while(fs::exists(newPath)){
-        std::wstring numbered = wFolder + L"(" + std::to_wstring(counter++) + L")";
-        newPath = fs::path(wAbsDir) / fs::path(numbered);
+        std::wstring numbered = ConvertString(folderName) + L"(" + std::to_wstring(counter++) + L")";
+        newPath = directory / std::filesystem::path(numbered);
     }
 
     // フォルダを作成

@@ -211,7 +211,7 @@ void ImGuiManager::PostDraw(){
 //////////////////////////////////////////////////////////////////
 // エクスプローラーメニュー表示
 //////////////////////////////////////////////////////////////////
-void ImGuiManager::OpenExplorerMenu(const std::string& itemPath, const std::string& menuName){
+void ImGuiManager::OpenExplorerMenu(const std::filesystem::path& itemPath, const std::string& menuName){
     instance_->explorerItemPath_ = itemPath;
     instance_->explolerMenuOpenOrder_ = true;
     instance_->menuName_ = menuName;
@@ -643,7 +643,7 @@ std::string ImFunc::FolderView(
 
             // コンテキストメニュー用のアイテムのパスを取得
             if(isRightClicked){
-                ImGuiManager::OpenExplorerMenu(MyFunc::ToString(entry.path().u8string()), "ファイル/フォルダ");
+                ImGuiManager::OpenExplorerMenu(entry.path().string(), "ファイル/フォルダ");
             }
 
             ImGui::EndGroup();
@@ -666,7 +666,7 @@ std::string ImFunc::FolderView(
 
     if(ImGui::IsMouseClicked(1)){
         if(ImGuiManager::GetInstance()->explorerItemPath_.empty()){
-            ImGuiManager::GetInstance()->explorerItemPath_ = currentPath.string();
+            ImGuiManager::GetInstance()->explorerItemPath_ = currentPath.generic_string();
         }
     }
 
@@ -678,7 +678,7 @@ std::string ImFunc::FolderView(
             // フォーカス情報をクリア
             focusedItems.erase(label);
             // 空選択メニューを開く
-            ImGuiManager::OpenExplorerMenu(MyFunc::ToString(currentPath.u8string()), "空選択");
+            ImGuiManager::OpenExplorerMenu(currentPath, "空選択");
 
         } else if(ImGui::IsMouseClicked(0)){
             // 左クリックでもフォーカス情報をクリア

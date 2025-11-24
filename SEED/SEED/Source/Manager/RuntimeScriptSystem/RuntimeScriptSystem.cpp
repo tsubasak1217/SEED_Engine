@@ -14,7 +14,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 RuntimeScriptSystem::RuntimeScriptSystem(){
     // hostfxr.dllをロード
-    HMODULE lib = ::LoadLibraryW(MyFunc::ToFullPath(hostFxrDllPath_).c_str());
+    HMODULE lib = ::LoadLibraryW(hostFxrDllPath_.c_str());
 
     // hostfxrを利用するための各関数を取得
     initFxr = GetFunction<hostfxr_initialize_for_runtime_config_fn>(lib, "hostfxr_initialize_for_runtime_config");

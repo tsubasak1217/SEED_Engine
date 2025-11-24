@@ -1,0 +1,29 @@
+{
+    "artist": "カワイイ塾美大予備校",
+    "audioPath": "",
+    "bpm": 172.0,
+    "difficulty": 4,
+    "difficultyName": "Basic",
+    "genre": 1,
+    "jsonFilePath": "Resources/NoteDatas//Basic.json",
+    "maxCombo": 0,
+    "notesDesigner": "tbs",
+    "offsetTime": 0.15000000596046448,
+    "songName": "パレットの勇者",
+    "tempoData": [
+        {
+            "barCount": 1,
+            "bpm": 172.0,
+            "time": 1.3953487873077393,
+            "timeSignature_denominator": 4,
+            "timeSignature_numerator": 4
+        },
+        {
+            "barCount": 101,
+            "bpm": 172.0,
+            "time": 1.3953487873077393,
+            "timeSignature_denominator": 4,
+            "timeSignature_numerator": 4
+        }
+    ]
+}

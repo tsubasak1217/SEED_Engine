@@ -112,46 +112,36 @@ public:// ファイル・文字列関連 =======================================
     static bool CompareStr(const std::string& str1, const std::string& str2);
 
     // 指定したパスに存在するフォルダの一覧を取得する関数
-    static std::vector<std::string> GetFolderList(const std::string& entryPath,bool isRelative = true);
+    static std::vector<std::filesystem::path> GetFolderList(const std::filesystem::path& entryPath, bool isRelative, bool isRecursive);
     // 指定したパス以降で拡張子の合致するファイル一覧を取得する関数
-    static std::vector<std::string> GetFileList(
-        const std::string& entryPath, std::initializer_list<std::string>extensions,bool isRelative = true
+    static std::vector<std::filesystem::path> GetFileList(
+        const std::filesystem::path& entryPath, std::initializer_list<std::string>extensions,bool isRelative = true
     );
-    // 指定したパスに存在するすべてのオブジェクトの一覧を取得する関数
-    static std::vector<std::string> GetDirectoryNameList(const std::string& entryPath, bool isRelative = true, bool isRecursive = false);
-    static std::vector<std::filesystem::directory_entry> GetDirectoryEntryList(const std::string& entryPath, bool isRecursive = false);
 
     // 指定したパス以降で名前の一致するファイルがあればそのパスを返す関数
-    static std::string FindFile(const std::string& entryPath, const std::string& filePath,bool isRelative = true);
+    static std::filesystem::path FindFile(const std::filesystem::path& entryPath, const std::string& filename,bool isRelative = true);
     
     // projectのディレクトリまでのフルパスを取得する関数
     static std::filesystem::path GetProjectDirectory();
 
-    // ファイル名のみ抜き出す関数
-    static std::string ExtractFileName(const std::string& filePath,bool isContainExt);
-
-    // ProjectDirからの相対パスをユーザーのフルパスに変換する関数
-    static std::string ToFullPath(const std::string& relativePath);
-    static std::wstring ToFullPath(const std::wstring& relativePath);
-
     // jsonふぁあいる関連の関数
-    static nlohmann::json GetJson(const std::string& filePath,bool createFile = false);
-    static void CreateJsonFile(const std::string& filePath, const nlohmann::json& jsonData);
+    static nlohmann::json GetJson(const std::filesystem::path& filePath,bool createFile = false);
+    static void CreateJsonFile(const std::filesystem::path& filePath, const nlohmann::json& jsonData);
 
     // ファイルのリネーム
-    static bool RenameFile(const std::string& oldFilePath, const std::string& newFilePath);
+    static bool RenameFile(const std::filesystem::path& oldFilePath, const std::filesystem::path& newFilePath);
 
     // エクスプローラーで開く
-    static void OpenInExplorer(const std::string& path);
+    static void OpenInExplorer(const std::filesystem::path& path);
 
     // ファイルの削除
-    static bool DeleteFileObject(const std::string& path);
+    static bool DeleteFileObject(const std::filesystem::path& path);
 
     // ファイルの保存
-    static std::string OpenSaveFileDialog(const std::string& directory, const std::string& ext, const std::string& initialName = "");
+    static std::filesystem::path OpenSaveFileDialog(const std::filesystem::path& directory, const std::string& ext, const std::string& initialName = "");
 
     // フォルダの新規作成
-    static bool CreateNewFolder(const std::string& directory, const std::string& folderName);
+    static bool CreateNewFolder(const std::filesystem::path& directory, const std::string& folderName);
 };
 
 

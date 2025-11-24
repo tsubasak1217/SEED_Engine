@@ -25,12 +25,12 @@ SongSelector::~SongSelector(){
 void SongSelector::Initialize(){
 
     // NoteDatasの階層にあるフォルダ名を一覧取得
-    auto songFolders = MyFunc::GetFolderList("Resources/NoteDatas");
+    auto songFolders = MyFunc::GetFolderList("Resources/NoteDatas",true,false);
 
     // フォルダ名を元に楽曲情報を構築
     for(const auto& folderName : songFolders){
         auto& data = songList.emplace_back(new SongInfo());
-        data->Initialize(folderName);
+        data->Initialize(folderName.generic_string());
     }
 
     // jsonから設定を読み込む

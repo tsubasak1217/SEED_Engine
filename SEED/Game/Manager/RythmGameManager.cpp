@@ -198,7 +198,12 @@ void RythmGameManager::EndFrame(){
 
             // スコアの書き込み(値を更新すれば)
             if(scoreJson.contains("score")){
-                float preScore = scoreJson["score"].value(difficultyName[playDifficulty_], 0.0f);
+                float preScore = 0.0f;
+                
+                if(scoreJson["score"][difficultyName[playDifficulty_]].is_number()){
+                    preScore = scoreJson["score"][difficultyName[playDifficulty_]];
+                }
+
                 if(playResult_.score > preScore){
                     scoreJson["score"][difficultyName[playDifficulty_]] = playResult_.score;
                 }

@@ -93,7 +93,7 @@ ModelData* ModelManager::LoadModelFile(const std::string& directoryPath, const s
 
     // assinmpのインポート設定
     Assimp::Importer importer;
-    std::filesystem::path fullPath = MyFunc::ToFullPath(directoryPath + filename);
+    std::filesystem::path fullPath = directoryPath + filename;
     const aiScene* scene = importer.ReadFile(
         fullPath.generic_string().c_str(),
         // 三角形反転・UV反転・自動三角形化
@@ -278,16 +278,16 @@ std::vector<ModelMaterialLoadData> ModelManager::ParseMaterials(const aiScene* s
 
             // '*'が含まれていなければ通常のテクスチャファイルとみなす
             if(textureFilePath.find("*") == std::string::npos){
-                std::string findResult;
+                std::filesystem::path findResult;
                 // まずmodel階層内から探す
                 findResult = MyFunc::FindFile("Resources/models/", texturePath.C_Str());
                 if(!findResult.empty()){
-                    materialData.textureFilePath_ = "../models/" + findResult;
+                    materialData.textureFilePath_ = "../models/" + findResult.string();
 
                 } else{// 見つからなかったらTextures階層から探す
                     findResult = MyFunc::FindFile("Resources/Textures/", texturePath.C_Str());
                     if(!findResult.empty()){
-                        materialData.textureFilePath_ = findResult;
+                        materialData.textureFilePath_ = findResult.string();
                     }
                 }
 
@@ -370,7 +370,7 @@ std::unordered_map<std::string, ModelAnimation> ModelManager::LoadAnimation(cons
 
     // assinmpのインポート設定
     Assimp::Importer importer;
-    std::filesystem::path fullPath = MyFunc::ToFullPath(directoryPath + filename);
+    std::filesystem::path fullPath = directoryPath + filename;
     const aiScene* scene = importer.ReadFile(fullPath.generic_string().c_str(), 0);
     if(!scene->HasAnimations()){ return result; }// animationがない場合は終了
 

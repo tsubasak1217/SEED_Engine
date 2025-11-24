@@ -66,25 +66,24 @@ void ShaderDictionary::Release(){
 void ShaderDictionary::LoadFromDirectory(const std::string& directoryPath, ID3D12Device* device){
 
     // resources/textures/ParticleTextures/ 以下の階層にあるテクスチャを自動で読む
-    std::vector<std::string> fileNames;
+    auto fileNames = MyFunc::GetFileList(directoryPath,{ ".hlsl" });
     HRESULT hr;
-
-    fileNames = MyFunc::GetFileList(directoryPath,{ ".hlsl" });
 
     // シェーダーの種類に応じてコンパイル
     for(auto& fileName : fileNames){
 
         std::wstring shaderProfile = L"";
         std::wstring entryPoint = L"main";
+        std::string strFileName = fileName.string();
 
         // Profile情報を設定
-        if(fileName.find(".VS") != std::string::npos){// VS
+        if(strFileName.find(".VS") != std::string::npos){// VS
             shaderProfile = L"vs_6_0";
 
-        } else if(fileName.find(".PS") != std::string::npos){// PS
+        } else if(strFileName.find(".PS") != std::string::npos){// PS
             shaderProfile = L"ps_6_0";
 
-        } else if(fileName.find(".MS") != std::string::npos){// MS
+        } else if(strFileName.find(".MS") != std::string::npos){// MS
             shaderProfile = L"ms_6_5";
 
             // メッシュシェーダーに対応しているか確認
@@ -93,11 +92,11 @@ void ShaderDictionary::LoadFromDirectory(const std::string& directoryPath, ID3D1
             assert(SUCCEEDED(hr));
 
 
-        } else if(fileName.find(".CS") != std::string::npos){// CS
+        } else if(strFileName.find(".CS") != std::string::npos){// CS
             shaderProfile = L"cs_6_0";
             entryPoint = L"CSMain";
 
-        } else if(fileName.find(".AS") != std::string::npos){// AS
+        } else if(strFileName.find(".AS") != std::string::npos){// AS
             shaderProfile = L"as_6_5";
 
         } else{
@@ -112,20 +111,20 @@ void ShaderDictionary::LoadFromDirectory(const std::string& directoryPath, ID3D1
         }
 
         // コンパイルする
-        blobs_[fileName] = CompileShader(
-            MyFunc::ConvertString(directoryPath + fileName),
+        blobs_[strFileName] = CompileShader(
+            MyFunc::ConvertString(directoryPath + strFileName),
             shaderProfile.c_str(),
             entryPoint.c_str(),
             dxcUtils.Get(),
             dxcCompiler.Get(),
             includeHandler.Get()
         );
-        assert(blobs_[fileName] != nullptr);
+        assert(blobs_[strFileName] != nullptr);
 
         // DxcBuffer を作成
         DxcBuffer dxcBuffer = {};
-        dxcBuffer.Ptr = blobs_[fileName]->GetBufferPointer();
-        dxcBuffer.Size = blobs_[fileName]->GetBufferSize();
+        dxcBuffer.Ptr = blobs_[strFileName]->GetBufferPointer();
+        dxcBuffer.Size = blobs_[strFileName]->GetBufferSize();
         dxcBuffer.Encoding = DXC_CP_ACP; // ANSI 文字コード（基本これでOK）
 
         // リフレクションを作成
@@ -135,7 +134,7 @@ void ShaderDictionary::LoadFromDirectory(const std::string& directoryPath, ID3D1
             IID_PPV_ARGS(&reflection)
         );
         assert(SUCCEEDED(hr));
-        reflections_[fileName] = reflection;
+        reflections_[strFileName] = reflection;
 
     }
 }

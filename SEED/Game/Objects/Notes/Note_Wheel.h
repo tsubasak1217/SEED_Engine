@@ -25,4 +25,5 @@ public:
     uint32_t wheelDirectionGH_;
     uint32_t wheelAuraGH_;
     Vector4 upDownColor_[2];
+    Vector3 uv_translate_;
 };

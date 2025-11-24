@@ -22,9 +22,9 @@ void Note_Wheel::Draw(float currentTime, float appearLength){
     static Quad noteFloorRect;
     static Quad noteDirectionRect;
     static Quad noteAuraRect;
-    static Vector3 uv_translate;
+
     float timeRatio = 1.0f - ((time_ - currentTime) / appearLength);
-    uv_translate.y += 0.3f * ClockManager::DeltaTime();
+    uv_translate_.y += 2.0f * ClockManager::DeltaTime();
 
     // 描画設定
     noteDirectionRect.blendMode = BlendMode::ADD; // ブレンドモードを加算に設定
@@ -61,7 +61,7 @@ void Note_Wheel::Draw(float currentTime, float appearLength){
         directionScale *= -1.0f; // レイヤーが下ならUVを反転
     }
 
-    noteDirectionRect.uvTransform = AffineMatrix({ 1.0f,directionScale,1.0f }, { 0.0f,0.0f,0.0f }, uv_translate);
+    noteDirectionRect.uvTransform = AffineMatrix({ 1.0f,directionScale,1.0f }, { 0.0f,0.0f,0.0f }, uv_translate_);
 
     // テクスチャの設定
     noteAuraRect.GH = wheelAuraGH_;

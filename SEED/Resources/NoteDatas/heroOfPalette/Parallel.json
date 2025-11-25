@@ -2,11 +2,11 @@
     "artist": "カワイイ塾美大予備校",
     "audioPath": "../../Resources/NoteDatas/heroOfPalette/heroOfPalette.mp3",
     "bpm": 172.0,
-    "difficulty": 10,
+    "difficulty": 11,
     "difficultyName": "Parallel",
     "genre": 1,
     "jsonFilePath": "Resources/NoteDatas/heroOfPalette/Parallel.json",
-    "maxCombo": 723,
+    "maxCombo": 717,
     "notes": [
         {
             "isExtraNote": false,
@@ -683,15 +683,6 @@
         {
             "holdTime": 0.17441844940185547,
             "isExtraNote": false,
-            "lane": 1,
-            "laneBit": 2,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 16.744186401367188
-        },
-        {
-            "holdTime": 0.17441844940185547,
-            "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
             "layer": 0,
@@ -708,15 +699,6 @@
             "time": 17.005813598632813
         },
         {
-            "holdTime": 0.17441844940185547,
-            "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 17.005813598632813
-        },
-        {
             "holdTime": 0.17441749572753906,
             "isExtraNote": false,
             "lane": 2,
@@ -724,24 +706,6 @@
             "layer": 0,
             "noteType": "Hold",
             "time": 17.26744270324707
-        },
-        {
-            "holdTime": 0.17441749572753906,
-            "isExtraNote": false,
-            "lane": 3,
-            "laneBit": 8,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 17.26744270324707
-        },
-        {
-            "holdTime": 0.17441940307617188,
-            "isExtraNote": false,
-            "lane": 4,
-            "laneBit": 16,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 17.529069900512695
         },
         {
             "holdTime": 0.17441940307617188,
@@ -1135,10 +1099,10 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1536,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 31.744184494018555
+            "time": 29.651161193847656
         },
         {
             "isExtraNote": false,
@@ -1151,10 +1115,10 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 384,
+            "laneBit": 1536,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 29.651161193847656
+            "time": 30.34883689880371
         },
         {
             "isExtraNote": false,
@@ -1175,10 +1139,10 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 1536,
+            "laneBit": 384,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 30.34883689880371
+            "time": 31.046510696411133
         },
         {
             "isExtraNote": false,
@@ -1199,10 +1163,10 @@
         {
             "isExtraNote": false,
             "lane": 0,
-            "laneBit": 384,
+            "laneBit": 1536,
             "layer": 0,
             "noteType": "RectFlick",
-            "time": 31.046510696411133
+            "time": 31.744184494018555
         },
         {
             "holdTime": 0.34883880615234375,
@@ -3496,6 +3460,15 @@
             "layer": 1,
             "noteType": "tap",
             "time": 98.02325439453125
+        },
+        {
+            "holdTime": 0.1744232177734375,
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 1,
+            "noteType": "Hold",
+            "time": 98.37208557128906
         },
         {
             "holdTime": 0.17441558837890625,

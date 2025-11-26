@@ -1,11 +1,5 @@
 {
-    "artist": "桃色球体",
-    "audioPath": "../../Resources/NoteDatas/spaceBalloon/spaceBalloon.mp3",
-    "bpm": 90.0,
     "difficulty": 2,
-    "difficultyName": "Basic",
-    "genre": 1,
-    "jsonFilePath": "Resources/NoteDatas/spaceBalloon/Basic.json",
     "maxCombo": 67,
     "notes": [
         {
@@ -419,8 +413,6 @@
         }
     ],
     "notesDesigner": "tbs",
-    "offsetTime": 0.15000000596046448,
-    "songName": "SpaceBalloon",
     "tempoData": [
         {
             "barCount": 1,

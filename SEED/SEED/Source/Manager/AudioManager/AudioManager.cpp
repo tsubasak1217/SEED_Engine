@@ -533,7 +533,7 @@ void AudioManager::LoadAudio(const std::string& filename){
             instance_->audios_[filename] = instance_->LoadMP4(path.generic_wstring().c_str());
 
         } else{
-            assert(false);
+            return;
         }
     }
 }

@@ -1,11 +1,5 @@
 {
-    "artist": "カワイイ塾美大予備校",
-    "audioPath": "../../Resources/NoteDatas/heroOfPalette/heroOfPalette.mp3",
-    "bpm": 172.0,
     "difficulty": 4,
-    "difficultyName": "Basic",
-    "genre": 1,
-    "jsonFilePath": "Resources/NoteDatas/heroOfPalette/Basic.json",
     "maxCombo": 148,
     "notes": [
         {
@@ -988,8 +982,6 @@
         }
     ],
     "notesDesigner": "tbs",
-    "offsetTime": 0.15000000596046448,
-    "songName": "パレットの勇者",
     "tempoData": [
         {
             "barCount": 1,

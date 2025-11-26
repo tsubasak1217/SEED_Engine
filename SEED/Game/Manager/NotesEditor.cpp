@@ -61,15 +61,11 @@ NotesEditor::NotesEditor(){
 ////////////////////////////////////////////////////////////////////////
 // 初期化処理
 ////////////////////////////////////////////////////////////////////////
-void NotesEditor::Initialize(const std::string& path){
+void NotesEditor::Initialize(const SongInfo& songInfo, int32_t difficulty){
     // ノーツデータを読み込む
-    if(std::filesystem::exists(path)){
-        std::ifstream file(path);
-        nlohmann::json jsonData;
-        file >> jsonData;
-        LoadFromJson(jsonData); // JSONから譜面データを読み込む
-        file.close();
-    }
+    songInfo_ = songInfo;
+    trackDifficulty_ = static_cast<TrackDifficulty>(difficulty);
+    LoadFromJson(songInfo,difficulty); // JSONから譜面データを読み込む
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -94,33 +90,37 @@ void NotesEditor::Edit(){
 
     // タイムスケールの更新処理
     UpdateTimeScale();
+
     // レーンの表示
     DisplayLane();
+
     // テンポ情報をレーン上に配置して表示
     DisplayTempoData();
+
     // テンポデータの編集
     ImGui::SetCursorScreenPos(tempoDataDisplayPos_);
     ImGui::BeginChild("テンポ情報", ImVec2(0, 200), true);
     EditTempoData();
     ImGui::EndChild();
-    // 音声データの編集
-    ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 220));
-    ImGui::BeginChild("楽曲情報", ImVec2(0, 180), true);
-    SelectAudioFile();
-    ImGui::EndChild();
+
     // 中心線の表示
     DisplayLine();
+
     // ノーツの編集
     ImGui::SetCursorScreenPos(tempoDataDisplayPos_ + ImVec2(0, 220) + ImVec2(0, 200));
     ImGui::BeginChild("ノーツ編集", ImVec2(0, 0), true);
     EditNotes();
     ImGui::EndChild();
+
     // ノーツの表示処理
     DisplayNotes();
+
     // ドラッグ中のノーツの処理
     DraggingNote();
+
     // スクロール処理
     ScrollOnLane();
+
     // 効果音の再生
     PlayMetronome();
     PlayAnswerSE();
@@ -145,53 +145,6 @@ void NotesEditor::Edit(){
 #endif // _DEBUG
 }
 
-////////////////////////////////////////////////////////////////////////
-// 音声ファイルの選択
-////////////////////////////////////////////////////////////////////////
-void NotesEditor::SelectAudioFile(){
-
-    // 音声ファイルを取得
-    static std::filesystem::path audioFileBasePath = "Resources/NoteDatas"; // 音声ファイル名の
-    static std::string nextPathName{};
-    std::string selectedFile = ImFunc::FolderView("音声ファイル選択", audioFileBasePath); // 音声ファイルの選択
-
-    if(!selectedFile.empty()){
-
-        // "NoteDatas"以降の階層にあるかチェック
-        if(selectedFile.find("NoteDatas") != std::string::npos){
-
-            // ".wav", ".mp3"の拡張子を持つファイル名かチェック
-            if(selectedFile.ends_with(".wav") || selectedFile.ends_with(".mp3")){
-                nextPathName = "../../" + selectedFile; // パスを設定
-                ImGui::OpenPopup("音声ファイルの変更確認"); // ポップアップを開く
-            }
-        }
-    }
-
-    // ポップアップの表示
-    if(ImGui::BeginPopupModal("音声ファイルの変更確認", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
-        ImGui::Text("音声ファイルを変更しますか？\n %s", nextPathName.c_str());
-        if(ImGui::Button("はい")){
-            audioFilePath_ = nextPathName; // 音声ファイル名を設定
-            // 音声の変更
-            if(isPlaying_){
-                AudioManager::EndAudio(audioHandle_); // 再生中なら停止
-                audioHandle_ = AudioManager::PlayAudio(audioFilePath_, false, 1.0f, curLaneTime_); // 音声を再生
-            }
-
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::SameLine();
-        if(ImGui::Button("いいえ")){
-            ImGui::CloseCurrentPopup();
-        }
-        ImGui::EndPopup();
-    }
-
-    ImGui::DragFloat("アンサー音のオフセット", &answerOffsetTime_, 0.01f);
-    ImGui::DragFloat("メトロノームのオフセット", &metronomeOffsetTime_, 0.01f);
-}
 
 ////////////////////////////////////////////////////////////////////////
 // タイムスケールの更新処理
@@ -224,37 +177,6 @@ void NotesEditor::DisplayLane(){
     ImGui::SetCursorScreenPos(windowPos + laneLTPos_);
     ImGui::Image(textureIDs_["laneField"], laneSize_);
 
-    // ドラッグしたアイテムをドロップで受け付ける
-    if(auto droppedPath = ImFunc::GetDroppedData<std::string>("FILE_PATH")){
-        // ポップアップが開いていない場合は自動で開く
-        ImGui::OpenPopup("ノーツデータの読み込み確認");
-        loadFileName_ = *droppedPath; // 読み込むファイル名を保存
-    }
-
-    // 読み込むかどうか確認するポップアップを出す
-    if(ImGui::BeginPopupModal("ノーツデータの読み込み確認", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
-
-        std::replace(loadFileName_.begin(), loadFileName_.end(), '/', '\\'); // パスの区切り文字を変換
-        ImGui::Text("ノーツデータを読み込みますか？\n%s", loadFileName_.c_str());
-
-        if(ImGui::Button("はい")){
-            // ノーツデータを読み込む
-            if(std::filesystem::exists(loadFileName_)){
-                nlohmann::json jsonData = MyFunc::GetJson(loadFileName_);
-                LoadFromJson(jsonData); // JSONから譜面データを読み込む
-            }
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::SameLine();
-        if(ImGui::Button("いいえ")){
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::EndPopup();
-    }
-
-
     for(int i = 0; i < 5; i++){
         // レーンの境界線を計算
         float x = worldLaneLTPos_.x + (laneSize_.x / 5.0f) * i;
@@ -271,8 +193,8 @@ void NotesEditor::DisplayLane(){
     if(ImGui::ImageButton("playIcon", playIcon, ImVec2(20, 20), ImVec2(0, 0), ImVec2(1, 1))){
         isPlaying_ = !isPlaying_; // 再生/停止の切り替え
         if(isPlaying_){
-            if(!audioFilePath_.empty()){
-                audioHandle_ = AudioManager::PlayAudio(audioFilePath_, false, 1.0f, curLaneTime_); // 音声を再生
+            if(!songInfo_.audioFilePath.empty()){
+                audioHandle_ = AudioManager::PlayAudio(songInfo_.audioFilePath, false, audioVolume_, curLaneTime_); // 音声を再生
             }
         } else{
             AudioManager::EndAudio(audioHandle_); // 音声を停止
@@ -290,8 +212,8 @@ void NotesEditor::DisplayLane(){
         if(isSliderActive){
             isSliderActive = false;
             if(isPlaying_){
-                if(!audioFilePath_.empty()){
-                    audioHandle_ = AudioManager::PlayAudio(audioFilePath_, false, 1.0f, curLaneTime_); // 音声を再生
+                if(!songInfo_.audioFilePath.empty()){
+                    audioHandle_ = AudioManager::PlayAudio(songInfo_.audioFilePath, false, audioVolume_, curLaneTime_); // 音声を再生
                 }
             }
         }
@@ -479,7 +401,7 @@ void NotesEditor::EditNotes(){
 
     // 編集ノーツ種の選択
     ImGui::Checkbox("レーン編集", &isEditOnLane_);
-    ImFunc::Combo("編集ノーツタイプ", editNoteType_, { "タップ","ホールド","レクトフリック","ホイール","警告"});
+    ImFunc::Combo("編集ノーツタイプ", editNoteType_, { "タップ","ホールド","レクトフリック","ホイール","警告" });
 
     // 小節の分割モードの選択
     if(ImFunc::Combo("分数", divisionMode_, { "1/4","1/6","1/8","1/12","1/16","1/24","1/32","1/48","1/64" })){
@@ -1009,9 +931,9 @@ void NotesEditor::DisplayNotes(){
             float direction = wheelNote->direction_ == UpDown::UP ? 1.0f : -1.0f; // 上向きなら1.0、下向きなら-1.0
             ImGuiCol color = direction == 1.0f ? IM_COL32(255, 0, 255, alpha) : IM_COL32(0, 255, 255, alpha); // 上向きはピンク、下向きは水色
             pDrawList_->AddImage(textureIDs_["wheel"], p1, p2, ImVec2(0, 0), ImVec2(direction, direction), color);
-        
 
-        }else if(note->noteType_ == NoteType::Warning){
+
+        } else if(note->noteType_ == NoteType::Warning){
 
             // 終点
             Note_Warning* warning = dynamic_cast<Note_Warning*>(note.get());
@@ -1410,8 +1332,8 @@ void NotesEditor::ScrollOnLane(){
         // 動きが小さくなったら再生を再開
         if(isPause){
             if(std::fabsf(savedTimeVelocity) < 0.001f){
-                if(!audioFilePath_.empty()){
-                    audioHandle_ = AudioManager::PlayAudio(audioFilePath_, false, 1.0f, curLaneTime_); // 音声を再生
+                if(!songInfo_.audioFilePath.empty()){
+                    audioHandle_ = AudioManager::PlayAudio(songInfo_.audioFilePath, false, audioVolume_, curLaneTime_); // 音声を再生
                 }
                 isPause = false; // 再生中フラグを設定
                 isPlaying_ = true; // 再生中フラグを設定
@@ -1510,30 +1432,12 @@ void NotesEditor::PlayAnswerSE(){
 ///////////////////////////////////////////////////////////////////////
 void NotesEditor::FileControl(){
 
-    static bool isOverwrite = false; // 上書き確認フラグ
     static std::string directoryPath{};
     static nlohmann::json jsonData{};
 
     if(ImGui::Button("保存")){
         ImGui::OpenPopup("SaveFilePopup");
         isEditOnLane_ = false; // レーン上の編集を無効化
-
-        // 拡張子、ディレクトリを除去して曲名を取得
-        std::string songName = audioFilePath_;
-        if(!songName.empty()){
-            size_t lastSlash = songName.find_last_of("/\\");
-            if(lastSlash != std::string::npos){
-                songName = songName.substr(lastSlash + 1); // ディレクトリを除去
-            }
-            size_t lastDot = songName.find_last_of('.');
-            if(lastDot != std::string::npos){
-                songName = songName.substr(0, lastDot); // 拡張子を除去
-            }
-        }
-
-        if(saveDifficultyName_.empty()){
-            saveSongName_ = songName; // 曲名を保存
-        }
     }
 
 
@@ -1544,47 +1448,24 @@ void NotesEditor::FileControl(){
 
     if(ImGui::BeginPopup("SaveFilePopup")){
 
+        ImGui::SeparatorText("譜面単位の情報");
         ImGui::SliderInt("難易度", &difficulty_, 1, 15);
-        ImFunc::InputText("曲名", saveSongName_);
-        ImFunc::ComboText("譜面難易度の選択", saveDifficultyName_, { "Basic","Expert","Master","Parallel", });
-        ImFunc::InputText("アーティスト名", artistName_);
         ImFunc::InputText("譜面制作者名", notesDesignerName_);
+        ImGui::Spacing();
+
+        ImGui::SeparatorText("曲単位の情報");
+        ImFunc::InputText("曲名", songName_);
+        ImFunc::InputText("アーティスト名", artistName_);
         ImFunc::Combo("ジャンル", songGenre_, { "Original", "GameMusic" });
         ImGui::DragFloat("曲自体のオフセット値", &offsetTime_, 0.001f, -1.0f, 1.0f);
+        if(ImGui::DragFloat("楽曲の音量", &audioVolume_, 0.005f, 0.0f, 3.0f)){
+            AudioManager::SetAudioVolume(audioHandle_, audioVolume_);
+        }
+        ImGui::DragFloat2("セレクトでの音源再生範囲", &previewRange_.min, 0.01f, 0.0f, duration_);
 
         if(ImGui::Button("保存")){
-
-            // 拡張子、ディレクトリを除去して曲名を取得
-            std::string songName = audioFilePath_;
-            if(!songName.empty()){
-                size_t lastSlash = songName.find_last_of("/\\");
-                if(lastSlash != std::string::npos){
-                    songName = songName.substr(lastSlash + 1); // ディレクトリを除去
-                }
-                size_t lastDot = songName.find_last_of('.');
-                if(lastDot != std::string::npos){
-                    songName = songName.substr(0, lastDot); // 拡張子を除去
-                }
-            }
-
-            // 保存先のパスを設定
-            directoryPath = "Resources/NoteDatas/" + songName + "/";
-            jsonFilePath_ = directoryPath + saveDifficultyName_ + ".json";
-            jsonData = ToJson(); // JSONデータを取得
-
-            // 同じデータのファイルが存在するか確認
-            if(std::filesystem::exists(jsonFilePath_)){
-                // ファイルが存在する場合、上書き確認ダイアログを表示
-                isOverwrite = true;
-
-            } else{
-                // ファイルが存在しない場合はそのまま保存
-                std::filesystem::create_directories(directoryPath); // ディレクトリを作成
-                std::ofstream file(jsonFilePath_);
-                file << jsonData.dump(4); // JSONデータをファイルに書き出し
-                file.close();
-                ImGui::CloseCurrentPopup();
-            }
+            OutputToJson();
+            ImGui::CloseCurrentPopup(); // ポップアップを閉じる
         }
 
         // キャンセルボタン
@@ -1594,29 +1475,6 @@ void NotesEditor::FileControl(){
         }
 
         ImGui::EndPopup();
-
-
-    }
-
-    // 上書き確認ダイアログの表示
-    if(isOverwrite){
-        ImGui::OpenPopup("上書き確認");
-        isOverwrite = false; // フラグをリセット
-    }
-
-    if(ImGui::BeginPopupModal("上書き確認", nullptr, ImGuiWindowFlags_AlwaysAutoResize)){
-        ImGui::Text("同じ名前のファイルが存在します。上書きしますか？");
-        if(ImGui::Button("はい")){
-            std::ofstream file(jsonFilePath_);
-            file << jsonData.dump(4); // JSONデータをファイルに書き出し
-            file.close();
-            ImGui::CloseCurrentPopup(); // ポップアップを閉じる
-        }
-        ImGui::SameLine();
-        if(ImGui::Button("いいえ")){
-            ImGui::CloseCurrentPopup(); // ポップアップを閉じる
-        }
-        ImGui::EndPopup();
     }
 }
 
@@ -1624,75 +1482,72 @@ void NotesEditor::FileControl(){
 ///////////////////////////////////////////////////////////////////////
 // JSONから譜面データを読み込む処理
 ///////////////////////////////////////////////////////////////////////
-void NotesEditor::LoadFromJson(const nlohmann::json& jsonData){
+void NotesEditor::LoadFromJson(const SongInfo& songInfo, int32_t difficulty){
 
-    notes_.clear(); // 既存のノーツデータをクリア
+    // 既存のノーツデータをクリア
+    notes_.clear();
     tempoDataList_.clear();
     float timeOffset = 0.0f;
 
-    // ノーツデータの読み込み
-    if(jsonData.contains("notes")){
-        for(const auto& noteJson : jsonData["notes"]){
-            std::string noteType = noteJson["noteType"];
+    {// 譜面単位の情報の読み込み
 
-            if(noteType == "tap"){
-                Note_Tap* note = new Note_Tap();
-                note->FromJson(noteJson);
-                notes_.emplace_back(note);
-            } else if(noteType == "hold" or noteType == "Hold"){
-                Note_Hold* note = new Note_Hold();
-                note->FromJson(noteJson);
-                notes_.emplace_back(note);
-            } else if(noteType == "rectFlick" or noteType == "RectFlick"){
-                Note_RectFlick* note = new Note_RectFlick();
-                note->FromJson(noteJson);
-                notes_.emplace_back(note);
-            } else if(noteType == "wheel"){
-                Note_Wheel* note = new Note_Wheel();
-                note->FromJson(noteJson);
-                notes_.emplace_back(note);
-            } else if(noteType == "warning"){
-                Note_Warning* note = new Note_Warning();
-                note->FromJson(noteJson);
-                notes_.emplace_back(note);
-            } else{
-                // 未知のノーツタイプは無視
+        // ノーツデータの読み込み
+        nlohmann::json notesJson = songInfo.noteDatas[difficulty];
+        if(notesJson.contains("notes")){
+            for(const auto& noteJson : notesJson["notes"]){
+                std::string noteType = noteJson["noteType"];
+
+                if(noteType == "tap"){
+                    Note_Tap* note = new Note_Tap();
+                    note->FromJson(noteJson);
+                    notes_.emplace_back(note);
+                } else if(noteType == "hold" or noteType == "Hold"){
+                    Note_Hold* note = new Note_Hold();
+                    note->FromJson(noteJson);
+                    notes_.emplace_back(note);
+                } else if(noteType == "rectFlick" or noteType == "RectFlick"){
+                    Note_RectFlick* note = new Note_RectFlick();
+                    note->FromJson(noteJson);
+                    notes_.emplace_back(note);
+                } else if(noteType == "wheel"){
+                    Note_Wheel* note = new Note_Wheel();
+                    note->FromJson(noteJson);
+                    notes_.emplace_back(note);
+                } else if(noteType == "warning"){
+                    Note_Warning* note = new Note_Warning();
+                    note->FromJson(noteJson);
+                    notes_.emplace_back(note);
+                } else{
+                    // 未知のノーツタイプは無視
+                }
             }
         }
-    }
-    // テンポデータの読み込み
-    if(jsonData.contains("tempoData")){
-        for(const auto& tempoJson : jsonData["tempoData"]){
-            TempoData tempoData;
-            tempoData.FromJson(tempoJson);
-            tempoDataList_.push_back(tempoData);
+        // テンポデータの読み込み
+        if(notesJson.contains("tempoData")){
+            for(const auto& tempoJson : notesJson["tempoData"]){
+                TempoData tempoData;
+                tempoData.FromJson(tempoJson);
+                tempoDataList_.push_back(tempoData);
+            }
         }
+
+        // その他データの読み込み
+        difficulty_ = notesJson["difficulty"];
+        notesDesignerName_ = notesJson["notesDesigner"];
     }
 
-    // その他のデータの読み込み
-    if(jsonData.contains("jsonFilePath")){
-        jsonFilePath_ = jsonData["jsonFilePath"];
+
+
+    {// 楽曲単位の情報の読み込み
+
+        offsetTime_ = songInfo.songOffsetTime;
+        previewRange_ = songInfo.songPreviewRange;
+        audioVolume_ = songInfo.songVolume;
+        artistName_ = songInfo.artistName;
+        songGenre_ = songInfo.genre.value();
+    
     }
 
-    if(jsonData.contains("songName")){
-        saveSongName_ = jsonData["songName"];
-    }
-    if(jsonData.contains("audioPath")){
-        audioFilePath_ = jsonData["audioPath"];
-    }
-
-    if(jsonData.contains("difficultyName")){
-        saveDifficultyName_ = jsonData["difficultyName"];
-    }
-
-    if(jsonData.contains("offsetTime")){
-        offsetTime_ = jsonData["offsetTime"];
-    }
-
-    difficulty_ = jsonData["difficulty"];
-    artistName_ = jsonData["artist"];
-    notesDesignerName_ = jsonData["notesDesigner"];
-    songGenre_ = (SongGenre)jsonData["genre"];
 
 
     // 譜面開始前の待機時間を削除(編集時には不要)
@@ -1719,77 +1574,92 @@ void NotesEditor::LoadFromJson(const nlohmann::json& jsonData){
 ///////////////////////////////////////////////////////////////////////
 // JSONに譜面データを書き出す処理
 ///////////////////////////////////////////////////////////////////////
-nlohmann::json NotesEditor::ToJson(){
-    nlohmann::json jsonData;
-    float timeOffset = 0.0f;
+void NotesEditor::OutputToJson(){
 
-    // 譜面開始前の待機時間を追加
-    if(!tempoDataList_.empty()){
-        TempoData standbyTimeData = tempoDataList_.front();
-        standbyTimeData.barCount = 1;
-        standbyTimeData.time = 0.0f;
-        tempoDataList_.emplace_front(standbyTimeData);
-        timeOffset = standbyTimeData.CalcDuration();
-    }
-
-    // ノーツデータの書き出し
-    for(auto& note : notes_){
-        note->time_ += timeOffset;
-        jsonData["notes"].push_back(note->ToJson());
-        note->time_ -= timeOffset;
-    }
-
-    // テンポデータの書き出し
-    for(auto& tempoData : tempoDataList_){
-        tempoData.time += timeOffset;
-        jsonData["tempoData"].push_back(tempoData.ToJson());
-        tempoData.time -= timeOffset;
-    }
-
-    tempoDataList_.pop_front(); // 譜面開始前の待機時間データを削除
-
-    // テンポ情報からもっとも時間割合の大きいBPMを取得
-    std::unordered_map<float, float> bpmDurationMap;
-    for(const TempoData& tempoData : tempoDataList_){
-        bpmDurationMap[tempoData.bpm] += tempoData.CalcDuration();
-    }
-
-    // 最も時間割合の大きいBPMを取得(secondが最大値のキー)
+    nlohmann::json notesJson;
+    nlohmann::json songInfoJson;
     float bpm = 0.0f;
-    float maxDuration = 0.0f;
-    for(const auto& pair : bpmDurationMap){
-        if(pair.second > maxDuration){
-            maxDuration = pair.second;
-            // 小数点以下を切り捨ててBPMを取得
-            bpm = float(int(pair.first));
-        }
-    }
 
-    // コンボ数の計算
-    int comboCount = 0;
-    for(const auto& note : notes_){
-        if(note->noteType_ != NoteType::Hold){
-            if(note->noteType_ == NoteType::Warning){
-                continue; // ワーニングノーツはコンボに含めない
+    {// 譜面単位の情報の書き出し
+
+        float timeOffset = 0.0f;
+
+        // 譜面開始前の待機時間を追加
+        if(!tempoDataList_.empty()){
+            TempoData standbyTimeData = tempoDataList_.front();
+            standbyTimeData.barCount = 1;
+            standbyTimeData.time = 0.0f;
+            tempoDataList_.emplace_front(standbyTimeData);
+            timeOffset = standbyTimeData.CalcDuration();
+        }
+
+        // ノーツデータの書き出し
+        for(auto& note : notes_){
+            note->time_ += timeOffset;
+            notesJson["notes"].push_back(note->ToJson());
+            note->time_ -= timeOffset;
+        }
+
+        // テンポデータの書き出し
+        for(auto& tempoData : tempoDataList_){
+            tempoData.time += timeOffset;
+            notesJson["tempoData"].push_back(tempoData.ToJson());
+            tempoData.time -= timeOffset;
+        }
+
+        tempoDataList_.pop_front(); // 譜面開始前の待機時間データを削除
+
+        // テンポ情報からもっとも時間割合の大きいBPMを取得
+        std::unordered_map<float, float> bpmDurationMap;
+        for(const TempoData& tempoData : tempoDataList_){
+            bpmDurationMap[tempoData.bpm] += tempoData.CalcDuration();
+        }
+
+        // 最も時間割合の大きいBPMを取得(secondが最大値のキー)
+        float maxDuration = 0.0f;
+        for(const auto& pair : bpmDurationMap){
+            if(pair.second > maxDuration){
+                maxDuration = pair.second;
+                // 小数点以下を切り捨ててBPMを取得
+                bpm = float(int(pair.first));
             }
-            comboCount++; // タップノーツとホールドノーツの数をカウント
-        } else{
-            comboCount += 2; // ホールドノーツは開始と終了で2つカウント
         }
+
+        // コンボ数の計算
+        int comboCount = 0;
+        for(const auto& note : notes_){
+            if(note->noteType_ != NoteType::Hold){
+                if(note->noteType_ == NoteType::Warning){
+                    continue; // ワーニングノーツはコンボに含めない
+                }
+                comboCount++; // タップノーツとホールドノーツの数をカウント
+            } else{
+                comboCount += 2; // ホールドノーツは開始と終了で2つカウント
+            }
+        }
+
+        // その他データの書き出し
+        notesJson["difficulty"] = difficulty_;
+        notesJson["notesDesigner"] = notesDesignerName_;
+        notesJson["maxCombo"] = comboCount; // コンボ数を保存
+
+        // ファイルに出力
+        MyFunc::CreateJsonFile(songInfo_.jsonFilePath[(int32_t)trackDifficulty_], notesJson);
     }
 
-    // その他のデータの書き出し
-    jsonData["jsonFilePath"] = jsonFilePath_;
-    jsonData["songName"] = saveSongName_;
-    jsonData["audioPath"] = audioFilePath_;
-    jsonData["difficulty"] = difficulty_;
-    jsonData["difficultyName"] = saveDifficultyName_;
-    jsonData["artist"] = artistName_;
-    jsonData["notesDesigner"] = notesDesignerName_;
-    jsonData["bpm"] = bpm;
-    jsonData["maxCombo"] = comboCount; // コンボ数を保存
-    jsonData["genre"] = (int32_t)songGenre_; // ジャンルを保存
-    jsonData["offsetTime"] = offsetTime_; // 曲自体のオフセット値を保存
 
-    return jsonData;
+    {// 楽曲単位の情報の書き出し
+        songInfoJson["songName"] = songName_;
+        songInfoJson["artist"] = artistName_;
+        songInfoJson["bpm"] = bpm;
+        songInfoJson["genre"] = (int32_t)songGenre_; // ジャンルを保存
+        songInfoJson["offsetTime"] = offsetTime_; // 曲自体のオフセット値を保存
+        songInfoJson["previewRange"] = previewRange_;
+        songInfoJson["songVolume"] = audioVolume_;
+
+        // ファイルに出力
+        std::string outDir = "Resources/NoteDatas/" + songInfo_.folderName + "/songInfo.json";
+        MyFunc::CreateJsonFile(outDir, songInfoJson);
+    }
+
 }

@@ -91,11 +91,10 @@ private:
 public:
     NotesEditor();
     ~NotesEditor() = default;
-    void Initialize(const std::string& path);
+    void Initialize(const SongInfo& songInfo,int32_t difficulty);
     void Edit();
 
 private:
-    void SelectAudioFile();
     void UpdateTimeScale();
     void DisplayLane();
     void DisplayLine();
@@ -113,8 +112,7 @@ private:
     void FileControl();
 
 private:
-    // 基礎情報
-    int32_t difficulty_ = 0; // 難易度
+    // 編集用情報
     float duration_ = 0.0f; // 曲の長さ
     float curLaneTime_ = 0.0;
     float timeScale_ = 1.0;
@@ -129,10 +127,18 @@ private:
     ImVec2 laneSize_;
     ImVec2 worldLaneLTPos_;
     ImVec2 tempoDataDisplayPos_;
-    std::string artistName_; // アーティスト名
+
+    // 書き出し・読み込み用の情報
+    SongInfo songInfo_;
+    TrackDifficulty trackDifficulty_;
+    int32_t difficulty_ = 0; // 難易度
     std::string notesDesignerName_; // ノーツ制作者名
+    std::string artistName_; // アーティスト名
+    std::string songName_; // 曲名
     SongGenre songGenre_; // 曲のジャンル
     float offsetTime_ = 0.0f; // 曲のオフセット時間
+    float audioVolume_ = 1.0f; // 音声の音量
+    Range1D previewRange_{ 0.0f, 1.0f }; // 音源プレビュー範囲
 
     // 表示する情報
     unordered_map<std::string, ImTextureID> textureIDs_;
@@ -159,15 +165,8 @@ private:
     std::list<std::unique_ptr<Note_Base>> notes_;
 
     // 音声情報
-    std::string audioFilePath_;
     AudioHandle audioHandle_;
 
-    // 入出力ファイル名
-    std::string saveDifficultyName_ = "Basic";
-    std::string saveSongName_;
-    std::string loadFileName_;
-    std::string jsonFilePath_;
-
-    void LoadFromJson(const nlohmann::json& jsonData);
-    nlohmann::json ToJson() ;
+    void LoadFromJson(const SongInfo& songInfo, int32_t difficulty);
+    void OutputToJson() ;
 };

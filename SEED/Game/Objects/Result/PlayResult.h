@@ -18,9 +18,10 @@ struct PlayResult{
     ScoreRank rank = ScoreRank::D;
     bool isFullCombo = false;
     bool isAllPerfect = false;
-    nlohmann::json songData = nlohmann::json::object();
+    nlohmann::json notesJson = nlohmann::json::object();
     GameObject2D* scoreTextObj = nullptr;
     TextBox2D* scoreText = nullptr;
+    std::string title = "none";
 
 public:
     void ScoreTextUpdate();

@@ -6,6 +6,8 @@
 #include <SEED/Lib/Functions/MyFunc.h>
 #include <SEED/Lib/Functions/MyMath.h>
 #include <SEED/Lib/Structs/Timer.h>
+#include <Game/Objects/SongSelect/SongInfo.h>
+
 struct TempoData;
 
 /// <summary>
@@ -15,7 +17,7 @@ class NotesData{
 public:
     NotesData();
     ~NotesData();
-    void Initialize(const nlohmann::json& songData,const std::string& jsonPath);
+    void Initialize(const SongInfo& songInfo, int32_t difficulty);
     void Update();
     void Draw();
     void BeginFrame();
@@ -39,12 +41,13 @@ private:// 内部関数
     void PlayAudio();
 
 private:// 入出力
-    void FromJson(const nlohmann::json& songData);
+    void FromJson(const SongInfo& songInfo, int32_t difficulty);
     void HotReload();
 
 private:
     // 譜面データ(ファイル)
-    nlohmann::json songData_;// 譜面データ
+    SongInfo songInfo_;// 楽曲データ
+    int32_t playDifficulty_ = 0;// 選択された難易度
     std::string jsonPath_;// 譜面データのファイルパス
 
     // タイマー関連
@@ -59,6 +62,7 @@ private:
     std::string songFilePath_;// 曲のファイルパス
     AudioHandle songAudioHandle_;// 曲の音源ハンドル
     bool isSongStarted_ = false;// 曲が開始されたかどうか
+    float audioVolume_ = 1.0f;// 曲の音量
 
     // 譜面データ関連
     std::vector<std::pair<float, std::shared_ptr<Note_Base>>> notes_;// すべてのノーツ

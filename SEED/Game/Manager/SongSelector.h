@@ -52,6 +52,7 @@ private:// 更新関連
     void PlayWaitUpdate();
     void UpdateSelectButtonUIs();
     void UpdateBGDrawerInfo();
+    void MasterVolumeAdjust();
 
 private:// 入出力
     void Edit();
@@ -114,6 +115,8 @@ private:
     Timer buttonUIPressScaleTimer_Q_;
     Timer buttonUIPressScaleTimer_E_;
     Timer sceneOutTimer_;
+    Timer songVolumeFadeInTimer_;
+    Timer songVolumeFadeOutTimer_;
 
     // フラグ類
     static inline bool isFirstPlay_ = true;
@@ -124,6 +127,7 @@ private:
 
     // 音声
     AudioHandle songHandle_;
+    bool isSelectBGMPlaying_ = false;
 
     // 色
     std::array<Color, (int)TrackDifficulty::kMaxDifficulty> uiBackColors_;

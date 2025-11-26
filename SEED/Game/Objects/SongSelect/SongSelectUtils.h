@@ -101,7 +101,7 @@ namespace ModeUtil{
 // ランクのボーダー値の定義
 namespace ScoreRankUtils{
     inline float scoreRankBorders[(int)ScoreRank::kMaxRank] = {
-        0.0f, 60.0f, 80.0f, 90.0f, 95.0f, 97.0f, 99.0f,100.0f
+        0.0f, 60.0f, 80.0f, 90.0f, 95.0f, 97.0f, 99.0f,99.5f
     };
 
     inline ScoreRank GetScoreRank(float score){

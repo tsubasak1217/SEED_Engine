@@ -1,11 +1,5 @@
 {
-    "artist": "キリギリス楽団",
-    "audioPath": "../../Resources/NoteDatas\\TinySummerKnight\\TinySummerKnight.wav",
-    "bpm": 160.0,
     "difficulty": 3,
-    "difficultyName": "Basic",
-    "genre": 1,
-    "jsonFilePath": "Resources/NoteDatas/TinySummerKnight/Basic.json",
     "maxCombo": 121,
     "notes": [
         {
@@ -780,8 +774,6 @@
         }
     ],
     "notesDesigner": "tbs",
-    "offsetTime": 0.11999999731779099,
-    "songName": "TinySummerKnight",
     "tempoData": [
         {
             "barCount": 1,

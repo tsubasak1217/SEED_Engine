@@ -42,7 +42,7 @@ NotesData::~NotesData(){
 ////////////////////////////////////////////////////////////////////
 // ノーツデータの初期化
 ////////////////////////////////////////////////////////////////////
-void NotesData::Initialize(const nlohmann::json& songData, const std::string& jsonPath){
+void NotesData::Initialize(const SongInfo& songInfo, int32_t difficulty){
     // 譜面の長さを初期化
     songTimer_.Reset();
 
@@ -52,10 +52,7 @@ void NotesData::Initialize(const nlohmann::json& songData, const std::string& js
     onFieldNotes_.clear();
 
     // jsonからノーツデータを読み込む
-    FromJson(songData);
-
-    // 譜面データのファイルパスを保存
-    jsonPath_ = jsonPath;
+    FromJson(songInfo, difficulty);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -441,28 +438,31 @@ bool NotesData::SearchNoteByTime(float minTime, float maxTime, NoteType noteType
 //////////////////////////////////////////////////////////////////////
 // JSONからノーツデータを読み込む
 //////////////////////////////////////////////////////////////////////
-void NotesData::FromJson(const nlohmann::json& songData){
+void NotesData::FromJson(const SongInfo& songInfo, int32_t difficulty){
 
     // JSONデータを保存
-    songData_ = songData;
+    songInfo_ = songInfo;
+    playDifficulty_ = difficulty;
 
-    // 曲のファイルパスを取得
-    if(songData.contains("audioPath")){
-        songFilePath_ = songData["audioPath"];
-        AudioManager::LoadAudio(songFilePath_); // オーディオをロード
-    }
+    // 音源関連の情報を取得
+    songFilePath_ = songInfo_.audioFilePath;
+    audioVolume_ = songInfo_.songVolume;
+    AudioManager::LoadAudio(songFilePath_); // オーディオをロード
+
+    // 譜面データのファイルパスを保存
+    jsonPath_ = songInfo_.jsonFilePath[playDifficulty_];
 
     // 曲全体のオフセット時間を取得
-    if(songData.contains("offsetTime")){
-        songOffsetTime_ = songData["offsetTime"];
-    }
+    songOffsetTime_ = songInfo.songOffsetTime;
 
     // 読み込みオフセット = 譜面自体のオフセット + プレイヤー設定のオフセット
     float loadOffset = songOffsetTime_ + PlaySettings::GetInstance()->GetOffsetView();
 
+
     // ノーツデータの読み込み
-    if(songData.contains("notes")){
-        for(const auto& noteJson : songData["notes"]){
+    nlohmann::json notesData = songInfo_.noteDatas[playDifficulty_];
+    if(notesData.contains("notes")){
+        for(const auto& noteJson : notesData["notes"]){
             std::string noteType = noteJson["noteType"];
 
             if(noteType == "tap"){
@@ -516,8 +516,8 @@ void NotesData::FromJson(const nlohmann::json& songData){
     }
 
     // テンポデータの読み込み
-    if(songData.contains("tempoData")){
-        for(const auto& tempoJson : songData["tempoData"]){
+    if(notesData.contains("tempoData")){
+        for(const auto& tempoJson : notesData["tempoData"]){
             TempoData tempoData;
             tempoData.FromJson(tempoJson);
             tempoDataList_.push_back(tempoData);
@@ -564,15 +564,6 @@ void NotesData::FromJson(const nlohmann::json& songData){
 // 譜面データのホットリロードを行う関数
 //////////////////////////////////////////////////////////////////////
 void NotesData::HotReload(){
-    // 譜面データがなければアサート
-    if(songData_.empty()){
-        // jsonPathからもう一度読み込む
-        songData_ = nlohmann::json::parse(std::ifstream(jsonPath_));
-    }
-
-    // JSONファイルを読み込む
-    std::string jsonFilePath = songData_["jsonFilePath"];
-    songData_ = nlohmann::json::parse(std::ifstream(jsonFilePath));
 
     // ノーツの初期化
     notes_.clear();
@@ -580,7 +571,7 @@ void NotesData::HotReload(){
     onFieldNotes_.clear();
 
     // jsonからノーツデータを読み込む
-    FromJson(songData_);
+    FromJson(songInfo_, playDifficulty_);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -623,7 +614,7 @@ void NotesData::Edit(){
             onFieldNotes_.clear();
 
             // jsonからノーツデータを読み込む
-            FromJson(songData_);
+            FromJson(songInfo_, playDifficulty_);
 
         } else{
             if(!isStopped_ && !isEnd_){

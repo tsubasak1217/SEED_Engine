@@ -25,7 +25,7 @@ SongSelector::~SongSelector(){
 void SongSelector::Initialize(){
 
     // NoteDatasの階層にあるフォルダ名を一覧取得
-    auto songFolders = MyFunc::GetFolderList("Resources/NoteDatas",true,false);
+    auto songFolders = MyFunc::GetFolderList("Resources/NoteDatas", true, false);
 
     // フォルダ名を元に楽曲情報を構築
     for(const auto& folderName : songFolders){
@@ -59,6 +59,8 @@ void SongSelector::Initialize(){
     buttonUIPressScaleTimer_Q_.Initialize(0.3f);
     buttonUIPressScaleTimer_E_.Initialize(0.3f);
     sceneOutTimer_.Initialize(1.0f, 0.0f, true);
+    songVolumeFadeInTimer_.Initialize(0.2f);
+    songVolumeFadeOutTimer_.Initialize(1.0f);
 
     // 初期位置に移動
     ShiftItem(true);
@@ -150,6 +152,9 @@ void SongSelector::Update(){
 
     // ボタンUIの更新
     UpdateSelectButtonUIs();
+
+    // マスターボリューム調整
+    MasterVolumeAdjust();
 
 #ifdef _DEBUG
     // 編集
@@ -600,16 +605,32 @@ void SongSelector::UpdateVisibleSongs(bool isPlayAudio, bool isUpdateUIs){
     currentSong = currentGroup->groupMembers[currentSongIndex];
     currentDifficulty = currentSong.second;
 
-    if(currentSong.first->songName != preSongName_){
+    if(currentSong.first->audioFilePath != preSongName_){
         // 曲名が変わったら再生する曲を切り替える
         if(isPlayAudio){
-            preSongName_ = currentSong.first->songName;
+
+            // タイマー・フラグの初期化
+            isSelectBGMPlaying_ = false;
+            songVolumeFadeInTimer_.Reset();
+            songVolumeFadeOutTimer_.Reset();
+
+            // 今の曲を停止して再生
+            preSongName_ = currentSong.first->audioFilePath;
             AudioManager::EndAudio(songHandle_);
             songHandle_ = AudioManager::PlayAudio(
                 currentSong.first->audioFilePath,
-                true, 0.5f
+                true,
+                0.0f,
+                currentSong.first->songPreviewRange.min
             );
+
         } else{
+            // タイマー・フラグの初期化
+            isSelectBGMPlaying_ = true;
+            songVolumeFadeInTimer_.Reset();
+            songVolumeFadeOutTimer_.Reset();
+
+            // 今の曲を停止して再生
             AudioManager::EndAudio(songHandle_);
             songHandle_ = AudioManager::PlayAudio(
                 AudioDictionary::Get("SelectBGM"),
@@ -810,9 +831,15 @@ void SongSelector::SelectSong(){
             UpdateUIContents();
             ShiftItem();
 
+
+            // タイマー・フラグの初期化
+            isSelectBGMPlaying_ = true;
+            songVolumeFadeInTimer_.Reset();
+            songVolumeFadeOutTimer_.Reset();
+
             // グループ選択時はデフォルト選曲BGMを再生
-            AudioManager::EndAudio(songHandle_);
             preSongName_.clear();
+            AudioManager::EndAudio(songHandle_);
             songHandle_ = AudioManager::PlayAudio(
                 AudioDictionary::Get("SelectBGM"),
                 true, 0.5f
@@ -1573,6 +1600,52 @@ void SongSelector::UpdateBGDrawerInfo(){
     } else if(backInput_.Trigger()){
         SelectBackGroundDrawer::isGrooveStart_ = true;
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// マスターボリューム調整
+////////////////////////////////////////////////////////////////////////////////
+void SongSelector::MasterVolumeAdjust(){
+
+    if(!isSelectBGMPlaying_){
+
+        // フェードイン処理
+        if(!songVolumeFadeInTimer_.IsFinished()){
+
+            songVolumeFadeInTimer_.Update();
+            float fadeInT = songVolumeFadeInTimer_.GetProgress();
+            AudioManager::SetAudioVolume(songHandle_, fadeInT * currentSong.first->songVolume);
+
+        } else{// フェードアウト処理
+
+            // 境界時間を過ぎていたらフェードアウト開始
+            float curAudioTime = AudioManager::GetAudioPlayTime(songHandle_);
+            float fadeOutBorderTime = currentSong.first->songPreviewRange.max - songVolumeFadeOutTimer_.duration;
+
+            if(curAudioTime >= fadeOutBorderTime){
+                songVolumeFadeOutTimer_.Update();
+
+                // フェードアウト処理
+                float fadeOutT = 1.0f - songVolumeFadeOutTimer_.GetProgress();
+                AudioManager::SetAudioVolume(songHandle_, fadeOutT * currentSong.first->songVolume);
+
+                // フェードアウトが終了したらプレビュー位置に戻して再生し直す
+                if(songVolumeFadeOutTimer_.IsFinished()){
+                    songVolumeFadeOutTimer_.Reset();
+                    songVolumeFadeInTimer_.Reset();
+
+                    AudioManager::EndAudio(songHandle_);
+                    songHandle_ = AudioManager::PlayAudio(
+                        currentSong.first->audioFilePath,
+                        true,
+                        0.0f,
+                        currentSong.first->songPreviewRange.min
+                    );
+                }
+            }
+        }
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////

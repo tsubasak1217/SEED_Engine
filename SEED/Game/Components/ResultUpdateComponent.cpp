@@ -116,7 +116,7 @@ void ResultUpdate2DComponent::Update(){
     if(!isInitialized_){
         // 曲名
         uiObjects_["Title"]->GetComponent<Routine2DComponent>()->Play();
-        uiObjects_["Title"]->GetComponent<UIComponent>()->GetText(0).text = playResult_.songData.value("songName","none");
+        uiObjects_["Title"]->GetComponent<UIComponent>()->GetText(0).text = playResult_.title;
         // 上から出てくるやつ
         uiObjects_["Top"]->GetComponent<Routine2DComponent>()->Play();
         // 下から出てくるやつ
@@ -135,7 +135,7 @@ void ResultUpdate2DComponent::Update(){
         {
             // 難易度
             uiObjects_["Difficulty"]->GetComponent<Routine2DComponent>()->Play();
-            int difficulty = playResult_.songData.value("difficulty",0);
+            int difficulty = playResult_.notesJson.value("difficulty",0);
             uiObjects_["Difficulty"]->GetComponent<UIComponent>()->GetText(0).text = std::to_string(difficulty);
             // 各判定
             uiObjects_["Perfect"]->GetComponent<Routine2DComponent>()->Play();

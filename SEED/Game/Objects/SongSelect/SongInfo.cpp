@@ -13,51 +13,44 @@ void SongInfo::Initialize(const std::string& _folderName){
     static std::string difficultyName[diffcultySize] = { "Basic", "Expert", "Master", "Parallel" };
     std::string directoryPath = "Resources/NoteDatas/" + _folderName + "/";
 
-    // jsonファイルの存在を確認し、読み込む
-    for(int i = 0; i < diffcultySize; i++){
+    // 楽曲情報jsonの存在を確認
+    nlohmann::json generalData = MyFunc::GetJson(directoryPath + "songInfo.json", true);
 
-        // JSONファイルを読み込む
-        nlohmann::json noteData = MyFunc::GetJson(directoryPath + difficultyName[i] + ".json",true);
-        noteDatas[i] = noteData;
-
-        if(noteData.empty()){
-            artistName = "";
-            songName = "";
-            bpm = 0.0f;
-            genre = (SongGenre)0;
-            audioFilePath = "";
-            continue;
-        }
-
-        // アーティスト名を取得
-        if(artistName.empty()){
-            artistName = noteData["artist"];
-        }
-
-        // BPMを取得
-        if(bpm == 0.0f){
-            bpm = noteData["bpm"];
-        }
-
-        // ジャンルを取得
-        if(genre == std::nullopt){
-            genre = (SongGenre)noteData["genre"];
-        }
-
-        // 楽曲名を取得
-        if(songName.empty()){
-            songName = noteData["songName"];
-        }
-
-        // 音声ファイルのパスを設定
-        if(audioFilePath.empty()){
-            audioFilePath = noteData["audioPath"];
-        }
+    if(!generalData.empty()){
+        // 共通情報を取得
+        artistName = generalData.value("artist","");
+        songName = generalData.value("songName","");
+        bpm = generalData.value("bpm",0.0f);
+        genre = (SongGenre)generalData.value("genre",0);
+        songOffsetTime = generalData.value("offsetTime", 0.0f);
+        songPreviewRange = generalData.value("previewRange",Range1D());
+        songVolume = generalData.value("songVolume", 0.5f);
+    
+    } else{
+        // 共通情報を初期化
+        artistName = "";
+        songName = "";
+        bpm = 0.0f;
+        genre = (SongGenre)0;
+        songOffsetTime = 0.0f;
+        songPreviewRange = Range1D();
+        songVolume = 0.5f;
     }
 
+    // audioファイルパスを設定
+    audioFilePath = directoryPath + MyFunc::GetFileList(
+        directoryPath,{ ".wav", ".mp3", ".m4a" }
+    ).front().string();
 
-    // 難易度ごとのデータを設定
+
+    // 難易度ごとの情報を読み込む
     for(int i = 0; i < diffcultySize; i++){
+        // JSONファイルを読み込む
+        jsonFilePath[i] = directoryPath + difficultyName[i] + ".json";
+        nlohmann::json noteData = MyFunc::GetJson(jsonFilePath[i], true);
+        noteDatas[i] = noteData;
+
+        // ファイルが存在しない場合はスキップ
         if(noteDatas[i].empty()){ continue; }
 
         // JSONからデータを取得
@@ -65,11 +58,11 @@ void SongInfo::Initialize(const std::string& _folderName){
         notesDesignerName[i] = noteDatas[i]["notesDesigner"];
     }
 
-    // jsonファイルの存在を確認し、読み込む
+
+    // スコア情報を初期化
     directoryPath = "Resources/ScoreDatas/" + _folderName + "/scoreData.json";
     nlohmann::json scoreData = MyFunc::GetJson(directoryPath);
 
-    // スコア情報を初期化
     if(!scoreData.empty()){
         for(int i = 0; i < diffcultySize; i++){
             // スコアの取得

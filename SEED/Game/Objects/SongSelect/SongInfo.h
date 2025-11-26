@@ -23,6 +23,9 @@ struct SongInfo{
     std::string audioFilePath;
     std::optional<SongGenre> genre;
     float bpm;
+    float songOffsetTime;
+    Range1D songPreviewRange;
+    float songVolume = 0.5f;
     bool isInitialized = false;
 
     // 難易度ごとの情報
@@ -33,6 +36,7 @@ struct SongInfo{
     std::string notesDesignerName[diffcultySize];
     int32_t difficulty[diffcultySize];
     nlohmann::json noteDatas[diffcultySize];
+    std::string jsonFilePath[diffcultySize];
     int32_t sortIndex[diffcultySize] = { -1,-1,-1,-1 };
     int32_t groupIndex[diffcultySize] = { -1,-1,-1,-1 };
 };

@@ -16,8 +16,6 @@ RythmGameManager* RythmGameManager::instance_ = nullptr;
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////////////////////
 RythmGameManager::RythmGameManager(){
-    // エディタ
-    notesEditor_ = std::make_unique<NotesEditor>();
 }
 
 RythmGameManager::~RythmGameManager(){
@@ -58,27 +56,27 @@ void RythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
     // 曲情報の保存
     songInfo_ = songInfo;
     playDifficulty_ = difficulty;
-    const auto& songData = songInfo_.noteDatas[difficulty];
+    const auto& notesJson = songInfo_.noteDatas[difficulty];
 
     // リザルトの初期化
     playResult_ = PlayResult();
-    playResult_.songData = songData;
+    playResult_.notesJson = notesJson;
+    playResult_.title = songInfo_.songName;
 
     // 譜面データの初期化
-    static std::string difficultyName[4] = { "Basic", "Expert", "Master", "Parallel" };
-    std::string jsonPath = "Resources/NoteDatas/" + songInfo.folderName + "/" + difficultyName[difficulty] + ".json";
     notesData_ = std::make_unique<NotesData>();
-    notesData_->Initialize(songData,jsonPath);
+    notesData_->Initialize(songInfo, difficulty);
     playResult_.totalCombo = notesData_->GetTotalCombo();
 
     // Inputの初期化
     PlayerInput::GetInstance()->Initialize();
     PlayerInput::GetInstance()->SetNotesData(notesData_.get());
 
+#ifdef _DEBUG
     // エディタの初期化
-    if(songData.contains("jsonFilePath")){
-        notesEditor_->Initialize(songData["jsonFilePath"]);
-    }
+    notesEditor_ = std::make_unique<NotesEditor>();
+    notesEditor_->Initialize(songInfo, difficulty);
+#endif
 
     // プレイフィールドの初期化
     PlayField::GetInstance()->SetNoteData(notesData_.get());
@@ -199,7 +197,7 @@ void RythmGameManager::EndFrame(){
             // スコアの書き込み(値を更新すれば)
             if(scoreJson.contains("score")){
                 float preScore = 0.0f;
-                
+
                 if(scoreJson["score"][difficultyName[playDifficulty_]].is_number()){
                     preScore = scoreJson["score"][difficultyName[playDifficulty_]];
                 }

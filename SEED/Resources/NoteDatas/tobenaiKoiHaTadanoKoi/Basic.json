@@ -1,11 +1,5 @@
 {
-    "artist": "妖精さん",
-    "audioPath": "../../Resources/NoteDatas\\tobenaiKoiHaTadanoKoi\\tobenaiKoiHaTadanoKoi.mp3",
-    "bpm": 177.0,
     "difficulty": 4,
-    "difficultyName": "Basic",
-    "genre": 1,
-    "jsonFilePath": "Resources/NoteDatas/tobenaiKoiHaTadanoKoi/Basic.json",
     "maxCombo": 268,
     "notes": [
         {
@@ -1727,8 +1721,6 @@
         }
     ],
     "notesDesigner": "tbs",
-    "offsetTime": 0.1599999964237213,
-    "songName": "飛べない鯉はただの鯉",
     "tempoData": [
         {
             "barCount": 1,

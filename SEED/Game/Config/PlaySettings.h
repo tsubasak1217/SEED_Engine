@@ -24,7 +24,7 @@ public:
     // ノーツの出現時間
     float GetLaneNoteAppearTime() const{ return kNoteAppearTime * (1.0f/ std::clamp(laneNoteSpeedRate_,0.01f,FLT_MAX)); }
     float GetKNoteAppearTime() const{ return kNoteAppearTime; }
-    float GetFrameNoteAppearTime() const{ return kFrameNoteAppearTime * (1.0f / std::clamp(laneNoteSpeedRate_, 0.01f, FLT_MAX)); }
+    float GetFrameNoteAppearTime() const{ return kFrameNoteAppearTime; }
     // 判定のオフセット
     float GetOffsetJudge() const{ return offset_judge_; }
     void SetOffsetJudge(float offset){ offset_judge_ = offset; }

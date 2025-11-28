@@ -244,6 +244,28 @@ void SongSelector::InitializeInput(){
         }
         return false;
     };
+    // 難易度変更入力-------------------------------------------------
+    difficultyChangeInput_.Value = []{
+        if(GameSystem::GetScene()->HasEvent()){
+            return LR::NONE;// イベント中は入力を受け付けない
+        }
+        if(Input::IsPressKey({ DIK_A,DIK_LEFT })){
+            return LR::LEFT;
+        }
+        if(Input::IsPressKey({ DIK_D,DIK_RIGHT })){
+            return LR::RIGHT;
+        }
+        return LR::NONE;
+    };
+    difficultyChangeInput_.Trigger = []{
+        if(GameSystem::GetScene()->HasEvent()){
+            return false;// イベント中は入力を受け付けない
+        }
+        if(Input::IsTriggerKey({ DIK_A,DIK_LEFT,DIK_D,DIK_RIGHT })){
+            return true;
+        }
+        return false;
+    };
 
     // 決定入力-------------------------------------------------------
     decideInput_.Trigger = []{
@@ -434,7 +456,10 @@ void SongSelector::CreateGroup(){
         std::sort(
             songGroups.begin(), songGroups.end(),
             [&](const SongGroup& a, const SongGroup& b){
-            return a.groupName < b.groupName;
+            // グループ名からレベルを抽出して比較
+            int32_t aLevel = std::stoi(a.groupName.substr(2));
+            int32_t bLevel = std::stoi(b.groupName.substr(2));
+            return aLevel < bLevel;
         });
 
         break;
@@ -756,6 +781,7 @@ void SongSelector::SelectSong(){
     // 各種入力値の取得
     UpDown verticalValue = verticalInput_.Value();
     LR modeChangeValue = modeChangeInput_.Value();
+    LR difficultyChangeValue = difficultyChangeInput_.Value();
 
     // 縦方向入力がある場合
     if(verticalValue != UpDown::NONE){
@@ -800,6 +826,30 @@ void SongSelector::SelectSong(){
             AudioManager::PlayAudio(AudioDictionary::Get("ChangeMode"), false, 0.5f);
 
             return;
+        }
+
+        // 難易度の変更
+        if(difficultyChangeInput_.Value() != LR::NONE && difficultyChangeInput_.Trigger()){
+            int difficultyInt = (int)currentDifficulty;
+            difficultyInt += (difficultyChangeValue == LR::LEFT) ? -1 : 1;
+            difficultyInt = std::clamp(difficultyInt, 0, (int)TrackDifficulty::kMaxDifficulty - 1);
+
+            // 難易度が変わっていたら更新
+            if(difficultyInt != (int32_t)currentDifficulty){
+                currentDifficulty = (TrackDifficulty)difficultyInt;
+                // 現在の曲情報を更新
+                currentSong = { currentSong.first,currentDifficulty };
+
+                // ソート処理を実行
+                Sort();
+                // 項目の更新
+                UpdateVisibleSongs();
+                UpdateUIContents();
+
+                // 音声再生
+                AudioManager::PlayAudio(AudioDictionary::Get("ChangeMode"), false, 0.5f);
+                return;
+            }
         }
 
         // 決定入力があれば難易度選択へ移行

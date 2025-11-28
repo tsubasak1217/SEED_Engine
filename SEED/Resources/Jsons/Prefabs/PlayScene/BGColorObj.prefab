@@ -1,0 +1,47 @@
+{
+    "gameObjects": [
+        {
+            "components": [
+                {
+                    "colors": [
+                        {
+                            "color": {
+                                "w": 1.0,
+                                "x": 0.0,
+                                "y": 0.125490203499794,
+                                "z": 0.3294117748737335
+                            },
+                            "name": "BGColor"
+                        }
+                    ],
+                    "componentID": 174,
+                    "componentTag": "ColorList_ID:174",
+                    "componentType": "ColorList"
+                }
+            ],
+            "isParentRotate": true,
+            "isParentScale": true,
+            "isParentTranslate": true,
+            "objectName": "BGColorObj",
+            "objectType": 0,
+            "transform": {
+                "rotate": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "translate": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        }
+    ]
+}

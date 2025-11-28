@@ -107,4 +107,5 @@ private:
 
     // その他のオブジェクト
     GameObject2D* backLightObject_;// 背景光オブジェクト
+    GameObject* bgColorObj_;// 背景色オブジェクト
 };

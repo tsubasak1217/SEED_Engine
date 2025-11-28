@@ -233,7 +233,8 @@ void PlayField::Initialize(){
     fastLateObjNames_[(int)UpDown::DOWN][(int)Timing::Late] = "PlayScene/Effects/late_down.prefab";
 
     // 背景色の設定
-    SEED::windowBackColor_ = 0x00557CFF;
+    bgColorObj_ = hierarchy->LoadObject("PlayScene/BGColorObj.prefab");
+    SEED::SetWindowColor(bgColorObj_->GetComponent<ColorListComponent>()->GetColor(0));
 }
 
 
@@ -241,6 +242,9 @@ void PlayField::Initialize(){
 // 更新
 /////////////////////////////////////////////////////////////////////////
 void PlayField::Update(){
+
+    // 背景色の更新
+    SEED::SetWindowColor(bgColorObj_->GetComponent<ColorListComponent>()->GetColor(0));
 
     // 押されたら反応するレーンの描画
     for(auto& answerQuadArray : laneAnswer_){

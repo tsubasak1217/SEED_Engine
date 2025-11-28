@@ -100,6 +100,7 @@ private:
     InputHandler<UpDown> verticalInput_;
     InputHandler<LR> holozontalInput_;
     InputHandler<LR> modeChangeInput_;
+    InputHandler<LR> difficultyChangeInput_;
     InputHandler<bool> decideInput_;
     InputHandler<bool> backInput_;
 

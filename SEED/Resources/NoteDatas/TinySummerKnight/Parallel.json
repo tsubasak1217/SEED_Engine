@@ -1,11 +1,5 @@
 {
-    "artist": "キリギリス楽団",
-    "audioPath": "../../Resources/NoteDatas\\TinySummerKnight\\TinySummerKnight.wav",
-    "bpm": 160.0,
-    "difficulty": 9,
-    "difficultyName": "Parallel",
-    "genre": 1,
-    "jsonFilePath": "Resources/NoteDatas/TinySummerKnight/Parallel.json",
+    "difficulty": 10,
     "maxCombo": 284,
     "notes": [
         {
@@ -1395,6 +1389,16 @@
             "time": 58.5
         },
         {
+            "duration": 1.1399999856948853,
+            "isEmitWarningObj": true,
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 1,
+            "noteType": "warning",
+            "time": 58.5
+        },
+        {
             "holdTime": 2.4375,
             "isExtraNote": false,
             "lane": 1,
@@ -1750,8 +1754,6 @@
         }
     ],
     "notesDesigner": "tbs",
-    "offsetTime": 0.11999999731779099,
-    "songName": "TinySummerKnight",
     "tempoData": [
         {
             "barCount": 1,

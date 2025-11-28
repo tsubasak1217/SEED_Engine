@@ -8,10 +8,11 @@ Note_Hold::Note_Hold() : Note_Base(){
     textureGHs_[0] = TextureManager::LoadTexture("Notes/holdNote_Head.png");
     textureGHs_[1] = TextureManager::LoadTexture("Notes/holdNote_Head.png");
     textureGHs_[2] = TextureManager::LoadTexture("Notes/holdNote_Body.png");
+    textureGHs_[3] = TextureManager::LoadTexture("Notes/holdNote_HeadEx.png");
 
     // ホールドノーツの色の設定
-    noteColors_[0] = { 1.0f, 1.0f, 0.0f, 1.0f };
-    noteColors_[1] = { 1.0f, 1.0f, 0.0f, 1.0f };
+    noteColors_[0] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    noteColors_[1] = { 1.0f, 1.0f, 1.0f, 1.0f };
     noteColors_[2] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     // ライティングを無効に
@@ -67,6 +68,13 @@ void Note_Hold::Draw(float currentTime, float appearLength){
                 if(!isHold_){
                     noteQuad_->color.value.w *= 0.25f;
                 }
+            }
+        }
+
+        // エクストラノーツの場合、頭のテクスチャを変更
+        if(isExtraNote_){
+            if(i <= 1){
+                noteQuad_->GH = textureGHs_[3];
             }
         }
 
@@ -210,6 +218,10 @@ void Note_Hold::FromJson(const nlohmann::json& json){
     Note_Base::FromJson(json);
     // ホールドノーツの情報の読み込み
     kHoldTime_ = json["holdTime"];
+
+    if(isExtraNote_){
+
+    }
 }
 
 #ifdef _DEBUG

@@ -460,7 +460,7 @@ void NotesData::FromJson(const SongInfo& songInfo, int32_t difficulty){
 
 
     // ノーツデータの読み込み
-    nlohmann::json notesData = songInfo_.noteDatas[playDifficulty_];
+    nlohmann::json notesData = MyFunc::GetJson(jsonPath_);
     if(notesData.contains("notes")){
         for(const auto& noteJson : notesData["notes"]){
             std::string noteType = noteJson["noteType"];

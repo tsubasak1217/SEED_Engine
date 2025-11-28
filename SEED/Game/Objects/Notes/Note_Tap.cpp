@@ -4,8 +4,6 @@ Note_Tap::Note_Tap() : Note_Base(){
     noteType_ = NoteType::Tap;// ノーツの種類をタップに設定
     noteQuad_.get()->color = { 1.0f, 1.0f, 1.0f, 1.0f };// 色を白に
     noteQuad_.get()->lightingType = LIGHTINGTYPE_NONE;// ライティングを無効に
-
-    noteQuad_->GH = TextureManager::LoadTexture("Notes/tapNote.png");
 }
 
 Note_Tap::~Note_Tap(){
@@ -87,6 +85,12 @@ nlohmann::json Note_Tap::ToJson(){
 
 void Note_Tap::FromJson(const nlohmann::json& json){
     Note_Base::FromJson(json);
+
+    if(isExtraNote_){
+        noteQuad_->GH = TextureManager::LoadTexture("Notes/tapNoteEx.png");
+    } else{
+        noteQuad_->GH = TextureManager::LoadTexture("Notes/tapNote.png");
+    }
 }
 
 #ifdef _DEBUG

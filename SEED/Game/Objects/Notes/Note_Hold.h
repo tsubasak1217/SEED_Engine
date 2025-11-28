@@ -25,7 +25,7 @@ public:
     bool isReleased_ = false;// リリースしたかどうか
     bool isStackedToHoldList_ = false;// スタックリストに積まれているか
     Judgement::Evalution headEvaluation_ = Judgement::Evalution::NONE;// 頭の判定
-    int32_t textureGHs_[3];// ホールドノーツのテクスチャ
+    int32_t textureGHs_[4];// ホールドノーツのテクスチャ
     Vector4 noteColors_[3];// ホールドノーツの色
 
 #ifdef _DEBUG

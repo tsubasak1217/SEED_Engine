@@ -21,7 +21,9 @@ NotesEditor::NotesEditor(){
 
     // note
     textureIDs_["tap"] = TextureManager::GetImGuiTexture("Notes/tapNote.png");
+    textureIDs_["tapEx"] = TextureManager::GetImGuiTexture("Notes/tapNoteEx.png");
     textureIDs_["holdHead"] = TextureManager::GetImGuiTexture("Notes/holdNote_Head.png");
+    textureIDs_["holdHeadEx"] = TextureManager::GetImGuiTexture("Notes/holdNote_HeadEx.png");
     textureIDs_["holdBody"] = TextureManager::GetImGuiTexture("Notes/holdNote_Body.png");
     textureIDs_["wheel"] = TextureManager::GetImGuiTexture("Notes/wheel_Edit.png");
     textureIDs_["rf_LT"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LT.png");
@@ -65,7 +67,8 @@ void NotesEditor::Initialize(const SongInfo& songInfo, int32_t difficulty){
     // ノーツデータを読み込む
     songInfo_ = songInfo;
     trackDifficulty_ = static_cast<TrackDifficulty>(difficulty);
-    LoadFromJson(songInfo,difficulty); // JSONから譜面データを読み込む
+    songName_ = songInfo.songName;
+    LoadFromJson(songInfo, difficulty); // JSONから譜面データを読み込む
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -720,7 +723,11 @@ void NotesEditor::DisplayNotes(){
                 alpha = 255;
             }
 
-            pDrawList_->AddImage(textureIDs_["tap"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+            if(!note->isExtraNote_){
+                pDrawList_->AddImage(textureIDs_["tap"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+            } else{
+                pDrawList_->AddImage(textureIDs_["tapEx"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+            }
 
         } else if(note->noteType_ == NoteType::Hold){
             Note_Hold* holdNote = dynamic_cast<Note_Hold*>(note.get());
@@ -812,7 +819,11 @@ void NotesEditor::DisplayNotes(){
                     alpha = 255;
                 }
 
-                pDrawList_->AddImage(textureIDs_["holdHead"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+                if(note->isExtraNote_){
+                    pDrawList_->AddImage(textureIDs_["holdHeadEx"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+                } else{
+                    pDrawList_->AddImage(textureIDs_["holdHead"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+                }
             }
 
             /*--------------- 終端を描画 ----------------*/
@@ -852,7 +863,11 @@ void NotesEditor::DisplayNotes(){
                     alpha = 255;
                 }
 
-                pDrawList_->AddImage(textureIDs_["holdHead"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+                if(note->isExtraNote_){
+                    pDrawList_->AddImage(textureIDs_["holdHeadEx"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+                } else{
+                    pDrawList_->AddImage(textureIDs_["holdHead"], p1, p2, ImVec2(0, 0), ImVec2(1, 1), IM_COL32(255, 255, 255, alpha));
+                }
             }
 
 
@@ -1532,8 +1547,8 @@ void NotesEditor::LoadFromJson(const SongInfo& songInfo, int32_t difficulty){
         }
 
         // その他データの読み込み
-        difficulty_ = notesJson["difficulty"];
-        notesDesignerName_ = notesJson["notesDesigner"];
+        difficulty_ = notesJson.value("difficulty", 0);
+        notesDesignerName_ = notesJson.value("notesDesigner", "");
     }
 
 
@@ -1545,7 +1560,7 @@ void NotesEditor::LoadFromJson(const SongInfo& songInfo, int32_t difficulty){
         audioVolume_ = songInfo.songVolume;
         artistName_ = songInfo.artistName;
         songGenre_ = songInfo.genre.value();
-    
+
     }
 
 
@@ -1607,7 +1622,9 @@ void NotesEditor::OutputToJson(){
             tempoData.time -= timeOffset;
         }
 
-        tempoDataList_.pop_front(); // 譜面開始前の待機時間データを削除
+        if(!tempoDataList_.empty()){
+            tempoDataList_.pop_front(); // 譜面開始前の待機時間データを削除
+        }
 
         // テンポ情報からもっとも時間割合の大きいBPMを取得
         std::unordered_map<float, float> bpmDurationMap;

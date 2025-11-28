@@ -92,13 +92,19 @@ void Judgement::Judge(NotesData* noteGroup){
 
         // 判定を拾ったノーツをリストにする
         Judgement::Evalution evaluation = note.lock()->Judge(judgeTime);
-        if(evaluation != Evalution::MISS){
+        if(evaluation != Evalution::MISS && evaluation != Evalution::NONE){
 
             NoteJudgeInfo info;
             info.note = note;
             info.signedDif = signedDif;
             info.dif = dif;
-            info.evaluation = evaluation;
+
+            if(!note.lock()->isExtraNote_){
+                info.evaluation = evaluation;
+            } else{
+                // 甘いノーツの場合はパーフェクトにする
+                info.evaluation = Evalution::PERFECT;
+            }
 
             hitNotes.push_back(info);
         }

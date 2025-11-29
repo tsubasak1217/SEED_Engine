@@ -14,6 +14,12 @@ struct TempoData;
 /// 譜面情報を保持するクラス
 /// </summary>
 class NotesData{
+
+    struct AnswerInfo{
+        float time;
+        bool isExNote;
+    };
+
 public:
     NotesData();
     ~NotesData();
@@ -66,7 +72,7 @@ private:
 
     // 譜面データ関連
     std::vector<std::pair<float, std::shared_ptr<Note_Base>>> notes_;// すべてのノーツ
-    std::list<float> answerTimes_;// 判定音を鳴らす時間のリスト
+    std::list<AnswerInfo> answerInfo_;// 判定音を鳴らす情報のリスト
     std::vector<std::weak_ptr<Note_Base>> activeHoldNotes_;// アクティブなホールドノーツ
     std::list<std::weak_ptr<Note_Base>> onFieldNotes_;// フィールド上のノーツ(見えているノーツ)
     std::list<TempoData> tempoDataList_;

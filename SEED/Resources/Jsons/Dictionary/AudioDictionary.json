@@ -5,17 +5,18 @@
 
   "TutorialSelect": "SE/select2.wav",
   "ItemSelect": "SE/select1.wav",
-  "SelecrMenuSelect" : "SE/pom.mp3",
+  "SelecrMenuSelect": "SE/pom.mp3",
   "Return": "SE/cancel.wav",
   "Metronome": "SE/metronome.mp3",
   "Answer": "SE/answer.mp3",
+  "AnswerEx": "SE/liquid.mp3",
   "AP": "SE/AP.mp3",
   "FC": "SE/FC.mp3",
-  "Clear" : "SE/voice.mp3",
+  "Clear": "SE/voice.mp3",
   "ToPlay": "SE/decide1.mp3",
   "DecideSong": "SE/decide2.mp3",
   "DecideTutorial": "SE/decide3.mp3",
-  "DecideTitle" : "SE/decide1.mp3",
+  "DecideTitle": "SE/decide1.mp3",
   "OpenSelectMenu": "SE/menu1.mp3",
-  "ChangeMode" : "SE/changeMode.mp3"
+  "ChangeMode": "SE/changeMode.mp3"
 }

@@ -380,18 +380,22 @@ void NotesData::PlayAudio(){
     };
 
     // アンサー音を鳴らすべきか判定
-    for(auto it = answerTimes_.begin(); it != answerTimes_.end();){
+    for(auto it = answerInfo_.begin(); it != answerInfo_.end();){
 
         // 今の時間より後ろなら終了
-        if(*it > borderTime[0]){
+        if(it->time > borderTime[0]){
             break;
         }
 
         // ボーダー時間内を超えたばかりならアンサー音を鳴らす
-        if(*it <= borderTime[0] && *it > borderTime[1]){
+        if(it->time <= borderTime[0] && it->time > borderTime[1]){
             // 鳴らしたら削除
-            AudioManager::PlayAudio(AudioDictionary::Get("Answer"), false);
-            it = answerTimes_.erase(it);
+            if(it->isExNote == false){
+                AudioManager::PlayAudio(AudioDictionary::Get("Answer"), false);
+            } else{
+                AudioManager::PlayAudio(AudioDictionary::Get("AnswerEx"), false);
+            }
+            it = answerInfo_.erase(it);
 
         } else{
             ++it;
@@ -540,24 +544,43 @@ void NotesData::FromJson(const SongInfo& songInfo, int32_t difficulty){
     }
 
     // アンサー音を鳴らす時間のリストを作成
-    answerTimes_.clear();
+    answerInfo_.clear();
     for(auto& note : notes_){
         // 警告ノーツはアンサー音を鳴らさないため無視
         if(Note_Warning* warningNote = dynamic_cast<Note_Warning*>(note.second.get())){
             continue;
         }
 
+        AnswerInfo info;
+        info.time = note.first;
+        info.isExNote = note.second->isExtraNote_;
+
         // ノーツの開始時間を追加
-        answerTimes_.push_back(note.first);
+        answerInfo_.push_back(info);
 
         // ホールドノーツは終点も鳴らすため追加
         if(Note_Hold* holdNote = dynamic_cast<Note_Hold*>(note.second.get())){
-            answerTimes_.push_back(holdNote->time_ + holdNote->kHoldTime_);
+            info.time = holdNote->time_ + holdNote->kHoldTime_;
+            answerInfo_.push_back(info);
         }
     }
 
     // 時間でソート
-    answerTimes_.sort();
+    answerInfo_.sort(
+        [](const AnswerInfo& a, const AnswerInfo& b){
+        return a.time < b.time;
+    });
+
+    // 時間とフラグが同じものを削除
+    answerInfo_.erase(
+        std::unique(
+            answerInfo_.begin(), answerInfo_.end(),
+            [](const AnswerInfo& a, const AnswerInfo& b){
+                return (a.time == b.time) && (a.isExNote == b.isExNote);
+            }
+        ),
+        answerInfo_.end()
+    );
 }
 
 //////////////////////////////////////////////////////////////////////

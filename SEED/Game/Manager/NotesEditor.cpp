@@ -1511,32 +1511,33 @@ void NotesEditor::LoadFromJson(const SongInfo& songInfo, int32_t difficulty){
         if(notesJson.contains("notes")){
             for(const auto& noteJson : notesJson["notes"]){
                 std::string noteType = noteJson["noteType"];
+                std::unique_ptr<Note_Base> note;
 
                 if(noteType == "tap"){
-                    Note_Tap* note = new Note_Tap();
-                    note->FromJson(noteJson);
-                    notes_.emplace_back(note);
+                    note = std::make_unique<Note_Tap>();
+
                 } else if(noteType == "hold" or noteType == "Hold"){
-                    Note_Hold* note = new Note_Hold();
-                    note->FromJson(noteJson);
-                    notes_.emplace_back(note);
+                    note = std::make_unique<Note_Hold>();
+
                 } else if(noteType == "rectFlick" or noteType == "RectFlick"){
-                    Note_RectFlick* note = new Note_RectFlick();
-                    note->FromJson(noteJson);
-                    notes_.emplace_back(note);
+                    note = std::make_unique<Note_RectFlick>();
+
                 } else if(noteType == "wheel"){
-                    Note_Wheel* note = new Note_Wheel();
-                    note->FromJson(noteJson);
-                    notes_.emplace_back(note);
+                    note = std::make_unique<Note_Wheel>();
+
                 } else if(noteType == "warning"){
-                    Note_Warning* note = new Note_Warning();
-                    note->FromJson(noteJson);
-                    notes_.emplace_back(note);
+                    note = std::make_unique<Note_Warning>();
+
                 } else{
-                    // 未知のノーツタイプは無視
+                    continue;
                 }
+
+
+                note->FromJson(noteJson);
+                notes_.emplace_back(std::move(note));
             }
         }
+
         // テンポデータの読み込み
         if(notesJson.contains("tempoData")){
             for(const auto& tempoJson : notesJson["tempoData"]){

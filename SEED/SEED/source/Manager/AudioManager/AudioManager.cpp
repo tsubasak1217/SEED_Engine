@@ -108,7 +108,7 @@ void AudioManager::BeginFrame(){
 
         // 非ループ音源のみ判定
         AudioHandle handle = kv.first;
-        if(!instance_->loopFlagMap_[handle]){
+        if(instance_->loopFlagMap_[handle]){
             return false;
         }
 
@@ -189,7 +189,7 @@ AudioHandle AudioManager::PlayAudio(
 
     // 再生バッファの設定
     XAUDIO2_BUFFER buf{};
-    buf.pAudioData = soundData.pBuffer;
+    buf.pAudioData = soundData.pBuffer.get();
     buf.AudioBytes = soundData.bufferSize;
     buf.Flags = XAUDIO2_END_OF_STREAM;
     buf.PlayBegin = sampleOffset; // 再生開始位置を設定（サンプル単位）
@@ -596,18 +596,15 @@ SoundData AudioManager::LoadWave(const char* filename){
         }
     }
 
-    // データ部の読み込み
-    char* pCbuffer = new char[data.size];
-    file.read(pCbuffer, data.size);
-
-    // 閉じる
-    file.close();
-
     // 読み込み結果を格納
     SoundData soundData{};
     soundData.wfex = format.fmt;
-    soundData.pBuffer = reinterpret_cast<BYTE*>(pCbuffer);
+    soundData.pBuffer = std::make_unique<BYTE[]>(data.size);
+    file.read((char*)soundData.pBuffer.get(), data.size);
     soundData.bufferSize = data.size;
+
+    // 閉じる
+    file.close();
 
     return soundData;
 }
@@ -676,8 +673,8 @@ SoundData AudioManager::LoadMP3(const wchar_t* filename){
 
     // SoundDataにデータを格納
     SoundData soundData;
-    soundData.pBuffer = new BYTE[audioData.size()];
-    std::copy(audioData.begin(), audioData.end(), soundData.pBuffer);
+    soundData.pBuffer = std::make_unique<BYTE[]>(audioData.size());
+    std::copy(audioData.begin(), audioData.end(), soundData.pBuffer.get());
     soundData.bufferSize = static_cast<uint32_t>(audioData.size());
 
     // フォーマット情報を取得
@@ -746,8 +743,8 @@ SoundData AudioManager::LoadMP4(const wchar_t* filename){
 
     // SoundDataにデータを格納
     SoundData soundData;
-    soundData.pBuffer = new BYTE[audioData.size()];
-    std::copy(audioData.begin(), audioData.end(), soundData.pBuffer);
+    soundData.pBuffer = std::make_unique<BYTE[]>(audioData.size());
+    std::copy(audioData.begin(), audioData.end(), soundData.pBuffer.get());
     soundData.bufferSize = static_cast<uint32_t>(audioData.size());
 
     // フォーマット情報を取得
@@ -790,7 +787,6 @@ void AudioManager::UnloadAllAudio(){
 
 
 void AudioManager::UnloadAudio(SoundData* soundData){
-    delete[] soundData->pBuffer;
     soundData->pBuffer = 0;
     soundData->bufferSize = 0;
     soundData->wfex = {};

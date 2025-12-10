@@ -2,7 +2,7 @@
     "cursorSenstivity": 1.0,
     "isReverseLR": false,
     "isReverseUD": false,
-    "laneNoteSpeedRate": 0.5,
+    "laneNoteSpeedRate": 1.0,
     "offset_answerSE": 0.0,
     "offset_judge": 0.0,
     "offset_view": 0.0

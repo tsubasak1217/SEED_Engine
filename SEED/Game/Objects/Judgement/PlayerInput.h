@@ -59,9 +59,6 @@ private:// 内部用
     void DisplayInputInfo();
 
 private:
-    static PlayerInput* instance_;
-
-private:
     float flickDeadZone_;// フリックのデッドゾーン
     float cursorPos_;// カーソルの位置(X軸移動のみ)
     float preCursorPos_;// 1フレーム前のカーソルの位置

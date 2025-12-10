@@ -469,52 +469,47 @@ void NotesData::FromJson(const SongInfo& songInfo, int32_t difficulty){
         for(const auto& noteJson : notesData["notes"]){
             std::string noteType = noteJson["noteType"];
 
+            // ベース型のshared_ptr
+            std::shared_ptr<Note_Base> note;
+
+            // ノーツ生成
             if(noteType == "tap"){
-                Note_Tap* note = new Note_Tap();
-                note->FromJson(noteJson);
-                note->time_ += loadOffset;
-                notes_.emplace_back(std::make_pair(note->time_, note));
+                note = std::make_shared<Note_Tap>();
 
-            } else if(noteType == "hold" or noteType == "Hold"){
-                Note_Hold* note = new Note_Hold();
-                note->FromJson(noteJson);
-                note->time_ += loadOffset;
-                notes_.emplace_back(std::make_pair(note->time_, note));
+            } else if(noteType == "hold" || noteType == "Hold"){
+                note = std::make_shared<Note_Hold>();
 
-            } else if(noteType == "rectFlick" or noteType == "RectFlick"){
-                Note_RectFlick* note = new Note_RectFlick();
-                note->FromJson(noteJson);
-                note->time_ += loadOffset;
-                notes_.emplace_back(std::make_pair(note->time_, note));
+            } else if(noteType == "rectFlick" || noteType == "RectFlick"){
+                note = std::make_shared<Note_RectFlick>();
 
             } else if(noteType == "wheel"){
-                Note_Wheel* note = new Note_Wheel();
-                note->FromJson(noteJson);
-                note->time_ += loadOffset;
-                notes_.emplace_back(std::make_pair(note->time_, note));
+                note = std::make_shared<Note_Wheel>();
 
             } else if(noteType == "warning"){
-                Note_Warning* note = new Note_Warning();
-                note->FromJson(noteJson);
-                note->time_ += loadOffset;
-                notes_.emplace_back(std::make_pair(note->time_, note));
+                note = std::make_shared<Note_Warning>();
 
             } else{
-                // 未知のノーツタイプは無視
                 continue;
             }
 
-            // 左右反転の設定が有効なら、ノーツのレーンを反転
+            // 共通処理
+            note->FromJson(noteJson);
+            note->time_ += loadOffset;
+            notes_.emplace_back(note->time_, note);
+
+            // ---- 反転処理 ----
+            // 左右反転
             if(PlaySettings::GetInstance()->GetIsReverseLR()){
-                notes_.back().second->lane_ -= 2;
-                notes_.back().second->lane_ *= -1; // レーンを反転
-                notes_.back().second->lane_ += 2;
+                note->lane_ -= 2;
+                note->lane_ *= -1;
+                note->lane_ += 2;
             }
 
-            // 上下反転の設定が有効なら、ノーツのレイヤーを反転
+            // 上下反転
             if(PlaySettings::GetInstance()->GetIsReverseUD()){
-                UpDown layer = notes_.back().second->layer_;
-                notes_.back().second->layer_ = layer == UpDown::UP ? UpDown::DOWN : UpDown::UP; // レイヤーを反転
+                note->layer_ = (note->layer_ == UpDown::UP)
+                    ? UpDown::DOWN
+                    : UpDown::UP;
             }
         }
     }

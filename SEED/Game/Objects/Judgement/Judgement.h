@@ -26,7 +26,6 @@ private:
     Judgement();
     Judgement(const Judgement&) = delete;
     void operator=(const Judgement&) = delete;
-    static Judgement* instance_;
 
 public:
     ~Judgement();

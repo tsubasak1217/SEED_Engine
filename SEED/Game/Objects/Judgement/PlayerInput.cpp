@@ -7,11 +7,6 @@
 #include <Game/Config/PlaySettings.h>
 
 /////////////////////////////////////////////////////////
-// static変数の初期化
-/////////////////////////////////////////////////////////
-PlayerInput* PlayerInput::instance_ = nullptr;
-
-/////////////////////////////////////////////////////////
 // コンストラクタ
 /////////////////////////////////////////////////////////
 PlayerInput::PlayerInput(){
@@ -132,13 +127,13 @@ PlayerInput::PlayerInput(){
     {
         cursorLane_.Value = []{
             static float basePosX = kWindowCenter.x - PlayField::kPlayFieldSizeX_ * 0.5f;
-            float cursorDif = instance_->cursorPos_ - basePosX;
+            float cursorDif = GetInstance()->cursorPos_ - basePosX;
             return std::clamp(int(cursorDif / PlayField::kKeyWidth_), 0, PlayField::kKeyCount_ - 1);
         };
 
         cursorLane_.PreValue = []{
             static float basePosX = kWindowCenter.x - PlayField::kPlayFieldSizeX_ * 0.5f;
-            float cursorDif = instance_->preCursorPos_ - basePosX;
+            float cursorDif = GetInstance()->preCursorPos_ - basePosX;
             return std::clamp(int(cursorDif / PlayField::kKeyWidth_), 0, PlayField::kKeyCount_ - 1);
         };
     }
@@ -168,10 +163,8 @@ PlayerInput::PlayerInput(){
 // インスタンスの取得
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 PlayerInput* PlayerInput::GetInstance(){
-    if(!instance_){
-        instance_ = new PlayerInput();
-    }
-    return instance_;
+    static PlayerInput instance;
+    return &instance;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

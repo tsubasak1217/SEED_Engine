@@ -17,7 +17,6 @@ private:
     RythmGameManager();
     RythmGameManager(const RythmGameManager&) = delete;
     void operator=(const RythmGameManager&) = delete;
-    static RythmGameManager* instance_;
 
 public:
     ~RythmGameManager();

@@ -8,7 +8,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // static変数の初期化
 ///////////////////////////////////////////////////////////////////////////////
-PlayField* PlayField::instance_ = nullptr;
 float PlayField::kPlayFieldSizeX_ = kPlayFieldSizeY_ = float(kWindowSizeY) * 0.975f;// プレイフィールドの幅
 float PlayField::kPlayFieldSizeY_ = kPlayFieldSizeY_;// プレイフィールドの高さ
 float PlayField::kKeyWidth_ = kPlayFieldSizeX_ / kKeyCount_;// 鍵盤の幅
@@ -19,10 +18,8 @@ float PlayField::kKeyWidth_ = kPlayFieldSizeX_ / kKeyCount_;// 鍵盤の幅
 PlayField::PlayField() = default;
 
 PlayField* PlayField::GetInstance(){
-    if(!instance_){
-        instance_ = new PlayField();
-    }
-    return instance_;
+    static PlayField instance;
+    return &instance;
 }
 
 PlayField::~PlayField(){

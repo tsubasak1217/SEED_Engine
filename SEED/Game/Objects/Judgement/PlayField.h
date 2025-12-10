@@ -37,7 +37,6 @@ private:
     PlayField();
     PlayField(const PlayField&) = delete;
     void operator=(const PlayField&) = delete;
-    static PlayField* instance_;
 
 public:
     static PlayField* GetInstance();

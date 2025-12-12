@@ -103,7 +103,7 @@ void Scene_Clear::EndFrame(){
 /////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::CheckStep(){
     if(step_ >= kMaxStep_){
-        if(Input::IsTriggerAnyKey()){
+        if(Input::IsTriggerAnyKey() or Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
             sceneChangeOrder = true;
         }
     }

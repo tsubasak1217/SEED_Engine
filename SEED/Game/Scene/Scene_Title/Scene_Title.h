@@ -37,6 +37,7 @@ private:
     GameObject2D* pressSpace_ = nullptr;
     GameObject2D* rotateRects_ = nullptr;
     GameObject2D* tutorialSelectItems_ = nullptr;
+    GameObject2D* mouseCursor_ = nullptr;
     GameObject* cameraParents_ = nullptr;
     GameObject* toSelectCamerawork_ = nullptr;
     GameObject* models_ = nullptr;

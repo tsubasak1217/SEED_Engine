@@ -84,6 +84,9 @@ void SongSelector::Initialize(){
         preCameraTransform_ = controlPoints[0].first;
     }
 
+    // カーソル当たり判定オブジェクトの取得
+    pMouseCursor_ = hierarchy->GetGameObject2D("cursorColliderObj");
+
     // カメラの取得
     SEED::RemoveCamera("gameCamera");
     SEED::SetMainCamera("default");
@@ -124,6 +127,9 @@ void SongSelector::EndFrame(){
 void SongSelector::Update(){
 
     if(!isPlayWaiting_){
+        // マウス入力の確認
+        CheckMouseInput();
+
         // 項目の選択
         if(!isTransitionDifficulty_Select_){
             SelectItems();
@@ -156,6 +162,7 @@ void SongSelector::Update(){
     // マスターボリューム調整
     MasterVolumeAdjust();
 
+
 #ifdef _DEBUG
     // 編集
     Edit();
@@ -177,7 +184,7 @@ void SongSelector::Draw(){
 void SongSelector::InitializeInput(){
 
     // 縦方向入力-----------------------------------------------------
-    verticalInput_.Value = []{
+    verticalInput_.Value = [&]{
         if(GameSystem::GetScene()->HasEvent()){
             return UpDown::NONE;// イベント中は入力を受け付けない
         }
@@ -187,43 +194,31 @@ void SongSelector::InitializeInput(){
         if(Input::IsPressKey({ DIK_S,DIK_DOWN })){
             return UpDown::DOWN;
         }
+        if(mouseInputVertical_ != UpDown::NONE){
+            return mouseInputVertical_;
+        }
         return UpDown::NONE;
     };
-    verticalInput_.Trigger = []{
+    verticalInput_.Trigger = [&]{
         if(GameSystem::GetScene()->HasEvent()){
             return false;// イベント中は入力を受け付けない
         }
+
+        // キーボードでの方向入力
         if(Input::IsTriggerKey({ DIK_W,DIK_UP,DIK_S,DIK_DOWN })){
             return true;
         }
-        return false;
-    };
 
-    // 横方向入力-----------------------------------------------------
-    holozontalInput_.Value = []{
-        if(GameSystem::GetScene()->HasEvent()){
-            return LR::NONE;// イベント中は入力を受け付けない
-        }
-        if(Input::IsPressKey({ DIK_A,DIK_LEFT })){
-            return LR::LEFT;
-        }
-        if(Input::IsPressKey({ DIK_D,DIK_RIGHT })){
-            return LR::RIGHT;
-        }
-        return LR::NONE;
-    };
-    holozontalInput_.Trigger = []{
-        if(GameSystem::GetScene()->HasEvent()){
-            return false;// イベント中は入力を受け付けない
-        }
-        if(Input::IsTriggerKey({ DIK_A,DIK_LEFT,DIK_D,DIK_RIGHT })){
+        // マウスでの方向入力
+        if(mouseInputVertical_ != UpDown::NONE){
             return true;
         }
+
         return false;
     };
 
     // ソート変更入力-------------------------------------------------
-    modeChangeInput_.Value = []{
+    modeChangeInput_.Value = [&]{
         if(GameSystem::GetScene()->HasEvent()){
             return LR::NONE;// イベント中は入力を受け付けない
         }
@@ -233,17 +228,24 @@ void SongSelector::InitializeInput(){
         if(Input::IsPressKey(DIK_E)){
             return LR::RIGHT;
         }
+        if(mouseInputModeChange_ != LR::NONE){
+            return mouseInputModeChange_;
+        }
         return LR::NONE;
     };
-    modeChangeInput_.Trigger = []{
+    modeChangeInput_.Trigger = [&]{
         if(GameSystem::GetScene()->HasEvent()){
             return false;// イベント中は入力を受け付けない
         }
         if(Input::IsTriggerKey({ DIK_Q,DIK_E })){
             return true;
         }
+        if(mouseInputModeChange_ != LR::NONE){
+            return true;
+        }
         return false;
     };
+
     // 難易度変更入力-------------------------------------------------
     difficultyChangeInput_.Value = []{
         if(GameSystem::GetScene()->HasEvent()){
@@ -268,22 +270,28 @@ void SongSelector::InitializeInput(){
     };
 
     // 決定入力-------------------------------------------------------
-    decideInput_.Trigger = []{
+    decideInput_.Trigger = [&]{
         if(GameSystem::GetScene()->HasEvent()){
             return false;// イベント中は入力を受け付けない
         }
         if(Input::IsTriggerKey({ DIK_SPACE,DIK_RETURN })){
             return true;
         }
+        if(mouseDecideInput_){
+            return true;
+        }
         return false;
     };
 
     // 戻る入力-------------------------------------------------------
-    backInput_.Trigger = []{
+    backInput_.Trigger = [&]{
         if(GameSystem::GetScene()->HasEvent()){
             return false;// イベント中は入力を受け付けない
         }
         if(Input::IsTriggerKey(DIK_ESCAPE)){
+            return true;
+        }
+        if(mouseBackInput_){
             return true;
         }
         return false;
@@ -1638,9 +1646,6 @@ void SongSelector::UpdateBGDrawerInfo(){
     if(verticalInput_.Trigger()){
         SelectBackGroundDrawer::isGrooveStart_ = true;
 
-    } else if(holozontalInput_.Trigger()){
-        SelectBackGroundDrawer::isGrooveStart_ = true;
-
     } else if(modeChangeInput_.Trigger()){
         SelectBackGroundDrawer::isGrooveStart_ = true;
 
@@ -1696,6 +1701,133 @@ void SongSelector::MasterVolumeAdjust(){
         }
     }
 
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+// マウス入力のチェック
+//////////////////////////////////////////////////////////////////////////////////
+void SongSelector::CheckMouseInput(){
+
+    {// 縦方向のマウス入力チェック
+
+        // マウスホイールでの方向入力
+        int32_t mouseWheel = Input::GetMouseWheel();
+        if(mouseWheel > 0){
+            mouseInputVertical_ = UpDown::UP;
+        } else if(mouseWheel < 0){
+            mouseInputVertical_ = UpDown::DOWN;
+        }
+
+        // マウスボタンでの方向入力
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+
+            std::vector<GameObject2D*> upColliderObjs;
+            upColliderObjs.push_back(songSelectButtonUI_->GetChild(0));
+
+            std::vector<GameObject2D*> downColliderObjs;
+            downColliderObjs.push_back(songSelectButtonUI_->GetChild(1));
+
+            switch(selectMode_){
+            case SelectMode::Group:
+            {
+                for(int32_t i = 0; i < groupUIs.size(); i++){
+                    if(i != centerIdx_){
+                        i < centerIdx_ ? upColliderObjs.push_back(groupUIs[i]) : downColliderObjs.push_back(groupUIs[i]);
+                    }
+                }
+                break;
+            }
+            case SelectMode::Song:
+            {
+                for(int32_t i = 0; i < songUIs.size(); i++){
+                    if(i != centerIdx_){
+                        i < centerIdx_ ? upColliderObjs.push_back(songUIs[i]) : downColliderObjs.push_back(songUIs[i]);
+                    }
+                }
+                break;
+            }
+            case SelectMode::Difficulty:
+            {
+                upColliderObjs.push_back(difficultySelectButtonUI_->GetChild(0));
+                downColliderObjs.push_back(difficultySelectButtonUI_->GetChild(1));
+                for(int32_t i = 0; i < difficultyUIs.size(); i++){
+                    if(((int)TrackDifficulty::Parallel - i) != (int)currentDifficulty){
+                        ((int)TrackDifficulty::Parallel - i) > (int)currentDifficulty ?
+                            upColliderObjs.push_back(difficultyUIs[i]) :
+                            downColliderObjs.push_back(difficultyUIs[i]);
+                    }
+                }
+                break;
+            }
+            default:
+                break;
+            }
+
+            // マウスカーソルと当たっているものに応じて方向を返す
+            for(auto& upObj : upColliderObjs){
+                if(upObj->GetIsCollided(pMouseCursor_)){
+                    mouseInputVertical_ = UpDown::UP;
+                }
+            }
+
+            for(auto& downObj : downColliderObjs){
+                if(downObj->GetIsCollided(pMouseCursor_)){
+                    mouseInputVertical_ = UpDown::DOWN;
+                }
+            }
+
+        } else if(!Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
+            if(mouseWheel == 0){
+                mouseInputVertical_ = UpDown::NONE;
+            }
+        }
+    }
+
+    {// モード変更のマウス入力チェック
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+
+            // マウスカーソルと当たっているものに応じて方向を返す
+            if(modeChangeButtonUI_->GetChild(0)->GetIsCollided(pMouseCursor_)){
+                mouseInputModeChange_ = LR::LEFT;
+
+            } else if(modeChangeButtonUI_->GetChild(1)->GetIsCollided(pMouseCursor_)){
+                mouseInputModeChange_ = LR::RIGHT;
+            }
+
+        } else{
+            mouseInputModeChange_ = LR::NONE;
+        }
+    }
+
+    {// 戻るマウス入力チェック
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            // マウスカーソルと当たっているものに応じて決定・戻るを返す
+            if(backButtonUI_->GetIsCollided(pMouseCursor_)){
+                mouseBackInput_ = true;
+            }
+        } else{
+            mouseBackInput_ = false;
+        }
+    }
+
+    {// 決定マウス入力チェック
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            // マウスカーソルと当たっているものに応じて決定・戻るを返す
+            GameObject2D* centerUI = nullptr;
+            if(selectMode_ == SelectMode::Group){
+                centerUI = groupUIs[centerIdx_];
+            } else if(selectMode_ == SelectMode::Song){
+                centerUI = songUIs[centerIdx_];
+            } else if(selectMode_ == SelectMode::Difficulty){
+                centerUI = difficultyUIs[int(TrackDifficulty::Parallel) - int(currentDifficulty)];
+            }
+            if(centerUI && centerUI->GetIsCollided(pMouseCursor_)){
+                mouseDecideInput_ = true;
+            }
+        } else{
+            mouseDecideInput_ = false;
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////

@@ -5,11 +5,11 @@
         1.0,
         2.0
     ],
-    "currentDifficulty": 3,
+    "currentDifficulty": 0,
     "currentGroupIndex": 1,
     "currentGroupMode": 1,
-    "currentSongIndex": 2,
-    "currentSortMode": 1,
+    "currentSongIndex": 0,
+    "currentSortMode": 0,
     "selectMode": 0,
     "uiBackColors": [
         {

@@ -326,7 +326,7 @@ void GameState_SelectMenu::LoadOptionItems(){
     optionTexts_[DetailText]->text = sliderDetailTexts_[currentOptionItem_];
 
     // コライダー関連
-    mouseColliderObj_ = pScene_->GetHierarchy()->LoadObject2D("SelectScene/cursorColliderObj.prefab");
+    mouseColliderObj_ = pScene_->GetHierarchy()->GetGameObject2D("cursorColliderObj");
     sliderColliderObj_ = optionPageParent_->GetChild("sliderColliderObj");
 
     // タイマー
@@ -353,7 +353,6 @@ void GameState_SelectMenu::LoadOptionItems(){
 void GameState_SelectMenu::ReleaseOptionItems(){
     auto* hierarchy = pScene_->GetHierarchy();
     hierarchy->EraseObject(optionPageParent_);
-    hierarchy->EraseObject(mouseColliderObj_);
 }
 
 
@@ -361,11 +360,6 @@ void GameState_SelectMenu::ReleaseOptionItems(){
 // オプション項目更新
 ///////////////////////////////////////////////////////////////////////////////
 void GameState_SelectMenu::UpdateOptionItems(){
-
-    // カーソル位置更新
-    Vector2 mousePos = Input::GetMousePosition();
-    mouseColliderObj_->SetWorldTranslate(mousePos);
-    mouseColliderObj_->UpdateMatrix();
 
     // 押している項目の確認
     CheckPress();
@@ -396,7 +390,7 @@ void GameState_SelectMenu::CheckPress(){
     for(int32_t i = 0; i < optionItems_.size(); i++){
 
         // カーソルがコライダー範囲内かつクリックされたら
-        if(optionItems_[i]->GetIsCollideAny()){
+        if(optionItems_[i]->GetIsCollided(mouseColliderObj_)){
             if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
                 if((OptionPageItem)i != currentOptionItem_){
 
@@ -485,7 +479,7 @@ void GameState_SelectMenu::UpdateSlider(){
 
     // スライダーをドラッグ中かどうか
     if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
-        if(sliderColliderObj_->GetIsCollideAny()){
+        if(sliderColliderObj_->GetIsCollided(mouseColliderObj_)){
             if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
                 isDraggingSlider_ = true;
             }
@@ -507,7 +501,7 @@ void GameState_SelectMenu::UpdateSlider(){
     }
 
     // スケール用タイマー更新
-    if(sliderColliderObj_->GetIsCollideAny() or isDraggingSlider_){
+    if(sliderColliderObj_->GetIsCollided(mouseColliderObj_) or isDraggingSlider_){
         sliderScalingTimer_.Update(1.0f);
     } else{
         sliderScalingTimer_.Update(-1.0f);

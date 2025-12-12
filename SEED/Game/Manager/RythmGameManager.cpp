@@ -84,6 +84,9 @@ void RythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
     // 判定の初期化
     Judgement::GetInstance();
 
+    // 盛り上がりエフェクトの初期化
+    livelyEffectsOwner_ = std::make_unique<LivelyEffectsOwner>();
+
     // pause状態の初期化
     isPaused_ = false;
 
@@ -131,6 +134,11 @@ void RythmGameManager::EndFrame(){
             scene->CauseEvent(new GameState_Pause(scene));
             Pause();
         }
+    }
+
+    // 盛り上がりエフェクトのフレーム終了処理
+    if(isLivelyEffectActive_){
+        livelyEffectsOwner_->EndFrame();
     }
 
     // 譜面が終了している場合の処理
@@ -275,10 +283,20 @@ void RythmGameManager::Update(){
         playResult_.ScoreTextUpdate();
     }
 
+    // 盛り上がりエフェクトの更新
+    if(isLivelyEffectActive_){
+        livelyEffectsOwner_->Update();
+    }
+
 #ifdef _DEBUG
     // ノーツの編集ウインドウ
     notesEditor_->Edit();
     notesData_->Edit();
+
+    // 盛り上がりエフェクトの編集
+    if(isLivelyEffectActive_){
+        livelyEffectsOwner_->Edit();
+    }
 #endif // _DEBUG
 
 }

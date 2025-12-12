@@ -62,4 +62,6 @@ private:
     Timer playEndTimer_;
     bool isPaused_ = false; // ポーズ中かどうか
     std::optional<std::unique_ptr<TutorialObjectManager>> tutorialManager_; // チュートリアルマネージャ
+    std::unique_ptr<LivelyEffectsOwner> livelyEffectsOwner_;// 背景盛り上がりエフェクト
+    bool isLivelyEffectActive_ = true;// 背景盛り上がりエフェクトが有効かどうか
 };

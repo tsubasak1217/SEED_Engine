@@ -29,4 +29,5 @@ public:
 private:
     std::unique_ptr<SongSelector> songSelector_;
     std::unique_ptr<SelectBackGroundDrawer> backGroundDrawer_;
+    GameObject2D* mouseCursorObj_ = nullptr;
 };

@@ -29,6 +29,7 @@
                                         "y": 1.0,
                                         "z": 1.0
                                     },
+                                    "cullMode": 3,
                                     "drawLocation": 2,
                                     "flipX": false,
                                     "flipY": false,
@@ -97,6 +98,7 @@
                                         "y": 1.0,
                                         "z": 1.0
                                     },
+                                    "cullMode": 3,
                                     "drawLocation": 2,
                                     "flipX": false,
                                     "flipY": false,
@@ -146,6 +148,38 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "colliders": [
+                                {
+                                    "colliderType": "AABB2D",
+                                    "isGhost": true,
+                                    "isMovable": false,
+                                    "isParentRotate": true,
+                                    "isParentScale": true,
+                                    "isParentTranslate": true,
+                                    "local": {
+                                        "center": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        "halfSize": {
+                                            "x": 36.70000076293945,
+                                            "y": 35.625
+                                        }
+                                    },
+                                    "mass": 1.0,
+                                    "miu": 0.0,
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    }
+                                }
+                            ],
+                            "componentID": 372,
+                            "componentTag": "Collision2D_ID:372",
+                            "componentType": "Collision2D",
+                            "objectType": 0
                         }
                     ],
                     "isParentRotate": true,
@@ -192,6 +226,7 @@
                                         "y": 1.0,
                                         "z": 1.0
                                     },
+                                    "cullMode": 3,
                                     "drawLocation": 2,
                                     "flipX": false,
                                     "flipY": false,
@@ -260,6 +295,7 @@
                                         "y": 1.0,
                                         "z": 1.0
                                     },
+                                    "cullMode": 3,
                                     "drawLocation": 2,
                                     "flipX": false,
                                     "flipY": false,
@@ -309,6 +345,38 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "colliders": [
+                                {
+                                    "colliderType": "AABB2D",
+                                    "isGhost": true,
+                                    "isMovable": false,
+                                    "isParentRotate": true,
+                                    "isParentScale": true,
+                                    "isParentTranslate": true,
+                                    "local": {
+                                        "center": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        "halfSize": {
+                                            "x": 36.150001525878906,
+                                            "y": 35.67499923706055
+                                        }
+                                    },
+                                    "mass": 1.0,
+                                    "miu": 0.0,
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    }
+                                }
+                            ],
+                            "componentID": 373,
+                            "componentTag": "Collision2D_ID:373",
+                            "componentType": "Collision2D",
+                            "objectType": 0
                         }
                     ],
                     "isParentRotate": true,

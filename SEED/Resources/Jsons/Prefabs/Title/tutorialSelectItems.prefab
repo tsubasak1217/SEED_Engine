@@ -113,8 +113,8 @@
                     "transform": {
                         "rotate": 0.0,
                         "scale": {
-                            "x": 0.0,
-                            "y": 0.0
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "translate": {
                             "x": 657.971923828125,
@@ -308,6 +308,38 @@
                             "isMultiply": false,
                             "time": 2.0,
                             "timeScale": 1.0
+                        },
+                        {
+                            "colliders": [
+                                {
+                                    "colliderType": "AABB2D",
+                                    "isGhost": true,
+                                    "isMovable": false,
+                                    "isParentRotate": true,
+                                    "isParentScale": true,
+                                    "isParentTranslate": true,
+                                    "local": {
+                                        "center": {
+                                            "x": 0.0,
+                                            "y": -5.699999809265137
+                                        },
+                                        "halfSize": {
+                                            "x": 125.0,
+                                            "y": 64.2249984741211
+                                        }
+                                    },
+                                    "mass": 1.0,
+                                    "miu": 0.0,
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    }
+                                }
+                            ],
+                            "componentID": 39,
+                            "componentTag": "Collision2D_ID:39",
+                            "componentType": "Collision2D",
+                            "objectType": 0
                         }
                     ],
                     "isParentRotate": true,
@@ -513,6 +545,38 @@
                             "isMultiply": false,
                             "time": 2.0,
                             "timeScale": 1.0
+                        },
+                        {
+                            "colliders": [
+                                {
+                                    "colliderType": "AABB2D",
+                                    "isGhost": true,
+                                    "isMovable": false,
+                                    "isParentRotate": true,
+                                    "isParentScale": true,
+                                    "isParentTranslate": true,
+                                    "local": {
+                                        "center": {
+                                            "x": 0.0,
+                                            "y": -6.599999904632568
+                                        },
+                                        "halfSize": {
+                                            "x": 159.5500030517578,
+                                            "y": 64.0
+                                        }
+                                    },
+                                    "mass": 1.0,
+                                    "miu": 0.0,
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    }
+                                }
+                            ],
+                            "componentID": 40,
+                            "componentTag": "Collision2D_ID:40",
+                            "componentType": "Collision2D",
+                            "objectType": 0
                         }
                     ],
                     "isParentRotate": true,

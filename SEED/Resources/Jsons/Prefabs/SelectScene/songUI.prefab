@@ -29,6 +29,7 @@
                                         "y": 1.0,
                                         "z": 1.0
                                     },
+                                    "cullMode": 3,
                                     "drawLocation": 2,
                                     "flipX": false,
                                     "flipY": false,
@@ -93,10 +94,12 @@
                                         "y": 0.9729729294776917,
                                         "z": 0.0
                                     },
+                                    "drawLocation": 2,
                                     "fontName": "Resources/Fonts/DefaultAssets/Digital/851Gkktt_005.ttf",
                                     "fontSize": 34.0,
                                     "glyphSpacing": 5.199999809265137,
                                     "isApplyViewMat": false,
+                                    "isStaticDraw": false,
                                     "layer": 10,
                                     "lineSpacing": 8.0,
                                     "name": "text0",
@@ -114,6 +117,7 @@
                                     },
                                     "text": "OK",
                                     "textBoxVisible": false,
+                                    "textDisplayRate": 1.0,
                                     "transform": {
                                         "rotate": 0.0,
                                         "scale": {
@@ -216,8 +220,8 @@
                     "transform": {
                         "rotate": 0.0,
                         "scale": {
-                            "x": 0.750633955001831,
-                            "y": 0.750633955001831
+                            "x": 0.7951622605323792,
+                            "y": 0.7951622605323792
                         },
                         "translate": {
                             "x": -323.4288330078125,
@@ -252,6 +256,7 @@
                                 "y": 0.0,
                                 "z": 0.7451737523078918
                             },
+                            "cullMode": 3,
                             "drawLocation": 2,
                             "flipX": false,
                             "flipY": false,
@@ -320,6 +325,7 @@
                                 "y": 1.0,
                                 "z": 1.0
                             },
+                            "cullMode": 3,
                             "drawLocation": 2,
                             "flipX": false,
                             "flipY": false,
@@ -388,6 +394,7 @@
                                 "y": 0.0,
                                 "z": 0.7451737523078918
                             },
+                            "cullMode": 3,
                             "drawLocation": 2,
                             "flipX": false,
                             "flipY": false,
@@ -456,6 +463,7 @@
                                 "y": 0.27799224853515625,
                                 "z": 0.0
                             },
+                            "cullMode": 3,
                             "drawLocation": 2,
                             "flipX": false,
                             "flipY": false,
@@ -524,6 +532,7 @@
                                 "y": 0.0313725508749485,
                                 "z": 0.19607843458652496
                             },
+                            "cullMode": 3,
                             "drawLocation": 2,
                             "flipX": false,
                             "flipY": false,
@@ -592,6 +601,7 @@
                                 "y": 0.031171277165412903,
                                 "z": 0.19691121578216553
                             },
+                            "cullMode": 3,
                             "drawLocation": 2,
                             "flipX": false,
                             "flipY": false,
@@ -660,6 +670,7 @@
                                 "y": 1.0,
                                 "z": 1.0
                             },
+                            "cullMode": 3,
                             "drawLocation": 2,
                             "flipX": false,
                             "flipY": false,
@@ -724,10 +735,12 @@
                                 "y": 1.0,
                                 "z": 1.0
                             },
+                            "drawLocation": 2,
                             "fontName": "Resources/Fonts/DefaultAssets/Digital/851Gkktt_005.ttf",
                             "fontSize": 32.0,
                             "glyphSpacing": 0.8999999761581421,
                             "isApplyViewMat": false,
+                            "isStaticDraw": false,
                             "layer": 6,
                             "lineSpacing": 8.0,
                             "name": "title",
@@ -745,6 +758,7 @@
                             },
                             "text": "TinySummerKnight",
                             "textBoxVisible": false,
+                            "textDisplayRate": 1.0,
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
@@ -772,10 +786,12 @@
                                 "y": 1.0,
                                 "z": 1.0
                             },
+                            "drawLocation": 2,
                             "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
                             "fontSize": 26.0,
                             "glyphSpacing": 2.5,
                             "isApplyViewMat": false,
+                            "isStaticDraw": false,
                             "layer": 6,
                             "lineSpacing": 8.0,
                             "name": "artistName",
@@ -793,6 +809,7 @@
                             },
                             "text": "キリギリス楽団",
                             "textBoxVisible": false,
+                            "textDisplayRate": 1.0,
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
@@ -820,10 +837,12 @@
                                 "y": 1.0,
                                 "z": 1.0
                             },
+                            "drawLocation": 2,
                             "fontName": "Resources/Fonts/DefaultAssets/English/Shock Surgent.otf",
                             "fontSize": 26.0,
                             "glyphSpacing": 2.0,
                             "isApplyViewMat": false,
+                            "isStaticDraw": false,
                             "layer": 6,
                             "lineSpacing": 8.0,
                             "name": "score",
@@ -841,6 +860,7 @@
                             },
                             "text": "99.6478%",
                             "textBoxVisible": false,
+                            "textDisplayRate": 1.0,
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
@@ -868,10 +888,12 @@
                                 "y": 1.0,
                                 "z": 1.0
                             },
+                            "drawLocation": 2,
                             "fontName": "Resources/Fonts/DefaultAssets/Digital/851Gkktt_005.ttf",
                             "fontSize": 85.0,
                             "glyphSpacing": 8.0,
                             "isApplyViewMat": false,
+                            "isStaticDraw": false,
                             "layer": 6,
                             "lineSpacing": 8.0,
                             "name": "level",
@@ -889,6 +911,7 @@
                             },
                             "text": "8",
                             "textBoxVisible": false,
+                            "textDisplayRate": 1.0,
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
@@ -916,10 +939,12 @@
                                 "y": 1.0,
                                 "z": 1.0
                             },
+                            "drawLocation": 2,
                             "fontName": "DefaultAssets/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf",
                             "fontSize": 22.0,
                             "glyphSpacing": 2.5,
                             "isApplyViewMat": false,
+                            "isStaticDraw": false,
                             "layer": 6,
                             "lineSpacing": 8.0,
                             "name": "bpm",
@@ -937,6 +962,7 @@
                             },
                             "text": "BPM160",
                             "textBoxVisible": false,
+                            "textDisplayRate": 1.0,
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
@@ -964,10 +990,12 @@
                                 "y": 0.9505820870399475,
                                 "z": 0.015444040298461914
                             },
+                            "drawLocation": 2,
                             "fontName": "Resources/Fonts/DefaultAssets/English/Shock Surgent.otf",
                             "fontSize": 27.0,
                             "glyphSpacing": 2.700000047683716,
                             "isApplyViewMat": false,
+                            "isStaticDraw": false,
                             "layer": 6,
                             "lineSpacing": 8.0,
                             "name": "rank",
@@ -985,6 +1013,7 @@
                             },
                             "text": "SSS",
                             "textBoxVisible": false,
+                            "textDisplayRate": 1.0,
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
@@ -999,6 +1028,38 @@
                             "useOutline": false
                         }
                     ]
+                },
+                {
+                    "colliders": [
+                        {
+                            "colliderType": "AABB2D",
+                            "isGhost": true,
+                            "isMovable": false,
+                            "isParentRotate": true,
+                            "isParentScale": true,
+                            "isParentTranslate": true,
+                            "local": {
+                                "center": {
+                                    "x": 0.0,
+                                    "y": -5.800000190734863
+                                },
+                                "halfSize": {
+                                    "x": 359.45001220703125,
+                                    "y": 71.6500015258789
+                                }
+                            },
+                            "mass": 1.0,
+                            "miu": 0.0,
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            }
+                        }
+                    ],
+                    "componentID": 235,
+                    "componentTag": "Collision2D_ID:235",
+                    "componentType": "Collision2D",
+                    "objectType": 0
                 }
             ],
             "isParentRotate": true,

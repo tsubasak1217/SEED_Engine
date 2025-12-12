@@ -200,6 +200,8 @@ public:
     // すり抜けないオブジェクトとの衝突
     bool GetIsCollideSolid()const{ return isCollideSolid_; }
     bool GetIsCollideSolidTrigger()const{ return isCollideSolid_ && !preIsCollideSolid_; }
+    // 衝突したオブジェクトの取得
+    bool GetIsCollided(GameObject2D* obj);
 
     //=====================================
     // json
@@ -255,6 +257,7 @@ private:
     bool preIsCollideGhost_ = false;
     bool isCollideSolid_ = false;// すり抜けないオブジェクトと衝突したかどうか
     bool preIsCollideSolid_ = false;
+    std::unordered_map<uint32_t, GameObject2D*>collideObjects_;
     std::unordered_map<uint32_t, GameObject2D*>preCollideObjects_;
 
     // 地面、天井などに対する判定

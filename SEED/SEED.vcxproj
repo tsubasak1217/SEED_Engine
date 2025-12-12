@@ -118,6 +118,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\Effects\LivelyEffectsOwner.cpp" />
     <ClCompile Include="Game\Objects\Judgement\MouseVectorCircle.cpp" />
     <ClCompile Include="Game\Objects\Tutorial\TutorialObjectManager.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.cpp" />
@@ -289,6 +290,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\Effects\LivelyEffectsOwner.h" />
     <ClInclude Include="Game\Objects\Judgement\MouseVectorCircle.h" />
     <ClInclude Include="Game\Objects\SongSelect\SongSelectUtils.h" />
     <ClInclude Include="Game\Objects\Tutorial\TutorialObjectManager.h" />

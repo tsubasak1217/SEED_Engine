@@ -9,6 +9,7 @@
 #include <SEED/Lib/enums/Direction.h>
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Basic/Object/GameObject2D.h>
+#include <Game/Objects/Effects/LivelyEffectsOwner.h>
 #include <Game/GameSystem.h>
 
 // 前方宣言

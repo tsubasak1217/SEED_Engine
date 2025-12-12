@@ -7,6 +7,9 @@ GameState_Select::GameState_Select(){
 
 GameState_Select::GameState_Select(Scene_Base* pScene) : SceneState_Base(pScene){
 
+    // マウスカーソル
+    mouseCursorObj_ = pScene_->GetHierarchy()->LoadObject2D("SelectScene/cursorColliderObj.prefab");
+
     // 選曲マネージャーの初期化
     songSelector_ = std::make_unique<SongSelector>();
     songSelector_->Initialize();
@@ -18,12 +21,16 @@ GameState_Select::GameState_Select(Scene_Base* pScene) : SceneState_Base(pScene)
     // ポストプロセスの設定
     PostEffectSystem::DeleteAll();
     PostEffectSystem::Load("SelectScene.json");
-
 }
 
 GameState_Select::~GameState_Select(){
     // 現在流してある音声を全て停止
     AudioManager::EndAllAudio();
+
+    // マウスカーソルオブジェクトの削除
+    auto* hierarchy = pScene_->GetHierarchy();
+    hierarchy->EraseObject(mouseCursorObj_);
+
     // ポストプロセスの削除
     PostEffectSystem::DeleteAll();
 }
@@ -40,6 +47,11 @@ void GameState_Select::Update(){
 
     // 背景描画クラスの更新
     backGroundDrawer_->Update();
+
+    // カーソル位置更新
+    Vector2 mousePos = Input::GetMousePosition();
+    mouseCursorObj_->SetWorldTranslate(mousePos);
+    mouseCursorObj_->UpdateMatrix();
 }
 
 void GameState_Select::Draw(){

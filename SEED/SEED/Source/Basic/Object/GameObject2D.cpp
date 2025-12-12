@@ -396,19 +396,20 @@ void GameObject2D::OnCollision(GameObject2D* other, Collider2D* collider){
     }
 
     // 衝突したオブジェクトを保存
-    preCollideObjects_.insert({ other->GetObjectID(),other });
+    collideObjects_.insert({ other->GetObjectID(),other });
 }
 
 void GameObject2D::CheckCollisionExit(){
     // 衝突終了時の処理
-    if(!isCollideAny_ && preIsCollideAny_){
-        for(auto& other : preCollideObjects_){
-            if(GameSystem::GetScene()->IsExistObject2D(other.first)){
-                OnCollisionExit(other.second);
-            }
+    for(const auto& [id, obj] : preCollideObjects_){
+        if(collideObjects_.find(id) == collideObjects_.end()){
+            OnCollisionExit(obj);
         }
-        preCollideObjects_.clear();
     }
+
+    // 衝突中のオブジェクトを保存
+    preCollideObjects_ = collideObjects_;
+    collideObjects_.clear();
 }
 
 void GameObject2D::OnCollisionEnter(GameObject2D* other){
@@ -432,6 +433,13 @@ void GameObject2D::OnCollisionExit(GameObject2D* other){
     }
 }
 
+// 当たり判定が発生しているか取得
+bool GameObject2D::GetIsCollided(GameObject2D* obj){
+    if(preCollideObjects_.find(obj->GetObjectID()) != preCollideObjects_.end()){
+        return true;
+    }
+    return false;
+}
 
 //////////////////////////////////////////////////////////////////////////
 // jsonデータの取得

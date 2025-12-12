@@ -44,6 +44,9 @@ void Scene_Title::Initialize(){
     videoPlayer_ = std::make_unique<VideoPlayer>("demoMovie.mp4", false);
     videoPlayer_->Play(0.0f, 1.0f, true);
 
+    // マウスカーソルの読み込み
+    mouseCursor_ = hierarchy_->LoadObject2D("SelectScene/cursorColliderObj.prefab");
+
     //logoの読み込み
     titleLogo_ = hierarchy_->LoadObject2D("Title/logo.prefab");
 
@@ -86,10 +89,18 @@ void Scene_Title::Initialize(){
 
     // 入力の初期化
     decideButtonInput_.Trigger = []{
-        return Input::IsTriggerKey(DIK_SPACE);
+        return Input::IsTriggerKey({DIK_SPACE,DIK_RETURN}) or Input::IsTriggerMouse(MOUSE_BUTTON::LEFT);
     };
 
-    tutorialSelectInput_.Trigger = []{
+    tutorialSelectInput_.Trigger = [&]{
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            if(tutorialSelectItems_->GetChild(1)->GetIsCollided(mouseCursor_) or
+                tutorialSelectItems_->GetChild(2)->GetIsCollided(mouseCursor_))
+            {
+                isPlayTutorial_ = true;
+                return true;
+            }
+        }
         return Input::IsTriggerKey({ DIK_A,DIK_D,DIK_LEFT,DIK_RIGHT });
     };
 }
@@ -233,6 +244,13 @@ void Scene_Title::Update(){
             float t = std::clamp((totalTime_ - waitTime) / appearTime, 0.0f, 1.0f);
             float ease = EaseInOutExpo(t);
             pressSpace_->aditionalTransform_.scale = Vector2(ease);
+        }
+
+        // マウスカーソルの更新
+        if(mouseCursor_){
+            Vector2 mousePos = Input::GetMousePosition();
+            mouseCursor_->localTransform_.translate = mousePos;
+            mouseCursor_->UpdateMatrix();
         }
 
         // 総経過時間の更新

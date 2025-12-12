@@ -148,6 +148,38 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "colliders": [
+                                {
+                                    "colliderType": "AABB2D",
+                                    "isGhost": true,
+                                    "isMovable": false,
+                                    "isParentRotate": true,
+                                    "isParentScale": true,
+                                    "isParentTranslate": true,
+                                    "local": {
+                                        "center": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        "halfSize": {
+                                            "x": 46.0,
+                                            "y": 46.0
+                                        }
+                                    },
+                                    "mass": 1.0,
+                                    "miu": 0.0,
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    }
+                                }
+                            ],
+                            "componentID": 371,
+                            "componentTag": "Collision2D_ID:371",
+                            "componentType": "Collision2D",
+                            "objectType": 0
                         }
                     ],
                     "isParentRotate": true,
@@ -313,6 +345,38 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "colliders": [
+                                {
+                                    "colliderType": "AABB2D",
+                                    "isGhost": false,
+                                    "isMovable": true,
+                                    "isParentRotate": true,
+                                    "isParentScale": true,
+                                    "isParentTranslate": true,
+                                    "local": {
+                                        "center": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        "halfSize": {
+                                            "x": 46.400001525878906,
+                                            "y": 46.099998474121094
+                                        }
+                                    },
+                                    "mass": 1.0,
+                                    "miu": 0.0,
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    }
+                                }
+                            ],
+                            "componentID": 370,
+                            "componentTag": "Collision2D_ID:370",
+                            "componentType": "Collision2D",
+                            "objectType": 0
                         }
                     ],
                     "isParentRotate": true,
@@ -374,7 +438,7 @@
                                         "x": 222.0,
                                         "y": 64.0
                                     },
-                                    "text": "レベル",
+                                    "text": "ジャンル",
                                     "textBoxVisible": false,
                                     "textDisplayRate": 1.0,
                                     "transform": {

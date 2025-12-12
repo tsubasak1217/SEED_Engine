@@ -53,6 +53,7 @@ private:// 更新関連
     void UpdateSelectButtonUIs();
     void UpdateBGDrawerInfo();
     void MasterVolumeAdjust();
+    void CheckMouseInput();
 
 private:// 入出力
     void Edit();
@@ -96,13 +97,19 @@ private:
     GameObject2D* backButtonUI_ = nullptr;
     GameObject2D* modeChangeButtonUI_ = nullptr;
 
+    // マウスカーソル
+    GameObject2D* pMouseCursor_ = nullptr;
+
     // 入力格納変数
     InputHandler<UpDown> verticalInput_;
-    InputHandler<LR> holozontalInput_;
     InputHandler<LR> modeChangeInput_;
     InputHandler<LR> difficultyChangeInput_;
     InputHandler<bool> decideInput_;
     InputHandler<bool> backInput_;
+    UpDown mouseInputVertical_ = UpDown::NONE;
+    LR mouseInputModeChange_ = LR::NONE;
+    bool mouseDecideInput_ = false;
+    bool mouseBackInput_ = false;
 
     // Timer
     Timer inputTimer_;

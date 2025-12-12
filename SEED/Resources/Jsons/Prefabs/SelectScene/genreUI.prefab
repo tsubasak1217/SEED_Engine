@@ -29,6 +29,7 @@
                                         "y": 1.0,
                                         "z": 1.0
                                     },
+                                    "cullMode": 3,
                                     "drawLocation": 2,
                                     "flipX": false,
                                     "flipY": false,
@@ -93,10 +94,12 @@
                                         "y": 0.9729729294776917,
                                         "z": 0.0
                                     },
+                                    "drawLocation": 2,
                                     "fontName": "Resources/Fonts/DefaultAssets/Digital/851Gkktt_005.ttf",
                                     "fontSize": 34.0,
                                     "glyphSpacing": 5.199999809265137,
                                     "isApplyViewMat": false,
+                                    "isStaticDraw": false,
                                     "layer": 10,
                                     "lineSpacing": 8.0,
                                     "name": "text0",
@@ -114,6 +117,7 @@
                                     },
                                     "text": "OK",
                                     "textBoxVisible": false,
+                                    "textDisplayRate": 1.0,
                                     "transform": {
                                         "rotate": 0.0,
                                         "scale": {
@@ -216,8 +220,8 @@
                     "transform": {
                         "rotate": 0.0,
                         "scale": {
-                            "x": 0.7966365218162537,
-                            "y": 0.7966365218162537
+                            "x": 0.7988250851631165,
+                            "y": 0.7988250851631165
                         },
                         "translate": {
                             "x": -323.4288330078125,
@@ -252,6 +256,7 @@
                                 "y": 0.0,
                                 "z": 0.7451737523078918
                             },
+                            "cullMode": 3,
                             "drawLocation": 2,
                             "flipX": false,
                             "flipY": false,
@@ -316,10 +321,12 @@
                                 "y": 1.0,
                                 "z": 1.0
                             },
+                            "drawLocation": 2,
                             "fontName": "Resources/Fonts/DefaultAssets/Digital/851Gkktt_005.ttf",
                             "fontSize": 62.0,
                             "glyphSpacing": 0.8999999761581421,
                             "isApplyViewMat": false,
+                            "isStaticDraw": false,
                             "layer": 6,
                             "lineSpacing": 8.0,
                             "name": "genre",
@@ -337,6 +344,7 @@
                             },
                             "text": "全楽曲",
                             "textBoxVisible": false,
+                            "textDisplayRate": 1.0,
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
@@ -351,6 +359,38 @@
                             "useOutline": false
                         }
                     ]
+                },
+                {
+                    "colliders": [
+                        {
+                            "colliderType": "AABB2D",
+                            "isGhost": true,
+                            "isMovable": false,
+                            "isParentRotate": true,
+                            "isParentScale": true,
+                            "isParentTranslate": true,
+                            "local": {
+                                "center": {
+                                    "x": -16.600000381469727,
+                                    "y": 0.0
+                                },
+                                "halfSize": {
+                                    "x": 342.82501220703125,
+                                    "y": 78.75
+                                }
+                            },
+                            "mass": 1.0,
+                            "miu": 0.0,
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            }
+                        }
+                    ],
+                    "componentID": 225,
+                    "componentTag": "Collision2D_ID:225",
+                    "componentType": "Collision2D",
+                    "objectType": 0
                 }
             ],
             "isParentRotate": true,

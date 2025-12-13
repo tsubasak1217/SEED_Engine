@@ -45,7 +45,7 @@ void ColorControlComponent::Update(){
     }
 
     // ownerに反映
-    if(owner_.is2D){
+        if(owner_.is2D){
         if(!isMultiply_){
             // 直接書き換え
             owner_.owner2D->masterColor_ = rgbaColor;

@@ -467,6 +467,38 @@
                                 0.0,
                                 1.0
                             ]
+                        },
+                        {
+                            "colliders": [
+                                {
+                                    "colliderType": "AABB2D",
+                                    "isGhost": true,
+                                    "isMovable": false,
+                                    "isParentRotate": true,
+                                    "isParentScale": true,
+                                    "isParentTranslate": true,
+                                    "local": {
+                                        "center": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        "halfSize": {
+                                            "x": 350.0,
+                                            "y": 70.0
+                                        }
+                                    },
+                                    "mass": 1.0,
+                                    "miu": 0.0,
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    }
+                                }
+                            ],
+                            "componentID": 157,
+                            "componentTag": "Collision2D_ID:157",
+                            "componentType": "Collision2D",
+                            "objectType": 0
                         }
                     ],
                     "isParentRotate": true,
@@ -481,7 +513,7 @@
                             "y": 1.0
                         },
                         "translate": {
-                            "x": 640.0,
+                            "x": -640.0,
                             "y": 153.0
                         }
                     }
@@ -693,8 +725,8 @@
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
-                                    "x": 0.0,
-                                    "y": 0.0
+                                    "x": 1.0,
+                                    "y": 1.0
                                 },
                                 "translate": {
                                     "x": 0.0,
@@ -947,6 +979,38 @@
                                 0.0,
                                 1.0
                             ]
+                        },
+                        {
+                            "colliders": [
+                                {
+                                    "colliderType": "AABB2D",
+                                    "isGhost": true,
+                                    "isMovable": false,
+                                    "isParentRotate": true,
+                                    "isParentScale": true,
+                                    "isParentTranslate": true,
+                                    "local": {
+                                        "center": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        "halfSize": {
+                                            "x": 350.0,
+                                            "y": 70.0
+                                        }
+                                    },
+                                    "mass": 1.0,
+                                    "miu": 0.0,
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    }
+                                }
+                            ],
+                            "componentID": 156,
+                            "componentTag": "Collision2D_ID:156",
+                            "componentType": "Collision2D",
+                            "objectType": 0
                         }
                     ],
                     "isParentRotate": true,
@@ -961,7 +1025,7 @@
                             "y": 1.0
                         },
                         "translate": {
-                            "x": 640.0,
+                            "x": 1920.0,
                             "y": 360.0
                         }
                     }
@@ -1173,8 +1237,8 @@
                             "transform": {
                                 "rotate": 0.0,
                                 "scale": {
-                                    "x": 0.0,
-                                    "y": 0.0
+                                    "x": 1.0,
+                                    "y": 1.0
                                 },
                                 "translate": {
                                     "x": 0.0,
@@ -1427,6 +1491,38 @@
                                 0.0,
                                 1.0
                             ]
+                        },
+                        {
+                            "colliders": [
+                                {
+                                    "colliderType": "AABB2D",
+                                    "isGhost": true,
+                                    "isMovable": false,
+                                    "isParentRotate": true,
+                                    "isParentScale": true,
+                                    "isParentTranslate": true,
+                                    "local": {
+                                        "center": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        "halfSize": {
+                                            "x": 350.0,
+                                            "y": 70.0
+                                        }
+                                    },
+                                    "mass": 1.0,
+                                    "miu": 0.0,
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    }
+                                }
+                            ],
+                            "componentID": 155,
+                            "componentTag": "Collision2D_ID:155",
+                            "componentType": "Collision2D",
+                            "objectType": 0
                         }
                     ],
                     "isParentRotate": true,
@@ -1441,7 +1537,7 @@
                             "y": 1.0
                         },
                         "translate": {
-                            "x": 640.0,
+                            "x": -640.0,
                             "y": 570.0
                         }
                     }

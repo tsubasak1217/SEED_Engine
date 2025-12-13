@@ -43,9 +43,15 @@ private:
     GameObject2D* pauseItemsParent_;
     std::array<GameObject2D*, PauseMenuItemCount> menus_;
     GameObject2D* backSpriteObj_ = nullptr;
+    GameObject2D* mouseColliderObj_ = nullptr;
 
     //選択項目
     int32_t selectedIndex_ = 0;
+
+    // 入力
+    InputHandler<int32_t> selectInput_;
+    InputHandler<bool> decideInput_;
+    InputHandler<bool> backInput_;
 
     // タイマー関連
     Timer pauseTimer_;
@@ -53,4 +59,5 @@ private:
 
     // state遷移用
     bool isExit_ = false;
+    bool isItemChanged_ = false;
 };

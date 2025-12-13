@@ -28,7 +28,7 @@ public:
     void ManageState() override;
 
 private:
-    void SelectMenuItem();
+    bool SelectMenuItem();
     void UpdateHelpTexts();
 
 private:// option関連
@@ -97,11 +97,17 @@ private:
     Vector2 sliderLeftPos_;
     Vector2 sliderRightPos_;
 
+    // 入力
+    InputHandler<bool> backInput_;
+    InputHandler<int32_t> selectInput_;
+    InputHandler<bool> decideInput_;
+
     //選択関連
     int32_t selectedIndex_ = 0;
     OptionPageItem currentOptionItem_ = NotesSpeed;
     bool isDraggingSlider_ = false;
     bool isLoadOptionItems_ = false;
+    bool isItemChanged_ = false;
     std::array<float, kOptionPageItemCount - 1> slidersT_;
     std::array<float, kOptionPageItemCount - 1> sliderValues_;
     std::array<Range1D, kOptionPageItemCount - 1> sliderValueRanges_;

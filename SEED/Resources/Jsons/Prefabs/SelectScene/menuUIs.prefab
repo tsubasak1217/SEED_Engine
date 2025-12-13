@@ -24,7 +24,7 @@
                                         "y": 0.0
                                     },
                                     "color": {
-                                        "w": 0.9058823585510254,
+                                        "w": 0.8705882430076599,
                                         "x": 0.0,
                                         "y": 0.0,
                                         "z": 0.0
@@ -95,7 +95,7 @@
                                         },
                                         {
                                             "x": 1.0,
-                                            "y": 1.0
+                                            "y": 0.0
                                         }
                                     ],
                                     [
@@ -105,7 +105,7 @@
                                         },
                                         {
                                             "x": 1.0,
-                                            "y": 1.0
+                                            "y": 0.0
                                         }
                                     ],
                                     [
@@ -115,7 +115,7 @@
                                         },
                                         {
                                             "x": 1.0,
-                                            "y": 1.0
+                                            "y": 0.0
                                         }
                                     ],
                                     [
@@ -129,7 +129,7 @@
                                         }
                                     ]
                                 ],
-                                "type": 13,
+                                "type": 19,
                                 "unitBorder": 1.0
                             },
                             "isLoop": false,
@@ -246,7 +246,7 @@
                                         "y": 0.0
                                     },
                                     "color": {
-                                        "w": 1.0,
+                                        "w": 0.0,
                                         "x": 1.0,
                                         "y": 1.0,
                                         "z": 1.0
@@ -339,7 +339,7 @@
                                     },
                                     "text": "タイトル画面に戻ります",
                                     "textBoxVisible": false,
-                                    "textDisplayRate": 1.0,
+                                    "textDisplayRate": 0.0,
                                     "transform": {
                                         "rotate": 0.0,
                                         "scale": {
@@ -420,6 +420,38 @@
                                 0.6874284744262695,
                                 1.0
                             ]
+                        },
+                        {
+                            "colliders": [
+                                {
+                                    "colliderType": "AABB2D",
+                                    "isGhost": true,
+                                    "isMovable": false,
+                                    "isParentRotate": true,
+                                    "isParentScale": true,
+                                    "isParentTranslate": true,
+                                    "local": {
+                                        "center": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        "halfSize": {
+                                            "x": 130.0,
+                                            "y": 130.0
+                                        }
+                                    },
+                                    "mass": 1.0,
+                                    "miu": 0.0,
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    }
+                                }
+                            ],
+                            "componentID": 154,
+                            "componentTag": "Collision2D_ID:154",
+                            "componentType": "Collision2D",
+                            "objectType": 0
                         }
                     ],
                     "isParentRotate": true,
@@ -704,6 +736,38 @@
                                 0.6391426920890808,
                                 1.0
                             ]
+                        },
+                        {
+                            "colliders": [
+                                {
+                                    "colliderType": "AABB2D",
+                                    "isGhost": true,
+                                    "isMovable": false,
+                                    "isParentRotate": true,
+                                    "isParentScale": true,
+                                    "isParentTranslate": true,
+                                    "local": {
+                                        "center": {
+                                            "x": 0.0,
+                                            "y": 0.0
+                                        },
+                                        "halfSize": {
+                                            "x": 200.0,
+                                            "y": 200.0
+                                        }
+                                    },
+                                    "mass": 1.0,
+                                    "miu": 0.0,
+                                    "offset": {
+                                        "x": 0.0,
+                                        "y": 0.0
+                                    }
+                                }
+                            ],
+                            "componentID": 155,
+                            "componentTag": "Collision2D_ID:155",
+                            "componentType": "Collision2D",
+                            "objectType": 0
                         }
                     ],
                     "isParentRotate": true,

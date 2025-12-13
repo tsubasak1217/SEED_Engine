@@ -27,10 +27,6 @@ GameState_Select::~GameState_Select(){
     // 現在流してある音声を全て停止
     AudioManager::EndAllAudio();
 
-    // マウスカーソルオブジェクトの削除
-    auto* hierarchy = pScene_->GetHierarchy();
-    hierarchy->EraseObject(mouseCursorObj_);
-
     // ポストプロセスの削除
     PostEffectSystem::DeleteAll();
 }

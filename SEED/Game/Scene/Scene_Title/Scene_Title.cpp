@@ -88,20 +88,30 @@ void Scene_Title::Initialize(){
     PostEffectSystem::Load("TitleScene.json");
 
     // 入力の初期化
-    decideButtonInput_.Trigger = []{
-        return Input::IsTriggerKey({DIK_SPACE,DIK_RETURN}) or Input::IsTriggerMouse(MOUSE_BUTTON::LEFT);
-    };
-
     tutorialSelectInput_.Trigger = [&]{
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
-            if(tutorialSelectItems_->GetChild(1)->GetIsCollided(mouseCursor_) or
-                tutorialSelectItems_->GetChild(2)->GetIsCollided(mouseCursor_))
-            {
-                isPlayTutorial_ = true;
-                return true;
+        if(tutorialSelectItems_){
+            if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+                if(isPlayTutorial_){
+                    if(tutorialSelectItems_->GetChild(2)->GetIsCollided(mouseCursor_)){
+                        return true;
+                    }
+                } else{
+                    if(tutorialSelectItems_->GetChild(1)->GetIsCollided(mouseCursor_)){
+                        return true;
+                    }
+                }
             }
         }
+
         return Input::IsTriggerKey({ DIK_A,DIK_D,DIK_LEFT,DIK_RIGHT });
+    };
+
+    decideButtonInput_.Trigger = [&]{
+        bool isTrigger = tutorialSelectInput_.Trigger();
+        if(isTrigger){
+            return false;
+        }
+        return Input::IsTriggerKey({DIK_SPACE,DIK_RETURN}) or Input::IsTriggerMouse(MOUSE_BUTTON::LEFT);
     };
 }
 
@@ -359,10 +369,10 @@ void Scene_Title::SelectTutorial(){
 
         // 音声再生
         AudioManager::PlayAudio(AudioDictionary::Get("TutorialSelect"), false, 0.5f);
+    
     }
-
     // 決定処理
-    if(decideButtonInput_.Trigger()){
+    else if(decideButtonInput_.Trigger()){
         // シーン遷移フラグを立てる
         sceneOutTimer_.Restart();
         auto* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
@@ -372,4 +382,5 @@ void Scene_Title::SelectTutorial(){
         // 音声再生
         AudioManager::PlayAudio(AudioDictionary::Get("DecideTutorial"), false, 0.5f);
     }
+
 }

@@ -21,6 +21,9 @@ void GameState_Pause::Initialize(){
     // ポーズUIの読み込み
     pauseItemsParent_ = pScene_->GetHierarchy()->LoadObject2D("Pause/PauseItems.prefab");
 
+    // マウスカーソルの読み込み
+    mouseColliderObj_ = pScene_->GetHierarchy()->LoadObject2D("SelectScene/cursorColliderObj.prefab");
+
     // メニュー項目
     menus_[Resume] = pauseItemsParent_->GetChild("resume");
     menus_[Retry] = pauseItemsParent_->GetChild("retry");
@@ -49,6 +52,54 @@ void GameState_Pause::Initialize(){
             scalingTimers_[i].Initialize(0.3f, 0.3f);
         }
     }
+
+    // 入力関数の初期化
+    selectInput_.Trigger = [&](){
+
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            for(int32_t i = 0; i < menus_.size(); i++){
+                if(i != selectedIndex_){
+                    if(menus_[i]->GetIsCollided(mouseColliderObj_)){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        int inputDir = Input::IsTriggerKey(DIK_S) - Input::IsTriggerKey(DIK_W);
+        return inputDir != 0;
+    };
+
+    selectInput_.Value = [&](){
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            for(int32_t i = 0; i < menus_.size(); i++){
+                if(menus_[i]->GetIsCollided(mouseColliderObj_)){
+                    // 今のインデックスとの差分を返す
+                    return i - selectedIndex_;
+                }
+            }
+        }
+        // キーボード入力での値を返す
+        return Input::IsTriggerKey({ DIK_S,DIK_DOWN }) - Input::IsTriggerKey({ DIK_W,DIK_UP });
+    };
+
+    decideInput_.Trigger = [&](){
+
+        if(selectInput_.Trigger()){
+            return false;
+        }
+
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            if(menus_[selectedIndex_]->GetIsCollided(mouseColliderObj_)){
+                return true;
+            }
+        }
+        return Input::IsTriggerKey(DIK_SPACE);
+    };
+
+    backInput_.Trigger = [&](){
+        return Input::IsTriggerKey(DIK_ESCAPE);
+    };
 }
 
 void GameState_Pause::Finalize(){
@@ -58,6 +109,10 @@ void GameState_Pause::Finalize(){
 // 更新処理
 ///////////////////////////////////////////////////////////////////////////////
 void GameState_Pause::Update(){
+
+    // マウスカーソル位置更新
+    mouseColliderObj_->aditionalTransform_.translate = Input::GetMousePosition();
+    mouseColliderObj_->UpdateMatrix();
 
     // メニュー項目選択
     SelectMenuItem();
@@ -122,7 +177,7 @@ void GameState_Pause::ManageState(){
     // ポーズ中
     if(!isExit_){
         if(pauseTimer_.GetProgress() > 0.0f){
-            if(Input::IsTriggerKey(DIK_ESCAPE)){
+            if(backInput_.Trigger()){
                 isExit_ = true;
                 // 透明にしていく
                 backSpriteObj_->GetComponent<ColorControlComponent>()->RevercePlay();
@@ -137,35 +192,38 @@ void GameState_Pause::ManageState(){
             }
         }
 
-        // スペースキーで決定
-        if(Input::IsTriggerKey(DIK_SPACE)){
+        if(isItemChanged_){
+            isItemChanged_ = false;
+        } else{
+            // スペースキーで決定
+            if(decideInput_.Trigger()){
 
-            // 選択項目に応じた処理
-            switch(selectedIndex_){
-            case Resume:// ポーズ解除
-                // 背景を透明にしていく
-                backSpriteObj_->GetComponent<ColorControlComponent>()->RevercePlay();
-                // メニュー項目も逆再生で画面外へ
-                for(int32_t i = 0; i < menus_.size(); i++){
-                    menus_[i]->GetComponent<Routine2DComponent>()->RevercePlay();
+                // 選択項目に応じた処理
+                switch(selectedIndex_){
+                case Resume:// ポーズ解除
+                    // 背景を透明にしていく
+                    backSpriteObj_->GetComponent<ColorControlComponent>()->RevercePlay();
+                    // メニュー項目も逆再生で画面外へ
+                    for(int32_t i = 0; i < menus_.size(); i++){
+                        menus_[i]->GetComponent<Routine2DComponent>()->RevercePlay();
+                    }
+                    isExit_ = true;
+                    break;
+
+                case Retry:// リトライ
+                    pScene_->EraseFromHierarchy(pauseItemsParent_);
+                    RythmGameManager::GetInstance()->Retry();
+                    pScene_->EndEvent();
+                    break;
+
+                case ToSelect:// タイトルに戻る
+                    pScene_->ChangeScene("Game");// gameSceneのselectState
+                    return;
+
+                default:
+                    break;
                 }
-                isExit_ = true;
-                break;
-
-            case Retry:// リトライ
-                pScene_->EraseFromHierarchy(pauseItemsParent_);
-                RythmGameManager::GetInstance()->Retry();
-                pScene_->EndEvent();
-                break;
-
-            case ToSelect:// タイトルに戻る
-                pScene_->ChangeScene("Game");// gameSceneのselectState
-                return;
-
-            default:
-                break;
             }
-
         }
 
 
@@ -188,7 +246,7 @@ void GameState_Pause::ManageState(){
 void GameState_Pause::SelectMenuItem(){
 
     // 上下の入力取得
-    int inputDir = Input::IsTriggerKey(DIK_S) - Input::IsTriggerKey(DIK_W);
+    int inputDir = selectInput_.Value();
 
     // 選択インデックス更新
     int prevIndex = selectedIndex_;
@@ -214,5 +272,8 @@ void GameState_Pause::SelectMenuItem(){
 
         // 音声再生
         AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
+
+        // アイテム変更フラグを立てる
+        isItemChanged_ = true;
     }
 }

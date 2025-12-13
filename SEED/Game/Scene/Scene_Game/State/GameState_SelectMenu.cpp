@@ -22,9 +22,13 @@ void GameState_SelectMenu::Initialize(){
     // ポーズUIの読み込み
     menuItemsParent_ = pScene_->GetHierarchy()->LoadObject2D("SelectScene/menuUIs.prefab");
 
+    // カーソル
+    mouseColliderObj_ = pScene_->GetHierarchy()->GetGameObject2D("cursorColliderObj");
+
     // メニュー項目
     menus_[Option] = menuItemsParent_->GetChild("optionUI");
     menus_[BackToTitle] = menuItemsParent_->GetChild("backTitleUI");
+    menuItemsParent_->GetChild("bg")->Update(); // 背景を一度更新しておく(透明度反映のため)
 
     // ポーズ背景
     backSpriteObj_ = menuItemsParent_->GetChild("bg");
@@ -46,6 +50,57 @@ void GameState_SelectMenu::Initialize(){
             menus_[i]->masterColor_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
         }
     }
+
+    // 入力関数の初期化
+    backInput_.Trigger = [&](){
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            auto* escUI = pScene_->GetHierarchy()->GetGameObject2D("esc");
+            if(escUI->GetIsCollided(mouseColliderObj_)){
+                return true;
+            }
+        }
+        return Input::IsTriggerKey(DIK_ESCAPE);
+    };
+
+    selectInput_.Trigger = [&](){
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            for(int32_t i = 0; i < menus_.size(); i++){
+                if(i != selectedIndex_){
+                    if(menus_[i]->GetIsCollided(mouseColliderObj_)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return Input::IsTriggerKey({ DIK_W,DIK_S,DIK_A,DIK_D,DIK_UP,DIK_DOWN,DIK_LEFT,DIK_RIGHT });
+    };
+
+    selectInput_.Value = [&](){
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            for(int32_t i = 0; i < menus_.size(); i++){
+                if(menus_[i]->GetIsCollided(mouseColliderObj_)){
+                    // 今のインデックスとの差分を返す
+                    return i - selectedIndex_;
+                }
+            }
+        }
+        // キーボード入力での値を返す
+        return Input::IsTriggerKey({ DIK_S,DIK_D,DIK_DOWN,DIK_RIGHT }) - Input::IsTriggerKey({ DIK_W,DIK_A,DIK_UP,DIK_LEFT });
+    };
+
+    decideInput_.Trigger = [&](){
+
+        if(selectInput_.Trigger()){
+            return false;
+        }
+
+        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            if(menus_[selectedIndex_]->GetIsCollided(mouseColliderObj_)){
+                return true;
+            }
+        }
+        return Input::IsTriggerKey(DIK_SPACE);
+    };
 }
 
 void GameState_SelectMenu::Finalize(){
@@ -57,7 +112,7 @@ void GameState_SelectMenu::Finalize(){
 void GameState_SelectMenu::Update(){
 
     // メニュー項目選択
-    SelectMenuItem();
+    isItemChanged_ = SelectMenuItem();
 
     // メニュー項目スケーリング用のタイマー更新
     for(int32_t i = 0; i < menuItemScalingTimers_.size(); i++){
@@ -135,7 +190,7 @@ void GameState_SelectMenu::ManageState(){
     // ポーズ中
     if(!isExit_){
         if(menuTransitionTimer_.GetProgress() > 0.5f){
-            if(Input::IsTriggerKey(DIK_ESCAPE)){
+            if(backInput_.Trigger()){
 
                 if(!isInOptionPage_){
                     isExit_ = true;
@@ -159,24 +214,30 @@ void GameState_SelectMenu::ManageState(){
             }
         }
 
+
         if(!isInOptionPage_){
-            // スペースキーで決定
-            if(Input::IsTriggerKey(DIK_SPACE)){
+            if(isItemChanged_){
+                isItemChanged_ = false;
 
-                // 選択項目に応じた処理
-                switch(selectedIndex_){
-                case Option:// 設定画面を表示
-                    isInOptionPage_ = true;
-                    LoadOptionItems();
-                    break;
+            } else{
+                // スペースキーで決定
+                if(decideInput_.Trigger()){
 
-                case BackToTitle:// タイトルに戻る
-                    pScene_->ChangeScene("Title");
+                    // 選択項目に応じた処理
+                    switch(selectedIndex_){
+                    case Option:// 設定画面を表示
+                        isInOptionPage_ = true;
+                        LoadOptionItems();
+                        break;
 
-                    return;
+                    case BackToTitle:// タイトルに戻る
+                        pScene_->ChangeScene("Title");
 
-                default:
-                    break;
+                        return;
+
+                    default:
+                        break;
+                    }
                 }
             }
         }
@@ -198,16 +259,16 @@ void GameState_SelectMenu::ManageState(){
 //////////////////////////////////////////////////////////////////////////////
 // メニュー項目選択
 //////////////////////////////////////////////////////////////////////////////
-void GameState_SelectMenu::SelectMenuItem(){
+bool GameState_SelectMenu::SelectMenuItem(){
 
     // 上下の入力取得
-    int inputDir = Input::IsTriggerKey({ DIK_S,DIK_D,DIK_DOWN,DIK_RIGHT }) - Input::IsTriggerKey({ DIK_W,DIK_A,DIK_UP,DIK_LEFT });
-
-    // 選択インデックス更新
-    selectedIndex_ += inputDir;
-    selectedIndex_ = MyFunc::Spiral(selectedIndex_, 0, SelectMenuItemCount - 1);
+    int32_t inputDir = selectInput_.Value();
 
     if(inputDir != 0){
+        // 選択インデックス更新
+        selectedIndex_ += inputDir;
+        selectedIndex_ = MyFunc::Spiral(selectedIndex_, 0, SelectMenuItemCount - 1);
+
         // 選択中の項目だけ色を変える
         for(int32_t i = 0; i < menus_.size(); i++){
 
@@ -220,7 +281,10 @@ void GameState_SelectMenu::SelectMenuItem(){
 
         // 音声再生
         AudioManager::PlayAudio(AudioDictionary::Get("SelecrMenuSelect"), false, 0.5f);
+        return true;
     }
+
+    return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -326,7 +390,6 @@ void GameState_SelectMenu::LoadOptionItems(){
     optionTexts_[DetailText]->text = sliderDetailTexts_[currentOptionItem_];
 
     // コライダー関連
-    mouseColliderObj_ = pScene_->GetHierarchy()->GetGameObject2D("cursorColliderObj");
     sliderColliderObj_ = optionPageParent_->GetChild("sliderColliderObj");
 
     // タイマー

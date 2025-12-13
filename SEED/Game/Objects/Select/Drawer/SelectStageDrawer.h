@@ -198,7 +198,7 @@ private:
     bool isSameFontStageIndex_;
     // ステージの難易度s
     std::vector<int32_t> stageDifficulties_;
-    std::array<Sprite,5> difficultyStars_; // 難易度の星
+    std::array<Sprite, 5> difficultyStars_; // 難易度の星
     Vector2 difficultyStarBasePos_;
     TextBox2D difficultyText_;
     float starDrawRangeX_ = 300.0f;
@@ -224,6 +224,7 @@ private:
 
     // helper
     void StartMoveToNext(uint32_t next);
+    void StartMoveBy(int32_t delta);
     void ApplyPoseToStage(Stage& stage, const Vector2& center, const Vector2& size);
     void PoseFromOffset(float offset, Vector2& outPos, Vector2& outSize);
     void DrawActivate(float f);

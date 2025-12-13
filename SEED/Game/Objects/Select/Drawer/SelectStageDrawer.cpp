@@ -19,7 +19,28 @@
 //	SelectStageDrawer classMethods
 //============================================================================
 
-void SelectStageDrawer::Initialize(uint32_t firstFocusStage){
+namespace {
+
+    // インデックスをループさせる
+    static int WrapIndex(int v, int n) {
+
+        v %= n;
+        if (v < 0) {
+
+            v += n;
+        }
+        return v;
+    }
+    // 円環状のオフセットを求める
+    static float CircularOffset(int i, float f, int n) {
+
+        // i+k*nがfに最も近くなるkを選ばせる
+        float k = std::round((f - static_cast<float>(i)) / static_cast<float>(n));
+        return static_cast<float>(i) + k * static_cast<float>(n) - f;
+    }
+}
+
+void SelectStageDrawer::Initialize(uint32_t firstFocusStage) {
 
     // ステージのデータを受け取る
     stages_.clear();
@@ -88,13 +109,10 @@ void SelectStageDrawer::Initialize(uint32_t firstFocusStage){
     stageNameText_.transform.translate = stageNameTextTranslate_;
 }
 
-void SelectStageDrawer::SetNextFocus(){
+void SelectStageDrawer::SetNextFocus() {
 
     // 次のステージへフォーカスさせる
-    if(stages_.size() <= focusIndex_ + 1){
-        return;
-    }
-    StartMoveToNext(focusIndex_ + 1);
+    StartMoveBy(+1);
     // 右リアクション
     TriggerRightArrowReact();
 
@@ -102,13 +120,10 @@ void SelectStageDrawer::SetNextFocus(){
     AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_左右"), false, kSEVolume);
 }
 
-void SelectStageDrawer::SetPrevFocus(){
+void SelectStageDrawer::SetPrevFocus() {
 
     // 1つ前のステージをフォーカスさせる
-    if(focusIndex_ == 0){
-        return;
-    }
-    StartMoveToNext(focusIndex_ - 1);
+    StartMoveBy(-1);
     // 左リアクション
     TriggerLeftArrowReact();
 
@@ -116,10 +131,10 @@ void SelectStageDrawer::SetPrevFocus(){
     AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_左右"), false, kSEVolume);
 }
 
-void SelectStageDrawer::SetEndFocus(){
+void SelectStageDrawer::SetEndFocus() {
 
     // なにか処理中でなければステージの決定にする
-    if(currentState_ != State::Select){
+    if (currentState_ != State::Select) {
         return;
     }
     // 決定アニメーションに移る
@@ -138,14 +153,14 @@ void SelectStageDrawer::SetEndFocus(){
     AudioManager::PlayAudio(AudioDictionary::Get("セレクトシーン_決定"), false, kSEVolume);
 }
 
-void SelectStageDrawer::Update(){
+void SelectStageDrawer::Update() {
 
     // 次のシーンに進ませるので処理しない
-    if(stageInfo_.isNextScene){
+    if (stageInfo_.isNextScene) {
         return;
     }
 
-    switch(currentState_){
+    switch (currentState_) {
     case SelectStageDrawer::State::Start:
         break;
     case SelectStageDrawer::State::Select:
@@ -158,7 +173,7 @@ void SelectStageDrawer::Update(){
         // 補間中にのみタイマーを進める
         moveTimer_.Update();
         // 補間終了後選択可能にする
-        if(moveTimer_.IsFinished()){
+        if (moveTimer_.IsFinished()) {
 
             currentState_ = State::Select;
             animFrom_ = animTo_;
@@ -170,12 +185,12 @@ void SelectStageDrawer::Update(){
     case SelectStageDrawer::State::End:
 
         // 決定処理
-        switch(endPhase_){
+        switch (endPhase_) {
         case SelectStageDrawer::EndPhase::Decide:
 
             // 2倍速フォーカス
             focusAnimTimer_.Update();
-            if(focusAnimTimer_.IsFinished()){
+            if (focusAnimTimer_.IsFinished()) {
 
                 // 終了後値を元に戻してリセットしてズーム処理に移る
                 focusAnimTimer_.duration = focusAnimBaseDuration_;
@@ -188,7 +203,7 @@ void SelectStageDrawer::Update(){
             // ズーム処理を進める
             endZoomTimer_.Update();
 
-            if(endZoomTimer_.IsFinishedNow()){
+            if (endZoomTimer_.IsFinishedNow()) {
 
                 // 次のシーンに進める
                 stageInfo_.isNextScene = true;
@@ -204,27 +219,27 @@ void SelectStageDrawer::Update(){
     UpdateDifficultyDrawInfo();
 }
 
-void SelectStageDrawer::UpdateArrow(){
+void SelectStageDrawer::UpdateArrow() {
 
     // 通常振幅タイマー
     arrowAnimTimer_.Update();
-    if(arrowAnimTimer_.IsFinished()){
+    if (arrowAnimTimer_.IsFinished()) {
         arrowAnimTimer_.Reset();
     }
 
     // リアクション中だけタイマーを変える
-    if(leftArrowReacting_){
+    if (leftArrowReacting_) {
 
         leftArrowReactTimer_.Update();
-        if(leftArrowReactTimer_.IsFinished()){
+        if (leftArrowReactTimer_.IsFinished()) {
 
             leftArrowReacting_ = false;
         }
     }
-    if(rightArrowReacting_){
+    if (rightArrowReacting_) {
 
         rightArrowReactTimer_.Update();
-        if(rightArrowReactTimer_.IsFinished()){
+        if (rightArrowReactTimer_.IsFinished()) {
 
             rightArrowReacting_ = false;
         }
@@ -242,27 +257,28 @@ void SelectStageDrawer::UpdateArrow(){
     rightArrow_.offset.x = sinRight * arrowAmplitude_ * (rightArrowReacting_ ? 2.0f : 1.0f);
 }
 
-void SelectStageDrawer::Draw(){
+void SelectStageDrawer::Draw() {
 
     // ズーム処理中
-    if(currentState_ == State::End &&
-        endPhase_ == EndPhase::Zoom){
+    if (currentState_ == State::End &&
+        endPhase_ == EndPhase::Zoom) {
 
         DrawEndZoom();
         return;
     }
 
     // 各ステージを描画する
-    float f = (currentState_ == State::Move)
-        ? animFrom_ + (animTo_ - animFrom_) * moveTimer_.GetEase(moveEasing_)
-        : static_cast<float>(focusIndex_);
+    float f = (currentState_ == State::Move) ?
+        animFrom_ + (animTo_ - animFrom_) * moveTimer_.GetEase(moveEasing_) : animTo_; ;
 
     // ステージの名前をセット
     stageNameText_.text = stages_[focusIndex_].stageName;
-    for(size_t i = 0; i < stages_.size(); ++i){
 
-        float off = static_cast<float>(i) - f;
-        if(off < -1.01f || off > 1.01f){
+    const int n = static_cast<int>(stages_.size());
+    for (int i = 0; i < n; ++i) {
+
+        float off = CircularOffset(i, f, n);
+        if (off < -1.01f || off > 1.01f) {
             continue;
         }
 
@@ -281,12 +297,12 @@ void SelectStageDrawer::Draw(){
         stages_[i].stageIndexBack.Draw();
         stages_[i].stageIndexText.Draw();
         // クリア済みUI描画
-        if(stages_[i].isClear){
+        if (stages_[i].isClear) {
             stages_[i].achievementUI.Draw();
         }
         stageNameText_.Draw();
         // ステージ描画
-        for(auto& sprite : stages_[i].objects){
+        for (auto& sprite : stages_[i].objects) {
 
             sprite.Draw();
         }
@@ -296,19 +312,16 @@ void SelectStageDrawer::Draw(){
     DrawActivate(f);
 
     // 矢印の描画
-    if(focusIndex_ != 0){
+    if (stages_.size() > 1) {
 
         leftArrow_.Draw();
-    }
-    if(focusIndex_ + 1 != maxStageCount_){
-
         rightArrow_.Draw();
     }
 
     // 難易度の星の表示
     {
         // 描画
-        for(auto& star : difficultyStars_){
+        for (auto& star : difficultyStars_) {
             star.Draw();
         }
 
@@ -317,30 +330,30 @@ void SelectStageDrawer::Draw(){
     }
 }
 
-void SelectStageDrawer::Edit(){
+void SelectStageDrawer::Edit() {
 #ifdef _DEBUG
-    if(ImGui::Button("Save Json")){
+    if (ImGui::Button("Save Json")) {
 
         SaveJson();
     }
 
-    if(ImGui::CollapsingHeader("EveryEditStageParam")){
+    if (ImGui::CollapsingHeader("EveryEditStageParam")) {
         ImGui::Indent();
 
         // フォント設定
         static std::filesystem::path currentDir = "Resources/Fonts";
         std::string selectedFont = ImFunc::FolderView("フォント一覧", currentDir, false, { ".ttf",".otf" }, "Resources/Fonts");
-        if(!selectedFont.empty()){
+        if (!selectedFont.empty()) {
             stageNameText_.SetFont(selectedFont);
         }
-        if(ImGui::Checkbox("isSameFontStageIndex", &isSameFontStageIndex_)){
-            if(isSameFontStageIndex_){
-                for(size_t i = 0; i < stages_.size(); ++i){
+        if (ImGui::Checkbox("isSameFontStageIndex", &isSameFontStageIndex_)) {
+            if (isSameFontStageIndex_) {
+                for (size_t i = 0; i < stages_.size(); ++i) {
 
                     stages_[i].stageIndexText.SetFont(stageNameText_.fontName);
                 }
-            } else{
-                for(size_t i = 0; i < stages_.size(); ++i){
+            } else {
+                for (size_t i = 0; i < stages_.size(); ++i) {
 
                     stages_[i].stageIndexText.SetFont("Game/x10y12pxDonguriDuel.ttf");
                 }
@@ -349,16 +362,16 @@ void SelectStageDrawer::Edit(){
         ImGui::Separator();
 
         // 保存配列のサイズをステージ数に合わせる
-        if(stageNames_.size() != stages_.size()){
+        if (stageNames_.size() != stages_.size()) {
             stageNames_.resize(stages_.size());
-            for(size_t i = 0; i < stages_.size(); ++i){
-                if(stageNames_[i].empty()){
+            for (size_t i = 0; i < stages_.size(); ++i) {
+                if (stageNames_[i].empty()) {
                     stageNames_[i] = stages_[i].stageName;
                 }
             }
         }
 
-        for(size_t i = 0; i < stages_.size(); ++i){
+        for (size_t i = 0; i < stages_.size(); ++i) {
             ImGui::PushID(static_cast<int>(i));
 
             // 表示ラベル
@@ -367,7 +380,7 @@ void SelectStageDrawer::Edit(){
             ImGui::SameLine();
 
             // 編集ボックス
-            if(ImFunc::InputText("Stage %d", stages_[i].stageName)){
+            if (ImFunc::InputText("Stage %d", stages_[i].stageName)) {
                 stageNames_[i] = stages_[i].stageName;
             }
 
@@ -380,7 +393,7 @@ void SelectStageDrawer::Edit(){
         ImGui::Unindent();
     }
 
-    if(ImGui::CollapsingHeader("EditStageGeneralParam")){
+    if (ImGui::CollapsingHeader("EditStageGeneralParam")) {
         ImGui::Indent();
         {
             ImGui::DragFloat("moveDuration", &moveTimer_.duration, 0.01f);
@@ -394,65 +407,65 @@ void SelectStageDrawer::Edit(){
             ImGui::DragFloat("stageIndexTextOffsetY", &stageIndexTextOffsetY_, 1.0f);
             ImGui::DragFloat("stageIndexBackOffsetY", &stageIndexBackOffsetY_, 1.0f);
             ImGui::DragFloat("stageAchievementUIOffsetY", &stageAchievementUIOffsetY_, 1.0f);
-            if(ImGui::DragFloat2("stageNameTextTranslate", &stageNameTextTranslate_.x, 1.0f)){
+            if (ImGui::DragFloat2("stageNameTextTranslate", &stageNameTextTranslate_.x, 1.0f)) {
 
                 stageNameText_.transform.translate = stageNameTextTranslate_;
             }
 
-            if(ImGui::DragFloat("stageIndexBackSize", &stageIndexBackSize_)){
+            if (ImGui::DragFloat("stageIndexBackSize", &stageIndexBackSize_)) {
 
                 // 全てのフレームに適応
-                for(auto& stage : stages_){
+                for (auto& stage : stages_) {
 
                     stage.stageIndexBack.size = stageIndexBackSize_;
                 }
             }
-            if(ImGui::DragFloat("stageIndexTextSize", &stageIndexTextSize_)){
+            if (ImGui::DragFloat("stageIndexTextSize", &stageIndexTextSize_)) {
 
                 // 全てのフレームに適応
-                for(auto& stage : stages_){
+                for (auto& stage : stages_) {
 
                     stage.stageIndexText.fontSize = stageIndexTextSize_;
                 }
             }
-            if(ImGui::DragFloat("stageNameTextSize", &stageNameTextSize_)){
+            if (ImGui::DragFloat("stageNameTextSize", &stageNameTextSize_)) {
 
                 // 全てのフレームに適応
                 stageNameText_.fontSize = stageNameTextSize_;
             }
-            if(ImGui::ColorEdit4("stageIndexTextColor", &stageIndexTextColor_.x)){
+            if (ImGui::ColorEdit4("stageIndexTextColor", &stageIndexTextColor_.x)) {
 
                 // 全てのフレームに適応
-                for(auto& stage : stages_){
+                for (auto& stage : stages_) {
 
                     stage.stageIndexText.color = stageIndexTextColor_;
                 }
             }
-            if(ImGui::ColorEdit4("stageIndexBackColor", &stageIndexBackColor_.x)){
+            if (ImGui::ColorEdit4("stageIndexBackColor", &stageIndexBackColor_.x)) {
 
                 // 全てのフレームに適応
-                for(auto& stage : stages_){
+                for (auto& stage : stages_) {
 
                     stage.stageIndexBack.color = stageIndexBackColor_;
                 }
             }
-            if(ImGui::ColorEdit4("stageNameTextColor", &stageNameTextColor_.x)){
+            if (ImGui::ColorEdit4("stageNameTextColor", &stageNameTextColor_.x)) {
 
                 // 全てのフレームに適応
                 stageNameText_.color = stageNameTextColor_;
             }
-            if(ImGui::ColorEdit4("frameColor", &frameColor_.x)){
+            if (ImGui::ColorEdit4("frameColor", &frameColor_.x)) {
 
                 // 全てのフレームに適応
-                for(auto& stage : stages_){
+                for (auto& stage : stages_) {
 
                     stage.frame.color = frameColor_;
                 }
             }
-            if(ImGui::ColorEdit4("backgroundColor", &backgroundColor_.x)){
+            if (ImGui::ColorEdit4("backgroundColor", &backgroundColor_.x)) {
 
                 // 全てのフレームに適応
-                for(auto& stage : stages_){
+                for (auto& stage : stages_) {
 
                     stage.background.color = backgroundColor_;
                 }
@@ -469,7 +482,7 @@ void SelectStageDrawer::Edit(){
 
             ImGui::SeparatorText("EndAnim");
 
-            if(ImGui::Button("SetEndFocus")){
+            if (ImGui::Button("SetEndFocus")) {
 
                 SetEndFocus();
             }
@@ -478,35 +491,35 @@ void SelectStageDrawer::Edit(){
             ImGui::DragFloat("endZoomToScale", &endZoomToScale_, 0.01f);
             EnumAdapter<Easing::Type>::Combo("endZoomEasing", &endZoomEasing_);
 
-            if(ImGui::CollapsingHeader("Arrow")){
+            if (ImGui::CollapsingHeader("Arrow")) {
                 ImGui::Indent();
 
-                if(ImGui::DragFloat("translateY", &arrowTranslateY_, 1.0f)){
+                if (ImGui::DragFloat("translateY", &arrowTranslateY_, 1.0f)) {
 
                     leftArrow_.transform.translate.y = arrowTranslateY_;
                     rightArrow_.transform.translate.y = arrowTranslateY_;
                 }
-                if(ImGui::DragFloat("arrowSpacing", &arrowSpacing_, 1.0f)){
+                if (ImGui::DragFloat("arrowSpacing", &arrowSpacing_, 1.0f)) {
 
                     leftArrow_.transform.translate.x = kWindowCenter.x - arrowSpacing_;
                     rightArrow_.transform.translate.x = kWindowCenter.x + arrowSpacing_;
                 }
                 ImGui::DragFloat("arrowAmplitude", &arrowAmplitude_, 0.1f);
                 ImGui::DragFloat("reactRate", &reactRate_, 0.1f);
-                if(ImGui::DragFloat("arrowDuration", &arrowAnimTimer_.duration, 0.1f)){
+                if (ImGui::DragFloat("arrowDuration", &arrowAnimTimer_.duration, 0.1f)) {
 
                     leftArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
                     rightArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
                 }
                 EnumAdapter<Easing::Type>::Combo("arrowEasing", &arrowEasing_);
-                if(ImGui::CollapsingHeader("Left")){
+                if (ImGui::CollapsingHeader("Left")) {
                     ImGui::Indent();
                     ImGui::PushID("Left");
                     leftArrow_.Edit();
                     ImGui::PopID();
                     ImGui::Unindent();
                 }
-                if(ImGui::CollapsingHeader("Right")){
+                if (ImGui::CollapsingHeader("Right")) {
                     ImGui::Indent();
                     ImGui::PushID("Right");
                     rightArrow_.Edit();
@@ -515,21 +528,21 @@ void SelectStageDrawer::Edit(){
                 }
                 ImGui::Unindent();
             }
-            if(ImGui::CollapsingHeader("StageName")){
+            if (ImGui::CollapsingHeader("StageName")) {
                 ImGui::Indent();
                 stageNameText_.Edit();
                 ImGui::Unindent();
             }
 
             ImGui::Separator();
-            if(ImGui::CollapsingHeader("Difficulty")){
+            if (ImGui::CollapsingHeader("Difficulty")) {
                 ImGui::Indent();
                 ImGui::DragFloat2("difficultyStarBasePos", &difficultyStarBasePos_.x, 1.0f);
                 ImGui::DragFloat("starDrawRangeX", &starDrawRangeX_, 1.0f);
                 ImGui::Text("--StarSprite--");
                 difficultyStars_[0].Edit();
                 ImGui::SeparatorText("difficultyText");
-                if(ImGui::CollapsingHeader("difficultyText")){
+                if (ImGui::CollapsingHeader("difficultyText")) {
                     ImGui::Indent();
                     difficultyText_.Edit();
                     ImGui::Unindent();
@@ -540,7 +553,7 @@ void SelectStageDrawer::Edit(){
         }
         ImGui::Unindent();
     }
-    if(ImGui::CollapsingHeader("Input Hold")){
+    if (ImGui::CollapsingHeader("Input Hold")) {
 
         ImGui::DragFloat("repeatInterval", &inputRepeatInterval_, 0.01f);
         ImGui::DragFloat("repeatInitialDelay", &inputRepeatDelay_, 0.01f);
@@ -549,7 +562,7 @@ void SelectStageDrawer::Edit(){
 #endif // _DEBUG
 }
 
-void SelectStageDrawer::ApplyJson(){
+void SelectStageDrawer::ApplyJson() {
 
     nlohmann::json data = GameSystem::GetInstance()->GetCreator()->GetDrawerParams();
     std::unordered_map<int, bool> progressMap = GameSystem::GetInstance()->GetStageProgressCollector()->GetStageClearMap();
@@ -603,42 +616,42 @@ void SelectStageDrawer::ApplyJson(){
     stickThreshold_ = data.value("stickThreshold_", 0.1f);
 
     stageNames_.clear();
-    if(data.contains("stageNames") && data["stageNames"].is_array()){
-        for(auto& name : data["stageNames"]) if(name.is_string()) stageNames_.push_back(name.get<std::string>());
+    if (data.contains("stageNames") && data["stageNames"].is_array()) {
+        for (auto& name : data["stageNames"]) if (name.is_string()) stageNames_.push_back(name.get<std::string>());
     }
 
-    if(data.contains("stageNameText_.fontName")){
+    if (data.contains("stageNameText_.fontName")) {
         stageNameText_.SetFont(data["stageNameText_.fontName"]);
     }
 
     stageDifficulties_.clear();
-    if(data.contains("stageDifficulties") && data["stageDifficulties"].is_array()){
-        for(auto& diff : data["stageDifficulties"]) if(diff.is_number_integer()) stageDifficulties_.push_back(diff.get<int32_t>());
+    if (data.contains("stageDifficulties") && data["stageDifficulties"].is_array()) {
+        for (auto& diff : data["stageDifficulties"]) if (diff.is_number_integer()) stageDifficulties_.push_back(diff.get<int32_t>());
     }
-    if(data.contains("difficultyStarBasePos")) difficultyStarBasePos_ = data["difficultyStarBasePos"].get<Vector2>();
-    if(data.contains("starDrawRangeX"))        starDrawRangeX_ = data["starDrawRangeX"].get<float>();
-    if(data.contains("difficultyText")){
+    if (data.contains("difficultyStarBasePos")) difficultyStarBasePos_ = data["difficultyStarBasePos"].get<Vector2>();
+    if (data.contains("starDrawRangeX"))        starDrawRangeX_ = data["starDrawRangeX"].get<float>();
+    if (data.contains("difficultyText")) {
         difficultyText_.LoadFromJson(data["difficultyText"]);
-    } else{
+    } else {
         difficultyText_ = TextBox2D("");
     }
-    if(data.contains("starSprite")){
-        for(auto& s : difficultyStars_) s.FromJson(data["starSprite"]);
-    } else{
-        for(auto& s : difficultyStars_) s = Sprite("DefaultAssets/white1x1.png");
+    if (data.contains("starSprite")) {
+        for (auto& s : difficultyStars_) s.FromJson(data["starSprite"]);
+    } else {
+        for (auto& s : difficultyStars_) s = Sprite("DefaultAssets/white1x1.png");
     }
 
     //ステージがクリア済みかチェック
-    for(int i = 0; i < static_cast<int>(stages_.size()); ++i){
-        if(progressMap.find(i) != progressMap.end() && progressMap[i]){
+    for (int i = 0; i < static_cast<int>(stages_.size()); ++i) {
+        if (progressMap.find(i) != progressMap.end() && progressMap[i]) {
             stages_[i].isClear = true;
-        } else{
+        } else {
             stages_[i].isClear = false;
         }
     }
 }
 
-void SelectStageDrawer::SaveJson(){
+void SelectStageDrawer::SaveJson() {
 
     nlohmann::json data;
 
@@ -690,7 +703,7 @@ void SelectStageDrawer::SaveJson(){
     data["stickThreshold_"] = stickThreshold_;
 
     stageNames_.resize(stages_.size());
-    for(size_t i = 0; i < stages_.size(); ++i){
+    for (size_t i = 0; i < stages_.size(); ++i) {
         stageNames_[i] = stages_[i].stageName;
     }
 
@@ -701,7 +714,7 @@ void SelectStageDrawer::SaveJson(){
     // 難易度関連---------------------------------
     {
         stageDifficulties_.resize(stages_.size());
-        for(size_t i = 0; i < stages_.size(); ++i){
+        for (size_t i = 0; i < stages_.size(); ++i) {
             stageDifficulties_[i] = stages_[i].difficulty;
         }
         data["stageDifficulties"] = stageDifficulties_;
@@ -720,20 +733,20 @@ void SelectStageDrawer::SaveJson(){
     JsonAdapter::Save("Scene_Game/stageContexts.json", data2);
 }
 
-void SelectStageDrawer::UpdateFocusAnim(){
+void SelectStageDrawer::UpdateFocusAnim() {
 
     focusAnimTimer_.Update();
-    if(focusAnimTimer_.IsFinished()){
+    if (focusAnimTimer_.IsFinished()) {
 
         //focusAnimForward_ = !focusAnimForward_;
         focusAnimTimer_.Reset();
     }
 }
 
-void SelectStageDrawer::DrawFocusAnim(){
+void SelectStageDrawer::DrawFocusAnim() {
 
     // 移動中は描画しない
-    if(currentState_ == State::Move){
+    if (currentState_ == State::Move) {
         return;
     }
 
@@ -764,7 +777,7 @@ void SelectStageDrawer::DrawFocusAnim(){
     stageIndexBackAnim_.Draw();
 }
 
-void SelectStageDrawer::DrawEndZoom(){
+void SelectStageDrawer::DrawEndZoom() {
 
     // 進行度
     float t = endZoomTimer_.GetEase(endZoomEasing_);
@@ -780,55 +793,55 @@ void SelectStageDrawer::DrawEndZoom(){
         stages_[focusIndex_].frame.Draw();
         stages_[focusIndex_].stageIndexBack.Draw();
         stages_[focusIndex_].stageIndexText.Draw();
-        if(stages_[focusIndex_].isClear){
+        if (stages_[focusIndex_].isClear) {
             stages_[focusIndex_].achievementUI.Draw(); // クリア済みUI描画
         }
-        for(auto& spite : stages_[focusIndex_].objects){
+        for (auto& spite : stages_[focusIndex_].objects) {
 
             spite.Draw();
         }
     }
 
     // 左ステージ処理
-    if(focusIndex_ > 0){
+    if (focusIndex_ > 0) {
 
         // サイズ補間処理を行う
         float scale = 1.0f - t;
         Vector2 size = Vector2(outSize_.x * scale, outSize_.y * scale);
         ApplyPoseToStage(stages_[focusIndex_ - 1], leftTranslate_, size);
-        if(0.0f < scale){
+        if (0.0f < scale) {
 
             // 全ての描画処理
             stages_[focusIndex_ - 1].background.Draw();
             stages_[focusIndex_ - 1].frame.Draw();
             stages_[focusIndex_ - 1].stageIndexBack.Draw();
             stages_[focusIndex_ - 1].stageIndexText.Draw();
-            if(stages_[focusIndex_ - 1].isClear){
+            if (stages_[focusIndex_ - 1].isClear) {
                 stages_[focusIndex_ - 1].achievementUI.Draw(); // クリア済みUI描画
             }
-            for(auto& spite : stages_[focusIndex_ - 1].objects){
+            for (auto& spite : stages_[focusIndex_ - 1].objects) {
 
                 spite.Draw();
             }
         }
     }
     // 右
-    if(focusIndex_ + 1 < stages_.size()){
+    if (focusIndex_ + 1 < stages_.size()) {
 
         float scale = 1.0f - t;
         Vector2 size = Vector2(outSize_.x * scale, outSize_.y * scale);
         ApplyPoseToStage(stages_[focusIndex_ + 1], rightTranslate_, size);
-        if(0.0f < scale){
+        if (0.0f < scale) {
 
             // 全ての描画処理
             stages_[focusIndex_ + 1].background.Draw();
             stages_[focusIndex_ + 1].frame.Draw();
             stages_[focusIndex_ + 1].stageIndexBack.Draw();
             stages_[focusIndex_ + 1].stageIndexText.Draw();
-            if(stages_[focusIndex_ + 1].isClear){
+            if (stages_[focusIndex_ + 1].isClear) {
                 stages_[focusIndex_ + 1].achievementUI.Draw(); // クリア済みUI描画
             }
-            for(auto& spite : stages_[focusIndex_ + 1].objects){
+            for (auto& spite : stages_[focusIndex_ + 1].objects) {
 
                 spite.Draw();
             }
@@ -836,11 +849,11 @@ void SelectStageDrawer::DrawEndZoom(){
     }
 }
 
-void SelectStageDrawer::StartMoveToNext(uint32_t next){
+void SelectStageDrawer::StartMoveToNext(uint32_t next) {
 
     next = (std::min)(next, static_cast<uint32_t>(stages_.size()) - 1);
     // 同じ場所に補間できないようにする
-    if(next == focusIndex_){
+    if (next == focusIndex_) {
         return;
     }
 
@@ -855,7 +868,26 @@ void SelectStageDrawer::StartMoveToNext(uint32_t next){
     currentState_ = State::Move;
 }
 
-void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, const Vector2& size){
+void SelectStageDrawer::StartMoveBy(int32_t delta) {
+
+    const int n = static_cast<int>(stages_.size());
+    if (n <= 1) return;
+
+    // 補間途中の位置を開始点にする
+    float t = (currentState_ == State::Move) ? moveTimer_.GetEase(moveEasing_) : 1.0f;
+    float current = animFrom_ + (animTo_ - animFrom_) * t;
+    animFrom_ = current;
+
+    // delta分移動した位置を目標点にする
+    float base = std::round(current);
+    animTo_ = base + static_cast<float>(delta);
+    focusIndex_ = static_cast<uint32_t>(WrapIndex(static_cast<int>(std::round(animTo_)), n));
+
+    moveTimer_.Reset();
+    currentState_ = State::Move;
+}
+
+void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, const Vector2& size) {
 
     // 座標、サイズを設定する
     stage.translate = center;
@@ -899,7 +931,8 @@ void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, co
     const float top = center.y - gridHeight * 0.5f;
 
     // 各タイルを配置
-    for(size_t k = 0; k < stage.objects.size(); ++k){
+    size_t count = (std::min)(stage.objects.size(), stage.objectUVs.size());
+    for (size_t k = 0; k < count; ++k) {
 
         const Vector2  uv = stage.objectUVs[k];
 
@@ -909,29 +942,29 @@ void SelectStageDrawer::ApplyPoseToStage(Stage& stage, const Vector2& center, co
     }
 }
 
-void SelectStageDrawer::PoseFromOffset(float offset, Vector2& outPos, Vector2& outSize){
+void SelectStageDrawer::PoseFromOffset(float offset, Vector2& outPos, Vector2& outSize) {
 
     // 処理が終了している時は目標値を返す
-    if(offset <= -1.0f){
+    if (offset <= -1.0f) {
         outPos = leftTranslate_;
         outSize = outSize_;
         return;
     }
-    if(offset >= 1.0f){
+    if (offset >= 1.0f) {
         outPos = rightTranslate_;
         outSize = outSize_;
         return;
     }
 
     // 左から真ん中へ補間
-    if(offset < 0.0f){
+    if (offset < 0.0f) {
 
         float t = offset + 1.0f;
         outPos = MyMath::Lerp(leftTranslate_, centerTranslate_, t);
         outSize = MyMath::Lerp(outSize_, focusSize_, t);
     }
     // 真ん中から右へ補間する
-    else{
+    else {
 
         float t = offset;
         outPos = MyMath::Lerp(centerTranslate_, rightTranslate_, t);
@@ -939,27 +972,27 @@ void SelectStageDrawer::PoseFromOffset(float offset, Vector2& outPos, Vector2& o
     }
 }
 
-void SelectStageDrawer::TriggerLeftArrowReact(){
+void SelectStageDrawer::TriggerLeftArrowReact() {
 
     leftArrowReacting_ = true;
     leftArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
     leftArrowReactTimer_.Reset();
 }
 
-void SelectStageDrawer::TriggerRightArrowReact(){
+void SelectStageDrawer::TriggerRightArrowReact() {
 
     rightArrowReacting_ = true;
     rightArrowReactTimer_.duration = arrowAnimTimer_.duration * reactRate_;
     rightArrowReactTimer_.Reset();
 }
 
-void SelectStageDrawer::UpdateDifficultyDrawInfo(){
+void SelectStageDrawer::UpdateDifficultyDrawInfo() {
 
     static float motionTimer = 0.0f;
     Vector2 minPos = difficultyStarBasePos_ - Vector2(starDrawRangeX_ * 0.5f, 0.0f);
     Vector2 maxPos = difficultyStarBasePos_ + Vector2(starDrawRangeX_ * 0.5f, 0.0f);
 
-    for(size_t i = 0; i < difficultyStars_.size(); ++i){
+    for (size_t i = 0; i < difficultyStars_.size(); ++i) {
         float t = (static_cast<float>(i) / static_cast<float>(difficultyStars_.size() - 1));
 
         difficultyStars_[i] = difficultyStars_[0];
@@ -967,23 +1000,23 @@ void SelectStageDrawer::UpdateDifficultyDrawInfo(){
         difficultyStars_[i].layer = 20;
 
         // ステージの星の数だけ明るくする
-        if(i < stages_[focusIndex_].difficulty){
+        if (i < stages_[focusIndex_].difficulty) {
             // 少しスケーリングを揺らします
             float sin = std::sin(motionTimer * 3.14f - 0.3f * i);
             difficultyStars_[i].transform.scale = Vector2(1.0f + sin * (sin > 0 ? 0.2f : -0.1f));
             // キラキラさせます
             difficultyStars_[i].color = MyMath::FloatColor(255, 198, 57, 255);
-            if(sin < 0.0f){ difficultyStars_[i].color *= 1.0f + 5.0f * -sin; }
-        } else{
+            if (sin < 0.0f) { difficultyStars_[i].color *= 1.0f + 5.0f * -sin; }
+        } else {
             // 灰色にする
             difficultyStars_[i].color = Vector4(1.0f, 1.0f, 1.0f, 0.1f);
             difficultyStars_[i].transform.scale = Vector2(1.0f);
         }
     }
 
-    switch(stages_[focusIndex_].difficulty){
+    switch (stages_[focusIndex_].difficulty) {
     case 1:
-        difficultyText_.text ="カンタン";
+        difficultyText_.text = "カンタン";
         break;
     case 2:
         difficultyText_.text = "カンタン";
@@ -1005,10 +1038,10 @@ void SelectStageDrawer::UpdateDifficultyDrawInfo(){
     motionTimer += ClockManager::DeltaTime();
 }
 
-void SelectStageDrawer::DrawActivate(float f){
+void SelectStageDrawer::DrawActivate(float f) {
 
     // 移動処理以外で処理しない
-    if(currentState_ != State::Move){
+    if (currentState_ != State::Move) {
         return;
     }
 
@@ -1018,83 +1051,43 @@ void SelectStageDrawer::DrawActivate(float f){
     bool movingRight = (animTo_ > animFrom_);
 
     // 出現させるステージのインデックスと補間対象を設定する
-    uint32_t enterIndex = 0;
-    Vector2 slotPos, spawnPos;
-    // 右から補間させる
-    if(movingRight){
+    // 入ってくる1枚の座標を決める
+    int centerCoord = static_cast<int>(std::round(animTo_));
+    // 左か右かで符号を分ける
+    int enterCoord = centerCoord + (movingRight ? +1 : -1);
+    int n = static_cast<int>(stages_.size());
+    int enterIndex = WrapIndex(enterCoord, n);
 
-        // 最後のステージのときは描画を何もしない
-        if(focusIndex_ + 1 >= stages_.size()){
-            return;
-        }
-
-        // 中心から右ステージの向き
-        Vector2 direction = MyMath::Normalize(centerTranslate_ - rightTranslate_);
-        float distance = MyMath::Length(centerTranslate_ - rightTranslate_);
-        // 発生位置を設定
-        spawnPos = Vector2(rightTranslate_.x - direction.x * distance,
-            rightTranslate_.y - direction.y * distance);
-        // 目標座標は右座標
-        slotPos = rightTranslate_;
-
-        // 移動するステージのインデックス
-        enterIndex = static_cast<uint32_t>(std::floor(animTo_)) + 1;
-        if(enterIndex >= stages_.size()){
-            return;
-        }
-    }
-    // 左から補間させる
-    else{
-
-        // 最初のステージの時は何もしない
-        if(focusIndex_ == 0){
-            return;
-        }
-
-        // 中心から左ステージの向き
-        Vector2 direction = MyMath::Normalize(centerTranslate_ - leftTranslate_);
-        float distance = MyMath::Length(centerTranslate_ - leftTranslate_);
-        // 発生位置を設定
-        spawnPos = Vector2(leftTranslate_.x - direction.x * distance,
-            leftTranslate_.y - direction.y * distance);
-        // 目標座標は左座標
-        slotPos = leftTranslate_;
-
-        // 移動するステージのインデックス
-        enterIndex = static_cast<uint32_t>(std::floor(animTo_)) - 1;
-        // 0未満のときは無効
-        if(static_cast<int>(enterIndex) < 0){
-            return;
-        }
-    }
-
-    // 3ステージ描画中は処理しない
-    float off = static_cast<float>(enterIndex) - f;
-    if(off > -1.01f && off < 1.01f){
+    // 描画中なら出現アニメーションを処理しない
+    const float off = static_cast<float>(enterCoord) - f;
+    if (off > -1.01f && off < 1.01f) {
         return;
     }
 
-    // 座標、サイズを補間
+    // 右、左からの出現位置
+    Vector2 slotPos = movingRight ? rightTranslate_ : leftTranslate_;
+
+    // 中心から出現位置への向きと距離を取得
+    Vector2 direction = MyMath::Normalize(centerTranslate_ - slotPos);
+    float distance = MyMath::Length(centerTranslate_ - slotPos);
+    Vector2 spawnPos = Vector2(slotPos.x - direction.x * distance, slotPos.y - direction.y * distance);
+
+    // 補間
     Vector2 pos = MyMath::Lerp(spawnPos, slotPos, easedT);
     Vector2 size = MyMath::Lerp(Vector2(0.0f, 0.0f), outSize_, easedT);
 
-    // ステージへ適用して描画
     ApplyPoseToStage(stages_[enterIndex], pos, size);
 
-    // 背景描画
     stages_[enterIndex].background.Draw();
-    // フレーム描画
     stages_[enterIndex].frame.Draw();
-    // ステージ番号描画
     stages_[enterIndex].stageIndexBack.Draw();
     stages_[enterIndex].stageIndexText.Draw();
-    // クリア済みUI描画
-    if(stages_[enterIndex].isClear){
+    if (stages_[enterIndex].isClear) {
+
         stages_[enterIndex].achievementUI.Draw();
     }
-    for(auto& sprite : stages_[enterIndex].objects){
+    for (auto& sprite : stages_[enterIndex].objects) {
 
-        // ステージ描画
         sprite.Draw();
     }
 }

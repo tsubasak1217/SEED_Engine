@@ -67,6 +67,7 @@ void Player::Initialize(){
     goalSprite_.color = MyMath::FloatColor(0x002325ff, false); // 金色
     goalSprite_.size = kWindowSize;
     goalSprite_.isApplyViewMat = false;
+    goalSprite_.drawLocation = DrawLocation::Back;
     goalSprite_.layer = -1000;
 
     for(int i = 0; i < endSprites_.size(); i++){

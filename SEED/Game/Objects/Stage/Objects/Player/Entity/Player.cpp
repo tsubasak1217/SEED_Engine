@@ -64,7 +64,7 @@ void Player::Initialize(){
 
     // クリアオブジェクトの生成
     goalSprite_ = Sprite("DefaultAssets/white1x1.png");
-    goalSprite_.color = MyMath::FloatColor(0x268400ff, false); // 金色
+    goalSprite_.color = MyMath::FloatColor(0x002325ff, false); // 金色
     goalSprite_.size = kWindowSize;
     goalSprite_.isApplyViewMat = false;
     goalSprite_.layer = -1000;

@@ -39,6 +39,8 @@ void TextureManager::Release(){
 
 // 起動時に読み込みたいモデルをここで読み込む
 void TextureManager::StartUpLoad(){
+    LoadTexture("Scene_Game/Clear/Clear_Top.png");
+    LoadTexture("Scene_Game/Clear/Clear_Bottom.png");
 }
 
 uint32_t TextureManager::LoadTexture(const std::string& filename, const aiTexture* embeddedTexture){

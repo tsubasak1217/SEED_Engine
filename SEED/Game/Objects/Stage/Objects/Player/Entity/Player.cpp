@@ -62,6 +62,25 @@ void Player::Initialize(){
         legs_[i].uvTransform.scale = { i == 0 ? 1.0f : -1.0f, 1.0f };
     }
 
+    // クリアオブジェクトの生成
+    goalSprite_ = Sprite("DefaultAssets/white1x1.png");
+    goalSprite_.color = MyMath::FloatColor(0x268400ff, false); // 金色
+    goalSprite_.size = kWindowSize;
+    goalSprite_.isApplyViewMat = false;
+    goalSprite_.layer = -1000;
+
+    for(int i = 0; i < endSprites_.size(); i++){
+        endSprites_[i] = Sprite("DefaultAssets/white1x1.png");
+        endSprites_[i].color = i % 2 == 0 ? MyMath::FloatColor(0xffffffff, false) : MyMath::FloatColor(SEED::GetWindowColor());
+        endSprites_[i].size = Vector2(0.0f);
+        endSprites_[i].anchorPoint = Vector2(0.5f);
+        endSprites_[i].transform.translate = kWindowCenter;
+        endSprites_[i].isApplyViewMat = false;
+        endSprites_[i].drawLocation = DrawLocation::Back;
+        endSprites_[i].layer = -1000;
+    }
+
+
     // json適応
     ApplyJson();
 
@@ -159,6 +178,11 @@ void Player::Update(){
     if(isPaused_ || isGetCrown_){
         // スプライトの動きだけは更新する（アニメ演出用）
         SpriteMotion();
+
+        if(!isPaused_){
+            UpdateGoalEffect();
+        }
+
         return;
     }
 
@@ -168,6 +192,7 @@ void Player::Update(){
 
     // スプライトの動きを更新
     SpriteMotion();
+    UpdateGoalEffect();
 
     // 動きに応じて衝突検出順を更新
     CollisionOrderToManager();
@@ -177,6 +202,8 @@ void Player::Update(){
     if(isTouchingGoal_){
         IncreaseGoalTouchTime();
         isTouchingGoal_ = false;
+    } else{
+        DecreaseGoalTouchTime();
     }
 
     // ワープ接触フラグを毎回リセット
@@ -369,6 +396,26 @@ void Player::CollisionOrderToManager(){
     }
 }
 
+void Player::UpdateGoalEffect(){
+
+    if(!isGetCrown_){
+        float ease = EaseOutQuad(GetGoalT());
+        goalSprite_.transform.translate.y = kWindowSize.y * (1.0f - ease);
+
+    } else{
+
+        goalSprite_.color.w -= 0.1f * ClockManager::TimeRate();
+
+        for(int i = 0; i < endSprites_.size(); i++){
+            if(afterCoalTimer_.GetPrevProgress() > ((1.0f / (int)endSprites_.size()) * i)){
+                endSprites_[i].size += Vector2(kWindowSize.x, kWindowSize.y) * 0.1f * ClockManager::TimeRate();
+            }
+            afterCoalTimer_.Update();
+        }
+    }
+
+}
+
 void Player::OnGroundTrigger(){
     // 着地した瞬間
     if(stateController_->GetJumpVelocity() > 0.0f){
@@ -412,6 +459,16 @@ void Player::Draw(){
         }
     }
 
+    // ゴールエフェクトの描画
+    goalSprite_.Draw();
+
+    // クリア後のエフェクト描画
+    if(isGetCrown_){
+        for(auto& sprite : endSprites_){
+            sprite.Draw();
+        }
+    }
+
 }
 
 void Player::Edit(){
@@ -434,6 +491,7 @@ void Player::Edit(){
                 ImGui::DragFloat2("spriteAnchor", &body_.anchorPoint.x, 0.1f);
                 ImGui::DragFloat2("spriteTranslate", &body_.transform.translate.x, 0.1f);
                 ImGui::Checkbox("isHologram", &isHologram_);
+                ImGui::ColorEdit4("goalSpriteColor", &goalSprite_.color.x);
                 ImGui::EndTabItem();
             }
             if(ImGui::BeginTabItem("State")){

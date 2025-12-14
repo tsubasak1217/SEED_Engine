@@ -2,6 +2,7 @@
 #include <SEED/Source/SEED.h>
 #include <SEED/Lib/Functions/MyFunc/Easing.h>
 #include <Game/Components/StageObjectComponent.h>
+#include <Game/GameSystem.h>
 
 //============================================================================
 //	Goal classMethods
@@ -19,7 +20,6 @@ void Goal::Initialize(){
     // スプライトの初期化
     sprite_ = Sprite(imageMap_["crown"]);
     sprite_.anchorPoint = Vector2(0.5f);
-
 }
 
 void Goal::Update(){
@@ -75,7 +75,6 @@ void Goal::OnCollisionExit([[maybe_unused]] GameObject2D* other){
     if(other->GetObjectType() == ObjectType::Player){
         if(pPlayer_){
             // ゴールから離れた場合,タイマーをリセット
-            pPlayer_->ResetGoalTouchTime();
             pPlayer_ = nullptr;
 
             // SE
@@ -118,6 +117,7 @@ void Goal::CrownMotion(){
         }
         sprite_.layer = 20;// プレイヤー上に描画
 
+
     } else{
 
         if(MyMath::Length(targetPos_ - savedPos_) > 1.0f){
@@ -132,6 +132,7 @@ void Goal::CrownMotion(){
         }
 
         sprite_.layer = 13;
+
     }
 
     // 時間の更新

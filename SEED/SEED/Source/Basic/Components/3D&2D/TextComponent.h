@@ -18,6 +18,9 @@ public:
     nlohmann::json GetJsonData() const override;
     void LoadFromJson(const nlohmann::json& jsonData) override;
 
+public:
+    TextBox2D* GetText(){ return textBox_.get(); }
+
 private:
     std::unique_ptr<TextBox2D> textBox_; // テキストボックス
 };

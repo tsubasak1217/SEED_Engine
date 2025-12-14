@@ -59,6 +59,7 @@ public:
     // クリア判定
     void SetIsTouchingGoal(bool flag){ isTouchingGoal_ = flag; }
     void IncreaseGoalTouchTime() { goalTouchTime_ += ClockManager::DeltaTime(); }
+    void DecreaseGoalTouchTime(){ goalTouchTime_ =  (std::max)(goalTouchTime_ - ClockManager::DeltaTime(),0.0f); }
     void ResetGoalTouchTime() { goalTouchTime_ = 0.0f; }
     float GetGoalT()const { return std::clamp(goalTouchTime_ / requiredGoalTime_, 0.0f, 1.0f); }
     bool IsClearStage() const { return goalTouchTime_ >= requiredGoalTime_; }
@@ -132,6 +133,9 @@ private:
     bool isTouchingGoal_ = false; // ゴールに触れているか
     float goalTouchTime_ = 0.0f; // ゴールに触れてからの時間
     float requiredGoalTime_ = 1.4f; // ゴールに触れてからクリアになるまでの時間
+    Timer afterCoalTimer_ = Timer(0.8f); // ゴール後の演出時間
+    Sprite goalSprite_;
+    std::array<Sprite,4> endSprites_;
 
     // 向いている方向
     LR moveDirection_;
@@ -150,4 +154,5 @@ private:
     void UpdateMoveDirection();
     void SpriteMotion();
     void CollisionOrderToManager();
+    void UpdateGoalEffect();
 };

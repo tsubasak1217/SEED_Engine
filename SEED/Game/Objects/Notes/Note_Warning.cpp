@@ -59,9 +59,9 @@ void Note_Warning::Draw(float currentTime, float appearLength){
 ////////////////////////////////////////////////////////////////////
 // タップノーツの判定
 ////////////////////////////////////////////////////////////////////
-Judgement::Evalution Note_Warning::Judge(float curTime){
+Judgement::Evaluation Note_Warning::Judge(float curTime){
     curTime;
-    return Judgement::Evalution::NONE;
+    return Judgement::Evaluation::NONE;
 }
 
 nlohmann::json Note_Warning::ToJson(){

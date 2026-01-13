@@ -14,7 +14,7 @@ GameState_Play::GameState_Play(Scene_Base* pScene, const SongInfo& songInfo, int
     hierarchy->EraseAllObject();
 
     // 曲データの設定
-    RythmGameManager::GetInstance()->Initialize(songInfo,difficulty);
+    RhythmGameManager::GetInstance()->Initialize(songInfo,difficulty);
 }
 
 GameState_Play::~GameState_Play(){
@@ -33,22 +33,22 @@ void GameState_Play::Finalize(){
 
 void GameState_Play::Update(){
     // ゲームマネージャーの更新
-    RythmGameManager::GetInstance()->Update();
+    RhythmGameManager::GetInstance()->Update();
 }
 
 void GameState_Play::Draw(){
     // ゲームマネージャーの描画
-    RythmGameManager::GetInstance()->Draw();
+    RhythmGameManager::GetInstance()->Draw();
 }
 
 void GameState_Play::BeginFrame(){
     // ゲームマネージャーのフレーム開始処理
-    RythmGameManager::GetInstance()->BeginFrame();
+    RhythmGameManager::GetInstance()->BeginFrame();
 }
 
 void GameState_Play::EndFrame(){
     // ゲームマネージャーのフレーム終了処理
-    RythmGameManager::GetInstance()->EndFrame();
+    RhythmGameManager::GetInstance()->EndFrame();
 }
 
 void GameState_Play::HandOverColliders(){

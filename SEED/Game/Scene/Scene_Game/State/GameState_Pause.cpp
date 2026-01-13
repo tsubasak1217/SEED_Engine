@@ -212,7 +212,7 @@ void GameState_Pause::ManageState(){
 
                 case Retry:// リトライ
                     pScene_->EraseFromHierarchy(pauseItemsParent_);
-                    RythmGameManager::GetInstance()->Retry();
+                    RhythmGameManager::GetInstance()->Retry();
                     pScene_->EndEvent();
                     break;
 
@@ -232,7 +232,7 @@ void GameState_Pause::ManageState(){
         // タイマーが0になったら
         if(pauseTimer_.GetProgress() == 0.0f){
             // 再びゲームに戻る
-            RythmGameManager::GetInstance()->Resume();
+            RhythmGameManager::GetInstance()->Resume();
             pScene_->EraseFromHierarchy(pauseItemsParent_);
             pScene_->EndEvent();
         }

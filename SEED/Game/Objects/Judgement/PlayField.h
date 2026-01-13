@@ -47,7 +47,7 @@ public:
     void Draw();
 
 public:
-    void SetEvalution(LaneBit laneBit,UpDown layer,const Color& color);
+    void SetEvaluation(LaneBit laneBit,UpDown layer,const Color& color);
     void SetLanePressed(int32_t lane, const Color& color);
     void SetLaneReleased(int32_t lane);
     void SetNoteData(NotesData* noteData){ noteData_ = noteData; }
@@ -57,7 +57,7 @@ public:
     Quad GetWheelDirectionQuad(float timeRatio, UpDown layer);
     Quad2D GetRectFlickQuad(float timeRatio, DIRECTION8 dir, float ratioWidth = 0.0f);
     // エフェクトの発生
-    void EmitEffect(LaneBit laneBit, UpDown layer, int evalution,Timing timing);
+    void EmitEffect(LaneBit laneBit, UpDown layer, int evaluation,Timing timing);
     // 座標や大きさを返す
     Vector3 GetCursorWorldPos(float cursorX);
     const Vector3& GetPlayFieldPointWorld(int index) const{ return playFieldPointsWorld_[index]; }
@@ -66,9 +66,9 @@ public:
 private:
     void CalcEffectEmitPoints();
     int GetLaneBitIndex(uint32_t laneBit);
-    void LaneEffect(int evalution, LaneBit laneBit,UpDown layer, Timing timing);
-    void WheelEffect(int evalution, LaneBit laneBit, UpDown layer, Timing timing);
-    void RectFlickEffect(int evalution, LaneBit laneBit);
+    void LaneEffect(int evaluation, LaneBit laneBit,UpDown layer, Timing timing);
+    void WheelEffect(int evaluation, LaneBit laneBit, UpDown layer, Timing timing);
+    void RectFlickEffect(int evaluation, LaneBit laneBit);
 
 public:
     static float kPlayFieldSizeX_;// プレイフィールドの幅

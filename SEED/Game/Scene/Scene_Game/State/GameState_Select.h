@@ -1,6 +1,6 @@
 #pragma once
 #include <SEED/Source/Basic/Scene/SceneState_Base.h>
-#include <Game/Manager/RythmGameManager.h>
+#include <Game/Manager/RhythmGameManager.h>
 #include <Game/Manager/SongSelector.h>
 #include <Game/Objects/SongSelect/SelectBackGroundDrawer.h>
 #include <SEED/Lib/Structs/VideoPlayer.h>

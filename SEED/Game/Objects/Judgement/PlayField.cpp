@@ -81,8 +81,8 @@ void PlayField::Initialize(){
             lane_[1][i].localVertex[j] = v[1][j];
             laneAnswer_[0][i].tri.localVertex[j] = v[0][j];
             laneAnswer_[1][i].tri.localVertex[j] = v[1][j];
-            laneAnswer_[0][i].evalutionPolygon.localVertex[j] = v[0][j];
-            laneAnswer_[1][i].evalutionPolygon.localVertex[j] = v[1][j];
+            laneAnswer_[0][i].evaluationPolygon.localVertex[j] = v[0][j];
+            laneAnswer_[1][i].evaluationPolygon.localVertex[j] = v[1][j];
             laneAnswer_[0][i].baseScale = 1.05f;// 押したときのリアクション用の矩形は少し大きくする
             laneAnswer_[1][i].baseScale = 1.05f;
         }
@@ -92,8 +92,8 @@ void PlayField::Initialize(){
         lane_[1][i].color = { 0.0f, 0.0f, 0.0f, 0.8f };
         laneAnswer_[0][i].tri.color = { 1.0f, 1.0f, 1.0f, 0.0f };
         laneAnswer_[1][i].tri.color = { 1.0f, 1.0f, 1.0f, 0.0f };
-        laneAnswer_[0][i].evalutionPolygon.color = { 1.0f, 1.0f, 1.0f, 0.0f };
-        laneAnswer_[1][i].evalutionPolygon.color = { 1.0f, 1.0f, 1.0f, 0.0f };
+        laneAnswer_[0][i].evaluationPolygon.color = { 1.0f, 1.0f, 1.0f, 0.0f };
+        laneAnswer_[1][i].evaluationPolygon.color = { 1.0f, 1.0f, 1.0f, 0.0f };
 
         // レーンの境界線の矩形の座標を決定
         laneBorderLine_[0][i] = lane_[0][i];
@@ -113,8 +113,8 @@ void PlayField::Initialize(){
         // 画像を設定
         laneAnswer_[0][i].tri.GH = TextureManager::LoadTexture("PlayField/gradation.png");
         laneAnswer_[1][i].tri.GH = TextureManager::LoadTexture("PlayField/gradation.png");
-        laneAnswer_[0][i].evalutionPolygon.GH = TextureManager::LoadTexture("PlayField/gradation.png");
-        laneAnswer_[1][i].evalutionPolygon.GH = TextureManager::LoadTexture("PlayField/gradation.png");
+        laneAnswer_[0][i].evaluationPolygon.GH = TextureManager::LoadTexture("PlayField/gradation.png");
+        laneAnswer_[1][i].evaluationPolygon.GH = TextureManager::LoadTexture("PlayField/gradation.png");
         laneBorderLine_[0][i].GH = TextureManager::LoadTexture("PlayField/borderLine.png");
         laneBorderLine_[1][i].GH = TextureManager::LoadTexture("PlayField/borderLine.png");
         laneBorderLineAura_[0][i].GH = TextureManager::LoadTexture("PlayField/lineAura.png");
@@ -123,8 +123,8 @@ void PlayField::Initialize(){
         // blendModeを設定
         laneAnswer_[0][i].tri.blendMode = BlendMode::ADD;
         laneAnswer_[1][i].tri.blendMode = BlendMode::ADD;
-        laneAnswer_[0][i].evalutionPolygon.blendMode = BlendMode::ADD;
-        laneAnswer_[1][i].evalutionPolygon.blendMode = BlendMode::ADD;
+        laneAnswer_[0][i].evaluationPolygon.blendMode = BlendMode::ADD;
+        laneAnswer_[1][i].evaluationPolygon.blendMode = BlendMode::ADD;
         laneBorderLine_[0][i].blendMode = BlendMode::ADD;
         laneBorderLine_[1][i].blendMode = BlendMode::ADD;
         laneBorderLineAura_[0][i].blendMode = BlendMode::ADD;
@@ -158,8 +158,8 @@ void PlayField::Initialize(){
         for(int j = 0; j < 4; j++){
             laneAnswer_[0][i].tri.localVertex[j].z += layerOffset.z;
             laneAnswer_[1][i].tri.localVertex[j].z += layerOffset.z;
-            laneAnswer_[0][i].evalutionPolygon.localVertex[j].z += layerOffset.z * 2;
-            laneAnswer_[1][i].evalutionPolygon.localVertex[j].z += layerOffset.z * 2;
+            laneAnswer_[0][i].evaluationPolygon.localVertex[j].z += layerOffset.z * 2;
+            laneAnswer_[1][i].evaluationPolygon.localVertex[j].z += layerOffset.z * 2;
         }
     }
 
@@ -291,7 +291,7 @@ void PlayField::Draw(){
 /////////////////////////////////////////////////////////////////////////
 // レーンの押下状態を設定
 /////////////////////////////////////////////////////////////////////////
-void PlayField::SetEvalution(LaneBit laneBit, UpDown layer, const Color& color){
+void PlayField::SetEvaluation(LaneBit laneBit, UpDown layer, const Color& color){
 
     // ビットから押されているレーンを取得(5鍵の部分のみ)
     std::vector<int32_t> lanes;
@@ -305,7 +305,7 @@ void PlayField::SetEvalution(LaneBit laneBit, UpDown layer, const Color& color){
     for(auto& lane : lanes){
         // ノーツを拾っている場合
         if(color != Vector4(0.0f, 0.0f, 0.0f, 0.0f)){
-            laneAnswer_[(int)layer][lane].evalutionPolygon.color = color;
+            laneAnswer_[(int)layer][lane].evaluationPolygon.color = color;
             laneAnswer_[(int)layer][lane].isTapNote = true;
         }
     }
@@ -485,19 +485,19 @@ int PlayField::GetLaneBitIndex(uint32_t laneBit){
 /////////////////////////////////////////////////////////////
 // レーンのエフェクトを発生させる関数
 /////////////////////////////////////////////////////////////
-void PlayField::LaneEffect(int evalution, LaneBit laneBit, UpDown layer, Timing timing){
+void PlayField::LaneEffect(int evaluation, LaneBit laneBit, UpDown layer, Timing timing){
     
     // レーン番号を取得
     int laneIndex = GetLaneBitIndex(uint32_t(laneBit));
 
-    switch(evalution){
-    case Judgement::Evalution::MISS:
+    switch(evaluation){
+    case Judgement::Evaluation::MISS:
         // MISSのときは何もしない
         break;
 
     default:// それ以外のとき
-        laneEffectObjects_[laneIndex]->GetComponent<Component_EmitterGroup3D>(evalution)->Activate();
-        laneEffectObjects_[laneIndex]->GetComponent<Component_EmitterGroup3D>(evalution)->InitEmitters();
+        laneEffectObjects_[laneIndex]->GetComponent<Component_EmitterGroup3D>(evaluation)->Activate();
+        laneEffectObjects_[laneIndex]->GetComponent<Component_EmitterGroup3D>(evaluation)->InitEmitters();
         break;
     }
 
@@ -513,7 +513,7 @@ void PlayField::LaneEffect(int evalution, LaneBit laneBit, UpDown layer, Timing 
 /////////////////////////////////////////////////////////////
 // wheelノーツのエフェクトを発生させる関数
 /////////////////////////////////////////////////////////////
-void PlayField::WheelEffect(int evalution, LaneBit laneBit, UpDown layer, Timing timing){
+void PlayField::WheelEffect(int evaluation, LaneBit laneBit, UpDown layer, Timing timing){
 
     UpDown dir;
     if(laneBit & LaneBit::WHEEL_UP){
@@ -522,8 +522,8 @@ void PlayField::WheelEffect(int evalution, LaneBit laneBit, UpDown layer, Timing
         dir = UpDown::DOWN;
     }
 
-    switch(evalution){
-    case Judgement::Evalution::MISS:// MISSのときは何もしない
+    switch(evaluation){
+    case Judgement::Evaluation::MISS:// MISSのときは何もしない
         break;
 
     default:// それ以外のとき
@@ -547,9 +547,9 @@ void PlayField::WheelEffect(int evalution, LaneBit laneBit, UpDown layer, Timing
 /////////////////////////////////////////////////////////////
 // rectFlickのエフェクトを発生させる関数
 /////////////////////////////////////////////////////////////
-void PlayField::RectFlickEffect(int evalution, LaneBit laneBit){
+void PlayField::RectFlickEffect(int evaluation, LaneBit laneBit){
 
-    evalution;
+    evaluation;
     if(laneBit & LaneBit::RECTFLICK_LT){
         rectFlickEffectObjects_[0]->GetComponent<Component_EmitterGroup2D>()->Activate();
         rectFlickEffectObjects_[0]->GetComponent<Component_EmitterGroup2D>()->InitEmitters();
@@ -571,7 +571,7 @@ void PlayField::RectFlickEffect(int evalution, LaneBit laneBit){
 /////////////////////////////////////////////////////////////
 // エフェクトを発生させる関数
 /////////////////////////////////////////////////////////////
-void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution, Timing timing){
+void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evaluation, Timing timing){
 
     //===================================
     // レーンに属するノーツの場合(tap,hold)
@@ -579,7 +579,7 @@ void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution, Timing 
     for(int i = 0; i < kKeyCount_; i++){
         if(laneBit & (1 << i)){
             // レーンのエフェクトを発生させる
-            LaneEffect(evalution, LaneBit(LANE_1 << i),layer,timing);
+            LaneEffect(evaluation, LaneBit(LANE_1 << i),layer,timing);
         }
     }
 
@@ -587,7 +587,7 @@ void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution, Timing 
     // ホイールノーツの場合
     //===================================
     if(laneBit & LaneBit::WHEEL){
-        WheelEffect(evalution, laneBit, layer, timing);
+        WheelEffect(evaluation, laneBit, layer, timing);
     }
 
     //===================================
@@ -595,7 +595,7 @@ void PlayField::EmitEffect(LaneBit laneBit, UpDown layer, int evalution, Timing 
     //===================================
     if(laneBit & LaneBit::RECTFLICK_ALL){
         // レクトフリックのエフェクトを発生させる
-        RectFlickEffect(evalution, laneBit);
+        RectFlickEffect(evaluation, laneBit);
     }
 
 }

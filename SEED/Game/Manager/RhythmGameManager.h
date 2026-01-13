@@ -12,15 +12,15 @@
 /// <summary>
 /// リズムゲーム管理クラス
 /// </summary>
-class RythmGameManager{
+class RhythmGameManager{
 private:
-    RythmGameManager();
-    RythmGameManager(const RythmGameManager&) = delete;
-    void operator=(const RythmGameManager&) = delete;
+    RhythmGameManager();
+    RhythmGameManager(const RhythmGameManager&) = delete;
+    void operator=(const RhythmGameManager&) = delete;
 
 public:
-    ~RythmGameManager();
-    static RythmGameManager* GetInstance();
+    ~RhythmGameManager();
+    static RhythmGameManager* GetInstance();
     void Initialize(const SongInfo& songInfo, int32_t difficulty);
     void BeginFrame();
     void EndFrame();
@@ -40,7 +40,7 @@ public:
     void AddCombo();
 
     // 評価関連のカウントを追加
-    void AddEvaluation(Judgement::Evalution evalution){playResult_.evalutionCount[(int)evalution]++;}
+    void AddEvaluation(Judgement::Evaluation evaluation){playResult_.evaluationCount[(int)evaluation]++;}
     void AddFastCount(int count = 1){playResult_.fastCount += count;}
     void AddLateCount(int count = 1){playResult_.lateCount += count;}
 

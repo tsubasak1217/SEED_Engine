@@ -45,7 +45,7 @@ void Note_RectFlick::Draw(float currentTime, float appearLength){
     }
 }
 
-Judgement::Evalution Note_RectFlick::Judge(float curTime){
+Judgement::Evaluation Note_RectFlick::Judge(float curTime){
 
     // 時間差を計算
     float signedDif = curTime - time_;
@@ -57,16 +57,16 @@ Judgement::Evalution Note_RectFlick::Judge(float curTime){
 
     // フリックの方向が自身のレーンと一致しているか
     if(!CheckBit(flickDirection)){
-        return Judgement::Evalution::MISS;
+        return Judgement::Evaluation::MISS;
     }
 
     // ノーツの判定(判定はゆるめにしてパーフェクトかミスだけにする)
-    if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD)){
+    if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD)){
         // MISS
-        return Judgement::Evalution::MISS;
+        return Judgement::Evaluation::MISS;
     } else{
         // PERFECT
-        return Judgement::Evalution::PERFECT;
+        return Judgement::Evaluation::PERFECT;
     }
 }
 

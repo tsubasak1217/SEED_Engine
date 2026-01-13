@@ -1,4 +1,4 @@
-#include "RythmGameManager.h"
+#include "RhythmGameManager.h"
 #include <SEED/Source/Manager/CameraManager/CameraManager.h>
 #include <SEED/Source/SEED.h>
 #include <Game/GameSystem.h>
@@ -10,10 +10,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////////////////////////////
-RythmGameManager::RythmGameManager(){
+RhythmGameManager::RhythmGameManager(){
 }
 
-RythmGameManager::~RythmGameManager(){
+RhythmGameManager::~RhythmGameManager(){
     // カメラの登録解除
     SEED::RemoveCamera("gameCamera");
 }
@@ -21,15 +21,15 @@ RythmGameManager::~RythmGameManager(){
 ////////////////////////////////////////////////////////////////////////////////
 // インスタンスの取得
 ////////////////////////////////////////////////////////////////////////////////
-RythmGameManager* RythmGameManager::GetInstance(){
-    static RythmGameManager instance;
+RhythmGameManager* RhythmGameManager::GetInstance(){
+    static RhythmGameManager instance;
     return &instance;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // 初期化
 //////////////////////////////////////////////////////////////////////////////////
-void RythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
+void RhythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
     // カメラの初期化
     gameCamera_ = std::make_unique<BaseCamera>();
     gameCamera_->SetTranslation(Vector3(0.0f, 0.0f, 0.0f));
@@ -101,7 +101,7 @@ void RythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
 //////////////////////////////////////////////////////////////////////////////////
 // フレーム開始処理
 //////////////////////////////////////////////////////////////////////////////////
-void RythmGameManager::BeginFrame(){
+void RhythmGameManager::BeginFrame(){
     if(isPaused_){
         Input::SetMouseCursorVisible(true);
         return;
@@ -125,7 +125,7 @@ void RythmGameManager::BeginFrame(){
 //////////////////////////////////////////////////////////////////////////////////
 // フレーム終了処理
 //////////////////////////////////////////////////////////////////////////////////
-void RythmGameManager::EndFrame(){
+void RhythmGameManager::EndFrame(){
 
     // escapeでポーズ画面を出す
     if(!isPaused_){
@@ -147,11 +147,11 @@ void RythmGameManager::EndFrame(){
         // 譜面が終了した瞬間の処理
         if(playEndTimer_.GetProgress() == 0.0f){
             // プレイ結果をScene_Clearに渡す
-            playResult_.isFullCombo = playResult_.evalutionCount[(int)Judgement::Evalution::MISS] == 0;
+            playResult_.isFullCombo = playResult_.evaluationCount[(int)Judgement::Evaluation::MISS] == 0;
             playResult_.isAllPerfect =
                 playResult_.isFullCombo &&
-                playResult_.evalutionCount[(int)Judgement::Evalution::GREAT] == 0 &&
-                playResult_.evalutionCount[(int)Judgement::Evalution::GOOD] == 0;
+                playResult_.evaluationCount[(int)Judgement::Evaluation::GREAT] == 0 &&
+                playResult_.evaluationCount[(int)Judgement::Evaluation::GOOD] == 0;
             Scene_Clear::SetResult(playResult_);
 
             // クリアエフェクトを出す
@@ -251,7 +251,7 @@ void RythmGameManager::EndFrame(){
 //////////////////////////////////////////////////////////////////////////////////
 // 更新
 //////////////////////////////////////////////////////////////////////////////////
-void RythmGameManager::Update(){
+void RhythmGameManager::Update(){
     if(!isPaused_){
         // Inputの更新
         PlayerInput::GetInstance()->Update();
@@ -304,7 +304,7 @@ void RythmGameManager::Update(){
 //////////////////////////////////////////////////////////////////////////////////
 // 描画
 //////////////////////////////////////////////////////////////////////////////////
-void RythmGameManager::Draw(){
+void RhythmGameManager::Draw(){
     // Inputのカーソル描画
     PlayerInput::GetInstance()->Draw();
 
@@ -332,12 +332,12 @@ void RythmGameManager::Draw(){
 //////////////////////////////////////////////////////////////////////////////////
 // ポーズ,再開
 //////////////////////////////////////////////////////////////////////////////////
-void RythmGameManager::Pause(){
+void RhythmGameManager::Pause(){
     isPaused_ = true;
     notesData_->Pause();
 }
 
-void RythmGameManager::Resume(){
+void RhythmGameManager::Resume(){
     isPaused_ = false;
     notesData_->Resume();
 }
@@ -346,11 +346,11 @@ void RythmGameManager::Resume(){
 //////////////////////////////////////////////////////////////////////////////////
 // コンボの加算、終了
 //////////////////////////////////////////////////////////////////////////////////
-void RythmGameManager::BreakCombo(){
+void RhythmGameManager::BreakCombo(){
     comboObject_->BreakCombo();
 }
 
-void RythmGameManager::AddCombo(){
+void RhythmGameManager::AddCombo(){
     comboObject_->AddCombo();
     comboObject_->GetComboCount() > playResult_.maxCombo ? playResult_.maxCombo = comboObject_->GetComboCount() : playResult_.maxCombo;
 }
@@ -358,14 +358,14 @@ void RythmGameManager::AddCombo(){
 //////////////////////////////////////////////////////////////////////////////////
 // スコアの計算
 //////////////////////////////////////////////////////////////////////////////////
-float RythmGameManager::CalculateScore(){
+float RhythmGameManager::CalculateScore(){
     float result;
     float scorePerNote = 100.0f / playResult_.totalCombo;
     float scoreSubtractRateGreat = 0.25f;
     float scoreSubtractRateGood = 0.5f;
-    float subtractGreat = playResult_.evalutionCount[(int)Judgement::Evalution::GREAT] * scorePerNote * scoreSubtractRateGreat;
-    float subtractGood = playResult_.evalutionCount[(int)Judgement::Evalution::GOOD] * scorePerNote * scoreSubtractRateGood;
-    float subtractMiss = playResult_.evalutionCount[(int)Judgement::Evalution::MISS] * scorePerNote;
+    float subtractGreat = playResult_.evaluationCount[(int)Judgement::Evaluation::GREAT] * scorePerNote * scoreSubtractRateGreat;
+    float subtractGood = playResult_.evaluationCount[(int)Judgement::Evaluation::GOOD] * scorePerNote * scoreSubtractRateGood;
+    float subtractMiss = playResult_.evaluationCount[(int)Judgement::Evaluation::MISS] * scorePerNote;
     result = 100.0f - (subtractGreat + subtractGood + subtractMiss);
     return std::clamp(result, 0.0f, 100.0f);
 }
@@ -374,7 +374,7 @@ float RythmGameManager::CalculateScore(){
 ///////////////////////////////////////////////////////////////////////////////
 // リトライ
 ///////////////////////////////////////////////////////////////////////////////
-void RythmGameManager::Retry(){
+void RhythmGameManager::Retry(){
     // シーンを再読み込み
     Initialize(songInfo_, playDifficulty_);
 }

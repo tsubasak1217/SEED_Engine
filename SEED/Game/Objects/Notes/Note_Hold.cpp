@@ -57,7 +57,7 @@ void Note_Hold::Draw(float currentTime, float appearLength){
         noteQuad_->color = noteColors_[i];
 
         // 押していない場合に色を暗くする(頭が判定ラインを超えていない場合はそのまま)
-        if(headEvaluation_ == Judgement::Evalution::NONE){
+        if(headEvaluation_ == Judgement::Evaluation::NONE){
             if(releaseTime_ > 0.0f){
                 if(!isHold_){
                     noteQuad_->color.value.w *= 0.25f;
@@ -86,7 +86,7 @@ void Note_Hold::Draw(float currentTime, float appearLength){
 /////////////////////////////////////////////////////////////////////
 // ホールドノーツの判定
 /////////////////////////////////////////////////////////////////////
-Judgement::Evalution Note_Hold::Judge(float curTime){
+Judgement::Evaluation Note_Hold::Judge(float curTime){
 
     // 時間差を計算
     float signedDif = curTime - time_;
@@ -99,10 +99,10 @@ Judgement::Evalution Note_Hold::Judge(float curTime){
 
     // 判定時間の取得
     static float judgeTime[Judgement::kEvaluationCount] = {
-        Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::PERFECT),
-        Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GREAT),
-        Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD),
-        Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::MISS)
+        Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::PERFECT),
+        Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GREAT),
+        Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD),
+        Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::MISS)
     };
 
     // 自身のレーンが押されているか
@@ -116,7 +116,7 @@ Judgement::Evalution Note_Hold::Judge(float curTime){
     }
 
     // 頭をまだ押していない場合の判定
-    if(headEvaluation_ == Judgement::Evalution::NONE){
+    if(headEvaluation_ == Judgement::Evaluation::NONE){
 
         // ホールドしていないなら、判定しない
         if(!isHold_){
@@ -124,35 +124,35 @@ Judgement::Evalution Note_Hold::Judge(float curTime){
                 // 離している時間を加算
                 releaseTime_ += ClockManager::DeltaTime();
             }
-            return Judgement::Evalution::NONE;
+            return Judgement::Evaluation::NONE;
 
         } else{// ホールドしている
 
             // ホールドしているが、まだ押していない
             bool isTrigger = input->GetIsTap(lane);
             if(!isTrigger){
-                return Judgement::Evalution::NONE;
+                return Judgement::Evaluation::NONE;
             }
 
             // 判定時間を保存
             hitTime_ = curTime;
 
             // ノーツの判定
-            if(dif > judgeTime[Judgement::Evalution::GOOD]){
+            if(dif > judgeTime[Judgement::Evaluation::GOOD]){
                 // MISS
-                return Judgement::Evalution::MISS;
+                return Judgement::Evaluation::MISS;
 
-            } else if(dif > judgeTime[Judgement::Evalution::GREAT]){
+            } else if(dif > judgeTime[Judgement::Evaluation::GREAT]){
                 // GOOD
-                return Judgement::Evalution::GOOD;
+                return Judgement::Evaluation::GOOD;
 
-            } else if(dif > judgeTime[Judgement::Evalution::PERFECT]){
+            } else if(dif > judgeTime[Judgement::Evaluation::PERFECT]){
                 // GREAT
-                return Judgement::Evalution::GREAT;
+                return Judgement::Evaluation::GREAT;
 
             } else{
                 // PERFECT
-                return Judgement::Evalution::PERFECT;
+                return Judgement::Evaluation::PERFECT;
             }
         }
 
@@ -167,14 +167,14 @@ Judgement::Evalution Note_Hold::Judge(float curTime){
             }
         }
 
-        return Judgement::Evalution::NONE;
+        return Judgement::Evaluation::NONE;
     }
 }
 
 /////////////////////////////////////////////////////////////////////
 // ホールドノーツの終点の判定
 /////////////////////////////////////////////////////////////////////
-Judgement::Evalution Note_Hold::JudgeHoldEnd(){
+Judgement::Evaluation Note_Hold::JudgeHoldEnd(){
 
     // 
     static float rate = 5.0f;
@@ -182,24 +182,24 @@ Judgement::Evalution Note_Hold::JudgeHoldEnd(){
 
     // 判定時間の取得
     static float judgeTime[Judgement::kEvaluationCount] = {
-        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::PERFECT) * rate,
-        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GREAT) * rate,
-        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD) * rate,
-        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::MISS) * rate
+        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::PERFECT) * rate,
+        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GREAT) * rate,
+        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD) * rate,
+        timePadding + Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::MISS) * rate
     };
 
     // 押していなければ判定しない
-    if(headEvaluation_ == Judgement::Evalution::NONE){
-        return Judgement::Evalution::MISS;
+    if(headEvaluation_ == Judgement::Evaluation::NONE){
+        return Judgement::Evaluation::MISS;
     }
 
     // 押していなかった時間に応じて判定を行う(離す判定はゆるく設けるため、少しでも押していたら最低でもGOOD判定)
-    if(releaseTime_ < judgeTime[Judgement::Evalution::PERFECT]){
-        return Judgement::Evalution::PERFECT;
-    } else if(releaseTime_ < judgeTime[Judgement::Evalution::GREAT]){
-        return Judgement::Evalution::GREAT;
+    if(releaseTime_ < judgeTime[Judgement::Evaluation::PERFECT]){
+        return Judgement::Evaluation::PERFECT;
+    } else if(releaseTime_ < judgeTime[Judgement::Evaluation::GREAT]){
+        return Judgement::Evaluation::GREAT;
     } else{
-        return Judgement::Evalution::GOOD;
+        return Judgement::Evaluation::GOOD;
     }
 }
 

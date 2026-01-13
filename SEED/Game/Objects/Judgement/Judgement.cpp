@@ -7,22 +7,22 @@
 #include <Game/Config/PlaySettings.h>
 
 // managerのインクルード
-#include <Game/Manager/RythmGameManager.h>
+#include <Game/Manager/RhythmGameManager.h>
 
 ////////////////////////////////////////////////////////
 // コンストラクタ・デストラクタ
 ////////////////////////////////////////////////////////
 Judgement::Judgement(){
     // 判定の幅の設定
-    judgeTime_[Evalution::PERFECT] = 5.0f / 60.0f;// パーフェクト(前後5フレーム)
-    judgeTime_[Evalution::GREAT] = 8.0f / 60.0f;// グレート(前後8フレーム)
-    judgeTime_[Evalution::GOOD] = 12.0f / 60.0f;// グッド(前後12フレーム)
+    judgeTime_[Evaluation::PERFECT] = 5.0f / 60.0f;// パーフェクト(前後5フレーム)
+    judgeTime_[Evaluation::GREAT] = 8.0f / 60.0f;// グレート(前後8フレーム)
+    judgeTime_[Evaluation::GOOD] = 12.0f / 60.0f;// グッド(前後12フレーム)
 
     // 判定の色の設定
-    judgeColor_[Evalution::PERFECT] = { 1.0f, 1.0f, 0.0f, 1.0f };// 黄色 
-    judgeColor_[Evalution::GREAT] = { 1.0f, 0.0f, 1.0f, 1.0f };// ピンク
-    judgeColor_[Evalution::GOOD] = { 0.0f, 1.0f, 1.0f, 1.0f };// 水色
-    judgeColor_[Evalution::MISS] = { 1.0f, 1.0f, 1.0f, 1.0f };// 白
+    judgeColor_[Evaluation::PERFECT] = { 1.0f, 1.0f, 0.0f, 1.0f };// 黄色 
+    judgeColor_[Evaluation::GREAT] = { 1.0f, 0.0f, 1.0f, 1.0f };// ピンク
+    judgeColor_[Evaluation::GOOD] = { 0.0f, 1.0f, 1.0f, 1.0f };// 水色
+    judgeColor_[Evaluation::MISS] = { 1.0f, 1.0f, 1.0f, 1.0f };// 白
 }
 
 Judgement::~Judgement(){
@@ -73,7 +73,7 @@ void Judgement::Judge(NotesData* noteGroup){
         std::weak_ptr<Note_Base> note;
         float signedDif; // 正しい時間との差
         float dif; // 差の絶対値
-        Judgement::Evalution evaluation; // 判定結果
+        Judgement::Evaluation evaluation; // 判定結果
     };
 
     std::list<NoteJudgeInfo> hitNotes;// 判定を拾ったノーツ一覧
@@ -84,8 +84,8 @@ void Judgement::Judge(NotesData* noteGroup){
         float dif = std::abs(signedDif);
 
         // 判定を拾ったノーツをリストにする
-        Judgement::Evalution evaluation = note.lock()->Judge(judgeTime);
-        if(evaluation != Evalution::MISS && evaluation != Evalution::NONE){
+        Judgement::Evaluation evaluation = note.lock()->Judge(judgeTime);
+        if(evaluation != Evaluation::MISS && evaluation != Evaluation::NONE){
 
             NoteJudgeInfo info;
             info.note = note;
@@ -96,7 +96,7 @@ void Judgement::Judge(NotesData* noteGroup){
                 info.evaluation = evaluation;
             } else{
                 // 甘いノーツの場合はパーフェクトにする
-                info.evaluation = Evalution::PERFECT;
+                info.evaluation = Evaluation::PERFECT;
             }
 
             hitNotes.push_back(info);
@@ -109,7 +109,7 @@ void Judgement::Judge(NotesData* noteGroup){
     uint32_t hitBits = 0;
     for(auto& note : hitNotes){
 
-        if(note.evaluation == Evalution::NONE){ continue; }
+        if(note.evaluation == Evaluation::NONE){ continue; }
 
         Note_Base* notePtr = note.note.lock().get();
 
@@ -126,26 +126,26 @@ void Judgement::Judge(NotesData* noteGroup){
 
             // ビットを立てる
             hitBits |= notePtr->laneBit_;
-            pPlayField_->SetEvalution(notePtr->laneBit_, notePtr->layer_, judgeColor_[note.evaluation]);// レーンを押下状態にする
+            pPlayField_->SetEvaluation(notePtr->laneBit_, notePtr->layer_, judgeColor_[note.evaluation]);// レーンを押下状態にする
 
 
             // コンボを加算
-            RythmGameManager::GetInstance()->AddCombo();
+            RhythmGameManager::GetInstance()->AddCombo();
 
             // 評価を追加
-            RythmGameManager::GetInstance()->AddEvaluation(note.evaluation);
+            RhythmGameManager::GetInstance()->AddEvaluation(note.evaluation);
 
             // fast,lateの計算
             Timing timing = Timing::OK;
-            if(note.evaluation != Evalution::PERFECT){
+            if(note.evaluation != Evaluation::PERFECT){
                 if(note.signedDif > 0.0f){
                     // 遅れすぎた場合
-                    RythmGameManager::GetInstance()->AddLateCount();
+                    RhythmGameManager::GetInstance()->AddLateCount();
                     timing = Timing::Late;
 
                 } else{
                     // 早すぎた場合
-                    RythmGameManager::GetInstance()->AddFastCount();
+                    RhythmGameManager::GetInstance()->AddFastCount();
                     timing = Timing::Fast;
                 }
             }
@@ -161,27 +161,27 @@ void Judgement::Judge(NotesData* noteGroup){
 void Judgement::JudgeHoldEnd(Note_Hold* note){
 
     // ホールドノーツの終点を判定する
-    Evalution evaluation = note->JudgeHoldEnd();
+    Evaluation evaluation = note->JudgeHoldEnd();
     Timing timing = Timing::OK;
 
     // コンボの管理
-    if(evaluation != Evalution::MISS){
-        RythmGameManager::GetInstance()->AddCombo();// コンボを加算
-        RythmGameManager::GetInstance()->AddEvaluation(evaluation);// 評価を追加
+    if(evaluation != Evaluation::MISS){
+        RhythmGameManager::GetInstance()->AddCombo();// コンボを加算
+        RhythmGameManager::GetInstance()->AddEvaluation(evaluation);// 評価を追加
 
         // perfect以外の場合はfastになる(押している時間が足りていないため)
-        if(evaluation != Evalution::PERFECT){
-            RythmGameManager::GetInstance()->AddFastCount();
+        if(evaluation != Evaluation::PERFECT){
+            RhythmGameManager::GetInstance()->AddFastCount();
             timing = Timing::Fast;
         }
 
     } else{
-        RythmGameManager::GetInstance()->BreakCombo();// コンボを切る
-        RythmGameManager::GetInstance()->AddEvaluation(Evalution::MISS);// ミスを追加
+        RhythmGameManager::GetInstance()->BreakCombo();// コンボを切る
+        RhythmGameManager::GetInstance()->AddEvaluation(Evaluation::MISS);// ミスを追加
     }
 
     // 終点の判定に応じてエフェクトとか出す
-    pPlayField_->SetEvalution(note->laneBit_, note->layer_, judgeColor_[(int)evaluation]);// レーンを押下状態にする
+    pPlayField_->SetEvaluation(note->laneBit_, note->layer_, judgeColor_[(int)evaluation]);// レーンを押下状態にする
 
     // エフェクトを出す
     pPlayField_->EmitEffect(note->laneBit_, note->layer_, evaluation,timing);

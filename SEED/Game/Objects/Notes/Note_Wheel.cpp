@@ -76,7 +76,7 @@ void Note_Wheel::Draw(float currentTime, float appearLength){
 ////////////////////////////////////////////////////////////////////
 // タップノーツの判定
 ////////////////////////////////////////////////////////////////////
-Judgement::Evalution Note_Wheel::Judge(float curTime){
+Judgement::Evaluation Note_Wheel::Judge(float curTime){
 
     // 時間差を計算
     float signedDif = curTime - time_;
@@ -88,7 +88,7 @@ Judgement::Evalution Note_Wheel::Judge(float curTime){
 
     // タップしていないなら、判定しない
     if(!isScroll){
-        return Judgement::Evalution::NONE;
+        return Judgement::Evaluation::NONE;
     }
 
     // 自身のレーンと押したレーンに含まれているか
@@ -98,26 +98,26 @@ Judgement::Evalution Note_Wheel::Judge(float curTime){
     // MISS以外はPERFECT扱いにする
     if(int32_t(lane) & laneBit_){
         // ノーツの判定
-        if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD)){
+        if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD)){
             // MISS
-            return Judgement::Evalution::MISS;
+            return Judgement::Evaluation::MISS;
 
-        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GREAT)){
+        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GREAT)){
             // GOOD
-            return Judgement::Evalution::GREAT;
+            return Judgement::Evaluation::GREAT;
 
-        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::PERFECT)){
+        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::PERFECT)){
             // GREAT
-            return Judgement::Evalution::PERFECT;
+            return Judgement::Evaluation::PERFECT;
 
         } else{
             // PERFECT
-            return Judgement::Evalution::PERFECT;
+            return Judgement::Evaluation::PERFECT;
         }
     }
 
     // 押したレーンに含まれていないなら、MISS
-    return Judgement::Evalution::MISS;
+    return Judgement::Evaluation::MISS;
 }
 
 nlohmann::json Note_Wheel::ToJson(){

@@ -139,13 +139,13 @@ void ResultUpdate2DComponent::Update(){
             uiObjects_["Difficulty"]->GetComponent<UIComponent>()->GetText(0).text = std::to_string(difficulty);
             // 各判定
             uiObjects_["Perfect"]->GetComponent<Routine2DComponent>()->Play();
-            uiObjects_["Perfect"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[0]);
+            uiObjects_["Perfect"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evaluationCount[0]);
             uiObjects_["Great"]->GetComponent<Routine2DComponent>()->Play();
-            uiObjects_["Great"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[1]);
+            uiObjects_["Great"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evaluationCount[1]);
             uiObjects_["Good"]->GetComponent<Routine2DComponent>()->Play();
-            uiObjects_["Good"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[2]);
+            uiObjects_["Good"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evaluationCount[2]);
             uiObjects_["Miss"]->GetComponent<Routine2DComponent>()->Play();
-            uiObjects_["Miss"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evalutionCount[3]);
+            uiObjects_["Miss"]->GetComponent<UIComponent>()->GetText(1).text = std::to_string(playResult_.evaluationCount[3]);
             // コンボ
             uiObjects_["Combo"]->GetComponent<UIComponent>()->GetText(1).text = "%d";
             uiObjects_["Combo"]->GetComponent<UIComponent>()->GetText(1).BindDatas({ playResult_.maxCombo });

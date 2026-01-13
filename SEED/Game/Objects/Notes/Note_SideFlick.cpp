@@ -13,7 +13,7 @@ void Note_SideFlick::Draw(float currentTime, float appearLength){
     Note_Base::Draw(currentTime,appearLength);
 }
 
-Judgement::Evalution Note_SideFlick::Judge(float curTime){
+Judgement::Evaluation Note_SideFlick::Judge(float curTime){
 
     // 時間差を計算
     float signedDif = curTime - time_;
@@ -26,21 +26,21 @@ Judgement::Evalution Note_SideFlick::Judge(float curTime){
 
     // フリックしていないなら、判定しない
     if(!isFlick){
-        return Judgement::Evalution::MISS;
+        return Judgement::Evaluation::MISS;
     }
 
     // フリックの方向が自身のレーンと一致しているか
     if(flickDirection != flickDirection_){
-        return Judgement::Evalution::MISS;
+        return Judgement::Evaluation::MISS;
     }
 
     // ノーツの判定(判定はゆるめにしてパーフェクトかミスだけにする)
-    if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD)){
+    if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD)){
         // MISS
-        return Judgement::Evalution::MISS;
+        return Judgement::Evaluation::MISS;
     } else{
         // PERFECT
-        return Judgement::Evalution::PERFECT;
+        return Judgement::Evaluation::PERFECT;
     }
 }
 

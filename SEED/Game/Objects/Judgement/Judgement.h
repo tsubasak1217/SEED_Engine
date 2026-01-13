@@ -13,7 +13,7 @@ class PlayField;
 /// </summary>
 class Judgement{
 public:
-    enum Evalution{
+    enum Evaluation{
         NONE = -1,
         PERFECT,
         GREAT,
@@ -35,7 +35,7 @@ public:
     void Draw();
 
 public:
-    float GetJudgeTime(Evalution evaluation){ return judgeTime_[evaluation]; }
+    float GetJudgeTime(Evaluation evaluation){ return judgeTime_[evaluation]; }
 
 private:
     float judgeTime_[kEvaluationCount];

@@ -1,16 +1,7 @@
 {
     "difficulty": 10,
-    "maxCombo": 284,
+    "maxCombo": 282,
     "notes": [
-        {
-            "holdTime": 1.5,
-            "isExtraNote": false,
-            "lane": 2,
-            "laneBit": 4,
-            "layer": 0,
-            "noteType": "Hold",
-            "time": 1.5
-        },
         {
             "holdTime": 1.5,
             "isExtraNote": false,

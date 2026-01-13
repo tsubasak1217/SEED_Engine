@@ -32,7 +32,7 @@ void Note_Tap::Draw(float currentTime, float appearLength){
 ////////////////////////////////////////////////////////////////////
 // タップノーツの判定
 ////////////////////////////////////////////////////////////////////
-Judgement::Evalution Note_Tap::Judge(float curTime){
+Judgement::Evaluation Note_Tap::Judge(float curTime){
 
     // 時間差を計算
     float signedDif = curTime - time_;
@@ -44,7 +44,7 @@ Judgement::Evalution Note_Tap::Judge(float curTime){
 
     // タップしていないなら、判定しない
     if(!isTap){
-        return Judgement::Evalution::NONE;
+        return Judgement::Evaluation::NONE;
     }
 
     // 押したレーンを取得
@@ -55,26 +55,26 @@ Judgement::Evalution Note_Tap::Judge(float curTime){
 
     if(tapLane.find(lane) != tapLane.end()){
         // ノーツの判定
-        if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GOOD)){
+        if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD)){
             // MISS
-            return Judgement::Evalution::MISS;
+            return Judgement::Evaluation::MISS;
 
-        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::GREAT)){
+        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GREAT)){
             // GOOD
-            return Judgement::Evalution::GOOD;
+            return Judgement::Evaluation::GOOD;
 
-        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evalution::PERFECT)){
+        } else if(dif > Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::PERFECT)){
             // GREAT
-            return Judgement::Evalution::GREAT;
+            return Judgement::Evaluation::GREAT;
 
         } else{
             // PERFECT
-            return Judgement::Evalution::PERFECT;
+            return Judgement::Evaluation::PERFECT;
         }
     }
 
     // 押したレーンに含まれていないなら、MISS
-    return Judgement::Evalution::MISS;
+    return Judgement::Evaluation::MISS;
 }
 
 nlohmann::json Note_Tap::ToJson(){

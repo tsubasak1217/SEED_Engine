@@ -7,7 +7,7 @@ void AnswerLane::Update(){
     
     // ノーツを処理していた場合
     if(isTapNote){
-        evalutionLeftTime = kVisibleTime;
+        evaluationLeftTime = kVisibleTime;
         isTapNote = false;
     }
 
@@ -57,18 +57,18 @@ void AnswerLane::Update(){
     }
 
     // 判定結果用の更新
-    if(evalutionLeftTime > 0.0f){
-        evalutionLeftTime -= ClockManager::DeltaTime();
-        evalutionLeftTime = std::clamp(evalutionLeftTime, 0.0f, kVisibleTime);
+    if(evaluationLeftTime > 0.0f){
+        evaluationLeftTime -= ClockManager::DeltaTime();
+        evaluationLeftTime = std::clamp(evaluationLeftTime, 0.0f, kVisibleTime);
         // 媒介変数の更新
-        float t = evalutionLeftTime / kVisibleTime;
+        float t = evaluationLeftTime / kVisibleTime;
         // 色の更新
-        evalutionPolygon.color.value.w = t;
+        evaluationPolygon.color.value.w = t;
     }
 }
 
 // 判定の矩形を描画する
 void AnswerLane::Draw(){
     SEED::DrawTriangle(tri);
-    SEED::DrawTriangle(evalutionPolygon);
+    SEED::DrawTriangle(evaluationPolygon);
 }

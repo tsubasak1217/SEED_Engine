@@ -289,7 +289,7 @@ void SEED::DrawTriangle(const Triangle& triangle){
         TransformToVec4(triangle.localVertex[0]),
         TransformToVec4(triangle.localVertex[1]),
         TransformToVec4(triangle.localVertex[2]),
-        worldMat, triangle.color, triangle.litingType, triangle.uvTransform, true,
+        worldMat, triangle.color, triangle.lightingType, triangle.uvTransform, true,
         true,GH,triangle.blendMode, triangle.cullMode
     );
 }

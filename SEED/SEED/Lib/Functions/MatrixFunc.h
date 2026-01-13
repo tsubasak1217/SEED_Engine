@@ -11,128 +11,135 @@
 #include <DirectXMathMatrix.inl>
 using namespace DirectX;
 
-//================================================================
-//                      行列の計算関数
-//================================================================
+namespace MatFunc{
 
-// -----------------加算------------------
-Matrix2x2 Add(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
-Matrix3x3 Add(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
-Matrix4x4 Add(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
+    //================================================================
+    //                      行列の計算関数
+    //================================================================
 
-// -----------------減算------------------
-Matrix2x2 Subtract(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
-Matrix3x3 Subtract(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
-Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
+    // -----------------加算------------------
+    Matrix2x2 Add(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
+    Matrix3x3 Add(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
+    Matrix4x4 Add(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
 
-// ---------------積を求める----------------
-Vector2 Multiply(const Vector2& vector, const Matrix2x2& matrix);
-Vector2 Multiply(const Vector2& vector, const Matrix3x3& matrix);
-Vector3 Multiply(const Vector3& vector, const Matrix4x4& matrix);
-Matrix2x2 Multiply(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
-Matrix3x3 Multiply(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
-Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
-// --------------スカラー倍----------------
-Vector2 Multiply(const Vector2& vector, float scalar);
-Vector3 Multiply(const Vector3& vector, float scalar);
-Matrix2x2 Multiply(const Matrix2x2& matrix, float scalar);
-Matrix3x3 Multiply(const Matrix3x3& matrix, float scalar);
-Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar);
+    // -----------------減算------------------
+    Matrix2x2 Subtract(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
+    Matrix3x3 Subtract(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
+    Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
 
-// -----------------割り算------------------
-Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum);
-Matrix3x3 Devide(const Matrix3x3& matrix, float devideNum);
-Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum);
+    // ---------------積を求める----------------
+    Vector2 Multiply(const Vector2& vector, const Matrix2x2& matrix);
+    Vector2 Multiply(const Vector2& vector, const Matrix3x3& matrix);
+    Vector3 Multiply(const Vector3& vector, const Matrix4x4& matrix);
+    Matrix2x2 Multiply(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
+    Matrix3x3 Multiply(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
+    Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
+    // --------------スカラー倍----------------
+    Vector2 Multiply(const Vector2& vector, float scalar);
+    Vector3 Multiply(const Vector3& vector, float scalar);
+    Matrix2x2 Multiply(const Matrix2x2& matrix, float scalar);
+    Matrix3x3 Multiply(const Matrix3x3& matrix, float scalar);
+    Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar);
 
-// 同時座標系からデカルト座標系に変換する関数
-Vector2 TransformDescartes(const Vector2& vector, const Matrix3x3& matrix);
-Vector3 TransformDescartes(const Vector3& vector, const Matrix4x4& matrix);
+    // -----------------割り算------------------
+    Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum);
+    Matrix3x3 Devide(const Matrix3x3& matrix, float devideNum);
+    Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum);
 
-// Vec3に変換する関数
-Vector3 TransformToVec3(const Vector2& vec);
-Vector3 TransformToVec3(const Vector4& vec);
-Vector3 Expand0ToVec3(const Vector2& vec);
-Vector3 Expand1ToVec3(const Vector2& vec);
+    // 同時座標系からデカルト座標系に変換する関数
+    Vector2 TransformDescartes(const Vector2& vector, const Matrix3x3& matrix);
+    Vector3 TransformDescartes(const Vector3& vector, const Matrix4x4& matrix);
 
-// Vec4に変換する関数
-Vector4 TransformToVec4(const Vector3& vec);
-Vector4 TransformToVec4(const Vector2& vec);
+    // Vec3に変換する関数
+    Vector3 TransformToVec3(const Vector2& vec);
+    Vector3 TransformToVec3(const Vector4& vec);
+    Vector3 Expand0ToVec3(const Vector2& vec);
+    Vector3 Expand1ToVec3(const Vector2& vec);
 
-// 行列の変換
-Matrix4x4 ToMat4x4(const Matrix3x3& mat);
+    // Vec4に変換する関数
+    Vector4 TransformToVec4(const Vector3& vec);
+    Vector4 TransformToVec4(const Vector2& vec);
 
-// 単位行列を返す関数
-Matrix2x2 IdentityMat2();
-Matrix3x3 IdentityMat3();
-Matrix4x4 IdentityMat4();
-Matrix4x4 NegaIdentityMat4();
+    // 行列の変換
+    Matrix4x4 ToMat4x4(const Matrix3x3& mat);
 
-// 拡大縮小行列を作る関数
-Matrix3x3 ScaleMatrix(float scaleX, float scaleY);
-Matrix3x3 ScaleMatrix(const Vector2& scale);
-Matrix4x4 ScaleMatrix(float scaleX, float scaleY, float scaleZ);
-Matrix4x4 ScaleMatrix(const Vector3& scale);
+    // 単位行列を返す関数
+    Matrix2x2 IdentityMat2();
+    Matrix3x3 IdentityMat3();
+    Matrix4x4 IdentityMat4();
+    Matrix4x4 NegaIdentityMat4();
 
-// 回転行列を作る関数
-Matrix3x3 RotateMatrix(float theta);
-Matrix4x4 RotateXMatrix(float theta);
-Matrix4x4 RotateYMatrix(float theta);
-Matrix4x4 RotateZMatrix(float theta);
-Matrix4x4 RotateMatrix(const Vector3& rotate);
-Matrix4x4 RotateMatrix(const Quaternion& rotate);
-Matrix4x4 RotateMatrix(const Vector3& axis,float angle);
+    // 拡大縮小行列を作る関数
+    Matrix3x3 ScaleMatrix(float scaleX, float scaleY);
+    Matrix3x3 ScaleMatrix(const Vector2& scale);
+    Matrix4x4 ScaleMatrix(float scaleX, float scaleY, float scaleZ);
+    Matrix4x4 ScaleMatrix(const Vector3& scale);
 
-// 平行移動行列を作る関数
-Matrix3x3 TranslateMatrix(float tx, float ty);
-Matrix3x3 TranslateMatrix(const Vector2& t);
-Matrix4x4 TranslateMatrix(float tx, float ty, float tz);
-Matrix4x4 TranslateMatrix(const Vector3& t);
+    // 回転行列を作る関数
+    Matrix3x3 RotateMatrix(float theta);
+    Matrix4x4 RotateXMatrix(float theta);
+    Matrix4x4 RotateYMatrix(float theta);
+    Matrix4x4 RotateZMatrix(float theta);
+    Matrix4x4 RotateMatrix(const Vector3& rotate);
+    Matrix4x4 RotateMatrix(const Quaternion& rotate);
+    Matrix4x4 RotateMatrix(const Vector3& axis, float angle);
 
-// アフィン変換行列を作る関数
-Matrix3x3 AffineMatrix(Vector2 scale, float rotateTheta, Vector2 transLate);
-Matrix3x3 AffineMatrix(const Transform2D& transform);
-Matrix4x4 AffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
-Matrix4x4 AffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate);
-Matrix4x4 AffineMatrix(const Transform& transform);
+    // 平行移動行列を作る関数
+    Matrix3x3 TranslateMatrix(float tx, float ty);
+    Matrix3x3 TranslateMatrix(const Vector2& t);
+    Matrix4x4 TranslateMatrix(float tx, float ty, float tz);
+    Matrix4x4 TranslateMatrix(const Vector3& t);
 
-// 行列から平行移動成分を取り出す
-Vector2 ExtractTranslation(const Matrix3x3& matrix);
-Vector3 ExtractTranslation(const Matrix4x4& matrix);
-// 行列から拡大縮小成分を取り出す
-Vector2 ExtractScale(const Matrix3x3& matrix);
-Vector3 ExtractScale(const Matrix4x4& matrix);
-// 行列から回転成分を取り出す
-float ExtractRotation(const Matrix3x3& matrix);
-Vector3 ExtractRotation(const Matrix4x4& matrix);
-// 行列からクォータニオンを取り出す
-Quaternion ExtractQuaternion(const Matrix4x4& matrix);
+    // アフィン変換行列を作る関数
+    Matrix3x3 AffineMatrix(Vector2 scale, float rotateTheta, Vector2 transLate);
+    Matrix3x3 AffineMatrix(const Transform2D& transform);
+    Matrix4x4 AffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+    Matrix4x4 AffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate);
+    Matrix4x4 AffineMatrix(const Transform& transform);
 
-//逆行列を求める関数
-Matrix2x2 InverseMatrix(const Matrix2x2& matrix);
-Matrix3x3 InverseMatrix(const Matrix3x3& matrix);
-Matrix4x4 InverseMatrix(const Matrix4x4& matrix);
+    // 行列から平行移動成分を取り出す
+    Vector2 ExtractTranslation(const Matrix3x3& matrix);
+    Vector3 ExtractTranslation(const Matrix4x4& matrix);
+    // 行列から拡大縮小成分を取り出す
+    Vector2 ExtractScale(const Matrix3x3& matrix);
+    Vector3 ExtractScale(const Matrix4x4& matrix);
+    // 行列から回転成分を取り出す
+    float ExtractRotation(const Matrix3x3& matrix);
+    Vector3 ExtractRotation(const Matrix4x4& matrix);
+    // 行列からクォータニオンを取り出す
+    Quaternion ExtractQuaternion(const Matrix4x4& matrix);
 
-//転置行列を求める関数
-Matrix2x2 Transpose(const Matrix2x2& matrix);
-Matrix3x3 Transpose(const Matrix3x3& matrix);
-Matrix4x4 Transpose(const Matrix4x4& matrix);
+    //逆行列を求める関数
+    Matrix2x2 InverseMatrix(const Matrix2x2& matrix);
+    Matrix3x3 InverseMatrix(const Matrix3x3& matrix);
+    Matrix4x4 InverseMatrix(const Matrix4x4& matrix);
 
-//正射影行列を求める関数
-Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom);
-Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom, float znear, float zfar);
+    //転置行列を求める関数
+    Matrix2x2 Transpose(const Matrix2x2& matrix);
+    Matrix3x3 Transpose(const Matrix3x3& matrix);
+    Matrix4x4 Transpose(const Matrix4x4& matrix);
 
-// 透視投影行列(視錐台)を求める関数
-float AspectRatio(float windowWidth, float windowHeight);
-Matrix4x4 PerspectiveMatrix(float fovY, float aspectRatio, float znear, float zfar);
+    //正射影行列を求める関数
+    Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom);
+    Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom, float znear, float zfar);
 
-//ビューポート変換行列を求める関数
-Matrix3x3 ViewportMatrix(const Vector2& size, const Vector2& LeftTop);
-Matrix4x4 ViewportMatrix(const Vector2& size, const Vector2& LeftTop, float minDepth, float maxDepth);
+    // 透視投影行列(視錐台)を求める関数
+    float AspectRatio(float windowWidth, float windowHeight);
+    Matrix4x4 PerspectiveMatrix(float fovY, float aspectRatio, float znear, float zfar);
 
-//レンダリングパイプライン作る関数
-Matrix3x3 WvpVpMatrix(
-    Vector2 playerPos, Vector2 playerScale, float playerAngle,
-    Vector2 cameraPos, Vector2 cameraScale, float cameraAngle,
-    Vector2 cameraRange, Vector2 leftTop,
-    Vector2 screenSize
-);
+    //ビューポート変換行列を求める関数
+    Matrix3x3 ViewportMatrix(const Vector2& size, const Vector2& LeftTop);
+    Matrix4x4 ViewportMatrix(const Vector2& size, const Vector2& LeftTop, float minDepth, float maxDepth);
+
+    //レンダリングパイプライン作る関数
+    Matrix3x3 WvpVpMatrix(
+        Vector2 playerPos, Vector2 playerScale, float playerAngle,
+        Vector2 cameraPos, Vector2 cameraScale, float cameraAngle,
+        Vector2 cameraRange, Vector2 leftTop,
+        Vector2 screenSize
+    );
+
+} // namespace MatFunc
+
+// 後方互換性のため、グローバルスコープでも使用可能にする
+using namespace MatFunc;

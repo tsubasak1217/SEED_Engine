@@ -327,7 +327,7 @@
     <ClCompile Include="Game\Manager\NotesEditor.cpp">
       <Filter>Game\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Manager\RythmGameManager.cpp">
+    <ClCompile Include="Game\Manager\RhythmGameManager.cpp">
       <Filter>Game\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Manager\SongSelector.cpp">
@@ -829,7 +829,7 @@
     <ClInclude Include="Game\Manager\NotesEditor.h">
       <Filter>Game\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Manager\RythmGameManager.h">
+    <ClInclude Include="Game\Manager\RhythmGameManager.h">
       <Filter>Game\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Manager\SongSelector.h">

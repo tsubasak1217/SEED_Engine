@@ -52,7 +52,7 @@ Triangle2D::Triangle2D(
     this->translate = translate;
     this->color = color;
     this->blendMode = blendMode;
-    litingType = LIGHTINGTYPE_NONE;
+    lightingType = LIGHTINGTYPE_NONE;
     GH = TextureManager::LoadTexture("DefaultAssets/white1x1.png");
     uvTransform = IdentityMat4();
     isStaticDraw = false;

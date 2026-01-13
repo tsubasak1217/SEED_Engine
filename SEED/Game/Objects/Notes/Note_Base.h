@@ -31,7 +31,7 @@ public:
     virtual ~Note_Base() = default;
     virtual void Update() = 0;
     virtual void Draw(float currentTime,float appearLength);
-    virtual Judgement::Evalution Judge(float curTime) = 0;
+    virtual Judgement::Evaluation Judge(float curTime) = 0;
 
     // 入出力関数
     virtual nlohmann::json ToJson() = 0;
@@ -42,6 +42,25 @@ public:
 #endif // _DEBUG
 
 public:
+    // アクセサ
+    NoteType GetNoteType() const { return noteType_; }
+    void SetNoteType(NoteType type) { noteType_ = type; }
+    int32_t GetLane() const { return lane_; }
+    void SetLane(int32_t lane) { lane_ = lane; }
+    UpDown GetLayer() const { return layer_; }
+    void SetLayer(UpDown layer) { layer_ = layer; }
+    LaneBit GetLaneBit() const { return laneBit_; }
+    void SetLaneBit(LaneBit bit) { laneBit_ = bit; }
+    float GetTime() const { return time_; }
+    void SetTime(float time) { time_ = time; }
+    bool IsExtraNote() const { return isExtraNote_; }
+    void SetIsExtraNote(bool isExtra) { isExtraNote_ = isExtra; }
+    int32_t GetNoteID() const { return noteID_; }
+    bool IsEnd() const { return isEnd_; }
+    void SetIsEnd(bool isEnd) { isEnd_ = isEnd; }
+    std::vector<std::shared_ptr<Note_Base>>& GetControlPoints() { return controlPoints_; }
+
+    // 後方互換性のためpublicメンバとして残す（将来的に削除予定）
     NoteType noteType_ = NoteType::None;// ノーツの種類
     int32_t lane_;// レーン番号
     UpDown layer_ = UpDown::NONE;// 上下の方向

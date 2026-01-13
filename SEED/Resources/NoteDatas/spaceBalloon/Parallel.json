@@ -1,12 +1,6 @@
 {
-    "artist": "桃色球体",
-    "audioPath": "../../Resources/NoteDatas/spaceBalloon/spaceBalloon.mp3",
-    "bpm": 90.0,
     "difficulty": 9,
-    "difficultyName": "Parallel",
-    "genre": 1,
-    "jsonFilePath": "Resources/NoteDatas/spaceBalloon/Parallel.json",
-    "maxCombo": 293,
+    "maxCombo": 303,
     "notes": [
         {
             "isExtraNote": false,
@@ -241,8 +235,24 @@
         },
         {
             "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 11.333333969116211
+        },
+        {
+            "isExtraNote": false,
             "lane": 0,
             "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 12.0
+        },
+        {
+            "isExtraNote": false,
+            "lane": 3,
+            "laneBit": 8,
             "layer": 0,
             "noteType": "tap",
             "time": 12.0
@@ -274,11 +284,67 @@
         },
         {
             "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 12.666666984558105
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 12.666666984558105
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 13.000000953674316
+        },
+        {
+            "isExtraNote": false,
             "lane": 2,
             "laneBit": 4,
             "layer": 0,
             "noteType": "tap",
             "time": 13.333333969116211
+        },
+        {
+            "isExtraNote": false,
+            "lane": 4,
+            "laneBit": 16,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 13.333333969116211
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 13.333333969116211
+        },
+        {
+            "isExtraNote": false,
+            "lane": 1,
+            "laneBit": 2,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 13.555556297302246
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 13.777778625488281
         },
         {
             "direction": 0,
@@ -287,7 +353,15 @@
             "laneBit": 2048,
             "layer": 0,
             "noteType": "wheel",
-            "time": 14.000000953674316
+            "time": 14.444445610046387
+        },
+        {
+            "isExtraNote": false,
+            "lane": 0,
+            "laneBit": 1,
+            "layer": 0,
+            "noteType": "tap",
+            "time": 14.222223281860352
         },
         {
             "isExtraNote": false,
@@ -1904,8 +1978,6 @@
         }
     ],
     "notesDesigner": "tbs",
-    "offsetTime": 0.15000000596046448,
-    "songName": "SpaceBalloon",
     "tempoData": [
         {
             "barCount": 1,

@@ -16,7 +16,26 @@
 struct SongInfo{
     void Initialize(const std::string& _folderName);
 
-    // 曲の共通情報
+    // アクセサ
+    const std::string& GetFolderName() const { return folderName; }
+    const std::string& GetSongName() const { return songName; }
+    const std::string& GetArtistName() const { return artistName; }
+    const std::string& GetAudioFilePath() const { return audioFilePath; }
+    const std::optional<SongGenre>& GetGenre() const { return genre; }
+    float GetBpm() const { return bpm; }
+    float GetSongOffsetTime() const { return songOffsetTime; }
+    const Range1D& GetSongPreviewRange() const { return songPreviewRange; }
+    float GetSongVolume() const { return songVolume; }
+    bool IsInitialized() const { return isInitialized; }
+    float GetScore(int idx) const { return score[idx]; }
+    ScoreRank GetRank(int idx) const { return ranks[idx]; }
+    ClearIcon GetClearIcon(int idx) const { return clearIcons[idx]; }
+    const std::string& GetNotesDesignerName(int idx) const { return notesDesignerName[idx]; }
+    int32_t GetDifficulty(int idx) const { return difficulty[idx]; }
+    const nlohmann::json& GetNoteData(int idx) const { return noteDatas[idx]; }
+    const std::string& GetJsonFilePath(int idx) const { return jsonFilePath[idx]; }
+
+    // 曲の共通情報（後方互換性のためpublicに残す）
     std::string folderName;
     std::string songName;
     std::string artistName;

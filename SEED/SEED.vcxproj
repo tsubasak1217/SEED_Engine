@@ -139,7 +139,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Source\Basic\Dictionary\LayerDictionary.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
     <ClCompile Include="Game\Manager\NotesEditor.cpp" />
-    <ClCompile Include="Game\Manager\RythmGameManager.cpp" />
+    <ClCompile Include="Game\Manager\RhythmGameManager.cpp" />
     <ClCompile Include="Game\Manager\SongSelector.cpp" />
     <ClCompile Include="Game\Objects\Combo\ComboObject.cpp" />
     <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp" />
@@ -314,7 +314,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Basic\Dictionary\LayerDictionary.h" />
     <ClInclude Include="Game\GameSystem.h" />
     <ClInclude Include="Game\Manager\NotesEditor.h" />
-    <ClInclude Include="Game\Manager\RythmGameManager.h" />
+    <ClInclude Include="Game\Manager\RhythmGameManager.h" />
     <ClInclude Include="Game\Manager\SongSelector.h" />
     <ClInclude Include="Game\Objects\Combo\ComboObject.h" />
     <ClInclude Include="Game\Objects\Judgement\AnswerLane.h" />

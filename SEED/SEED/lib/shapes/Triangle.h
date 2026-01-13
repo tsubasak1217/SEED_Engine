@@ -31,7 +31,7 @@ struct Triangle{
     Vector3 rotate;
     Vector3 translate;
     Color color = {1.0f,1.0f,1.0f,1.0f};
-    int32_t litingType = LIGHTINGTYPE_NONE;
+    int32_t lightingType = LIGHTINGTYPE_NONE;
     int32_t GH = -1;
     BlendMode blendMode = BlendMode::NORMAL;
     D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;
@@ -60,7 +60,7 @@ public:
     float rotate = 0.0f;
     Vector2 translate = {0.0f,0.0f};
     Color color = { 1.0f,1.0f,1.0f,1.0f };
-    int32_t litingType = LIGHTINGTYPE_NONE;
+    int32_t lightingType = LIGHTINGTYPE_NONE;
     int32_t GH = -1;
     BlendMode blendMode = BlendMode::NORMAL;
     Matrix4x4 uvTransform = IdentityMat4();

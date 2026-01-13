@@ -10,8 +10,8 @@ public:
     ~Note_Hold() override;
     void Update() override;
     void Draw(float currentTime, float appearLength) override;
-    Judgement::Evalution Judge(float curTime) override;
-    Judgement::Evalution JudgeHoldEnd();
+    Judgement::Evaluation Judge(float curTime) override;
+    Judgement::Evaluation JudgeHoldEnd();
 
     // 入出力関数
     nlohmann::json ToJson() override;
@@ -24,7 +24,7 @@ public:
     bool isHold_ = false;// ホールドしているかどうか
     bool isReleased_ = false;// リリースしたかどうか
     bool isStackedToHoldList_ = false;// スタックリストに積まれているか
-    Judgement::Evalution headEvaluation_ = Judgement::Evalution::NONE;// 頭の判定
+    Judgement::Evaluation headEvaluation_ = Judgement::Evaluation::NONE;// 頭の判定
     int32_t textureGHs_[4];// ホールドノーツのテクスチャ
     Vector4 noteColors_[3];// ホールドノーツの色
 

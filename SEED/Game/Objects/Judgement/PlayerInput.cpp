@@ -188,7 +188,7 @@ void PlayerInput::Initialize(){
     for(int i = 0; i < 2; i++){
         cursor_[i] = Triangle();
         cursor_[i].GH = TextureManager::LoadTexture("PlayField/cursor_half.png");
-        cursor_[i].litingType = LIGHTINGTYPE_NONE;
+        cursor_[i].lightingType = LIGHTINGTYPE_NONE;
         //cursor_[i].blendMode = BlendMode::ADD;
 
         cursor2D_[i] = Triangle2D();

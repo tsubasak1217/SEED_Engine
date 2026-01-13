@@ -4,7 +4,7 @@
 // 入力デバイスの作成
 void RawInputMouse::Create(){
     // ウィンドウハンドル保存
-    hwnd = WindowManager::GetHWND(SEED::GetInstance()->windowTitle_);
+    hwnd = WindowManager::GetHWND(SEED::Instance::GetInstance()->windowTitle_);
 
     // デバイス設定
     RAWINPUTDEVICE rid[1];

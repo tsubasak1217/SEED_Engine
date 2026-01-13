@@ -68,9 +68,9 @@ void Note_Wheel::Draw(float currentTime, float appearLength){
     noteDirectionRect.GH = wheelDirectionGH_;
 
     // 描画
-    SEED::DrawQuad(noteFloorRect);
-    SEED::DrawQuad(noteDirectionRect);
-    SEED::DrawQuad(noteAuraRect);
+   SEED::Instance::DrawQuad(noteFloorRect);
+   SEED::Instance::DrawQuad(noteDirectionRect);
+   SEED::Instance::DrawQuad(noteAuraRect);
 }
 
 ////////////////////////////////////////////////////////////////////

@@ -98,7 +98,7 @@ void PostEffectSystem::CreateResources(){
         // Resourceの作成
         postEffectTextureResource[i].resource = InitializeTextureResource(
             DxManager::GetInstance()->GetDevice(),
-            SEED::GetInstance()->kClientWidth_, SEED::GetInstance()->kClientHeight_,
+           SEED::Instance::GetInstance()->kClientWidth_,SEED::Instance::GetInstance()->kClientHeight_,
             DXGI_FORMAT_R8G8B8A8_UNORM,
             STATE_UNORDERED_ACCESS
         );
@@ -129,7 +129,7 @@ void PostEffectSystem::CreateResources(){
         // Resourceの作成
         postEffectResultResource.resource = InitializeTextureResource(
             DxManager::GetInstance()->GetDevice(),
-            SEED::GetInstance()->kClientWidth_, SEED::GetInstance()->kClientHeight_,
+           SEED::Instance::GetInstance()->kClientWidth_,SEED::Instance::GetInstance()->kClientHeight_,
             DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
             STATE_SHADER_RESOURCE
         );
@@ -191,7 +191,7 @@ void PostEffectSystem::Release(){
 void PostEffectSystem::CopyOffScreen(){
 
     // コピー状態を設定
-    auto& src = DxManager::instance_->offScreenResources[SEED::GetMainCameraName()];
+    auto& src = DxManager::instance_->offScreenResources[SEED::Instance::GetMainCameraName()];
     auto& dst = postEffectTextureResource[currentBufferIndex_];
     src.TransitionState(D3D12_RESOURCE_STATE_COPY_SOURCE);
     dst.TransitionState(D3D12_RESOURCE_STATE_COPY_DEST);
@@ -200,7 +200,7 @@ void PostEffectSystem::CopyOffScreen(){
     auto& commandList = DxManager::GetInstance()->commandList;
     commandList->CopyResource(
         postEffectTextureResource[currentBufferIndex_].resource.Get(),
-        DxManager::instance_->offScreenResources[SEED::GetMainCameraName()].resource.Get()
+        DxManager::instance_->offScreenResources[SEED::Instance::GetMainCameraName()].resource.Get()
     );
 
     // コピー後の状態を設定

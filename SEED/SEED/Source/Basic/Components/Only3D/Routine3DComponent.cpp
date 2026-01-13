@@ -133,11 +133,11 @@ void Routine3DComponent::Draw(){
     switch(interpolationType_){
     case InterpolationType::LINEAR:
         for(int i = 0; i < controlPoints_.size() - 1; i++){
-            SEED::DrawLine(controlPoints_[i].first.translate, controlPoints_[i + 1].first.translate, { 0.0f,0.0f,1.0f,1.0f });
+           SEED::Instance::DrawLine(controlPoints_[i].first.translate, controlPoints_[i + 1].first.translate, { 0.0f,0.0f,1.0f,1.0f });
         }
         break;
     case InterpolationType::CATMULLROM:
-        SEED::DrawSpline(points, 8, { 0.0f,0.0f,1.0f,1.0f });
+       SEED::Instance::DrawSpline(points, 8, { 0.0f,0.0f,1.0f,1.0f });
         break;
     default:
         break;
@@ -367,7 +367,7 @@ void Routine3DComponent::EditTransform(){
         if(disableTranslate_ + disableScale_ + disableRotate_ == 0){
             // デバッグカメラの値を適用
             if(ImGui::Button("デバッグカメラの値を適用" + tag)){
-                BaseCamera* debugCam = SEED::GetCamera("debug");
+                BaseCamera* debugCam =SEED::Instance::GetCamera("debug");
                 controlPoints_[edittingIdx_].first = debugCam->GetTransform();
             }
         }

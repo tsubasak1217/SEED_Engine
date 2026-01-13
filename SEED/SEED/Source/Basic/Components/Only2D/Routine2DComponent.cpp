@@ -119,7 +119,7 @@ void Routine2DComponent::Draw(){
     // 制御点にデバッグ用のスプライトを描画
     for(auto& point : controlPoints_){
         debugPointSprite_.transform = point.first;
-        SEED::DrawSprite(debugPointSprite_);
+       SEED::Instance::DrawSprite(debugPointSprite_);
     }
 
     // 制御点が2つ未満ならライン描画しない
@@ -135,11 +135,11 @@ void Routine2DComponent::Draw(){
     switch(interpolationType_){
     case InterpolationType::LINEAR:
         for(int i = 0; i < controlPoints_.size() - 1; i++){
-            SEED::DrawLine2D(controlPoints_[i].first.translate, controlPoints_[i + 1].first.translate, { 0.0f,0.0f,1.0f,1.0f });
+           SEED::Instance::DrawLine2D(controlPoints_[i].first.translate, controlPoints_[i + 1].first.translate, { 0.0f,0.0f,1.0f,1.0f });
         }
         break;
     case InterpolationType::CATMULLROM:
-        SEED::DrawSpline(points, 8, { 0.0f,0.0f,1.0f,1.0f });
+       SEED::Instance::DrawSpline(points, 8, { 0.0f,0.0f,1.0f,1.0f });
         break;
     default:
         break;

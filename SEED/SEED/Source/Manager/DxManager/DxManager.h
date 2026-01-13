@@ -40,13 +40,17 @@ using Microsoft::WRL::ComPtr;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+// 前方宣言
+namespace SEED{
+    class Instance;
+}
+
 /// <summary>
 /// 未開放のリソースがないかチェックする構造体
 /// </summary>
 struct LeakChecker{
     ~LeakChecker();
 };
-
 
 /// <summary>
 /// エンジンでDirectXを動かす基盤
@@ -56,7 +60,7 @@ class DxManager{
     friend PolygonManager;
     friend DxResource;
     friend class PostEffectSystem;
-    friend class SEED;
+    friend class SEED::Instance;
     friend class TextureManager;
     friend class TextSystem;
     friend class ImGuiManager;
@@ -68,7 +72,7 @@ class DxManager{
 
 public:/*========================== 根幹をなす大枠の関数 ==========================*/
     ~DxManager();
-    static void Initialize(SEED* pSEED);
+    static void Initialize(SEED::Instance* pSEED);
     static void Finalize();
     static DxManager* GetInstance();
 
@@ -135,7 +139,7 @@ private:/*============================ その他の関数 ======================
 
 private:/*========================= 外部参照のためのポインタ ========================*/
 
-    SEED* pSEED_ = nullptr;
+    SEED::Instance* pSEED_ = nullptr;
 
 private:/*============================ マネージャー変数 ============================*/
 

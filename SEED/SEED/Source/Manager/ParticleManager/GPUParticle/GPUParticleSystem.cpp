@@ -420,7 +420,7 @@ void GPUParticleSystem::Draw(const std::string& cameraName){
 
     // カメラ情報を書き込む
     auto* data = instance_->cameraInfoBuffer_.data;
-    auto* camera = SEED::GetCamera(cameraName);
+    auto* camera =SEED::Instance::GetCamera(cameraName);
     data->viewProjectionMatrix = camera->GetViewProjectionMat();
     data->cameraRotation = camera->GetRotation();
     data->cameraPosition = camera->GetTranslation();

@@ -2,5 +2,5 @@
 #include <SEED/Source/SEED.h>
 
 void BaseLight::SendData(){
-    SEED::SendLightData(this);
+   SEED::Instance::SendLightData(this);
 }

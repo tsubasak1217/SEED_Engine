@@ -43,7 +43,7 @@ void BlockSlideTransition::Draw() {
 
     // 矩形描画
     for (auto& quad : quads_) {
-        SEED::DrawQuad2D(quad.quad);
+       SEED::Instance::DrawQuad2D(quad.quad);
     }
 }
 

@@ -19,7 +19,7 @@ static void GetNV12PlaneSizes(IMFMediaType* mediaType, UINT32* yWidth, UINT32* y
 }
 
 VideoPlayer::~VideoPlayer(){
-    if(SEED::GetIsEndAplication()){ return; }
+    if(SEED::Instance::GetIsEndAplication()){ return; }
     if(videoItem_){
         // 削除フラグを立てる
         videoItem_->removeOrder = true;
@@ -218,7 +218,7 @@ void VideoPlayer::Draw(Quad2D quad){
     // Quadのテクスチャを設定
     quad.GH = videoItem_->frameTextureRGBA_.GetSRVIndex();
     // 描画
-    SEED::DrawQuad2D(quad);
+   SEED::Instance::DrawQuad2D(quad);
 }
 
 void VideoPlayer::Draw(Quad quad){
@@ -228,7 +228,7 @@ void VideoPlayer::Draw(Quad quad){
     quad.GH = videoItem_->frameTextureRGBA_.GetSRVIndex();
     quad.lightingType = LIGHTINGTYPE_NONE; // ライティングを無効化
     // 描画
-    SEED::DrawQuad(quad);
+   SEED::Instance::DrawQuad(quad);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -88,9 +88,9 @@ void SongSelector::Initialize(){
     pMouseCursor_ = hierarchy->GetGameObject2D("cursorColliderObj");
 
     // カメラの取得
-    SEED::RemoveCamera("gameCamera");
-    SEED::SetMainCamera("default");
-    camera_ = SEED::GetMainCamera();
+   SEED::Instance::RemoveCamera("gameCamera");
+   SEED::Instance::SetMainCamera("default");
+    camera_ =SEED::Instance::GetMainCamera();
 
     // パーティクルを初期化しエミッターを読み込む
     ParticleManager::DeleteAll();// 既存のエフェクトを削除
@@ -175,7 +175,7 @@ void SongSelector::Update(){
 ////////////////////////////////////////////////////////////////////
 void SongSelector::Draw(){
     // ジャケットの描画
-    SEED::DrawQuad(jacket3D_);
+   SEED::Instance::DrawQuad(jacket3D_);
 }
 
 ///////////////////////////////////////////////////////////////

@@ -31,7 +31,7 @@ void Collider_Line::UpdateMatrix(){
 // 描画
 //////////////////////////////////////////////////////////////////
 void Collider_Line::Draw(){
-    SEED::DrawLine(body_.origin_, body_.end_, color_);
+   SEED::Instance::DrawLine(body_.origin_, body_.end_, color_);
 }
 
 //////////////////////////////////////////////////////////////////

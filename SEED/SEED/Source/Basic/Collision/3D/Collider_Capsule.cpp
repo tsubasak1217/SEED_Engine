@@ -31,7 +31,7 @@ void Collider_Capsule::UpdateMatrix(){
 // 描画
 //////////////////////////////////////////////////////////////////////////
 void Collider_Capsule::Draw(){
-    SEED::DrawCapsule(body_.origin, body_.end, body_.radius, 6, color_);
+   SEED::Instance::DrawCapsule(body_.origin, body_.end, body_.radius, 6, color_);
 }
 
 

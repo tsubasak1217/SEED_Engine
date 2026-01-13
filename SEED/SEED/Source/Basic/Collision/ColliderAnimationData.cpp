@@ -108,9 +108,9 @@ void ColliderAnimationData::Edit(const std::string& headerName){
 
                     nodeAnimation.rotate.keyframes[i].value = addRotate * nodeAnimation.rotate.keyframes[i].value;
 
-                    SEED::DrawLine({ 0.0f,0.0f,0.0f }, up * 10.0f, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-                    SEED::DrawLine({ 0.0f,0.0f,0.0f }, right * 10.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-                    SEED::DrawLine({ 0.0f,0.0f,0.0f }, forward * 10.0f, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+                   SEED::Instance::DrawLine({ 0.0f,0.0f,0.0f }, up * 10.0f, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+                   SEED::Instance::DrawLine({ 0.0f,0.0f,0.0f }, right * 10.0f, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+                   SEED::Instance::DrawLine({ 0.0f,0.0f,0.0f }, forward * 10.0f, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
                 }
 
                 // translate
@@ -290,7 +290,7 @@ void ColliderAnimationData::DrawCollider() const{
     }
 
     // 軌道の描画
-    SEED::DrawSpline(translate, 4, {1.0f,1.0f,1.0f,1.0f},false);
+   SEED::Instance::DrawSpline(translate, 4, {1.0f,1.0f,1.0f,1.0f},false);
 }
 
 

@@ -4,7 +4,7 @@
 #include <SEED/Source/SEED.h>
 
 void AnswerLane::Update(){
-    
+
     // ノーツを処理していた場合
     if(isTapNote){
         evaluationLeftTime = kVisibleTime;
@@ -69,6 +69,6 @@ void AnswerLane::Update(){
 
 // 判定の矩形を描画する
 void AnswerLane::Draw(){
-    SEED::DrawTriangle(tri);
-    SEED::DrawTriangle(evaluationPolygon);
+    SEED::Instance::DrawTriangle(tri);
+    SEED::Instance::DrawTriangle(evaluationPolygon);
 }

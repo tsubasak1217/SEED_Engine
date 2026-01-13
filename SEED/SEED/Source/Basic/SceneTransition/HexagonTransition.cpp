@@ -48,7 +48,7 @@ void HexagonTransition::Draw(){
 
         if(isDraw){
 
-            SEED::DrawHexagon(
+           SEED::Instance::DrawHexagon(
                 hex.pos,
                 hexagonRadius_ * ease,
                 angle_,

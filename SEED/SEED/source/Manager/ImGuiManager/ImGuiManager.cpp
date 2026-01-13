@@ -57,11 +57,11 @@ void ImGuiManager::Initialize(){
 
 
     // ウィンドウハンドルの取得
-    HWND hwnd = WindowManager::GetHWND(SEED::GetInstance()->windowTitle_);
-    instance_->windowTitle_ = SEED::GetInstance()->windowTitle_;
+    HWND hwnd = WindowManager::GetHWND(SEED::Instance::GetInstance()->windowTitle_);
+    instance_->windowTitle_ =SEED::Instance::GetInstance()->windowTitle_;
 #ifdef USE_SUB_WINDOW
-    hwnd = WindowManager::GetHWND(SEED::GetInstance()->systemWindowTitle_);
-    instance_->windowTitle_ = SEED::GetInstance()->systemWindowTitle_;
+    hwnd = WindowManager::GetHWND(SEED::Instance::GetInstance()->systemWindowTitle_);
+    instance_->windowTitle_ =SEED::Instance::GetInstance()->systemWindowTitle_;
 #endif // USE_SUB_WINDOW
 
     // directX用の初期化
@@ -124,7 +124,7 @@ void ImGuiManager::PreDraw(){
         // マウス位置を更新
         POINT mousePos;
         GetCursorPos(&mousePos);
-        ScreenToClient(WindowManager::GetHWND(SEED::systemWindowTitle_), &mousePos);
+        ScreenToClient(WindowManager::GetHWND(SEED::Instance::systemWindowTitle_), &mousePos);
         io.AddMousePosEvent(float(mousePos.x) * (1.0f / winScale.x), float(mousePos.y) * (1.0f / winScale.y));
 
     } else{
@@ -385,7 +385,7 @@ ImVec2 ImFunc::SceneWindowBegin(const std::string& label, const std::string& cam
             if((int)PostEffectSystem::GetInstance()->postProcessGroups_.size() != 0){
                 ImGui::Image(TextureManager::GetImGuiTexture("postEffectResult"), finalSize);
             } else{
-                ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + SEED::GetMainCameraName()), finalSize);
+                ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" +SEED::Instance::GetMainCameraName()), finalSize);
             }
         } else{
             ImGui::Image(TextureManager::GetImGuiTexture("offScreen_" + cameraName), finalSize);
@@ -957,7 +957,7 @@ void ImFunc::Guizmo3D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rec
     }
 
     // 必要な行列の用意
-    BaseCamera* camera = SEED::GetCamera("debug");
+    BaseCamera* camera =SEED::Instance::GetCamera("debug");
     Matrix4x4 viewMat = camera->GetViewMat();
     Matrix4x4 projMat = camera->GetProjectionMat();
     Matrix4x4 modelMat = info.transform->ToMatrix();
@@ -1016,7 +1016,7 @@ void ImFunc::Guizmo2D(const GuizmoInfo& info, ImDrawList* pDrawList, Range2D rec
     }
 
     // 必要な行列の用意
-    BaseCamera* camera = SEED::GetCamera("debug");
+    BaseCamera* camera =SEED::Instance::GetCamera("debug");
     Matrix4x4 viewMat = TranslateMatrix(Vector3(0.0f, 0.0f, camera->GetZNear() + 1.0f));
     Matrix4x4 projMat = camera->GetProjectionMat2D();
     Matrix4x4 modelMat = info.transform2D->ToMatrix4x4() * info.parentMat;

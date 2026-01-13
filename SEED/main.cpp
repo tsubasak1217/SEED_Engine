@@ -9,21 +9,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 {
 
     // エンジン側の初期化
-    SEED::Initialize(kWindowSizeX, kWindowSizeY, hInstance, nCmdShow);
+   SEED::Instance::Initialize(kWindowSizeX, kWindowSizeY, hInstance, nCmdShow);
     // ゲーム側の初期化
     GameSystem::Initialize();
 
     // ゲームループ
     while(WindowManager::ProcessMessage() != WM_QUIT){
-        SEED::BeginFrame();// エンジン側のフレーム開始時処理
+       SEED::Instance::BeginFrame();// エンジン側のフレーム開始時処理
         GameSystem::Run();// ゲーム側の1フレーム内処理
-        SEED::EndFrame();// エンジン側のフレーム終了時処理
+       SEED::Instance::EndFrame();// エンジン側のフレーム終了時処理
     }
 
     // ゲーム側の終了処理
     GameSystem::Finalize();
     // エンジン側の終了処理
-    SEED::Finalize();
+   SEED::Instance::Finalize();
 
     return 0;
 }

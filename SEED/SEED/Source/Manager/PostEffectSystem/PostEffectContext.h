@@ -7,7 +7,7 @@
 
 // 前方宣言
 class DxManager;
-class SEED;
+class Instance;
 class IPostProcess;
 
 // ポストエフェクトハンドル

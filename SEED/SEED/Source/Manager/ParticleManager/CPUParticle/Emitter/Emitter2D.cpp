@@ -98,7 +98,7 @@ void Emitter2D::Edit(){
     rangeBox.center = GetCenter();
     rangeBox.halfSize = emitRange_ * 0.5f;
     rangeBox.rotate = center_.rotate;
-    SEED::DrawOBB2D(rangeBox, { 0.0f,1.0f,1.0f,1.0f });
+   SEED::Instance::DrawOBB2D(rangeBox, { 0.0f,1.0f,1.0f,1.0f });
 
     ImGui::Unindent();
 }
@@ -185,7 +185,7 @@ void Emitter2D::EditTransformSettings(){
 
             // ゴール位置の可視化
             Vector2 pos = GetCenter() + goalPosition_;
-            SEED::DrawHexagon(pos, 1.0f, 0.0f, { 1.0f,0.0f,0.0f,1.0f });
+           SEED::Instance::DrawHexagon(pos, 1.0f, 0.0f, { 1.0f,0.0f,0.0f,1.0f });
         }
 
 

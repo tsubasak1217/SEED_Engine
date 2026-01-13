@@ -30,7 +30,7 @@ PlayField::~PlayField(){
 /////////////////////////////////////////////////////////////////////////
 void PlayField::Initialize(){
     // ゲームカメラの取得
-    BaseCamera* gameCamera_ = SEED::GetCamera("gameCamera");
+    BaseCamera* gameCamera_ =SEED::Instance::GetCamera("gameCamera");
     gameCamera_->SetZFar(2000.0f);
 
     farZ_ = 2000.0f;// プレイフィールドの奥行き
@@ -179,7 +179,7 @@ void PlayField::Initialize(){
     ParticleManager::DeleteAll();// 既存のエフェクトを削除
     Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
     GameObject* backEffect = hierarchy->LoadObject("PlayScene/Effects/StageBack.prefab");
-    backEffect->SetWorldTranslate(SEED::GetMainCamera()->GetTranslation());
+    backEffect->SetWorldTranslate(SEED::Instance::GetMainCamera()->GetTranslation());
 
     // エフェクトオブジェクトの読み込み
     /*レーン*/
@@ -231,7 +231,7 @@ void PlayField::Initialize(){
 
     // 背景色の設定
     bgColorObj_ = hierarchy->LoadObject("PlayScene/BGColorObj.prefab");
-    SEED::SetWindowColor(bgColorObj_->GetComponent<ColorListComponent>()->GetColor(0));
+   SEED::Instance::SetWindowColor(bgColorObj_->GetComponent<ColorListComponent>()->GetColor(0));
 }
 
 
@@ -241,7 +241,7 @@ void PlayField::Initialize(){
 void PlayField::Update(){
 
     // 背景色の更新
-    SEED::SetWindowColor(bgColorObj_->GetComponent<ColorListComponent>()->GetColor(0));
+   SEED::Instance::SetWindowColor(bgColorObj_->GetComponent<ColorListComponent>()->GetColor(0));
 
     // 押されたら反応するレーンの描画
     for(auto& answerQuadArray : laneAnswer_){
@@ -260,7 +260,7 @@ void PlayField::Draw(){
     // レーン
     for(int i = 0; i < 2; i++){
         for(int j = 0; j < lane_[i].size(); j++){
-            SEED::DrawTriangle(lane_[i][j]);
+           SEED::Instance::DrawTriangle(lane_[i][j]);
         }
     }
 
@@ -275,14 +275,14 @@ void PlayField::Draw(){
     // レーンの境界線
     for(int i = 0; i < 2; i++){
         for(int j = 0; j < laneBorderLine_[i].size(); j++){
-            SEED::DrawTriangle(laneBorderLine_[i][j]);
+           SEED::Instance::DrawTriangle(laneBorderLine_[i][j]);
         }
     }
 
     // レーンの境界線のオーラ
     for(int i = 0; i < 2; i++){
         for(int j = 0; j < laneBorderLineAura_[i].size(); j++){
-            SEED::DrawTriangle(laneBorderLineAura_[i][j]);
+           SEED::Instance::DrawTriangle(laneBorderLineAura_[i][j]);
         }
     }
 }

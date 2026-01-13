@@ -105,7 +105,7 @@ void Emitter3D::Edit(){
     rangeBox.center = GetCenter();
     rangeBox.halfSize = emitRange_ * 0.5f;
     rangeBox.rotate = center_.rotate.ToEuler();
-    SEED::DrawOBB(rangeBox, { 0.0f,1.0f,1.0f,1.0f });
+   SEED::Instance::DrawOBB(rangeBox, { 0.0f,1.0f,1.0f,1.0f });
 
     ImGui::Unindent();
 }
@@ -205,7 +205,7 @@ void Emitter3D::EditTransformSettings(){
 
             // ゴール位置の可視化
             Vector3 pos = GetCenter() + goalPosition_;
-            SEED::DrawSphere(pos, 1.0f, 6, { 1.0f,0.0f,0.0f,1.0f });
+           SEED::Instance::DrawSphere(pos, 1.0f, 6, { 1.0f,0.0f,0.0f,1.0f });
         }
 
 

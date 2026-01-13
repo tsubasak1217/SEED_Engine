@@ -51,7 +51,7 @@ void Collider_AABB2D::UpdateMatrix() {
 //////////////////////////////////////////////////////////////////
 void Collider_AABB2D::Draw() {
 
-    SEED::DrawAABB2D(body_, color_,true);
+   SEED::Instance::DrawAABB2D(body_, color_,true);
 }
 
 

@@ -20,8 +20,8 @@ Scene_Title::~Scene_Title(){
     Scene_Base::Finalize();
 
     // カメラのリセット
-    SEED::RemoveCamera("gameCamera");
-    SEED::SetMainCamera("default");
+   SEED::Instance::RemoveCamera("gameCamera");
+   SEED::Instance::SetMainCamera("default");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ void Scene_Title::Initialize(){
     // 何も見えない場所にカメラを移動しておく
     Transform firstCameraTransform;
     firstCameraTransform.translate = Vector3(0.0f, -10000.0f, 0.0f);
-    SEED::GetMainCamera()->SetTransform(firstCameraTransform);
+   SEED::Instance::GetMainCamera()->SetTransform(firstCameraTransform);
 
     // モデルオブジェクトの読み込み
     models_ = hierarchy_->LoadObject("Title/models.prefab");
@@ -168,7 +168,7 @@ void Scene_Title::Update(){
                     int32_t cameraIdx = int32_t(totalTime_ / cameraParentTime_) % int32_t(children.size());
                     auto it = children.begin();
                     std::advance(it, cameraIdx);
-                    SEED::GetMainCamera()->SetTransform((*it)->GetWorldTransform());
+                   SEED::Instance::GetMainCamera()->SetTransform((*it)->GetWorldTransform());
 
                     // ルーチンを最初から再生し直す(カメラが切り替わった瞬間)
                     if(prevCameraParentIdx_ != cameraIdx){
@@ -197,7 +197,7 @@ void Scene_Title::Update(){
         } else{
             // シーン遷移用のカメラワークを行う
             if(toSelectCamerawork_){
-                SEED::GetMainCamera()->SetTransform(toSelectCamerawork_->GetWorldTransform());
+               SEED::Instance::GetMainCamera()->SetTransform(toSelectCamerawork_->GetWorldTransform());
 
                 // カメラワークが終了したらチュートリアル選択UIを表示開始
                 auto* routine = toSelectCamerawork_->GetComponent<Routine3DComponent>();

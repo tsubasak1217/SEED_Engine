@@ -34,14 +34,14 @@ void Note_RectFlick::Draw(float currentTime, float appearLength){
         q = PlayField::GetInstance()->GetRectFlickQuad(timeRatio, dirs[i], 0.05f);
         // 描画
         q.color = { 1.0f,1.0f,0.0f,alpha };
-        SEED::DrawQuad2D(q);
+       SEED::Instance::DrawQuad2D(q);
 
         // 予告矩形の描画
         float ease = EaseOutQuart(std::clamp(timeRatio, 0.0f, 1.0f));
         q = PlayField::GetInstance()->GetRectFlickQuad(1.0f + 0.05f * ease, dirs[i], 0.1f * ease);
         q.color = { 1.0f,0.0f,0.0f,alpha };
         q.blendMode = BlendMode::ADD;
-        SEED::DrawQuad2D(q);
+       SEED::Instance::DrawQuad2D(q);
     }
 }
 

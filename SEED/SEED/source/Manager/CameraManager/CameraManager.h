@@ -6,11 +6,16 @@
 #include <unordered_map>
 #include <string>
 
+// 前方宣言
+namespace SEED{
+    class Instance;
+}
+
 /// <summary>
 /// カメラ管理構造体
 /// </summary>
 class CameraManager{
-    friend class SEED;
+    friend class SEED::Instance;
     friend class DxManager;
 private:
     CameraManager() = default;

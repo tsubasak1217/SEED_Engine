@@ -17,10 +17,10 @@
 /*                                                                                                               */
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-SEED* SEED::instance_ = nullptr;
-std::wstring SEED::windowTitle_ = L"NETHMi";
-std::wstring SEED::systemWindowTitle_ = L"SEED::System";
-uint32_t SEED::windowBackColor_ = MyMath::IntColor(27,27,27,255);
+SEED::Instance* SEED::Instance::instance_ = nullptr;
+std::wstring SEED::Instance::windowTitle_ = L"NETHMi";
+std::wstring SEED::Instance::systemWindowTitle_ = L"SEED::System";
+uint32_t SEED::Instance::windowBackColor_ = MyMath::IntColor(27,27,27,255);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,27 +31,27 @@ uint32_t SEED::windowBackColor_ = MyMath::IntColor(27,27,27,255);
 
 /*-----------------コンストラクタ、デストラクタ---------------------*/
 
-SEED::~SEED(){
+SEED::Instance::~Instance(){
     delete instance_;
     instance_ = nullptr;
 }
 
 /*---------------------- インスタンス取得 ------------------------*/
 
-SEED* SEED::GetInstance(){
+SEED::Instance* SEED::Instance::GetInstance(){
     if(instance_ == nullptr){
-        instance_ = new SEED();
+        instance_ = new SEED::Instance();
     }
     return instance_;
 }
 
 /*------------------------ 更新処理 ---------------------------*/
-void SEED::Update(){
+void SEED::Instance::Update(){
 
 }
 
 /*------------------------ 描画処理 ---------------------------*/
-void SEED::Draw(){
+void SEED::Instance::Draw(){
 
     // グリッドの描画
     if(instance_->isGridVisible_){
@@ -60,7 +60,7 @@ void SEED::Draw(){
 }
 
 
-void SEED::SetImGuiEmptyWindows(){
+void SEED::Instance::SetImGuiEmptyWindows(){
 #ifdef _DEBUG
 
     // 全体
@@ -87,7 +87,7 @@ void SEED::SetImGuiEmptyWindows(){
 }
 
 
-void SEED::DrawGUI(){
+void SEED::Instance::DrawGUI(){
 #ifdef _DEBUG
 
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
@@ -119,11 +119,11 @@ void SEED::DrawGUI(){
     ImGui::Checkbox("グリッド表示", &instance_->isGridVisible_);
     if(ImGui::Checkbox("デバッグカメラ", &isDebugCamera_)){
         if(isDebugCamera_){
-            SEED::SetMainCamera("debug");
-            SEED::SetIsCameraActive("debug", true);
+            SEED::Instance::SetMainCamera("debug");
+            SEED::Instance::SetIsCameraActive("debug", true);
         } else{
-            SEED::SetMainCamera("default");
-            SEED::SetIsCameraActive("debug", false);
+            SEED::Instance::SetMainCamera("default");
+            SEED::Instance::SetIsCameraActive("debug", false);
         }
     }
 
@@ -154,7 +154,7 @@ void SEED::DrawGUI(){
 
 /*------------------------ 初期化処理 ---------------------------*/
 
-void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, int nCmdShow){
+void SEED::Instance::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, int nCmdShow){
 
     GetInstance();
     instance_->kClientWidth_ = clientWidth;
@@ -210,7 +210,7 @@ void SEED::Initialize(int clientWidth, int clientHeight, HINSTANCE hInstance, in
 
 /*------------------------- 終了処理 ---------------------------*/
 
-void SEED::Finalize(){
+void SEED::Instance::Finalize(){
     ImGuiManager::Finalize();
     DxManager::Finalize();
     instance_->isEndAplication_ = true;
@@ -224,7 +224,7 @@ void SEED::Finalize(){
 
 /*----------------------- フレーム開始処理 ----------------------*/
 
-void SEED::BeginFrame(){
+void SEED::Instance::BeginFrame(){
 
     // ウインドウの更新
     WindowManager::Update();
@@ -248,7 +248,7 @@ void SEED::BeginFrame(){
 
 /*----------------------- フレーム終了処理 ----------------------*/
 
-void SEED::EndFrame(){
+void SEED::Instance::EndFrame(){
     // offscreenの画面のアルファ値を1にするため、color{0,0,01}のスプライトを表示
     instance_->offscreenWrapper_->Draw();
     Draw();
@@ -277,7 +277,7 @@ void SEED::EndFrame(){
 
 /*============================================== 三角形 =========================================*/
 
-void SEED::DrawTriangle(const Triangle& triangle){
+void SEED::Instance::DrawTriangle(const Triangle& triangle){
     Matrix4x4 worldMat = AffineMatrix(triangle.scale, triangle.rotate, triangle.translate);
     int GH = triangle.GH;
 
@@ -294,7 +294,7 @@ void SEED::DrawTriangle(const Triangle& triangle){
     );
 }
 
-void SEED::AddTriangle3DPrimitive(
+void SEED::Instance::AddTriangle3DPrimitive(
     const Vector4& v1, const Vector4& v2, const Vector4& v3,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3,
     const Color& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
@@ -308,7 +308,7 @@ void SEED::AddTriangle3DPrimitive(
 }
 
 
-void SEED::DrawTriangle2D(const Triangle2D& triangle){
+void SEED::Instance::DrawTriangle2D(const Triangle2D& triangle){
 
     instance_->pPolygonManager_->AddTriangle(
         TransformToVec4(triangle.localVertex[0]),
@@ -325,7 +325,7 @@ void SEED::DrawTriangle2D(const Triangle2D& triangle){
 /*=============================================== 矩形 ===========================================*/
 
 
-void SEED::DrawQuad(const Quad& quad){
+void SEED::Instance::DrawQuad(const Quad& quad){
     Matrix4x4 worldMat = AffineMatrix(quad.scale, quad.rotate, quad.translate);
     instance_->pPolygonManager_->AddQuad(
         quad.localVertex[0],
@@ -339,7 +339,7 @@ void SEED::DrawQuad(const Quad& quad){
     );
 }
 
-void SEED::AddQuad3DPrimitive(
+void SEED::Instance::AddQuad3DPrimitive(
     const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
     const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
     const Color& color, uint32_t GH, BlendMode blendMode, int32_t lightingType,
@@ -352,7 +352,7 @@ void SEED::AddQuad3DPrimitive(
     );
 }
 
-void SEED::DrawQuad2D(const Quad2D& quad,const Color& masterColor){
+void SEED::Instance::DrawQuad2D(const Quad2D& quad,const Color& masterColor){
 
     Matrix4x4 worldMat = AffineMatrix(quad.scale.ToVec3(), { 0.0f,0.0f,quad.rotate }, quad.translate.ToVec3());
     instance_->pPolygonManager_->AddQuad(
@@ -372,7 +372,7 @@ void SEED::DrawQuad2D(const Quad2D& quad,const Color& masterColor){
 /*========================================== スプライト ===========================================*/
 
 
-void SEED::DrawSprite(const Sprite& sprite, const std::optional<Color>& masterColor){
+void SEED::Instance::DrawSprite(const Sprite& sprite, const std::optional<Color>& masterColor){
 
     instance_->pPolygonManager_->AddSprite(
         sprite,
@@ -384,14 +384,14 @@ void SEED::DrawSprite(const Sprite& sprite, const std::optional<Color>& masterCo
 
 /*========================================== モデル ===========================================*/
 
-void SEED::DrawModel(Model* model, const std::optional<Color>& masterColor){
+void SEED::Instance::DrawModel(Model* model, const std::optional<Color>& masterColor){
     instance_->pPolygonManager_->AddModel(model,masterColor);
 }
 
 
 /*========================================== 線 ===========================================*/
 
-void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Color& color, BlendMode blendMode){
+void SEED::Instance::DrawLine(const Vector3& v1, const Vector3& v2, const Color& color, BlendMode blendMode){
     instance_->pPolygonManager_->AddLine(
         TransformToVec4(v1),
         TransformToVec4(v2),
@@ -399,7 +399,7 @@ void SEED::DrawLine(const Vector3& v1, const Vector3& v2, const Color& color, Bl
     );
 }
 
-void SEED::DrawLine2D(
+void SEED::Instance::DrawLine2D(
     const Vector2& v1, const Vector2& v2, const Color& color, BlendMode blendMode,
     bool isApplyViewMat, bool isIgnoreDepth
 ){
@@ -413,18 +413,18 @@ void SEED::DrawLine2D(
 /*========================================== テキスト ===========================================*/
 
 // 内部で文字ごとのDrawQuadに変換する
-void SEED::DrawText2D(const TextBox2D& textBox){
+void SEED::Instance::DrawText2D(const TextBox2D& textBox){
     textBox.Draw();
 }
 
-void SEED::DrawText3D(const TextBox3D& textBox){
+void SEED::Instance::DrawText3D(const TextBox3D& textBox){
     textBox.Draw();
 }
 
 
 /*========================================== リング ===========================================*/
 
-void SEED::DrawRing(const Ring& ring){
+void SEED::Instance::DrawRing(const Ring& ring){
     ring;
 }
 
@@ -432,14 +432,14 @@ void SEED::DrawRing(const Ring& ring){
 ///////////////////////////////////////////////////////
 // AABB,OBBの描画関数
 ///////////////////////////////////////////////////////
-void SEED::DrawAABB(const AABB& aabb, const Color& color){
+void SEED::Instance::DrawAABB(const AABB& aabb, const Color& color){
     OBB obb;
     obb.center = aabb.center;
     obb.halfSize = aabb.halfSize;
     DrawOBB(obb, color);
 }
 
-void SEED::DrawAABB2D(const AABB2D& aabb, const Color& color, bool isIgnoreDepth){
+void SEED::Instance::DrawAABB2D(const AABB2D& aabb, const Color& color, bool isIgnoreDepth){
     Vector2 vertex[4] = {
         Vector2(aabb.center.x - aabb.halfSize.x, aabb.center.y - aabb.halfSize.y),
         Vector2(aabb.center.x + aabb.halfSize.x, aabb.center.y - aabb.halfSize.y),
@@ -452,7 +452,7 @@ void SEED::DrawAABB2D(const AABB2D& aabb, const Color& color, bool isIgnoreDepth
     DrawLine2D(vertex[3], vertex[0], color,BlendMode::NORMAL,false,isIgnoreDepth);
 }
 
-void SEED::DrawOBB(const OBB& obb, const Color& color){
+void SEED::Instance::DrawOBB(const OBB& obb, const Color& color){
 
     // 頂点を取得
     static std::array<Vector3, 8> vertex;
@@ -478,7 +478,7 @@ void SEED::DrawOBB(const OBB& obb, const Color& color){
 /////////////////////////////////////////////////////////////
 // 2次元OBBの描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawOBB2D(const OBB2D& obb, const Color& color, bool isIgnoreDepth){
+void SEED::Instance::DrawOBB2D(const OBB2D& obb, const Color& color, bool isIgnoreDepth){
     // 頂点を計算
     static std::array<Vector2, 4> vertex;
     vertex = obb.GetVertices();
@@ -493,7 +493,7 @@ void SEED::DrawOBB2D(const OBB2D& obb, const Color& color, bool isIgnoreDepth){
 /////////////////////////////////////////////////////////////
 // 六角形の描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawHexagon(
+void SEED::Instance::DrawHexagon(
     const Vector2& center, float radius, float theta,
     const Color& color, BlendMode blendMode,
     DrawLocation drawLocation, int32_t layer, bool isApplyViewMat,
@@ -526,7 +526,7 @@ void SEED::DrawHexagon(
     }
 }
 
-void SEED::DrawHexagonFrame(
+void SEED::Instance::DrawHexagonFrame(
     const Vector2& center, float radius, float theta, float frameWidthRate, 
     const Color& color, BlendMode blendMode,
     DrawLocation drawLocation, int32_t layer, bool isApplyViewMat,
@@ -565,7 +565,7 @@ void SEED::DrawHexagonFrame(
 /////////////////////////////////////////////////////////////
 // 球の描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision, const Color& color){
+void SEED::Instance::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subdivision, const Color& color){
 
     // 常識的な範囲に納める
     subdivision = std::clamp(subdivision, 3, 16);
@@ -605,7 +605,7 @@ void SEED::DrawSphere(const Vector3& center, const Vector3& radius, int32_t subd
 }
 
 
-void SEED::DrawSphere(const Vector3& center, float radius, int32_t subdivision, const Color& color){
+void SEED::Instance::DrawSphere(const Vector3& center, float radius, int32_t subdivision, const Color& color){
     DrawSphere(center, Vector3(radius, radius, radius), subdivision, color);
 }
 
@@ -613,7 +613,7 @@ void SEED::DrawSphere(const Vector3& center, float radius, int32_t subdivision, 
 /////////////////////////////////////////////////////////////
 // 円柱の描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawCylinder(
+void SEED::Instance::DrawCylinder(
     const Vector3& start, const Vector3& end, 
     float startRadius, float endRadius, 
     int32_t subdivision, const Color& color
@@ -673,7 +673,7 @@ void SEED::DrawCylinder(
 /////////////////////////////////////////////////////////////
 // カプセルの描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawCapsule(const Vector3& start, const Vector3& end, float radius, int32_t subdivision, const Color& color){
+void SEED::Instance::DrawCapsule(const Vector3& start, const Vector3& end, float radius, int32_t subdivision, const Color& color){
     // 視点と終点に球を描画
     DrawSphere(start, radius, subdivision, color);
     DrawSphere(end, radius, subdivision, color);
@@ -681,7 +681,7 @@ void SEED::DrawCapsule(const Vector3& start, const Vector3& end, float radius, i
     DrawCylinder(start, end, radius, radius, subdivision, color);
 }
 
-void SEED::DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& radius, int32_t subdivision, const Color& color){
+void SEED::Instance::DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& radius, int32_t subdivision, const Color& color){
     // 視点と終点に球を描画
     DrawSphere(start, radius, subdivision, color);
     DrawSphere(end, radius, subdivision, color);
@@ -693,13 +693,13 @@ void SEED::DrawCapsule(const Vector3& start, const Vector3& end, const Vector3& 
 /////////////////////////////////////////////////////////////
 // グリッドの描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawGrid(float gridInterval, int32_t gridCount){
+void SEED::Instance::DrawGrid(float gridInterval, int32_t gridCount){
 
     float width = gridInterval * gridCount;
     Vector3 leftFront = { -width * 0.5f,0.0f,-width * 0.5f };
 
     for(int xIdx = 0; xIdx < gridCount + 1; xIdx++){
-        SEED::DrawLine(
+        DrawLine(
             leftFront + Vector3(gridInterval * xIdx, 0.0f, 0.0f),
             leftFront + Vector3(gridInterval * xIdx, 0.0f, width),
             { 1.0f,1.0f,1.0f,1.0f }
@@ -707,7 +707,7 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
     }
 
     for(int yIdx = 0; yIdx < gridCount + 1; yIdx++){
-        SEED::DrawLine(
+        DrawLine(
             leftFront + Vector3(0.0f, 0.0f, gridInterval * yIdx),
             leftFront + Vector3(width, 0.0f, gridInterval * yIdx),
             { 1.0f,1.0f,1.0f,1.0f }
@@ -715,7 +715,7 @@ void SEED::DrawGrid(float gridInterval, int32_t gridCount){
     }
 }
 
-void SEED::DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, uint32_t subdivision, const Color& color){
+void SEED::Instance::DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, uint32_t subdivision, const Color& color){
     // ベジェ曲線の描画
     Vector3 previous = p1;
     for(uint32_t i = 1; i <= subdivision; i++){
@@ -733,7 +733,7 @@ void SEED::DrawBezier(const Vector3& p1, const Vector3& p2, const Vector3& p3, u
 }
 
 // 2D版
-void SEED::DrawBezier(const Vector2& p1, const Vector2& p2, const Vector2& p3, uint32_t subdivision, const Color& color){
+void SEED::Instance::DrawBezier(const Vector2& p1, const Vector2& p2, const Vector2& p3, uint32_t subdivision, const Color& color){
     // ベジェ曲線の描画
     Vector2 previous = p1;
     for(uint32_t i = 1; i <= subdivision; i++){
@@ -748,7 +748,7 @@ void SEED::DrawBezier(const Vector2& p1, const Vector2& p2, const Vector2& p3, u
 }
 
 // 複数点版
-void SEED::DrawBezier(const std::vector<Vector2>& points, uint32_t subdivision, const Color& color){
+void SEED::Instance::DrawBezier(const std::vector<Vector2>& points, uint32_t subdivision, const Color& color){
 
     // 点が2つ未満の場合は描画しない
     if(points.size() < 2){ return; }
@@ -777,7 +777,7 @@ void SEED::DrawBezier(const std::vector<Vector2>& points, uint32_t subdivision, 
 /////////////////////////////////////////////////////////////
 // スプライン曲線の描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Color& color, bool isControlPointVisible){
+void SEED::Instance::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, const Color& color, bool isControlPointVisible){
 
     // 点が2つ未満の場合は描画しない
     if(points.size() < 2){ return; }
@@ -819,7 +819,7 @@ void SEED::DrawSpline(const std::vector<Vector3>& points, uint32_t subdivision, 
 }
 
 // スプライン曲線の描画（2D版）
-void SEED::DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, const Color& color, bool isControlPointVisible){
+void SEED::Instance::DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, const Color& color, bool isControlPointVisible){
 
     // 点が2つ未満の場合は描画しない
     if(points.size() < 2){ return; }
@@ -861,7 +861,7 @@ void SEED::DrawSpline(const std::vector<Vector2>& points, uint32_t subdivision, 
 /////////////////////////////////////////////////////////////
 // ライトのデバッグ用描画
 /////////////////////////////////////////////////////////////
-void SEED::DrawLight(const BaseLight* light){
+void SEED::Instance::DrawLight(const BaseLight* light){
 
     switch(light->GetLightType()){
 
@@ -918,14 +918,14 @@ void SEED::DrawLight(const BaseLight* light){
 // cubeMapの描画
 /////////////////////////////////////////////////////////////
 
-void SEED::SetSkyBox(const std::string& textureName, const Color& color){
+void SEED::Instance::SetSkyBox(const std::string& textureName, const Color& color){
     SkyBox::textureGH_ = TextureManager::LoadTexture(textureName);
     SkyBox::textureName_ = textureName;
     SkyBox::textureGH_;
     SkyBox::color_ = color;
 }
 
-void SEED::DrawSkyBox(bool isFollowCameraPos, const Vector3& position, float scale){
+void SEED::Instance::DrawSkyBox(bool isFollowCameraPos, const Vector3& position, float scale){
     SkyBox::scale_ = scale;
     SkyBox::translate_ = position;
     SkyBox::isFollowToCamera_ = isFollowCameraPos;
@@ -941,7 +941,7 @@ void SEED::DrawSkyBox(bool isFollowCameraPos, const Vector3& position, float sca
 
 /*----------------------- 起動時読み込み -----------------------*/
 
-void SEED::StartUpLoad(){
+void SEED::Instance::StartUpLoad(){
 
     AudioManager::StartUpLoad();
     ModelManager::StartUpLoad();
@@ -950,7 +950,7 @@ void SEED::StartUpLoad(){
 
 /*------------------ 画像の縦横幅を取得する関数 ------------------*/
 
-Vector2 SEED::GetImageSize(const std::wstring& fileName){
+Vector2 SEED::Instance::GetImageSize(const std::wstring& fileName){
 
     // パスの結合
     std::wstring filePath;
@@ -973,7 +973,7 @@ Vector2 SEED::GetImageSize(const std::wstring& fileName){
 
 /*------------------ 画面の解像度を変更する関数 ------------------*/
 
-void SEED::ChangeResolutionRate(float resolutionRate){
+void SEED::Instance::ChangeResolutionRate(float resolutionRate){
     static float preResolutionRate = 1.0f;
     if(resolutionRate != preResolutionRate){
         DxManager::GetInstance()->ChangeResolutionRate(resolutionRate);
@@ -982,6 +982,11 @@ void SEED::ChangeResolutionRate(float resolutionRate){
 }
 
 /*------------------ カメラにシェイクを設定する関数 ------------------*/
-void SEED::SetCameraShake(float time, float power, const Vector3& shakeLevel){
+void SEED::Instance::SetCameraShake(float time, float power, const Vector3& shakeLevel){
     GetMainCamera()->SetShake(time, power, shakeLevel);
+}
+
+/*------------------ SEEDインスタンスを取得する関数 ------------------*/
+SEED::Instance* SEED::GetInstance(){
+    return SEED::Instance::GetInstance();
 }

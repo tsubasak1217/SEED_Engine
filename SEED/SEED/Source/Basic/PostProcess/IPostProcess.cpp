@@ -60,7 +60,7 @@ std::string IPostProcess::GetCurSRVBufferName(){
 
 // 深度バッファ名取得関数
 std::string IPostProcess::GetCurDepthBufferName(){
-    return DxManager::instance_->depthStencilNames[SEED::GetMainCameraName()];
+    return DxManager::instance_->depthStencilNames[SEED::Instance::GetMainCameraName()];
 }
 
 

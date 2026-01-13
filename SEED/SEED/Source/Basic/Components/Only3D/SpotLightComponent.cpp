@@ -61,9 +61,9 @@ void SpotLightComponent::Draw(){
 #ifdef _DEBUG
     if(isEditting_){
         // ライト描画
-        SEED::DrawSphere(light_->position, 1.0f, 6, light_->color_);
+       SEED::Instance::DrawSphere(light_->position, 1.0f, 6, light_->color_);
         Vector3 lightVec = light_->direction * light_->distance;
-        SEED::DrawLine(light_->position, light_->position + lightVec, light_->color_);
+       SEED::Instance::DrawLine(light_->position, light_->position + lightVec, light_->color_);
         isEditting_ = false;
     }
 #endif // _DEBUG

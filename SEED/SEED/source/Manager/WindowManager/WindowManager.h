@@ -7,7 +7,7 @@
 #include <d3dx12.h>
 #include <d3d12.h>
 
-class SEED;
+class Instance;
 
 /// <summary>
 /// ウィンドウの作成や更新、管理などをするクラス

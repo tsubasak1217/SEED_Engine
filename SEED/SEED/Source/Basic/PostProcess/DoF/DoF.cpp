@@ -68,7 +68,7 @@ void DoF::Initialize(){
 // 更新処理
 ////////////////////////////////////////////////////////////////////////////////////////////
 void DoF::Update(){
-    focusDepth_ = focusDistance_ / (SEED::GetMainCamera()->GetZFar() - SEED::GetMainCamera()->GetZNear());
+    focusDepth_ = focusDistance_ / (SEED::Instance::GetMainCamera()->GetZFar() -SEED::Instance::GetMainCamera()->GetZNear());
     focusDepth_ = std::clamp(focusDepth_, 0.0f, 1.0f);
 
     // 
@@ -194,7 +194,7 @@ void DoF::Edit(){
             ImGui::SliderInt(label.c_str(), &blurParamsBuffer_.data->blurRadius, 1, 30);
 
             label = "焦点距離##" + std::to_string(id_);
-            ImGui::SliderFloat(label.c_str(), &focusDistance_, SEED::GetMainCamera()->GetZNear(), SEED::GetMainCamera()->GetZFar(), "%.2f");
+            ImGui::SliderFloat(label.c_str(), &focusDistance_,SEED::Instance::GetMainCamera()->GetZNear(),SEED::Instance::GetMainCamera()->GetZFar(), "%.2f");
             
             label = "フォーカス範囲##" + std::to_string(id_);
             ImGui::SliderFloat(label.c_str(), &focusRange_, 0.0f, 1.0f, "%.2f");

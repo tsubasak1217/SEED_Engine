@@ -23,7 +23,7 @@ Scene_Clear::~Scene_Clear(){
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Initialize(){
-    SEED::SetMainCamera("default");
+   SEED::Instance::SetMainCamera("default");
 
     // リザルト更新用オブジェクトの生成
     Hierarchy* hierarchy = GetHierarchy();

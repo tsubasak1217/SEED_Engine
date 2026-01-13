@@ -9,7 +9,7 @@ Note_Base::Note_Base(){
 void Note_Base::Draw(float currentTime, float appearLength){
     currentTime;
     appearLength;
-    SEED::DrawQuad(*noteQuad_.get());
+   SEED::Instance::DrawQuad(*noteQuad_.get());
 }
 
 nlohmann::json Note_Base::ToJson() {

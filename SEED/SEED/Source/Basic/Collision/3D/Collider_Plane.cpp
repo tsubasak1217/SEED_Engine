@@ -39,10 +39,10 @@ void Collider_Plane::UpdateMatrix(){
 // 描画
 //////////////////////////////////////////////////////////////////
 void Collider_Plane::Draw(){
-    SEED::DrawLine(body_.localVertex[0], body_.localVertex[1], color_);
-    SEED::DrawLine(body_.localVertex[1], body_.localVertex[2], color_);
-    SEED::DrawLine(body_.localVertex[2], body_.localVertex[3], color_);
-    SEED::DrawLine(body_.localVertex[3], body_.localVertex[0], color_);
+   SEED::Instance::DrawLine(body_.localVertex[0], body_.localVertex[1], color_);
+   SEED::Instance::DrawLine(body_.localVertex[1], body_.localVertex[2], color_);
+   SEED::Instance::DrawLine(body_.localVertex[2], body_.localVertex[3], color_);
+   SEED::Instance::DrawLine(body_.localVertex[3], body_.localVertex[0], color_);
 }
 
 

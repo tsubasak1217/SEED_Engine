@@ -131,7 +131,7 @@ void Model::UpdateMatrix(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Model::Draw(const std::optional<Color>& masterColor){
-    SEED::DrawModel(this,masterColor);
+   SEED::Instance::DrawModel(this,masterColor);
 }
 
 

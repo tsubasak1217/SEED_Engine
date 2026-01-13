@@ -186,7 +186,7 @@ void Move3DComponent::Update(){
     velocity_ = direction_ * speed_ * ClockManager::DeltaTime();
 
     // mainCameraのY回転に合わせて移動方向を調整
-    auto* camera = SEED::GetMainCamera();
+    auto* camera =SEED::Instance::GetMainCamera();
     Vector3 cameraRotate = camera->GetEulerRotation();
     cameraRotate.x = 0.0f;
     cameraRotate.z = 0.0f;

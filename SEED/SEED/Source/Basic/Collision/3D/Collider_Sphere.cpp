@@ -43,7 +43,7 @@ void Collider_Sphere::UpdateMatrix(){
 // 描画
 ////////////////////////////////////////////////////////////
 void Collider_Sphere::Draw(){
-    SEED::DrawSphere(body_.center, body_.radius, 6, color_);
+   SEED::Instance::DrawSphere(body_.center, body_.radius, 6, color_);
 }
 
 

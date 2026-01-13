@@ -258,7 +258,7 @@ void PlayerInput::Update(){
     }
 
 
-    BaseCamera* camera = SEED::GetMainCamera();
+    BaseCamera* camera =SEED::Instance::GetMainCamera();
     for(int i = 0; i < 3; i++){
         cursor2D_[0].localVertex[i] = camera->ToScreenPosition(cursor_[0].localVertex[i]);
         cursor2D_[1].localVertex[i] = camera->ToScreenPosition(cursor_[1].localVertex[i]);
@@ -278,7 +278,7 @@ void PlayerInput::Update(){
 void PlayerInput::Draw(){
     // カーソルの描画
     for(int i = 0; i < 2; i++){
-        SEED::DrawQuad(cursorLine_[i]);
+       SEED::Instance::DrawQuad(cursorLine_[i]);
     }
 
 #ifdef _DEBUG

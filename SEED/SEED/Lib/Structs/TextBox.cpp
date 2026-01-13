@@ -375,14 +375,14 @@ void TextBox2D::Draw(const std::optional<Color>& masterColor)const{
                     outlineQuad.isApplyViewMat = isApplyViewMat;
                     outlineQuad.blendMode = blendMode;
                     outlineQuad.drawLocation = drawLocation;
-                    SEED::DrawQuad2D(outlineQuad);
+                   SEED::Instance::DrawQuad2D(outlineQuad);
                     // 回転ベクトルを更新
                     rotatedVec *= RotateMatrix(radianEvery);
                 }
             }
 
             // 文字本体の描画
-            SEED::DrawQuad2D(quad);
+           SEED::Instance::DrawQuad2D(quad);
         }
     }
 }
@@ -462,7 +462,7 @@ void TextBox3D::Draw()const{
                 quad.color = color;
                 // 描画
                 quad.isText = true;
-                SEED::DrawQuad(quad);
+               SEED::Instance::DrawQuad(quad);
                 // X座標オフセットを加算
                 curX += fontSize * lineGlyph->xRatio + glyphSpacing;
             }
@@ -521,16 +521,16 @@ void TextBox2D::DrawTextBoxRange(const Matrix3x3& textBoxMat, const Vector2& anc
         vertices[i] *= textBoxMat;
     }
     // テキストボックスのライン描画
-    SEED::DrawLine2D(vertices[0], vertices[1], boxColor);
-    SEED::DrawLine2D(vertices[1], vertices[3], boxColor);
-    SEED::DrawLine2D(vertices[3], vertices[2], boxColor);
-    SEED::DrawLine2D(vertices[2], vertices[0], boxColor);
+   SEED::Instance::DrawLine2D(vertices[0], vertices[1], boxColor);
+   SEED::Instance::DrawLine2D(vertices[1], vertices[3], boxColor);
+   SEED::Instance::DrawLine2D(vertices[3], vertices[2], boxColor);
+   SEED::Instance::DrawLine2D(vertices[2], vertices[0], boxColor);
 
     // アンカー位置の描画(常にtranslateの位置に描画)
     Triangle2D anchorTri = MakeEqualTriangle2D(10.0f, boxColor);
     anchorTri.translate = ExtractTranslation(textBoxMat);
     anchorTri.rotate = ExtractRotation(textBoxMat);
-    SEED::DrawTriangle2D(anchorTri);
+   SEED::Instance::DrawTriangle2D(anchorTri);
 }
 
 

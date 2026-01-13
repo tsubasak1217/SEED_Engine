@@ -188,5 +188,5 @@ void Particle2D::Update(){
 
 void Particle2D::Draw(){
     // パーティクル描画
-    SEED::DrawQuad2D(particle_,masterColor_);
+   SEED::Instance::DrawQuad2D(particle_,masterColor_);
 }

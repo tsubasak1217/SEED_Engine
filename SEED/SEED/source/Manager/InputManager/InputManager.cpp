@@ -472,7 +472,7 @@ Vector2 Input::GetMousePosition(INPUT_STATE inputState){
         Vector2 result = { (float)point.x,(float)point.y };
 
         // 比率をかけてもとに戻す
-        Vector2 adjustScale = Vector2(1.0f, 1.0f) / WindowManager::GetWindowScale(SEED::GetWindowTitle());
+        Vector2 adjustScale = Vector2(1.0f, 1.0f) / WindowManager::GetWindowScale(SEED::Instance::GetWindowTitle());
 
         return result * adjustScale;
     } else{
@@ -805,7 +805,7 @@ void Input::RepeatCursorInternal(){
     // クライアント座標 -> スクリーン座標に変換（左上）
     POINT topLeft = { (int)repeatRange_.min.x, (int)repeatRange_.min.y };
 #ifdef _DEBUG
-    ClientToScreen(WindowManager::GetHWND(SEED::systemWindowTitle_), &topLeft);
+    ClientToScreen(WindowManager::GetHWND(SEED::Instance::systemWindowTitle_), &topLeft);
 #else
     ClientToScreen(WindowManager::GetHWND(SEED::windowTitle_), &topLeft);
 #endif

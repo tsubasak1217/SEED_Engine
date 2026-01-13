@@ -18,7 +18,7 @@ Sprite::Sprite(){
 
 Sprite::Sprite(const std::string& filename) : Sprite::Sprite(){
     SetTexture(filename);
-    size = SEED::GetImageSize(MyFunc::ConvertString(filename));
+    size =SEED::Instance::GetImageSize(MyFunc::ConvertString(filename));
 }
 
 Sprite::Sprite(const std::string& filename, const Vector2& size)
@@ -27,7 +27,7 @@ Sprite::Sprite(const std::string& filename, const Vector2& size)
 }
 
 void Sprite::Draw(const std::optional<Color>& masterColor){
-    SEED::DrawSprite(*this,masterColor);
+   SEED::Instance::DrawSprite(*this,masterColor);
 }
 
 Matrix4x4 Sprite::GetWorldMatrix()const{
@@ -59,13 +59,13 @@ Matrix4x4 Sprite::GetWorldMatrix()const{
 void Sprite::SetTexture(const std::string& filename){
     texturePath = filename;
     GH = TextureManager::LoadTexture(filename);
-    defaultSize_ = SEED::GetImageSize(MyFunc::ConvertString(filename));
+    defaultSize_ =SEED::Instance::GetImageSize(MyFunc::ConvertString(filename));
 }
 
 // 画像サイズそのままにする
 void Sprite::ToDefaultSize(){
     if(!texturePath.empty()){
-        size = SEED::GetImageSize(MyFunc::ConvertString(texturePath));
+        size =SEED::Instance::GetImageSize(MyFunc::ConvertString(texturePath));
         defaultSize_ = size;
     }
 }
@@ -77,7 +77,7 @@ Vector2 Sprite::GetDefaultSize() const{
     }
 
     if(!texturePath.empty()){
-        return SEED::GetImageSize(MyFunc::ConvertString(texturePath));
+        return SEED::Instance::GetImageSize(MyFunc::ConvertString(texturePath));
     } else{
         return Vector2(0.0f);
     }

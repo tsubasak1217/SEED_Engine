@@ -15,7 +15,7 @@ RhythmGameManager::RhythmGameManager(){
 
 RhythmGameManager::~RhythmGameManager(){
     // カメラの登録解除
-    SEED::RemoveCamera("gameCamera");
+   SEED::Instance::RemoveCamera("gameCamera");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,9 +36,9 @@ void RhythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty)
     gameCamera_->UpdateMatrix();
 
     // カメラの登録,設定
-    SEED::RemoveCamera("gameCamera");// 既存の物があることを想定して登録前に削除
-    SEED::RegisterCamera("gameCamera", gameCamera_.get());
-    SEED::SetMainCamera("gameCamera");
+   SEED::Instance::RemoveCamera("gameCamera");// 既存の物があることを想定して登録前に削除
+   SEED::Instance::RegisterCamera("gameCamera", gameCamera_.get());
+   SEED::Instance::SetMainCamera("gameCamera");
 
     // gameObjectをクリア
     GameSystem::GetScene()->GetHierarchy()->EraseAllObject();

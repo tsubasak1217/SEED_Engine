@@ -160,7 +160,7 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
             }
 
             // 描画
-            SEED::DrawQuad2D(scrollObjects[i][j].quad);
+           SEED::Instance::DrawQuad2D(scrollObjects[i][j].quad);
         }
     }
 
@@ -205,7 +205,7 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
         backQuad.color = MyMath::HSV_to_RGB(nextColor.value);
     }
 
-    SEED::DrawQuad2D(backQuad); // 背景Quadを描画
+   SEED::Instance::DrawQuad2D(backQuad); // 背景Quadを描画
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -280,7 +280,7 @@ void SelectBackGroundDrawer::DrawGrooveObjects(){
                 grooveObjects[i][j].quad.color = MyMath::HSV_to_RGB(grooveObjects[i][j].time / (kGrooveTime * 0.2f), 1.0f, 1.0f, 0.1f);
 
                 // 描画
-                SEED::DrawQuad2D(grooveObjects[i][j].quad);
+               SEED::Instance::DrawQuad2D(grooveObjects[i][j].quad);
             }
         }
     }

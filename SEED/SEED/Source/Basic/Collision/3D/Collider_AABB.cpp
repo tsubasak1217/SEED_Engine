@@ -38,7 +38,7 @@ void Collider_AABB::UpdateMatrix(){
 // 描画
 //////////////////////////////////////////////////////////////////
 void Collider_AABB::Draw(){
-    SEED::DrawAABB(body_, color_);
+   SEED::Instance::DrawAABB(body_, color_);
 }
 
 

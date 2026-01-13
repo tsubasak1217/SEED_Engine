@@ -185,7 +185,7 @@ void Particle3D::Update(){
     if(isBillboard_){
         if(!isUseRotate_){
             // 通常のビルボード
-            particle_->transform_.rotate = SEED::GetMainCamera()->GetRotation();
+            particle_->transform_.rotate =SEED::Instance::GetMainCamera()->GetRotation();
         } else{
             // ビルボードしながら任意回転(ずっと動かずに回転を見てる感じになる)
             localRotate_ *= Quaternion::AngleAxis(
@@ -194,7 +194,7 @@ void Particle3D::Update(){
             );
 
             // ビルボードの回転と任意回転を合成
-            particle_->transform_.rotate = SEED::GetMainCamera()->GetRotation() * localRotate_;
+            particle_->transform_.rotate =SEED::Instance::GetMainCamera()->GetRotation() * localRotate_;
         }
     } else{
         if(isUseRotate_){

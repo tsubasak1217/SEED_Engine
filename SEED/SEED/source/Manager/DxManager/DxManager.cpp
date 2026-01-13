@@ -13,7 +13,7 @@
 DxManager* DxManager::instance_ = nullptr;
 
 
-void DxManager::Initialize(SEED* pSEED){
+void DxManager::Initialize(SEED::Instance* pSEED){
     // インスタンスの取得
     GetInstance();
 
@@ -26,7 +26,7 @@ void DxManager::Initialize(SEED* pSEED){
     PSOManager::GetInstance();
     // polygonManagerの作成
     instance_->polygonManager_ = new PolygonManager(instance_);
-    SEED::instance_->pPolygonManager_ = instance_->polygonManager_;
+    SEED::Instance::instance_->pPolygonManager_ = instance_->polygonManager_;
     // PostEffectのinstance作成
     PostEffectSystem::GetInstance();
 
@@ -444,7 +444,7 @@ void DxManager::ClearViewSettings(){
 
     for(const auto& [cameraName, offScreenHandle] : offScreenHandles){
         // オフスクリーンのRTVをクリアする
-        clearColor = MyMath::FloatColor(SEED::GetWindowColor(),false);
+        clearColor = MyMath::FloatColor(SEED::Instance::GetWindowColor(),false);
         commandList->ClearRenderTargetView(
             offScreenHandle,
             &clearColor.value.x, 0, nullptr

@@ -13,8 +13,13 @@
 #include <string>
 #include <unordered_map>
 
+
 using namespace std;
-class SEED;
+
+// 前方宣言
+namespace SEED{
+    class Instance;
+}
 
 // 内部で使用する構造体
 struct GuizmoInfo{

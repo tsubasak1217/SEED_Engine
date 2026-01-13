@@ -18,8 +18,8 @@ GameState_Play::GameState_Play(Scene_Base* pScene, const SongInfo& songInfo, int
 }
 
 GameState_Play::~GameState_Play(){
-    SEED::RemoveCamera("gameCamera");
-    SEED::SetMainCamera("default");
+   SEED::Instance::RemoveCamera("gameCamera");
+   SEED::Instance::SetMainCamera("default");
     AudioManager::EndAllAudio();
 }
 

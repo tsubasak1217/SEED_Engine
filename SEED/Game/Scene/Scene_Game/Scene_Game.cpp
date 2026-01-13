@@ -25,8 +25,8 @@ Scene_Game::~Scene_Game(){
     Scene_Base::Finalize();
 
     // カメラのリセット
-    SEED::RemoveCamera("gameCamera");
-    SEED::SetMainCamera("default");
+   SEED::Instance::RemoveCamera("gameCamera");
+   SEED::Instance::SetMainCamera("default");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

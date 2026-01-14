@@ -47,9 +47,14 @@ void PlayerStateController::Initialize(const InputMapper<PlayerInputAction>* inp
 
 void PlayerStateController::SetWarpState(const Vector2& start, const Vector2& target) {
 
+    PlayerWarpState* warp = static_cast<PlayerWarpState*>(states_[PlayerState::Warp].get());
+    PlayerMoveState* move = static_cast<PlayerMoveState*>(states_[PlayerState::Move].get());
+
+    // 移動SEを止める
+    move->StopAudio();
+
     // 補間先の座標を設定
-    static_cast<PlayerWarpState*>(states_[PlayerState::Warp].get())->SetLerpValue(
-        start, target);
+    warp->SetLerpValue(start, target);
     Request(PlayerState::Warp);
 }
 
@@ -107,9 +112,9 @@ void PlayerStateController::Update(Player& owner) {
         if (auto* move = states_[PlayerState::Move].get()) {
 
             //方向転換した瞬間にクールタイムをリセット
-            if(owner.GetPrevDirection() != LR::NONE &&
+            if (owner.GetPrevDirection() != LR::NONE &&
                 owner.GetMoveDirection() != LR::NONE &&
-                owner.GetPrevDirection() != owner.GetMoveDirection()){
+                owner.GetPrevDirection() != owner.GetMoveDirection()) {
                 moveInputCooldownTimer_.Reset();
             }
 
@@ -360,7 +365,7 @@ bool PlayerStateController::IsCanOperateBorder() const {
     }
 
     // 移動入力直後は不可
-    if(moveInputCooldownTimer_.IsFinished() == false){
+    if (moveInputCooldownTimer_.IsFinished() == false) {
         return false;
     }
 

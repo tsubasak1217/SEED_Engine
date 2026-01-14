@@ -233,6 +233,15 @@ void GameStageWarpController::UpdateWarpNotPossible() {
         ResetWarp();
         currentState_ = State::WarpPossible;
     }
+
+    // warpできなくなる問題の対策
+    if (!player_->IsTouchedWarp()) {
+
+        // リセット
+        ResetWarp();
+        currentState_ = State::WarpPossible;
+        return;
+    }
 }
 
 void GameStageWarpController::ResetWarp() {

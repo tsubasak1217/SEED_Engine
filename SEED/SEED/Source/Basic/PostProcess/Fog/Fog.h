@@ -2,27 +2,29 @@
 #include "../IPostProcess.h"
 #include "FogParam.h"
 
-/// <summary>
-/// フォグを掛けるクラス
-/// </summary>
-class Fog : public IPostProcess{
-public:
-    Fog();
-    ~Fog() override = default;
+namespace SEED{
+    /// <summary>
+    /// フォグを掛けるクラス
+    /// </summary>
+    class Fog : public IPostProcess{
+    public:
+        Fog();
+        ~Fog() override = default;
 
-public:
-    void Initialize() override;
-    void Update() override;
-    void Apply() override;
-    void Release() override;
-    void StartTransition() override{};
-    void EndTransition() override{};
+    public:
+        void Initialize() override;
+        void Update() override;
+        void Apply() override;
+        void Release() override;
+        void StartTransition() override{};
+        void EndTransition() override{};
 
-private:
-    DxBuffer<FogParams> fogParamsBuffer_; // ブラーのパラメータを格納するバッファ
+    private:
+        DxBuffer<FogParams> fogParamsBuffer_; // ブラーのパラメータを格納するバッファ
 
-public:
-    void Edit() override;
-    nlohmann::json ToJson() override;
-    void FromJson(const nlohmann::json& json) override;
-};
+    public:
+        void Edit() override;
+        nlohmann::json ToJson() override;
+        void FromJson(const nlohmann::json& json) override;
+    };
+}

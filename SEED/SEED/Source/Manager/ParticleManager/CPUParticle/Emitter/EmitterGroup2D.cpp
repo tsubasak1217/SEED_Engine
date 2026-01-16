@@ -6,14 +6,16 @@
 // Emitter
 #include "Emitter2D.h"
 
-// EmitterGroupのコンストラクタ
-EmitterGroup2D::EmitterGroup2D() : EmitterGroupBase(){}
+namespace SEED{
+    // EmitterGroupのコンストラクタ
+    EmitterGroup2D::EmitterGroup2D() : EmitterGroupBase(){}
 
-// 中心座標を取得
-Vector2 EmitterGroup2D::GetPosition() const{
-    if(parentMat){
-        return ExtractTranslation(*parentMat) + offset;
-    } else{
-        return offset;
+    // 中心座標を取得
+    Vector2 EmitterGroup2D::GetPosition() const{
+        if(parentMat){
+            return Methods::Matrix::ExtractTranslation(*parentMat) + offset;
+        } else{
+            return offset;
+        }
     }
 }

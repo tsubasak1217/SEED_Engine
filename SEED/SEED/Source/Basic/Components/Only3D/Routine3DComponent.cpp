@@ -1,538 +1,540 @@
 #include "Routine3DComponent.h"
 #include <SEED/Source/SEED.h>
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// コンストラクタ
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Routine3DComponent::Routine3DComponent(GameObject* pOwner, const std::string& tagName)
-    : IComponent(pOwner, tagName){
+namespace SEED{
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // コンストラクタ
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    Routine3DComponent::Routine3DComponent(GameObject* pOwner, const std::string& tagName)
+        : IComponent(pOwner, tagName){
 
-    if(tagName == ""){
-        componentTag_ = "Routine3D_ID:" + std::to_string(componentID_);
+        if(tagName == ""){
+            componentTag_ = "Routine3D_ID:" + std::to_string(componentID_);
+        }
+
+        // タイマー初期化
+        timer_.Initialize(3.0f);
+
+        // 制御点初期化(始点と終点)
+        controlPoints_.emplace_back(pOwner->GetWorldTransform(), 0.0f);
+        controlPoints_.emplace_back(pOwner->GetWorldTransform(), 1.0f);
+
+    #ifdef _DEBUG
+        // spriteの初期化
+        isDebugItemVisible_ = true;
+        debugPointModel_ = Model("DefaultAssets/axis/axis.obj");
+        debugPointModel_.lightingType_ = LIGHTINGTYPE_NONE;
+    #endif // _DEBUG
     }
 
-    // タイマー初期化
-    timer_.Initialize(3.0f);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // フレーム開始時処理
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Routine3DComponent::BeginFrame(){
+    }
 
-    // 制御点初期化(始点と終点)
-    controlPoints_.emplace_back(pOwner->GetWorldTransform(), 0.0f);
-    controlPoints_.emplace_back(pOwner->GetWorldTransform(), 1.0f);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 更新処理
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Routine3DComponent::Update(){
 
-#ifdef _DEBUG
-    // spriteの初期化
-    isDebugItemVisible_ = true;
-    debugPointModel_ = Model("DefaultAssets/axis/axis.obj");
-    debugPointModel_.lightingType_ = LIGHTINGTYPE_NONE;
-#endif // _DEBUG
-}
+        if(controlPoints_.size() >= 2){
+            // 補間方法に応じて制御点の補間
+            Transform result;
+            float t = timer_.GetEase(easingType_);
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// フレーム開始時処理
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Routine3DComponent::BeginFrame(){
-}
+            // どの区間にいるかを特定
+            int section = 0;
+            for(int i = 0; i < (int)controlPoints_.size() - 1; i++){
+                if(t >= controlPoints_[i].second && t <= controlPoints_[i + 1].second){
+                    section = i;
+                    break;
+                }
+            }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 更新処理
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Routine3DComponent::Update(){
+            // 区間内の相対的t
+            float sectionStart = controlPoints_[section].second;
+            float sectionEnd = controlPoints_[section + 1].second;
+            float sectionLength = sectionEnd - sectionStart;
+            float sectionT = (t - sectionStart) / sectionLength;
 
-    if(controlPoints_.size() >= 2){
-        // 補間方法に応じて制御点の補間
-        Transform result;
-        float t = timer_.GetEase(easingType_);
+            // この時点で全体のどの位置にいるかを計算
+            float timePerSection = 1.0f / float(controlPoints_.size() - 1);
+            float uniformT = (section * timePerSection) + (sectionT * timePerSection);
+            uniformT = std::clamp(uniformT, 0.0f, 1.0f);
 
-        // どの区間にいるかを特定
-        int section = 0;
-        for(int i = 0; i < (int)controlPoints_.size() - 1; i++){
-            if(t >= controlPoints_[i].second && t <= controlPoints_[i + 1].second){
-                section = i;
+            // transformを一時配列に入れる
+            std::vector<Transform> transforms;
+            for(auto& point : controlPoints_){
+                transforms.emplace_back(point.first);
+            }
+
+            switch(interpolationType_){
+            case Enums::InterpolationType::LINEAR:
+            {
+                result = Methods::SRT::Interpolate(transforms, uniformT);
                 break;
+            }
+            case Enums::InterpolationType::CATMULLROM:
+            {
+                result = Methods::SRT::CatmullRomInterpolate(transforms, uniformT, isConnectEdge_);
+                break;
+            }
+            default:
+                break;
+            }
+
+            // オーナーに反映
+            if(!disableScale_){
+                owner_.owner3D->SetWorldScale(result.scale);
+            }
+            if(!disableRotate_){
+                owner_.owner3D->SetWorldRotate(result.rotate);
+            }
+            if(!disableTranslate_){
+                owner_.owner3D->SetWorldTranslate(result.translate);
             }
         }
 
-        // 区間内の相対的t
-        float sectionStart = controlPoints_[section].second;
-        float sectionEnd = controlPoints_[section + 1].second;
-        float sectionLength = sectionEnd - sectionStart;
-        float sectionT = (t - sectionStart) / sectionLength;
+        // 再生中なら更新
+        if(isPlaying_){
+            // タイマー更新
+            timer_.Update(timeScale_, isLoop_);
+        }
+    }
 
-        // この時点で全体のどの位置にいるかを計算
-        float timePerSection = 1.0f / float(controlPoints_.size() - 1);
-        float uniformT = (section * timePerSection) + (sectionT * timePerSection);
-        uniformT = std::clamp(uniformT, 0.0f, 1.0f);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 描画処理
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Routine3DComponent::Draw(){
+        // デバッグ用に制御点と補間曲線を描画
+    #ifdef _DEBUG
 
-        // transformを一時配列に入れる
-        std::vector<Transform> transforms;
+        // 条件を満たしていなければ描画しない
+        if(!isDebugItemVisible_){ return; }
+        if(!isEditting_){ return; }
+
+        // 制御点にデバッグ用のスプライトを描画
         for(auto& point : controlPoints_){
-            transforms.emplace_back(point.first);
+            debugPointModel_.transform_ = point.first;
+            debugPointModel_.UpdateMatrix();
+            debugPointModel_.Draw();
         }
 
+        // 制御点が2つ未満ならライン描画しない
+        if(controlPoints_.size() < 2){ return; }
+
+        // 制御点の座標リストを作成
+        std::vector<Vector3> points;
+        for(auto& point : controlPoints_){
+            points.push_back(point.first.translate);
+        }
+
+        // ラインを描画
         switch(interpolationType_){
-        case InterpolationType::LINEAR:
-        {
-            result = MyFunc::Interpolate(transforms, uniformT);
+        case Enums::InterpolationType::LINEAR:
+            for(int i = 0; i < controlPoints_.size() - 1; i++){
+                SEED::Instance::DrawLine(controlPoints_[i].first.translate, controlPoints_[i + 1].first.translate, { 0.0f,0.0f,1.0f,1.0f });
+            }
+            break;
+        case Enums::InterpolationType::CATMULLROM:
+            SEED::Instance::DrawSpline(points, 8, { 0.0f,0.0f,1.0f,1.0f });
+            break;
+        default:
             break;
         }
-        case InterpolationType::CATMULLROM:
+
+        // falseに初期化
+        isEditting_ = false;
+
+    #endif
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // フレーム終了時処理
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Routine3DComponent::EndFrame(){
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 初期化・終了処理
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Routine3DComponent::Finalize(){
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // GUI編集
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Routine3DComponent::EditGUI(){
+    #ifdef _DEBUG
+        // 編集を開始
+        isEditting_ = true;
+        ImGui::Indent();
+
+        // タイムライン表示
+        TimelineView();
+
+        // 制御点のドラッグ
+        DragPoint();
+
+        // 制御点のトランスフォームの編集
+        EditTransform();
+
+        // 設定の編集
+        EditSettings();
+
+        // popupメニュー
+        PopupMenu();
+
+        // コントロールポイントをGizmoに登録
+        for(int i = 0; i < controlPoints_.size(); i++){
+            ImGuiManager::RegisterGuizmoItem(&controlPoints_[i].first);
+        }
+
+        ImGui::Unindent();
+    #endif // _DEBUG
+    }
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 内部編集関数
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#ifdef _DEBUG
+// タイムライン表示 ==============================================================
+    void Routine3DComponent::TimelineView(){
+        // 横線を表示してその上に制御点の●を表示
+        ImGui::SeparatorText("タイムライン");
+
+        // 必要な変数の計算
+        float addButtonWidth = 30.0f;
+        float lrPadding = 10.0f;
+        float offset = 30.0f;
+        float lineWidth = ImGui::GetContentRegionAvail().x - offset - (addButtonWidth + lrPadding * 2.0f);
+        lineWidth = (std::min)(lineWidth, 350.0f);// 最大350px
+        ImVec2 lineStart = ImGui::GetCursorScreenPos();
+        ImVec2 lineEnd = lineStart + ImVec2(lineWidth, 0.0f);
+        timelineMinMaxX_ = ImVec2(lineStart.x, lineEnd.x);
+
+        // 横線を描画
+        auto* drawList = ImGui::GetWindowDrawList();
+        drawList->AddLine(lineStart, lineEnd, IM_COL32(255, 255, 255, 255), 2.0f);
+
+        // タイムラインの右側に制御点追加ボタンを設置
+        ImGui::SetCursorScreenPos(lineEnd + ImVec2(lrPadding, -10.0f));
+        if(ImGui::Button("制御点を追加")){
+            AddPoint(timer_.GetProgress());
+        }
+
+        // 制御点を描画
+        float pointRadius = 5.0f;
+        ImVec2 pointSize = ImVec2(pointRadius * 2.0f, pointRadius * 2.0f);
+        int32_t hoveredIdx = -1;
+        for(int i = 0; i < controlPoints_.size(); i++){
+
+            // 制御点の描画位置を計算
+            float t = controlPoints_[i].second;
+            ImVec2 pointPos = ImVec2(Methods::Math::Lerp(lineStart.x, lineEnd.x, t), lineStart.y);
+            ImVec2 hoverMin = pointPos - pointSize * 2.0f;
+            ImVec2 hoverMax = pointPos + pointSize * 2.0f;
+
+            // ホバーしている際の処理
+            if(ImGui::IsMouseHoveringRect(hoverMin, hoverMax)){
+                hoveredIdx = i;
+
+                // クリックしたら選択
+                if(!isDragging_){
+                    if(ImGui::IsMouseClicked(ImGuiMouseButton_Left)){
+                        edittingIdx_ = i;
+                        // 両端の制御点はドラッグ不可
+                        if(i != 0 && i != controlPoints_.size() - 1){
+                            isDragging_ = true;
+                            clickedMousePos_ = ImGui::GetIO().MousePos;
+                            originalPointPos_ = pointPos;
+                        }
+                    } else if(ImGui::IsMouseClicked(ImGuiMouseButton_Right)){
+                        // ポップアップメニュー表示
+                        edittingIdx_ = i;
+                        ImGui::OpenPopup("PointContextMenu");
+                    }
+                }
+            }
+
+            // 制御点に円を描画
+            bool isFocused = (edittingIdx_ == i) || (hoveredIdx == i);
+            drawList->AddCircleFilled(
+                pointPos, pointRadius,
+                isFocused ? IM_COL32(255, 255, 0, 255) : IM_COL32(127, 127, 0, 255)
+            );
+        }
+
+        // ツールチップ表示
+        if(hoveredIdx != -1 or isDragging_){
+            int idx = (hoveredIdx != -1) ? hoveredIdx : edittingIdx_;
+            ImGui::BeginTooltip();
+            ImGui::Text("制御点%d", idx);
+            ImGui::Text("時間: %.2f", controlPoints_[idx].second * timer_.duration);
+            ImGui::EndTooltip();
+        }
+
+        // 現在の時間の場所に縦線を引く
+        float currentT = timer_.GetProgress();
+        currentT = std::clamp(currentT, 0.0f, 1.0f);
+        ImVec2 currentPos = ImVec2(Methods::Math::Lerp(lineStart.x, lineEnd.x, currentT), lineStart.y);
+        drawList->AddLine(
+            ImVec2(currentPos.x, lineStart.y - 10.0f),
+            ImVec2(currentPos.x, lineStart.y + 10.0f),
+            IM_COL32(0, 255, 255, 255), 2.0f
+        );
+
+        // カーソル位置の更新
+        ImGui::SetCursorScreenPos(lineStart + ImVec2(0.0f, 20));
+        ImGui::DragFloat("総時間", &timer_.duration, 0.1f, 0.0f, 1000.0f);
+        if(ImFunc::PlayBar("現在の時間", timer_)){
+            isPlaying_ = !timer_.isStop;
+        }
+    }
+
+    // 制御点ドラッグ =============================================================
+    void Routine3DComponent::DragPoint(){
+
+        // クリックが離されたらドラッグ終了
+        if(!ImGui::IsMouseDown(ImGuiMouseButton_Left)){
+            isDragging_ = false;
+        }
+
+        // ドラッグ中でなければ終了
+        if(!isDragging_){ return; }
+        if(edittingIdx_ == -1){ return; }
+
+        // マウスの移動量を取得
+        ImVec2 mouseDelta = ImGui::GetIO().MousePos - clickedMousePos_;
+        if(mouseDelta.x == 0.0f){ return; }
+
+        // 新しい時間値を計算
+        float newX = originalPointPos_.x + mouseDelta.x;
+        float len = newX - timelineMinMaxX_.x;
+        float t = len / (timelineMinMaxX_.y - timelineMinMaxX_.x);
+
+        // tを区間内に収める
+        float minT, maxT;
+        // 両端は固定値
+        if(edittingIdx_ == 0){
+            minT = 0.0f;
+            maxT = 0.0f;
+        } else if(edittingIdx_ == controlPoints_.size() - 1){
+            minT = 1.0f;
+            maxT = 1.0f;
+        } else{
+            minT = controlPoints_[edittingIdx_ - 1].second + 0.01f;
+            maxT = controlPoints_[edittingIdx_ + 1].second - 0.01f;
+        }
+
+        t = std::clamp(t, minT, maxT);
+        controlPoints_[edittingIdx_].second = t;
+    }
+
+    // トランスフォーム編集 =============================================================
+    void Routine3DComponent::EditTransform(){
+
+        // 変形の無効化オプション
+        ImGui::SeparatorText("ルーチンの無効化オプション");
+        ImGui::Checkbox("移動を無効化", &disableTranslate_);
+        ImGui::Checkbox("回転を無効化", &disableRotate_);
+        ImGui::Checkbox("スケールを無効化", &disableScale_);
+
+        // トランスフォームの編集
+        if(edittingIdx_ != -1){
+            std::string tag = "##" + std::to_string(reinterpret_cast<uintptr_t>(&controlPoints_[edittingIdx_]));
+            ImGui::SeparatorText("制御点" + std::to_string(edittingIdx_));
+
+            if(!disableTranslate_){
+                ImGui::DragFloat3("座標" + tag, &controlPoints_[edittingIdx_].first.translate.x);
+            }
+
+            if(!disableScale_){
+                ImGui::DragFloat3("スケール" + tag, &controlPoints_[edittingIdx_].first.scale.x, 0.05f);
+            }
+
+            if(!disableRotate_){
+                ImGui::Text("回転値: {%f,%f,%f}", controlPoints_[edittingIdx_].first.rotate.x, controlPoints_[edittingIdx_].first.rotate.y, controlPoints_[edittingIdx_].first.rotate.z);
+                ImGui::DragFloat3("適用させる回転値" + tag, &eulerRotate_.x, 0.5f);
+                if(ImGui::Button("オイラー回転をQuaternion回転に適用" + tag)){
+                    controlPoints_[edittingIdx_].first.rotate = Quaternion::ToQuaternion(eulerRotate_);
+                }
+            }
+
+            if(disableTranslate_ + disableScale_ + disableRotate_ == 0){
+                // デバッグカメラの値を適用
+                if(ImGui::Button("デバッグカメラの値を適用" + tag)){
+                    BaseCamera* debugCam = SEED::Instance::GetCamera("debug");
+                    controlPoints_[edittingIdx_].first = debugCam->GetTransform();
+                }
+            }
+        }
+    }
+
+    // 設定編集 =============================================================
+    void Routine3DComponent::EditSettings(){
+        // 設定
+        ImGui::SeparatorText("設定");
+        ImFunc::Combo("補間方法", interpolationType_, { "LINEAR","CATMULLROM" });
+        ImFunc::Combo("イージング補間関数", easingType_, Methods::Easing::names, IM_ARRAYSIZE(Methods::Easing::names));
+        ImGui::Checkbox("デフォルトで静止するか", &defaultPaused_);
+        ImGui::Checkbox("ループするか", &isLoop_);
+        ImGui::Checkbox("端をつなげるか", &isConnectEdge_);
+        ImGui::Checkbox("ラインのデバッグ表示", &isDebugItemVisible_);
+    }
+
+    // ポップアップメニュー =============================================================
+    void Routine3DComponent::PopupMenu(){
+        if(ImGui::BeginPopup("PointContextMenu")){
+            // 削除(両端の制御点は削除できないようにしておく)
+            if(edittingIdx_ != 0 && edittingIdx_ != controlPoints_.size() - 1){
+                if(ImGui::MenuItem("削除")){
+                    controlPoints_.erase(controlPoints_.begin() + edittingIdx_);
+                    edittingIdx_ = -1;
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+
+            // 複製
+            if(ImGui::MenuItem("複製")){
+                controlPoints_.insert(controlPoints_.begin() + edittingIdx_ + 1, controlPoints_[edittingIdx_]);
+                edittingIdx_ = -1;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+    }
+
+    // 制御点追加 =============================================================
+    void Routine3DComponent::AddPoint(float time){
+
+        // 制御点の座標リストを作成
+        std::vector<Transform> transforms;
+        for(auto& point : controlPoints_){
+            transforms.push_back(point.first);
+        }
+
+        // 補間方法に応じて制御点の補間
+        Transform result;
+        switch(interpolationType_){
+        case Enums::InterpolationType::LINEAR:
         {
-            result = MyFunc::CatmullRomInterpolate(transforms, uniformT, isConnectEdge_);
+            result = Methods::SRT::Interpolate(transforms, time);
+            break;
+        }
+        case Enums::InterpolationType::CATMULLROM:
+        {
+            result = Methods::SRT::CatmullRomInterpolate(transforms, time);
             break;
         }
         default:
             break;
         }
 
-        // オーナーに反映
-        if(!disableScale_){
-            owner_.owner3D->SetWorldScale(result.scale);
-        }
-        if(!disableRotate_){
-            owner_.owner3D->SetWorldRotate(result.rotate);
-        }
-        if(!disableTranslate_){
-            owner_.owner3D->SetWorldTranslate(result.translate);
-        }
+        // 新しい制御点を追加
+        controlPoints_.emplace_back(result, time);
+
+        // 時間でソート
+        std::sort(controlPoints_.begin(), controlPoints_.end(),
+            [](const RoutinePoint3D& a, const RoutinePoint3D& b){
+            return a.second < b.second;
+        });
     }
-
-    // 再生中なら更新
-    if(isPlaying_){
-        // タイマー更新
-        timer_.Update(timeScale_, isLoop_);
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 描画処理
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Routine3DComponent::Draw(){
-    // デバッグ用に制御点と補間曲線を描画
-#ifdef _DEBUG
-
-    // 条件を満たしていなければ描画しない
-    if(!isDebugItemVisible_){ return; }
-    if(!isEditting_){ return; }
-
-    // 制御点にデバッグ用のスプライトを描画
-    for(auto& point : controlPoints_){
-        debugPointModel_.transform_ = point.first;
-        debugPointModel_.UpdateMatrix();
-        debugPointModel_.Draw();
-    }
-
-    // 制御点が2つ未満ならライン描画しない
-    if(controlPoints_.size() < 2){ return; }
-
-    // 制御点の座標リストを作成
-    std::vector<Vector3> points;
-    for(auto& point : controlPoints_){
-        points.push_back(point.first.translate);
-    }
-
-    // ラインを描画
-    switch(interpolationType_){
-    case InterpolationType::LINEAR:
-        for(int i = 0; i < controlPoints_.size() - 1; i++){
-           SEED::Instance::DrawLine(controlPoints_[i].first.translate, controlPoints_[i + 1].first.translate, { 0.0f,0.0f,1.0f,1.0f });
-        }
-        break;
-    case InterpolationType::CATMULLROM:
-       SEED::Instance::DrawSpline(points, 8, { 0.0f,0.0f,1.0f,1.0f });
-        break;
-    default:
-        break;
-    }
-
-    // falseに初期化
-    isEditting_ = false;
-
-#endif
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// フレーム終了時処理
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Routine3DComponent::EndFrame(){
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 初期化・終了処理
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Routine3DComponent::Finalize(){
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// GUI編集
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Routine3DComponent::EditGUI(){
-#ifdef _DEBUG
-    // 編集を開始
-    isEditting_ = true;
-    ImGui::Indent();
-
-    // タイムライン表示
-    TimelineView();
-
-    // 制御点のドラッグ
-    DragPoint();
-
-    // 制御点のトランスフォームの編集
-    EditTransform();
-
-    // 設定の編集
-    EditSettings();
-
-    // popupメニュー
-    PopupMenu();
-
-    // コントロールポイントをGizmoに登録
-    for(int i = 0; i < controlPoints_.size(); i++){
-        ImGuiManager::RegisterGuizmoItem(&controlPoints_[i].first);
-    }
-
-    ImGui::Unindent();
-#endif // _DEBUG
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 内部編集関数
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#ifdef _DEBUG
-// タイムライン表示 ==============================================================
-void Routine3DComponent::TimelineView(){
-    // 横線を表示してその上に制御点の●を表示
-    ImGui::SeparatorText("タイムライン");
-
-    // 必要な変数の計算
-    float addButtonWidth = 30.0f;
-    float lrPadding = 10.0f;
-    float offset = 30.0f;
-    float lineWidth = ImGui::GetContentRegionAvail().x - offset - (addButtonWidth + lrPadding * 2.0f);
-    lineWidth = (std::min)(lineWidth, 350.0f);// 最大350px
-    ImVec2 lineStart = ImGui::GetCursorScreenPos();
-    ImVec2 lineEnd = lineStart + ImVec2(lineWidth, 0.0f);
-    timelineMinMaxX_ = ImVec2(lineStart.x, lineEnd.x);
-
-    // 横線を描画
-    auto* drawList = ImGui::GetWindowDrawList();
-    drawList->AddLine(lineStart, lineEnd, IM_COL32(255, 255, 255, 255), 2.0f);
-
-    // タイムラインの右側に制御点追加ボタンを設置
-    ImGui::SetCursorScreenPos(lineEnd + ImVec2(lrPadding, -10.0f));
-    if(ImGui::Button("制御点を追加")){
-        AddPoint(timer_.GetProgress());
-    }
-
-    // 制御点を描画
-    float pointRadius = 5.0f;
-    ImVec2 pointSize = ImVec2(pointRadius * 2.0f, pointRadius * 2.0f);
-    int32_t hoveredIdx = -1;
-    for(int i = 0; i < controlPoints_.size(); i++){
-
-        // 制御点の描画位置を計算
-        float t = controlPoints_[i].second;
-        ImVec2 pointPos = ImVec2(MyMath::Lerp(lineStart.x, lineEnd.x, t), lineStart.y);
-        ImVec2 hoverMin = pointPos - pointSize * 2.0f;
-        ImVec2 hoverMax = pointPos + pointSize * 2.0f;
-
-        // ホバーしている際の処理
-        if(ImGui::IsMouseHoveringRect(hoverMin, hoverMax)){
-            hoveredIdx = i;
-
-            // クリックしたら選択
-            if(!isDragging_){
-                if(ImGui::IsMouseClicked(ImGuiMouseButton_Left)){
-                    edittingIdx_ = i;
-                    // 両端の制御点はドラッグ不可
-                    if(i != 0 && i != controlPoints_.size() - 1){
-                        isDragging_ = true;
-                        clickedMousePos_ = ImGui::GetIO().MousePos;
-                        originalPointPos_ = pointPos;
-                    }
-                } else if(ImGui::IsMouseClicked(ImGuiMouseButton_Right)){
-                    // ポップアップメニュー表示
-                    edittingIdx_ = i;
-                    ImGui::OpenPopup("PointContextMenu");
-                }
-            }
-        }
-
-        // 制御点に円を描画
-        bool isFocused = (edittingIdx_ == i) || (hoveredIdx == i);
-        drawList->AddCircleFilled(
-            pointPos, pointRadius,
-            isFocused ? IM_COL32(255, 255, 0, 255) : IM_COL32(127, 127, 0, 255)
-        );
-    }
-
-    // ツールチップ表示
-    if(hoveredIdx != -1 or isDragging_){
-        int idx = (hoveredIdx != -1) ? hoveredIdx : edittingIdx_;
-        ImGui::BeginTooltip();
-        ImGui::Text("制御点%d", idx);
-        ImGui::Text("時間: %.2f", controlPoints_[idx].second * timer_.duration);
-        ImGui::EndTooltip();
-    }
-
-    // 現在の時間の場所に縦線を引く
-    float currentT = timer_.GetProgress();
-    currentT = std::clamp(currentT, 0.0f, 1.0f);
-    ImVec2 currentPos = ImVec2(MyMath::Lerp(lineStart.x, lineEnd.x, currentT), lineStart.y);
-    drawList->AddLine(
-        ImVec2(currentPos.x, lineStart.y - 10.0f),
-        ImVec2(currentPos.x, lineStart.y + 10.0f),
-        IM_COL32(0, 255, 255, 255), 2.0f
-    );
-
-    // カーソル位置の更新
-    ImGui::SetCursorScreenPos(lineStart + ImVec2(0.0f, 20));
-    ImGui::DragFloat("総時間", &timer_.duration, 0.1f, 0.0f, 1000.0f);
-    if(ImFunc::PlayBar("現在の時間", timer_)){
-        isPlaying_ = !timer_.isStop;
-    }
-}
-
-// 制御点ドラッグ =============================================================
-void Routine3DComponent::DragPoint(){
-
-    // クリックが離されたらドラッグ終了
-    if(!ImGui::IsMouseDown(ImGuiMouseButton_Left)){
-        isDragging_ = false;
-    }
-
-    // ドラッグ中でなければ終了
-    if(!isDragging_){ return; }
-    if(edittingIdx_ == -1){ return; }
-
-    // マウスの移動量を取得
-    ImVec2 mouseDelta = ImGui::GetIO().MousePos - clickedMousePos_;
-    if(mouseDelta.x == 0.0f){ return; }
-
-    // 新しい時間値を計算
-    float newX = originalPointPos_.x + mouseDelta.x;
-    float len = newX - timelineMinMaxX_.x;
-    float t = len / (timelineMinMaxX_.y - timelineMinMaxX_.x);
-
-    // tを区間内に収める
-    float minT, maxT;
-    // 両端は固定値
-    if(edittingIdx_ == 0){
-        minT = 0.0f;
-        maxT = 0.0f;
-    } else if(edittingIdx_ == controlPoints_.size() - 1){
-        minT = 1.0f;
-        maxT = 1.0f;
-    } else{
-        minT = controlPoints_[edittingIdx_ - 1].second + 0.01f;
-        maxT = controlPoints_[edittingIdx_ + 1].second - 0.01f;
-    }
-
-    t = std::clamp(t, minT, maxT);
-    controlPoints_[edittingIdx_].second = t;
-}
-
-// トランスフォーム編集 =============================================================
-void Routine3DComponent::EditTransform(){
-
-    // 変形の無効化オプション
-    ImGui::SeparatorText("ルーチンの無効化オプション");
-    ImGui::Checkbox("移動を無効化", &disableTranslate_);
-    ImGui::Checkbox("回転を無効化", &disableRotate_);
-    ImGui::Checkbox("スケールを無効化", &disableScale_);
-
-    // トランスフォームの編集
-    if(edittingIdx_ != -1){
-        std::string tag = "##" + std::to_string(reinterpret_cast<uintptr_t>(&controlPoints_[edittingIdx_]));
-        ImGui::SeparatorText("制御点" + std::to_string(edittingIdx_));
-
-        if(!disableTranslate_){
-            ImGui::DragFloat3("座標" + tag, &controlPoints_[edittingIdx_].first.translate.x);
-        }
-
-        if(!disableScale_){
-            ImGui::DragFloat3("スケール" + tag, &controlPoints_[edittingIdx_].first.scale.x, 0.05f);
-        }
-
-        if(!disableRotate_){
-            ImGui::Text("回転値: {%f,%f,%f}", controlPoints_[edittingIdx_].first.rotate.x, controlPoints_[edittingIdx_].first.rotate.y, controlPoints_[edittingIdx_].first.rotate.z);
-            ImGui::DragFloat3("適用させる回転値" + tag, &eulerRotate_.x, 0.5f);
-            if(ImGui::Button("オイラー回転をQuaternion回転に適用" + tag)){
-                controlPoints_[edittingIdx_].first.rotate = Quaternion::ToQuaternion(eulerRotate_);
-            }
-        }
-
-        if(disableTranslate_ + disableScale_ + disableRotate_ == 0){
-            // デバッグカメラの値を適用
-            if(ImGui::Button("デバッグカメラの値を適用" + tag)){
-                BaseCamera* debugCam =SEED::Instance::GetCamera("debug");
-                controlPoints_[edittingIdx_].first = debugCam->GetTransform();
-            }
-        }
-    }
-}
-
-// 設定編集 =============================================================
-void Routine3DComponent::EditSettings(){
-    // 設定
-    ImGui::SeparatorText("設定");
-    ImFunc::Combo("補間方法", interpolationType_, { "LINEAR","CATMULLROM" });
-    ImFunc::Combo("イージング補間関数", easingType_, Easing::names, IM_ARRAYSIZE(Easing::names));
-    ImGui::Checkbox("デフォルトで静止するか", &defaultPaused_);
-    ImGui::Checkbox("ループするか", &isLoop_);
-    ImGui::Checkbox("端をつなげるか", &isConnectEdge_);
-    ImGui::Checkbox("ラインのデバッグ表示", &isDebugItemVisible_);
-}
-
-// ポップアップメニュー =============================================================
-void Routine3DComponent::PopupMenu(){
-    if(ImGui::BeginPopup("PointContextMenu")){
-        // 削除(両端の制御点は削除できないようにしておく)
-        if(edittingIdx_ != 0 && edittingIdx_ != controlPoints_.size() - 1){
-            if(ImGui::MenuItem("削除")){
-                controlPoints_.erase(controlPoints_.begin() + edittingIdx_);
-                edittingIdx_ = -1;
-                ImGui::CloseCurrentPopup();
-            }
-        }
-
-        // 複製
-        if(ImGui::MenuItem("複製")){
-            controlPoints_.insert(controlPoints_.begin() + edittingIdx_ + 1, controlPoints_[edittingIdx_]);
-            edittingIdx_ = -1;
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::EndPopup();
-    }
-}
-
-// 制御点追加 =============================================================
-void Routine3DComponent::AddPoint(float time){
-
-    // 制御点の座標リストを作成
-    std::vector<Transform> transforms;
-    for(auto& point : controlPoints_){
-        transforms.push_back(point.first);
-    }
-
-    // 補間方法に応じて制御点の補間
-    Transform result;
-    switch(interpolationType_){
-    case InterpolationType::LINEAR:
-    {
-        result = MyFunc::Interpolate(transforms, time);
-        break;
-    }
-    case InterpolationType::CATMULLROM:
-    {
-        result = MyFunc::CatmullRomInterpolate(transforms, time);
-        break;
-    }
-    default:
-        break;
-    }
-
-    // 新しい制御点を追加
-    controlPoints_.emplace_back(result, time);
-
-    // 時間でソート
-    std::sort(controlPoints_.begin(), controlPoints_.end(),
-        [](const RoutinePoint3D& a, const RoutinePoint3D& b){
-        return a.second < b.second;
-    });
-}
 
 #endif // _DEBUG
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// アクセサ
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const Transform& Routine3DComponent::GetControlPoint(size_t index) const{
-    static Transform emptyTransform;
-    if(index >= controlPoints_.size()){
-        return emptyTransform;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // アクセサ
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    const Transform& Routine3DComponent::GetControlPoint(size_t index) const{
+        static Transform emptyTransform;
+        if(index >= controlPoints_.size()){
+            return emptyTransform;
+        }
+        return controlPoints_[index].first;
     }
-    return controlPoints_[index].first;
-}
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// JSON読み込み・書き出し
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void Routine3DComponent::LoadFromJson(const nlohmann::json& jsonData){
-    IComponent::LoadFromJson(jsonData);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // JSON読み込み・書き出し
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Routine3DComponent::LoadFromJson(const nlohmann::json& jsonData){
+        IComponent::LoadFromJson(jsonData);
 
-    // 制御点の読み込み
-    if(jsonData.contains("controlPoints")){
-        controlPoints_.clear();
-        for(const auto& point : jsonData["controlPoints"]){
-            controlPoints_.push_back({ point,0.0f });
+        // 制御点の読み込み
+        if(jsonData.contains("controlPoints")){
+            controlPoints_.clear();
+            for(const auto& point : jsonData["controlPoints"]){
+                controlPoints_.push_back({ point,0.0f });
+            }
+        }
+
+        // 時間情報の読み込み
+        if(jsonData.contains("timePoints")){
+            int idx = 0;
+            for(const auto& point : jsonData["timePoints"]){
+                controlPoints_[idx++].second = point;
+            }
+        } else{
+            // 時間情報がなければ均等に割り振る
+            int pointCount = int(controlPoints_.size());
+            for(int i = 0; i < pointCount; i++){
+                controlPoints_[i].second = float(i) / float(pointCount - 1);
+            }
+        }
+
+        // 無効化設定の読み込み
+        disableTranslate_ = jsonData.value("disableTranslate", false);
+        disableRotate_ = jsonData.value("disableRotate", false);
+        disableScale_ = jsonData.value("disableScale", false);
+
+        // その他設定の読み込み
+        interpolationType_ = static_cast<Enums::InterpolationType>(jsonData.value("interpolationType", 0));
+        easingType_ = static_cast<Methods::Easing::Type>(jsonData.value("easingType", 0));
+        isLoop_ = jsonData.value("isLoop", false);
+        isConnectEdge_ = jsonData.value("isConnectEdge", false);
+        defaultPaused_ = jsonData.value("defaultPaused", false);
+        timer_.duration = jsonData.value("duration", 1.0f);
+        timer_.Reset();
+
+        // 再生状態の設定
+        if(!defaultPaused_){
+            isPlaying_ = true;
         }
     }
 
-    // 時間情報の読み込み
-    if(jsonData.contains("timePoints")){
-        int idx = 0;
-        for(const auto& point : jsonData["timePoints"]){
-            controlPoints_[idx++].second = point;
+    nlohmann::json Routine3DComponent::GetJsonData() const{
+        nlohmann::json jsonData;
+        jsonData["componentType"] = "Routine3D";
+        jsonData.update(IComponent::GetJsonData());
+
+        // 制御点
+        for(const auto& point : controlPoints_){
+            jsonData["controlPoints"].push_back(point.first);
         }
-    } else{
-        // 時間情報がなければ均等に割り振る
-        int pointCount = int(controlPoints_.size());
-        for(int i = 0; i < pointCount; i++){
-            controlPoints_[i].second = float(i) / float(pointCount - 1);
+
+        // 時間情報
+        for(const auto& point : controlPoints_){
+            jsonData["timePoints"].push_back(point.second);
         }
+
+        // 無効化設定
+        jsonData["disableTranslate"] = disableTranslate_;
+        jsonData["disableRotate"] = disableRotate_;
+        jsonData["disableScale"] = disableScale_;
+
+        // その他設定
+        jsonData["interpolationType"] = static_cast<int>(interpolationType_);
+        jsonData["easingType"] = static_cast<int>(easingType_);
+        jsonData["isLoop"] = isLoop_;
+        jsonData["isConnectEdge"] = isConnectEdge_;
+        jsonData["defaultPaused"] = defaultPaused_;
+        jsonData["duration"] = timer_.duration;
+
+        return jsonData;
     }
-
-    // 無効化設定の読み込み
-    disableTranslate_ = jsonData.value("disableTranslate", false);
-    disableRotate_ = jsonData.value("disableRotate", false);
-    disableScale_ = jsonData.value("disableScale", false);
-
-    // その他設定の読み込み
-    interpolationType_ = static_cast<InterpolationType>(jsonData.value("interpolationType", 0));
-    easingType_ = static_cast<Easing::Type>(jsonData.value("easingType", 0));
-    isLoop_ = jsonData.value("isLoop", false);
-    isConnectEdge_ = jsonData.value("isConnectEdge", false);
-    defaultPaused_ = jsonData.value("defaultPaused", false);
-    timer_.duration = jsonData.value("duration", 1.0f);
-    timer_.Reset();
-
-    // 再生状態の設定
-    if(!defaultPaused_){
-        isPlaying_ = true;
-    }
-}
-
-nlohmann::json Routine3DComponent::GetJsonData() const{
-    nlohmann::json jsonData;
-    jsonData["componentType"] = "Routine3D";
-    jsonData.update(IComponent::GetJsonData());
-
-    // 制御点
-    for(const auto& point : controlPoints_){
-        jsonData["controlPoints"].push_back(point.first);
-    }
-
-    // 時間情報
-    for(const auto& point : controlPoints_){
-        jsonData["timePoints"].push_back(point.second);
-    }
-
-    // 無効化設定
-    jsonData["disableTranslate"] = disableTranslate_;
-    jsonData["disableRotate"] = disableRotate_;
-    jsonData["disableScale"] = disableScale_;
-
-    // その他設定
-    jsonData["interpolationType"] = static_cast<int>(interpolationType_);
-    jsonData["easingType"] = static_cast<int>(easingType_);
-    jsonData["isLoop"] = isLoop_;
-    jsonData["isConnectEdge"] = isConnectEdge_;
-    jsonData["defaultPaused"] = defaultPaused_;
-    jsonData["duration"] = timer_.duration;
-
-    return jsonData;
 }

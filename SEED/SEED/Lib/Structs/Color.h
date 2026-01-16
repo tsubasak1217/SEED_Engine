@@ -1,147 +1,151 @@
 #pragma once
 #include <SEED/Lib/Tensor/Vector4.h>
-#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/Math.h>
 
-/// <summary>
-/// 色情報を格納する構造体
-/// </summary>
-struct Color{
-    Vector4 value = Vector4(1.0f);
+namespace SEED{
 
-public:// basic methods
-    Color() = default;
-    Color(float value);
-    Color(uint32_t colorCode, bool isCorrectionToLiner = true);
-    Color(const Vector4& vec4);
-    Color(float r, float g, float b, float a);
+    /// <summary>
+    /// 色情報を格納する構造体
+    /// </summary>
+    struct Color{
+        Vector4 value = Vector4(1.0f);
 
-public:// extra methods
+    public:// basic methods
+        Color() = default;
+        Color(float value);
+        Color(uint32_t colorCode, bool isCorrectionToLiner = true);
+        Color(const Vector4& vec4);
+        Color(float r, float g, float b, float a);
 
-    // カラーコードから値を設定する関数
-    void FromColorCode(uint32_t colorCode, bool isCorrectionToLiner = true);
+    public:// extra methods
 
-    // カラーコード変換関数
-    uint32_t GetColorCode()const;
+        // カラーコードから値を設定する関数
+        void FromColorCode(uint32_t colorCode, bool isCorrectionToLiner = true);
 
-    // HSV↔RGB変換関数
-    void FromHSVA(float h, float s, float v, float alpha);
-    void FromHSVA(const Vector4& hsva);
-    Vector4 ToHSVA();
+        // カラーコード変換関数
+        uint32_t GetColorCode()const;
 
-    // 色相を変更する関数
-    void AddHue(float deltaH,bool isClamp = false,float clampMin = 0.0f,float clampMax = 1.0f);
+        // HSV↔RGB変換関数
+        void FromHSVA(float h, float s, float v, float alpha);
+        void FromHSVA(const Vector4& hsva);
+        Vector4 ToHSVA();
 
-    // グレースケールを求める関数
-    Vector4 GetGrayScale(bool isCorrectionToLiner = true);
+        // 色相を変更する関数
+        void AddHue(float deltaH, bool isClamp = false, float clampMin = 0.0f, float clampMax = 1.0f);
 
-public:// operators
+        // グレースケールを求める関数
+        Vector4 GetGrayScale(bool isCorrectionToLiner = true);
 
-    //================== MUL ====================//
-    Color operator*(float scalar) const{
-        return Color(value * scalar);
+    public:// operators
+
+        //================== MUL ====================//
+        Color operator*(float scalar) const{
+            return Color(value * scalar);
+        }
+
+        Color operator*(const Color& color) const{
+            return Color(value * color.value);
+        }
+
+        Color operator*(const Vector4& vec4) const{
+            return Color(value * vec4);
+        }
+
+        void operator*=(float scalar){
+            value *= scalar;
+        }
+
+        void operator*=(const Color& color){
+            value *= color.value;
+        }
+
+        void operator*=(const Vector4& vec4){
+            value *= vec4;
+        }
+
+        //================== ADD ====================//
+        Color operator+(const Color& color) const{
+            return Color(value + color.value);
+        }
+
+        Color operator+(const Vector4& vec4) const{
+            return Color(value + vec4);
+        }
+
+        void operator+=(const Color& color){
+            value += color.value;
+        }
+
+        void operator+=(const Vector4& vec4){
+            value += vec4;
+        }
+
+        //================== SUB ====================//
+        Color operator-(const Color& color) const{
+            return Color(value - color.value);
+        }
+
+        Color operator-(const Vector4& vec4) const{
+            return Color(value - vec4);
+        }
+
+        void operator-=(const Color& color){
+            value -= color.value;
+        }
+
+        void operator-=(const Vector4& vec4){
+            value -= vec4;
+        }
+
+        //================== DIV ====================//
+        Color operator/(float scalar) const{
+            return Color(value / scalar);
+        }
+
+        void operator/=(float scalar){
+            value /= scalar;
+        }
+
+        //================= EEQUAL =================//
+        Color& operator=(const Vector4& vec4){
+            value = vec4;
+            return *this;
+        }
+
+        bool operator==(const Color& color) const{
+            return value == color.value;
+        }
+
+        bool operator!=(const Color& color) const{
+            return !(*this == color);
+        }
+
+        bool operator==(const Vector4& vec4) const{
+            return value == vec4;
+        }
+
+        bool operator!=(const Vector4& vec4) const{
+            return !(*this == vec4);
+        }
+
+    };
+
+    // ColorをJSONに変換する関数
+    inline void to_json(nlohmann::json& j, const Color& color){
+        to_json(j, color.value);
+    }
+    inline void to_json(nlohmann::ordered_json& j, const Color& color){
+        to_json(j, color.value);
     }
 
-    Color operator*(const Color& color) const{
-        return Color(value * color.value);
+    // JSONをColorに変換する関数
+    inline void from_json(const nlohmann::ordered_json& j, Color& color){
+        from_json(j, color.value);
     }
 
-    Color operator*(const Vector4& vec4) const{
-        return Color(value * vec4);
+    inline void from_json(const nlohmann::json& j, Color& color){
+        // ordered_json版に投げる
+        from_json(static_cast<const nlohmann::ordered_json&>(j), color);
     }
 
-    void operator*=(float scalar){
-        value *= scalar;
-    }
-
-    void operator*=(const Color& color){
-        value *= color.value;
-    }
-
-    void operator*=(const Vector4& vec4){
-        value *= vec4;
-    }
-
-    //================== ADD ====================//
-    Color operator+(const Color& color) const{
-        return Color(value + color.value);
-    }
-
-    Color operator+(const Vector4& vec4) const{
-        return Color(value + vec4);
-    }
-
-    void operator+=(const Color& color){
-        value += color.value;
-    }
-
-    void operator+=(const Vector4& vec4){
-        value += vec4;
-    }
-
-    //================== SUB ====================//
-    Color operator-(const Color& color) const{
-        return Color(value - color.value);
-    }
-
-    Color operator-(const Vector4& vec4) const{
-        return Color(value - vec4);
-    }
-
-    void operator-=(const Color& color){
-        value -= color.value;
-    }
-
-    void operator-=(const Vector4& vec4){
-        value -= vec4;
-    }
-
-    //================== DIV ====================//
-    Color operator/(float scalar) const{
-        return Color(value / scalar);
-    }
-
-    void operator/=(float scalar){
-        value /= scalar;
-    }
-
-    //================= EEQUAL =================//
-    Color& operator=(const Vector4& vec4){
-        value = vec4;
-        return *this;
-    }
-
-    bool operator==(const Color& color) const{
-        return value == color.value;
-    }
-
-    bool operator!=(const Color& color) const{
-        return !(*this == color);
-    }
-
-    bool operator==(const Vector4& vec4) const{
-        return value == vec4;
-    }
-
-    bool operator!=(const Vector4& vec4) const{
-        return !(*this == vec4);
-    }
-
-};
-
-// ColorをJSONに変換する関数
-inline void to_json(nlohmann::json& j, const Color& color){
-    to_json(j, color.value);
-}
-inline void to_json(nlohmann::ordered_json& j, const Color& color){
-    to_json(j, color.value);
-}
-
-// JSONをColorに変換する関数
-inline void from_json(const nlohmann::ordered_json& j, Color& color){
-    from_json(j, color.value);
-}
-
-inline void from_json(const nlohmann::json& j, Color& color){
-    // ordered_json版に投げる
-    from_json(static_cast<const nlohmann::ordered_json&>(j), color);
-}
+} // namespace SEED

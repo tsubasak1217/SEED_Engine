@@ -3,6 +3,6 @@
 #include <SEED/Lib/Structs/ModelAnimation.h>
 
 struct DragInfo_Joint{
-    ModelRenderComponent* pComponent;
-    ModelJoint* pJoint;
+    SEED::ModelRenderComponent* pComponent;
+    SEED::ModelJoint* pJoint;
 };

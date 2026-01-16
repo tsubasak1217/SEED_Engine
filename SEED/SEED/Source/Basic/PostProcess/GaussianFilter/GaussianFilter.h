@@ -2,27 +2,29 @@
 #include "../IPostProcess.h"
 #include "BlurParam.h"
 
-/// <summary>
-/// ガウスぼかしを行うクラス
-/// </summary>
-class GaussianFilter : public IPostProcess{
-public:
-    GaussianFilter();
-    ~GaussianFilter() override = default;
+namespace SEED{
+    /// <summary>
+    /// ガウスぼかしを行うクラス
+    /// </summary>
+    class GaussianFilter : public IPostProcess{
+    public:
+        GaussianFilter();
+        ~GaussianFilter() override = default;
 
-public:
-    void Initialize() override;
-    void Update() override;
-    void Apply() override;
-    void Release() override;
-    void StartTransition() override{};
-    void EndTransition() override{};
+    public:
+        void Initialize() override;
+        void Update() override;
+        void Apply() override;
+        void Release() override;
+        void StartTransition() override{};
+        void EndTransition() override{};
 
-private:
-    DxBuffer<BlurParams> blurParamsBuffer_; // ブラーのパラメータを格納するバッファ
+    private:
+        DxBuffer<BlurParams> blurParamsBuffer_; // ブラーのパラメータを格納するバッファ
 
-public:
-    void Edit() override;
-    nlohmann::json ToJson() override;
-    void FromJson(const nlohmann::json& json) override;
-};
+    public:
+        void Edit() override;
+        nlohmann::json ToJson() override;
+        void FromJson(const nlohmann::json& json) override;
+    };
+}

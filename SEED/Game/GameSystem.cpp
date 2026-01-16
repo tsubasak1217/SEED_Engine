@@ -5,143 +5,143 @@
 #include <SEED/Source/Manager/VideoManager/VideoManager.h>
 #include <SEED/Source/Manager/SceneTransitionDrawer/SceneTransitionDrawer.h>
 
-/////////////////////////////////////////////////////////////////
-// 静的メンバ変数の初期化
-/////////////////////////////////////////////////////////////////
-std::unique_ptr<GameSystem> GameSystem::instance_ = nullptr;
+namespace SEED{
+    /////////////////////////////////////////////////////////////////
+    // 静的メンバ変数の初期化
+    /////////////////////////////////////////////////////////////////
+    std::unique_ptr<GameSystem> GameSystem::instance_ = nullptr;
 
 
-/////////////////////////////////////////////////////////////////
-// インスタンス取得
-/////////////////////////////////////////////////////////////////
-GameSystem* GameSystem::GetInstance() {
-    if (instance_ == nullptr) {
-        instance_.reset(new GameSystem());
+    /////////////////////////////////////////////////////////////////
+    // インスタンス取得
+    /////////////////////////////////////////////////////////////////
+    GameSystem* GameSystem::GetInstance(){
+        if(instance_ == nullptr){
+            instance_.reset(new GameSystem());
+        }
+        return instance_.get();
     }
-    return instance_.get();
-}
 
-/////////////////////////////////////////////////////////////////
-// ゲームの初期化
-/////////////////////////////////////////////////////////////////
-void GameSystem::Initialize() {
-    GetInstance();
-    // シーンの登録
-    SceneRegister::RegisterScenes();
-    // 最初のシーンを設定
-    //ChangeScene("Game");
-    ChangeScene("Title");
-    //ChangeScene("Test");
-}
+    /////////////////////////////////////////////////////////////////
+    // ゲームの初期化
+    /////////////////////////////////////////////////////////////////
+    void GameSystem::Initialize(){
+        GetInstance();
+        // シーンの登録
+        SceneRegister::RegisterScenes();
+        // 最初のシーンを設定
+        ChangeScene("Test");
+    }
 
-/////////////////////////////////////////////////////////////////
-// ゲームの終了処理
-/////////////////////////////////////////////////////////////////
-void GameSystem::Finalize() {
-    instance_->pScene_->Finalize();
-}
+    /////////////////////////////////////////////////////////////////
+    // ゲームの終了処理
+    /////////////////////////////////////////////////////////////////
+    void GameSystem::Finalize(){
+        instance_->pScene_->Finalize();
+    }
 
 
-/////////////////////////////////////////////////////////////////
-// ゲームの実行
-/////////////////////////////////////////////////////////////////
-void GameSystem::Run() {
-    // フレーム開始処理
-    instance_->BeginFrame();
+    /////////////////////////////////////////////////////////////////
+    // ゲームの実行
+    /////////////////////////////////////////////////////////////////
+    void GameSystem::Run(){
+        // フレーム開始処理
+        instance_->BeginFrame();
+        // ゲームの更新処理
+        instance_->Update();
+        // ゲームの描画処理
+        instance_->Draw();
+        // フレーム終了処理
+        instance_->EndFrame();
+    }
+
+
+    /////////////////////////////////////////////////////////////////
     // ゲームの更新処理
-    instance_->Update();
+    /////////////////////////////////////////////////////////////////
+    void GameSystem::Update(){
+        // シーンの更新
+        instance_->pScene_->Update();
+        // ビデオの更新
+        VideoManager::GetInstance()->Update();
+        // エフェクトの更新
+        ParticleManager::Update();
+        // すべての更新終了後にカメラを更新
+        CameraManager::Update();
+        // シーン遷移の更新
+        SceneTransitionDrawer::Update();
+    }
+
+
+    /////////////////////////////////////////////////////////////////
     // ゲームの描画処理
-    instance_->Draw();
+    /////////////////////////////////////////////////////////////////
+    void GameSystem::Draw(){
+
+        // シーンの描画
+        if(instance_->pScene_){
+            instance_->pScene_->Draw();
+        }
+
+        // エフェクトの描画
+        ParticleManager::Draw();
+
+        // シーン遷移の更新
+        SceneTransitionDrawer::Draw();
+
+        // ImGuiの描画
+        DrawGUI();
+    }
+
+
+    /////////////////////////////////////////////////////////////////
+    // フレーム開始処理
+    /////////////////////////////////////////////////////////////////
+    void GameSystem::BeginFrame(){
+        // Colliderのリセット
+        CollisionManager::ResetColliderList();
+        // シーンのフレーム開始処理
+        instance_->pScene_->BeginFrame();
+        // Colliderの追加
+        instance_->pScene_->HandOverColliders();
+        // 当たり判定
+        CollisionManager::CheckCollision();
+        // コリジョンの描画だけ先に行う
+        CollisionManager::Draw();
+    }
+
+
+    /////////////////////////////////////////////////////////////////
     // フレーム終了処理
-    instance_->EndFrame();
-}
-
-
-/////////////////////////////////////////////////////////////////
-// ゲームの更新処理
-/////////////////////////////////////////////////////////////////
-void GameSystem::Update() {
-    // シーンの更新
-    instance_->pScene_->Update();
-    // ビデオの更新
-    VideoManager::GetInstance()->Update();
-    // エフェクトの更新
-    ParticleManager::Update();
-    // すべての更新終了後にカメラを更新
-    CameraManager::Update();
-    // シーン遷移の更新
-    SceneTransitionDrawer::Update();
-}
-
-
-/////////////////////////////////////////////////////////////////
-// ゲームの描画処理
-/////////////////////////////////////////////////////////////////
-void GameSystem::Draw() {
-    
-    // シーンの描画
-    if (instance_->pScene_) {
-        instance_->pScene_->Draw();
+    /////////////////////////////////////////////////////////////////
+    void GameSystem::EndFrame(){
+        // シーンのフレーム終了処理
+        if(instance_->pScene_){
+            instance_->pScene_->EndFrame();
+        }
     }
 
-    // エフェクトの描画
-    ParticleManager::Draw();
-    
-    // シーン遷移の更新
-    SceneTransitionDrawer::Draw();
-
-    // ImGuiの描画
-    DrawGUI();
-}
-
-
-/////////////////////////////////////////////////////////////////
-// フレーム開始処理
-/////////////////////////////////////////////////////////////////
-void GameSystem::BeginFrame() {
-    // Colliderのリセット
-    CollisionManager::ResetColliderList();
-    // シーンのフレーム開始処理
-    instance_->pScene_->BeginFrame();
-    // Colliderの追加
-    instance_->pScene_->HandOverColliders();
-    // 当たり判定
-    CollisionManager::CheckCollision();
-    // コリジョンの描画だけ先に行う
-    CollisionManager::Draw();
-}
-
-
-/////////////////////////////////////////////////////////////////
-// フレーム終了処理
-/////////////////////////////////////////////////////////////////
-void GameSystem::EndFrame() {
-    // シーンのフレーム終了処理
-    if (instance_->pScene_) {
-        instance_->pScene_->EndFrame();
+    /////////////////////////////////////////////////////////////////
+    // ゲームのGUI描画処理
+    /////////////////////////////////////////////////////////////////
+    void GameSystem::DrawGUI(){
+    #ifdef _DEBUG
+        CollisionManager::GUI();
+    #endif // _DEBUG
     }
-}
-
-/////////////////////////////////////////////////////////////////
-// ゲームのGUI描画処理
-/////////////////////////////////////////////////////////////////
-void GameSystem::DrawGUI(){
-#ifdef _DEBUG
-    CollisionManager::GUI();
-#endif // _DEBUG
-}
 
 
-/////////////////////////////////////////////////////////////////
-// シーンの変更
-/////////////////////////////////////////////////////////////////
-void GameSystem::ChangeScene(const std::string& sceneName) {
-    // sceneを破棄
-    instance_->pScene_.reset(new Scene_Base);
-    instance_->pScene_.reset();
-    // 新しいsceneを生成して設定
-    auto* nextScene = SceneManager::CreateScene(sceneName);
-    instance_->pScene_ = std::unique_ptr<Scene_Base>(nextScene);
-    instance_->pScene_->Initialize();
-    Scene_Base::isChangeScene_ = true;
+    /////////////////////////////////////////////////////////////////
+    // シーンの変更
+    /////////////////////////////////////////////////////////////////
+    void GameSystem::ChangeScene(const std::string& sceneName){
+        // sceneを破棄
+        instance_->pScene_.reset(new Scene_Base);
+        instance_->pScene_.reset();
+        // 新しいsceneを生成して設定
+        auto* nextScene = SceneManager::CreateScene(sceneName);
+        instance_->pScene_ = std::unique_ptr<Scene_Base>(nextScene);
+        instance_->pScene_->Initialize();
+        Scene_Base::isChangeScene_ = true;
+    }
 }

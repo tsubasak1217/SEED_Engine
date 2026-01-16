@@ -2,18 +2,22 @@
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Lib/Structs/Range3D.h>
 
-/// <summary>
-/// 加速場
-/// </summary>
-struct AccelerationField{
+namespace SEED{
 
-    AccelerationField() = default;
-    AccelerationField(const Vector3& acceleration, const Range3D& range)
-        : acceleration(acceleration), range(range){}
+    /// <summary>
+    /// 加速場
+    /// </summary>
+    struct AccelerationField{
 
-    Vector3 acceleration;
-    Range3D range;
+        AccelerationField() = default;
+        AccelerationField(const Vector3& acceleration, const Range3D& range)
+            : acceleration(acceleration), range(range){}
 
-    bool CheckCollision(const Vector3& pos);
-    void Draw()const;
-};
+        Vector3 acceleration;
+        Range3D range;
+
+        bool CheckCollision(const Vector3& pos);
+        void Draw()const;
+    };
+
+} // namespace SEED

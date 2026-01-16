@@ -8,10 +8,6 @@
 // scene
 #include <Game/Scene/Scene_Clear/Scene_Clear.h>
 
-// state
-#include <Game/Scene/Scene_Game/State/GameState_Play.h>
-#include <Game/Scene/Scene_Game/State/GameState_Select.h>
-
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 //  コンストラクタ・デストラクタ
@@ -23,10 +19,6 @@ Scene_Game::Scene_Game() : Scene_Base(){
 
 Scene_Game::~Scene_Game(){
     Scene_Base::Finalize();
-
-    // カメラのリセット
-   SEED::Instance::RemoveCamera("gameCamera");
-   SEED::Instance::SetMainCamera("default");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -39,24 +31,6 @@ void Scene_Game::Initialize(){
 
     // 共通初期化
     Scene_Base::Initialize();
-
-    // チュートリアルプレイ選択に応じてステートを変更
-    if(isPlayTutorial_){
-        // チュートリアル楽曲データの読み込み
-        SongInfo data;
-        data.Initialize("toritsuTutorialJHS");
-        Scene_Clear::SetJacketPath(
-            "Resources/NoteDatas/" + data.folderName + "/" + data.folderName + ".png"
-        );
-
-        // ステート初期化
-        ChangeState(new GameState_Play(this,data,0));
-        isPlayTutorial_ = false;
-
-    } else{
-        // ステート初期化
-        ChangeState(new GameState_Select(this));
-    }
 }
 
 void Scene_Game::Finalize() {

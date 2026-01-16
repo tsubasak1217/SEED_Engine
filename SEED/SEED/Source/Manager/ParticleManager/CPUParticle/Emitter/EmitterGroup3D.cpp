@@ -6,14 +6,16 @@
 // Emitter
 #include "Emitter3D.h"
 
-// EmitterGroupのコンストラクタ
-EmitterGroup3D::EmitterGroup3D() : EmitterGroupBase(){}
+namespace SEED{
+    // EmitterGroupのコンストラクタ
+    EmitterGroup3D::EmitterGroup3D() : EmitterGroupBase(){}
 
-// 中心座標を取得
-Vector3 EmitterGroup3D::GetPosition() const{
-    if(parentMat){
-        return ExtractTranslation(*parentMat) + offset;
-    } else{
-        return offset;
+    // 中心座標を取得
+    Vector3 EmitterGroup3D::GetPosition() const{
+        if(parentMat){
+            return Methods::Matrix::ExtractTranslation(*parentMat) + offset;
+        } else{
+            return offset;
+        }
     }
 }

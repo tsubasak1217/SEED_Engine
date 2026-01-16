@@ -13,49 +13,53 @@
 #include <SEED/Lib/Tensor/Vector3.h>
 #include <SEED/Source/Basic/Collision/3D/Collider.h>
 
-class GameObject;
+namespace SEED{
 
-/// <summary>
-/// コライダーの編集クラス(3D)
-/// </summary>
-class ColliderEditor{
-    friend class Collision3DComponent;
-private:// 基本関数
-    ColliderEditor() = default;
-public:
-    ColliderEditor(const std::string& className, GameObject* parent);
-    ~ColliderEditor();
+    // 前方宣言
+    class GameObject;
 
-public:// 編集・ファイル操作関数
-    void Edit();
-    static void LoadColliders(const std::string& fileName, GameObject* parentObject, std::vector<std::unique_ptr<Collider>>* pColliderArray);
+    /// <summary>
+    /// コライダーの編集クラス(3D)
+    /// </summary>
+    class ColliderEditor{
+        friend class Collision3DComponent;
+    private:// 基本関数
+        ColliderEditor() = default;
+    public:
+        ColliderEditor(const std::string& className, GameObject* parent);
+        ~ColliderEditor();
 
-private:
-    void AddColliderOnGUI();
-    bool DeleteColliderOnGUI(uint32_t index);
-    void OutputOnGUI();
-    void InputOnGUI();
+    public:// 編集・ファイル操作関数
+        void Edit();
+        static void LoadColliders(const std::string& fileName, GameObject* parentObject, std::vector<std::unique_ptr<Collider>>* pColliderArray);
 
-    static void LoadColliderData(const std::string fileName);
-    static std::vector<Collider*> LoadColliderData(const nlohmann::json& json);
-    void OutputToJson();
-    void LoadFromJson(const std::string& fileName);
+    private:
+        void AddColliderOnGUI();
+        bool DeleteColliderOnGUI(uint32_t index);
+        void OutputOnGUI();
+        void InputOnGUI();
 
-public:// コライダー関連
-    void HandOverColliders();
+        static void LoadColliderData(const std::string fileName);
+        static std::vector<Collider*> LoadColliderData(const nlohmann::json& json);
+        void OutputToJson();
+        void LoadFromJson(const std::string& fileName);
 
-public:// アクセッサ
-    void SetParentMat(const Matrix4x4* parentMat){ parentMat_ = parentMat; }
+    public:// コライダー関連
+        void HandOverColliders();
 
-private:
-    std::string className_;
-    ColliderType addColliderType_ = ColliderType::OBB;
-    GameObject* parentObject_ = nullptr;
-    const Matrix4x4* parentMat_ = nullptr;
-    std::vector<std::unique_ptr<Collider>>colliders_;
+    public:// アクセッサ
+        void SetParentMat(const Matrix4x4* parentMat){ parentMat_ = parentMat; }
 
-    // ロードしたコライダーのデータ
-    inline static std::unordered_map<std::string, std::vector<std::unique_ptr<Collider>>>colliderData_{};
-    inline static std::vector<std::string> colliderFileNames_{};
-    int32_t selectedColliderIndex_ = 0;
-};
+    private:
+        std::string className_;
+        ColliderType addColliderType_ = ColliderType::OBB;
+        GameObject* parentObject_ = nullptr;
+        const Matrix4x4* parentMat_ = nullptr;
+        std::vector<std::unique_ptr<Collider>>colliders_;
+
+        // ロードしたコライダーのデータ
+        inline static std::unordered_map<std::string, std::vector<std::unique_ptr<Collider>>>colliderData_{};
+        inline static std::vector<std::string> colliderFileNames_{};
+        int32_t selectedColliderIndex_ = 0;
+    };
+}

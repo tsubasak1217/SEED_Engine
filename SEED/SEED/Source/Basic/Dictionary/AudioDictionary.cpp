@@ -4,7 +4,7 @@ void AudioDictionary::Initialize() {
     dict.clear();
 
     // jsonファイルの読み込み
-    nlohmann::json j = MyFunc::GetJson(jsonFilePath_, true);
+    nlohmann::json j = SEED::Methods::File::GetJson(jsonFilePath_, true);
 
     if(!j.empty()){
         for(auto& element : j.items()){

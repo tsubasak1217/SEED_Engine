@@ -5,29 +5,31 @@
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Basic/Scene/Scene_Base.h>
 
-/// <summary>
-// シーン管理クラス
-/// </summary>
-class SceneManager {
+namespace SEED{
+    /// <summary>
+    // シーン管理クラス
+    /// </summary>
+    class SceneManager{
 
-private:
-    SceneManager();
-public:
-    ~SceneManager();
-    static void Initialize();
-    static SceneManager* GetInstance();
+    private:
+        SceneManager();
+    public:
+        ~SceneManager();
+        static void Initialize();
+        static SceneManager* GetInstance();
 
-private:
-    static std::unique_ptr<SceneManager>instance_;
-    SceneManager(const SceneManager& other) = delete;
-    SceneManager& operator=(const SceneManager& other) = delete;
+    private:
+        static std::unique_ptr<SceneManager>instance_;
+        SceneManager(const SceneManager& other) = delete;
+        SceneManager& operator=(const SceneManager& other) = delete;
 
-public:// シーンの管理
-    static void Register(const std::string& sceneName, std::function<Scene_Base* (void)> createFunc);
-    static Scene_Base* CreateScene(const std::string sceneName);
+    public:// シーンの管理
+        static void Register(const std::string& sceneName, std::function<Scene_Base* (void)> createFunc);
+        static Scene_Base* CreateScene(const std::string sceneName);
 
-private:// メンバ変数
+    private:// メンバ変数
 
-    std::unordered_map<std::string, std::function<Scene_Base* (void)>> sceneMap_;
+        std::unordered_map<std::string, std::function<Scene_Base* (void)>> sceneMap_;
 
-};
+    };
+}

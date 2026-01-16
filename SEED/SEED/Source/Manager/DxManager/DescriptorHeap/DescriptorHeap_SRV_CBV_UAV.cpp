@@ -1,61 +1,63 @@
 #include "DescriptorHeap_SRV_CBV_UAV.h"
 
-DescriptorHeap_SRV_CBV_UAV::DescriptorHeap_SRV_CBV_UAV(){
-    kMaxViewCount_ = 0xff;
-    viewCount_ = 1;
+namespace SEED{
+    DescriptorHeap_SRV_CBV_UAV::DescriptorHeap_SRV_CBV_UAV(){
+        kMaxViewCount_ = 0xff;
+        viewCount_ = 1;
 
-    descriptorSize_ =
-        DxManager::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(
-            D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV
+        descriptorSize_ =
+            DxManager::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(
+                D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV
+            );
+
+        // SRVのディスクリプタヒープを作成
+        descriptorHeap_ = Methods::DxFunc::CreateDescriptorHeap(
+            DxManager::GetInstance()->GetDevice(),
+            D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,// SRV用に設定
+            kMaxViewCount_,// ディスクリプタ数
+            true
         );
 
-    // SRVのディスクリプタヒープを作成
-    descriptorHeap_ = CreateDescriptorHeap(
-        DxManager::GetInstance()->GetDevice(),
-        D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,// SRV用に設定
-        kMaxViewCount_,// ディスクリプタ数
-        true
-    );
-
-    // フリーリストに全てのインデックスを追加(imguiが先頭を使うため1から)
-    for(uint32_t i = 1; i < kMaxViewCount_; ++i){
-        freeIndices_.push(i);
-    }
-}
-
-
-/// <summary>
-/// 
-/// </summary>
-/// <param name="viewType"></param>
-/// <param name="pResource"></param>
-/// <param name="pDesc"></param>
-uint32_t DescriptorHeap_SRV_CBV_UAV::CreateView(
-    VIEW_TYPE viewType, ID3D12Resource* pResource, const void* pDesc
-){
-
-    D3D12_CPU_DESCRIPTOR_HANDLE handleCPU;
-    handleCPU = GetCPUDescriptorHandle(descriptorHeap_.Get(), descriptorSize_, freeIndices_.front());
-
-    // 形式に応じたviewを作成する
-    if(viewType == VIEW_TYPE::SRV){
-        const D3D12_SHADER_RESOURCE_VIEW_DESC* srvDesc = static_cast<const D3D12_SHADER_RESOURCE_VIEW_DESC*>(pDesc);
-        DxManager::GetInstance()->GetDevice()->CreateShaderResourceView(pResource, srvDesc, handleCPU);
-
-    } else if(viewType == VIEW_TYPE::UAV){
-        const D3D12_UNORDERED_ACCESS_VIEW_DESC* uavDesc = static_cast<const D3D12_UNORDERED_ACCESS_VIEW_DESC*>(pDesc);
-        DxManager::GetInstance()->GetDevice()->CreateUnorderedAccessView(pResource, nullptr,uavDesc, handleCPU);
-
-    } else if(viewType == VIEW_TYPE::CBV){
-        const D3D12_CONSTANT_BUFFER_VIEW_DESC* cbvDesc = static_cast<const D3D12_CONSTANT_BUFFER_VIEW_DESC*>(pDesc);
-        DxManager::GetInstance()->GetDevice()->CreateConstantBufferView(cbvDesc, handleCPU);
-    
-    } else{
-        assert(false);
+        // フリーリストに全てのインデックスを追加(imguiが先頭を使うため1から)
+        for(uint32_t i = 1; i < kMaxViewCount_; ++i){
+            freeIndices_.push(i);
+        }
     }
 
-    viewCount_++;
-    uint32_t index = freeIndices_.front();
-    freeIndices_.pop();
-    return index;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="viewType"></param>
+    /// <param name="pResource"></param>
+    /// <param name="pDesc"></param>
+    uint32_t DescriptorHeap_SRV_CBV_UAV::CreateView(
+        VIEW_TYPE viewType, ID3D12Resource* pResource, const void* pDesc
+    ){
+
+        D3D12_CPU_DESCRIPTOR_HANDLE handleCPU;
+        handleCPU = Methods::DxFunc::GetCPUDescriptorHandle(descriptorHeap_.Get(), descriptorSize_, freeIndices_.front());
+
+        // 形式に応じたviewを作成する
+        if(viewType == VIEW_TYPE::SRV){
+            const D3D12_SHADER_RESOURCE_VIEW_DESC* srvDesc = static_cast<const D3D12_SHADER_RESOURCE_VIEW_DESC*>(pDesc);
+            DxManager::GetInstance()->GetDevice()->CreateShaderResourceView(pResource, srvDesc, handleCPU);
+
+        } else if(viewType == VIEW_TYPE::UAV){
+            const D3D12_UNORDERED_ACCESS_VIEW_DESC* uavDesc = static_cast<const D3D12_UNORDERED_ACCESS_VIEW_DESC*>(pDesc);
+            DxManager::GetInstance()->GetDevice()->CreateUnorderedAccessView(pResource, nullptr, uavDesc, handleCPU);
+
+        } else if(viewType == VIEW_TYPE::CBV){
+            const D3D12_CONSTANT_BUFFER_VIEW_DESC* cbvDesc = static_cast<const D3D12_CONSTANT_BUFFER_VIEW_DESC*>(pDesc);
+            DxManager::GetInstance()->GetDevice()->CreateConstantBufferView(cbvDesc, handleCPU);
+
+        } else{
+            assert(false);
+        }
+
+        viewCount_++;
+        uint32_t index = freeIndices_.front();
+        freeIndices_.pop();
+        return index;
+    }
 }

@@ -3,791 +3,793 @@
 #include <SEED/Lib/Functions/DxFunc.h>
 #include <cassert>
 
-// static変数初期化
-AudioManager* AudioManager::instance_ = nullptr;
-float AudioManager::systemVolumeRate_ = 1.f;
+namespace SEED{
+    // static変数初期化
+    AudioManager* AudioManager::instance_ = nullptr;
+    float AudioManager::systemVolumeRate_ = 1.f;
 
-const std::string AudioManager::directoryPath_ = "resources/audios/";
+    const std::string AudioManager::directoryPath_ = "resources/audios/";
 
-// デストラクタ
-AudioManager::~AudioManager(){
+    // デストラクタ
+    AudioManager::~AudioManager(){
 
-    // 音声関連の解放
-    MFShutdown();
+        // 音声関連の解放
+        MFShutdown();
 
-    if(instance_){
-        delete instance_;
-        instance_ = nullptr;
-    }
-}
-
-// インスタンス取得関数
-const AudioManager* AudioManager::GetInstance(){
-    if(!instance_){
-        instance_ = new AudioManager();
+        if(instance_){
+            delete instance_;
+            instance_ = nullptr;
+        }
     }
 
-    return instance_;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-/*                                 初期化・終了処理関数                               */
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-void AudioManager::Initialize(){
-    // インスタンスなければ作成
-    GetInstance();
-
-    // 初期化
-    HRESULT hr;
-    hr = XAudio2Create(&instance_->xAudio2_, 0, XAUDIO2_DEFAULT_PROCESSOR);
-    assert(SUCCEEDED(hr));
-
-    hr = instance_->xAudio2_->CreateMasteringVoice(&instance_->masteringVoice_);
-    assert(SUCCEEDED(hr));
-
-    // mp3用の初期化
-    //CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-    hr = instance_->InitializeMediaFoundation();
-    assert(SUCCEEDED(hr));
-
-    StartUpLoad();
-}
-
-
-
-HRESULT AudioManager::InitializeMediaFoundation(){
-    HRESULT hr = MFStartup(MF_VERSION);
-    if(FAILED(hr)){
-        return hr;
-    }
-    return S_OK;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-// 
-//                              フレーム開始時の処理
-// 
-/////////////////////////////////////////////////////////////////////////////////////
-void AudioManager::BeginFrame(){
-    // システムボリュームの設定
-    if(Input::IsPressKey(DIK_V)){
-
-        if(Input::IsTriggerKey(DIK_F3)){// ボリュームを上げる
-            systemVolumeRate_ += 0.1f;
+    // インスタンス取得関数
+    const AudioManager* AudioManager::GetInstance(){
+        if(!instance_){
+            instance_ = new AudioManager();
         }
 
-        if(Input::IsTriggerKey(DIK_F2)){// ボリュームを下げる
-            systemVolumeRate_ -= 0.1f;
+        return instance_;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    /*                                 初期化・終了処理関数                               */
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    void AudioManager::Initialize(){
+        // インスタンスなければ作成
+        GetInstance();
+
+        // 初期化
+        HRESULT hr;
+        hr = XAudio2Create(&instance_->xAudio2_, 0, XAUDIO2_DEFAULT_PROCESSOR);
+        assert(SUCCEEDED(hr));
+
+        hr = instance_->xAudio2_->CreateMasteringVoice(&instance_->masteringVoice_);
+        assert(SUCCEEDED(hr));
+
+        // mp3用の初期化
+        //CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+        hr = instance_->InitializeMediaFoundation();
+        assert(SUCCEEDED(hr));
+
+        StartUpLoad();
+    }
+
+
+
+    HRESULT AudioManager::InitializeMediaFoundation(){
+        HRESULT hr = MFStartup(MF_VERSION);
+        if(FAILED(hr)){
+            return hr;
+        }
+        return S_OK;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    // 
+    //                              フレーム開始時の処理
+    // 
+    /////////////////////////////////////////////////////////////////////////////////////
+    void AudioManager::BeginFrame(){
+        // システムボリュームの設定
+        if(Input::IsPressKey(DIK_V)){
+
+            if(Input::IsTriggerKey(DIK_F3)){// ボリュームを上げる
+                systemVolumeRate_ += 0.1f;
+            }
+
+            if(Input::IsTriggerKey(DIK_F2)){// ボリュームを下げる
+                systemVolumeRate_ -= 0.1f;
+            }
+
+            if(Input::IsTriggerKey(DIK_F1)){// ミュート/ミュート解除
+                if(systemVolumeRate_ == 0.0f){
+                    systemVolumeRate_ = 1.0f;
+                } else{
+                    systemVolumeRate_ = 0.0f;
+                }
+            }
+
+            systemVolumeRate_ = (std::max)(systemVolumeRate_, 0.0f);
+
+            // 流れている音声の音量を変更
+            for(auto& [handle, sourceVoice] : instance_->sourceVoices_){
+                if(sourceVoice != nullptr){
+                    sourceVoice->SetVolume(instance_->volumeMap_[handle] * systemVolumeRate_);
+                }
+            }
         }
 
-        if(Input::IsTriggerKey(DIK_F1)){// ミュート/ミュート解除
-            if(systemVolumeRate_ == 0.0f){
-                systemVolumeRate_ = 1.0f;
+        // 終了している音声の削除
+        std::vector<AudioHandle> erasedHandle;
+        std::erase_if(instance_->sourceVoices_,
+            [&](auto& kv){
+
+            // 非ループ音源のみ判定
+            AudioHandle handle = kv.first;
+            if(instance_->loopFlagMap_[handle]){
+                return false;
+            }
+
+            // 音声の状態を取得
+            XAUDIO2_VOICE_STATE state{};
+            kv.second->GetState(&state);
+
+            // 終了判定
+            if(state.BuffersQueued == 0){
+                erasedHandle.push_back(handle);
+                return true;
+            }
+
+            return false;
+        });
+
+        // 削除リストに基づき、各種マップから要素を削除
+        for(auto handle : erasedHandle){
+            instance_->isPlaying_.erase(handle);
+            instance_->volumeMap_.erase(handle);
+            instance_->loopFlagMap_.erase(handle);
+            instance_->sampleOffsets_.erase(handle);
+            instance_->filenameMap_.erase(handle);
+        }
+
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    /*                           起動時まとめてロードする関数                               */
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    void AudioManager::StartUpLoad(){
+
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    /*                                  音声再生関数                                    */
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    AudioHandle AudioManager::PlayAudio(
+        IXAudio2* xAudio2, const SoundData& soundData,
+        const std::string& filename, bool loop, float volume, float time
+    ){
+        HRESULT hr;
+        std::string tmpFilename = filename;
+
+        // ソースボイスの作成
+        hr = xAudio2->CreateSourceVoice(&sourceVoices_[nextAudioHandle_], &soundData.wfex);
+        assert(SUCCEEDED(hr));
+
+        // 秒 → サンプル位置へ変換
+        uint32_t sampleRate = soundData.wfex.nSamplesPerSec;
+        uint32_t channels = soundData.wfex.nChannels;
+        uint32_t bitsPerSample = soundData.wfex.wBitsPerSample;
+
+        uint32_t bytesPerSample = bitsPerSample / 8;
+        uint32_t bytesPerFrame = bytesPerSample * channels;
+
+        uint32_t totalSamples = soundData.bufferSize / bytesPerFrame;
+        uint32_t sampleOffset = static_cast<uint32_t>(std::clamp(time, 0.0f, FLT_MAX) * sampleRate);
+
+        // 安全な上限チェック：再生可能な最大位置にクランプ
+        if(sampleOffset >= totalSamples){
+            if(totalSamples == 0){
+                // 音声が壊れてるなど → 再生不能
+                sourceVoices_[nextAudioHandle_]->DestroyVoice();
+                sourceVoices_.erase(nextAudioHandle_);
+                assert(0);
+            }
+            sampleOffset = totalSamples - 1;
+        }
+
+        // 再生バッファの設定
+        XAUDIO2_BUFFER buf{};
+        buf.pAudioData = soundData.pBuffer.get();
+        buf.AudioBytes = soundData.bufferSize;
+        buf.Flags = XAUDIO2_END_OF_STREAM;
+        buf.PlayBegin = sampleOffset; // 再生開始位置を設定（サンプル単位）
+        sampleOffsets_[nextAudioHandle_] = sampleOffset;
+
+        if(loop){
+            buf.LoopCount = XAUDIO2_LOOP_INFINITE;
+        }
+
+        // Submit & 再生
+        hr = sourceVoices_[nextAudioHandle_]->SubmitSourceBuffer(&buf);
+        assert(SUCCEEDED(hr));
+        hr = sourceVoices_[nextAudioHandle_]->SetVolume(volume * systemVolumeRate_);
+        assert(SUCCEEDED(hr));
+        hr = sourceVoices_[nextAudioHandle_]->Start();
+        assert(SUCCEEDED(hr));
+
+        return nextAudioHandle_++;
+    }
+
+    /// <summary>
+    /// 音声を再生する関数
+    /// </summary>
+    /// <param name="filename">ファイル名</param>
+    /// <param name="loop">ループ可否</param>
+    AudioHandle AudioManager::PlayAudio(const std::string& filename, bool loop, float volume, float time){
+
+        if(filename.empty()){
+            return -1;
+        }
+
+        // 指定要素がなければアサート
+        if(instance_->audios_.find(filename) == instance_->audios_.end()){
+            LoadAudio(filename);
+        }
+
+        // 再生
+        AudioHandle handle = instance_->PlayAudio(instance_->xAudio2_.Get(), instance_->audios_[filename], filename, loop, volume, time);
+
+        // 再生フラグを立てる
+        instance_->isPlaying_[handle] = true;
+        // ループフラグを記録
+        instance_->loopFlagMap_[handle] = loop;
+        // 音量を記録
+        instance_->volumeMap_[handle] = volume;
+        // ファイル名を記録
+        instance_->filenameMap_[handle] = filename;
+
+        return handle;
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    /*                                  音声停止・再開関数                                    */
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    /// <summary>
+    /// 音声の再生を終了する
+    /// </summary>
+    /// <param name="filename">ファイル名</param>
+    void AudioManager::EndAudio(AudioHandle handle){
+        // 指定要素がなければ何もしない
+        if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){
+            return;
+        };
+        if(IsPlayingAudio(handle) == false){
+            return;
+        }
+
+        // 停止、終了
+        HRESULT hr;
+        hr = instance_->sourceVoices_[handle]->Stop();
+        hr = instance_->sourceVoices_[handle]->FlushSourceBuffers();
+        instance_->sourceVoices_[handle]->DestroyVoice();
+
+        // 要素の削除
+        instance_->sourceVoices_.erase(handle);
+        instance_->isPlaying_.erase(handle);
+        instance_->loopFlagMap_.erase(handle);
+        instance_->volumeMap_.erase(handle);
+        instance_->sampleOffsets_.erase(handle);
+
+        // ファイル名マッピングを削除
+        for(auto it = instance_->filenameMap_.begin(); it != instance_->filenameMap_.end();){
+            if(it->first == handle){
+                it = instance_->filenameMap_.erase(it);
             } else{
-                systemVolumeRate_ = 0.0f;
+                ++it;
             }
         }
 
-        systemVolumeRate_ = (std::max)(systemVolumeRate_, 0.0f);
+        assert(SUCCEEDED(hr));
+    }
 
-        // 流れている音声の音量を変更
-        for(auto& [handle, sourceVoice] : instance_->sourceVoices_){
-            if(sourceVoice != nullptr){
-                sourceVoice->SetVolume(instance_->volumeMap_[handle] * systemVolumeRate_);
+    /// <summary>
+    /// すべての音声を終了する
+    /// </summary>
+    void AudioManager::EndAllAudio(){
+        // すべての音声を停止
+
+        for(auto& sourceVoice : instance_->sourceVoices_){
+            HRESULT hr;
+            hr = sourceVoice.second->Stop();
+            hr = sourceVoice.second->FlushSourceBuffers();
+            sourceVoice.second->DestroyVoice();
+        }
+
+        // 要素の削除
+        instance_->sourceVoices_.clear();
+        instance_->isPlaying_.clear();
+        instance_->loopFlagMap_.clear();
+        instance_->volumeMap_.clear();
+        instance_->sampleOffsets_.clear();
+    }
+
+    /// <summary>
+    /// 再生中の音声を一時停止する
+    /// </summary>
+    /// <param name="filename">ファイル名</param>
+    void AudioManager::PauseAudio(AudioHandle handle){
+        // 指定要素がなければ何もしない
+        if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){ return; }
+        // 既に停止中なら何もしない
+        if(!instance_->isPlaying_[handle]){ return; }
+
+        //　停止
+        HRESULT hr;
+        hr = instance_->sourceVoices_[handle]->Stop();
+        assert(SUCCEEDED(hr));
+
+        //再生フラグをおろす
+        instance_->isPlaying_[handle] = false;
+    }
+
+    /// <summary>
+    /// すべての音声を一時停止する
+    /// </summary>
+    void AudioManager::PauseAll(){
+        instance_->isAlreadyPaused_.clear(); // 一時停止済みフラグをクリア
+        for(auto& item : instance_->sourceVoices_){
+            if(instance_->isPlaying_[item.first]){ // 再生中の音声のみ一時停止
+                PauseAudio(item.first);
+            } else{
+                instance_->isAlreadyPaused_[item.first] = true;
             }
         }
     }
 
-    // 終了している音声の削除
-    std::vector<AudioHandle> erasedHandle;
-    std::erase_if(instance_->sourceVoices_,
-        [&](auto& kv){
+    /// <summary>
+    /// 音声の再生を再開する
+    /// </summary>
+    /// <param name="filename">ファイル名</param>
+    void AudioManager::RestartAudio(AudioHandle handle){
+        // 指定要素がなければ何もしない
+        if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){ return; }
+        // 既に再生中なら何もしない
+        if(instance_->isPlaying_[handle]){ return; }
 
-        // 非ループ音源のみ判定
-        AudioHandle handle = kv.first;
-        if(instance_->loopFlagMap_[handle]){
+        // 再開
+        if(instance_->sourceVoices_[handle] != nullptr){
+            instance_->sourceVoices_[handle]->Start();
+        }
+
+        // 再生フラグを立てる
+        instance_->isPlaying_[handle] = true;
+    }
+
+
+    void AudioManager::RestartAll(){
+        for(auto& item : instance_->sourceVoices_){
+            // 元々停止していた音声は再開しない
+            if(instance_->isAlreadyPaused_.find(item.first) != instance_->isAlreadyPaused_.end()){
+                continue;
+            }
+
+            // 再開
+            RestartAudio(item.first);
+        }
+    }
+
+
+    /// <summary>
+    /// 音声の音量を設定する。
+    /// </summary>
+    /// <param name="filename">ファイル名</param>
+    /// <param name="volume">音量。0.0: 無音  1.0: デフォルト。 1より大きくしすぎると音割れポッターになる</param>
+    void AudioManager::SetAudioVolume(AudioHandle handle, float volume){
+        // 指定要素がなければ何もしない
+        if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){
+            return;
+        }
+        // 設定
+        instance_->sourceVoices_[handle]->SetVolume(volume * systemVolumeRate_);
+        instance_->volumeMap_[handle] = volume;
+    }
+
+
+    /// <summary>
+    /// 音声の再生時間を取得する。
+    /// </summary>
+    /// <param name="handle"></param>
+    /// <returns></returns>
+    float AudioManager::GetAudioPlayTime(AudioHandle handle){
+        // まず sourceVoice を取得
+        auto itVoice = instance_->sourceVoices_.find(handle);
+        if(itVoice == instance_->sourceVoices_.end()){
+            return 0.0f;
+        }
+
+        IXAudio2SourceVoice* voice = itVoice->second;
+        if(!voice){
+            return 0.0f;
+        }
+
+        // 再生状態を取得
+        XAUDIO2_VOICE_STATE state{};
+        voice->GetState(&state);
+        uint64_t samplesPlayed = state.SamplesPlayed + instance_->sampleOffsets_[handle];
+
+        // 音源データを取得（handle がどのファイル鍵か必要）
+        // 例: audioHandle → keyName を保持している場合
+        const std::string& key = instance_->filenameMap_.at(handle);
+
+        auto itAudio = instance_->audios_.find(key);
+        if(itAudio == instance_->audios_.end()){
+            return 0.0f;
+        }
+
+        const SoundData& data = itAudio->second;
+
+        // 現在再生秒数
+        float sec = static_cast<float>(samplesPlayed) / data.wfex.nSamplesPerSec;
+        return sec;
+    }
+
+
+    /// <summary>
+    /// 音声の再生時間を設定する。
+    /// </summary>
+    /// <param name="time"></param>
+    void AudioManager::SetAudioPlayTime(AudioHandle& handle, float time){
+        auto itVoice = instance_->sourceVoices_.find(handle);
+        if(itVoice == instance_->sourceVoices_.end()) return;
+
+        // 元の情報を取得
+        std::string filename = instance_->filenameMap_[handle];
+        bool loop = instance_->loopFlagMap_[handle];
+        float volume = instance_->volumeMap_[handle];
+
+        // 一度音声を停止して再生し直す
+        EndAudio(handle);
+        handle = PlayAudio(filename, loop, volume, time);
+    }
+
+    /// <summary>
+    /// 音声の長さを取得する。
+    /// </summary>
+    /// <param name="handle"></param>
+    /// <returns></returns>
+    float AudioManager::GetDuration(AudioHandle handle){
+        // 名前を取得
+        const std::string& key = instance_->filenameMap_.at(handle);
+
+        // fileNameから取得
+        return GetDuration(key);
+    }
+
+    /// <summary>
+    /// 音源の長さを取得する(ファイル名から)
+    /// </summary>
+    /// <param name="audioName"></param>
+    /// <returns></returns>
+    float AudioManager::GetDuration(const std::string& audioName){
+        // あるか確認
+        auto itAudio = instance_->audios_.find(audioName);
+        if(itAudio == instance_->audios_.end()){
+            return 0.0f;
+        }
+
+        // 音源データを取得
+        const SoundData& data = itAudio->second;
+        const WAVEFORMATEX& wf = data.wfex;
+        // 1フレームのバイト数
+        uint32_t bytesPerFrame = wf.nBlockAlign;
+        // 総サンプル数（フレーム数）
+        uint32_t totalSamples = data.bufferSize / bytesPerFrame;
+        // 秒に変換
+        return static_cast<float>(totalSamples) / wf.nSamplesPerSec;
+    }
+
+
+
+    /// <summary>
+    /// 音声が再生中かどうか取得
+    /// </summary>
+    /// <param name="filename">ファイル名</param>
+    /// <returns>音声が再生されているか</returns>
+    bool AudioManager::IsPlayingAudio(AudioHandle handle){
+        // 指定要素がなければfalse
+        if(instance_->isPlaying_.find(handle) == instance_->isPlaying_.end()){
             return false;
         }
 
-        // 音声の状態を取得
-        XAUDIO2_VOICE_STATE state{};
-        kv.second->GetState(&state);
-
-        // 終了判定
-        if(state.BuffersQueued == 0){
-            erasedHandle.push_back(handle);
-            return true;
-        }
-
-        return false;
-    });
-
-    // 削除リストに基づき、各種マップから要素を削除
-    for(auto handle : erasedHandle){
-        instance_->isPlaying_.erase(handle);
-        instance_->volumeMap_.erase(handle);
-        instance_->loopFlagMap_.erase(handle);
-        instance_->sampleOffsets_.erase(handle);
-        instance_->filenameMap_.erase(handle);
+        // 再生しているかどうか返す
+        return instance_->isPlaying_[handle];
     }
 
-}
 
+    /////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////
+    /*                                 音声ロード関数                                    */
 
-/*                           起動時まとめてロードする関数                               */
+    /////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////
+    // WAV,MP3,M4Aファイルに対応。
+    void AudioManager::LoadAudio(const std::string& filename){
 
-void AudioManager::StartUpLoad(){
+        // 要素がなければ
+        if(instance_->audios_.find(filename) == instance_->audios_.end()){
+            // 音をロードして追加
+            std::filesystem::path path;
+            if(filename.starts_with("Resources")){
+                path = filename;
+            } else{
+                path = directoryPath_ + filename;
+            }
 
-}
+            // 拡張子を取得
+            std::string extention = path.extension().string();
 
+            // 拡張子に応じて処理
+            if(extention == ".wav"){
+                instance_->audios_[filename] = instance_->LoadWave(path.generic_string().c_str());
 
-/////////////////////////////////////////////////////////////////////////////////////
+            } else if(extention == ".mp3" or extention == ".m4a"){
+                instance_->audios_[filename] = instance_->LoadMP3(path.generic_wstring().c_str());
 
-/*                                  音声再生関数                                    */
+            } else if(extention == ".mp4"){
+                instance_->audios_[filename] = instance_->LoadMP4(path.generic_wstring().c_str());
 
-/////////////////////////////////////////////////////////////////////////////////////
-
-AudioHandle AudioManager::PlayAudio(
-    IXAudio2* xAudio2, const SoundData& soundData,
-    const std::string& filename, bool loop, float volume, float time
-){
-    HRESULT hr;
-    std::string tmpFilename = filename;
-
-    // ソースボイスの作成
-    hr = xAudio2->CreateSourceVoice(&sourceVoices_[nextAudioHandle_], &soundData.wfex);
-    assert(SUCCEEDED(hr));
-
-    // 秒 → サンプル位置へ変換
-    uint32_t sampleRate = soundData.wfex.nSamplesPerSec;
-    uint32_t channels = soundData.wfex.nChannels;
-    uint32_t bitsPerSample = soundData.wfex.wBitsPerSample;
-
-    uint32_t bytesPerSample = bitsPerSample / 8;
-    uint32_t bytesPerFrame = bytesPerSample * channels;
-
-    uint32_t totalSamples = soundData.bufferSize / bytesPerFrame;
-    uint32_t sampleOffset = static_cast<uint32_t>(std::clamp(time, 0.0f, FLT_MAX) * sampleRate);
-
-    // 安全な上限チェック：再生可能な最大位置にクランプ
-    if(sampleOffset >= totalSamples){
-        if(totalSamples == 0){
-            // 音声が壊れてるなど → 再生不能
-            sourceVoices_[nextAudioHandle_]->DestroyVoice();
-            sourceVoices_.erase(nextAudioHandle_);
-            assert(0);
-        }
-        sampleOffset = totalSamples - 1;
-    }
-
-    // 再生バッファの設定
-    XAUDIO2_BUFFER buf{};
-    buf.pAudioData = soundData.pBuffer.get();
-    buf.AudioBytes = soundData.bufferSize;
-    buf.Flags = XAUDIO2_END_OF_STREAM;
-    buf.PlayBegin = sampleOffset; // 再生開始位置を設定（サンプル単位）
-    sampleOffsets_[nextAudioHandle_] = sampleOffset;
-
-    if(loop){
-        buf.LoopCount = XAUDIO2_LOOP_INFINITE;
-    }
-
-    // Submit & 再生
-    hr = sourceVoices_[nextAudioHandle_]->SubmitSourceBuffer(&buf);
-    assert(SUCCEEDED(hr));
-    hr = sourceVoices_[nextAudioHandle_]->SetVolume(volume * systemVolumeRate_);
-    assert(SUCCEEDED(hr));
-    hr = sourceVoices_[nextAudioHandle_]->Start();
-    assert(SUCCEEDED(hr));
-
-    return nextAudioHandle_++;
-}
-
-/// <summary>
-/// 音声を再生する関数
-/// </summary>
-/// <param name="filename">ファイル名</param>
-/// <param name="loop">ループ可否</param>
-AudioHandle AudioManager::PlayAudio(const std::string& filename, bool loop, float volume, float time){
-
-    if(filename.empty()){
-        return -1;
-    }
-
-    // 指定要素がなければアサート
-    if(instance_->audios_.find(filename) == instance_->audios_.end()){
-        LoadAudio(filename);
-    }
-
-    // 再生
-    AudioHandle handle = instance_->PlayAudio(instance_->xAudio2_.Get(), instance_->audios_[filename], filename, loop, volume, time);
-
-    // 再生フラグを立てる
-    instance_->isPlaying_[handle] = true;
-    // ループフラグを記録
-    instance_->loopFlagMap_[handle] = loop;
-    // 音量を記録
-    instance_->volumeMap_[handle] = volume;
-    // ファイル名を記録
-    instance_->filenameMap_[handle] = filename;
-
-    return handle;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-/*                                  音声停止・再開関数                                    */
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-/// <summary>
-/// 音声の再生を終了する
-/// </summary>
-/// <param name="filename">ファイル名</param>
-void AudioManager::EndAudio(AudioHandle handle){
-    // 指定要素がなければ何もしない
-    if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){
-        return;
-    };
-    if(IsPlayingAudio(handle) == false){
-        return;
-    }
-
-    // 停止、終了
-    HRESULT hr;
-    hr = instance_->sourceVoices_[handle]->Stop();
-    hr = instance_->sourceVoices_[handle]->FlushSourceBuffers();
-    instance_->sourceVoices_[handle]->DestroyVoice();
-
-    // 要素の削除
-    instance_->sourceVoices_.erase(handle);
-    instance_->isPlaying_.erase(handle);
-    instance_->loopFlagMap_.erase(handle);
-    instance_->volumeMap_.erase(handle);
-    instance_->sampleOffsets_.erase(handle);
-
-    // ファイル名マッピングを削除
-    for(auto it = instance_->filenameMap_.begin(); it != instance_->filenameMap_.end();){
-        if(it->first == handle){
-            it = instance_->filenameMap_.erase(it);
-        } else{
-            ++it;
+            } else{
+                return;
+            }
         }
     }
 
-    assert(SUCCEEDED(hr));
-}
+    SoundData AudioManager::LoadWave(const char* filename){
+        std::ifstream file;
 
-/// <summary>
-/// すべての音声を終了する
-/// </summary>
-void AudioManager::EndAllAudio(){
-    // すべての音声を停止
+        // ファイルをバイナリで開く
+        file.open(filename, std::ios_base::binary);
+        assert(file.is_open());
 
-    for(auto& sourceVoice : instance_->sourceVoices_){
-        HRESULT hr;
-        hr = sourceVoice.second->Stop();
-        hr = sourceVoice.second->FlushSourceBuffers();
-        sourceVoice.second->DestroyVoice();
-    }
+        // waveの読み込み
+        RiffHeader riff;
+        file.read((char*)&riff, sizeof(riff));
 
-    // 要素の削除
-    instance_->sourceVoices_.clear();
-    instance_->isPlaying_.clear();
-    instance_->loopFlagMap_.clear();
-    instance_->volumeMap_.clear();
-    instance_->sampleOffsets_.clear();
-}
+        // アサートチェック
+        assert(strncmp(riff.chunk.id, "RIFF", 4) == 0);
+        assert(strncmp(riff.type, "WAVE", 4) == 0);
 
-/// <summary>
-/// 再生中の音声を一時停止する
-/// </summary>
-/// <param name="filename">ファイル名</param>
-void AudioManager::PauseAudio(AudioHandle handle){
-    // 指定要素がなければ何もしない
-    if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){ return; }
-    // 既に停止中なら何もしない
-    if(!instance_->isPlaying_[handle]){ return; }
+        // フォーマットチャンクの読み込み
+        FormatChunk format = {};
+        while(true){
 
-    //　停止
-    HRESULT hr;
-    hr = instance_->sourceVoices_[handle]->Stop();
-    assert(SUCCEEDED(hr));
+            ChunkHeader chunkHeader;
 
-    //再生フラグをおろす
-    instance_->isPlaying_[handle] = false;
-}
+            file.read((char*)&chunkHeader, sizeof(ChunkHeader));
+            if(strncmp(chunkHeader.id, "fmt ", 4) == 0){
+                format.chunk = chunkHeader;
+                file.read((char*)&format.fmt, format.chunk.size);
+                assert(format.chunk.size <= sizeof(format.fmt));
+                break;
 
-/// <summary>
-/// すべての音声を一時停止する
-/// </summary>
-void AudioManager::PauseAll(){
-    instance_->isAlreadyPaused_.clear(); // 一時停止済みフラグをクリア
-    for(auto& item : instance_->sourceVoices_){
-        if(instance_->isPlaying_[item.first]){ // 再生中の音声のみ一時停止
-            PauseAudio(item.first);
-        } else{
-            instance_->isAlreadyPaused_[item.first] = true;
-        }
-    }
-}
+            } else{
+                file.seekg(chunkHeader.size, std::ios_base::cur);
+            }
 
-/// <summary>
-/// 音声の再生を再開する
-/// </summary>
-/// <param name="filename">ファイル名</param>
-void AudioManager::RestartAudio(AudioHandle handle){
-    // 指定要素がなければ何もしない
-    if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){ return; }
-    // 既に再生中なら何もしない
-    if(instance_->isPlaying_[handle]){ return; }
-
-    // 再開
-    if(instance_->sourceVoices_[handle] != nullptr){
-        instance_->sourceVoices_[handle]->Start();
-    }
-
-    // 再生フラグを立てる
-    instance_->isPlaying_[handle] = true;
-}
-
-
-void AudioManager::RestartAll(){
-    for(auto& item : instance_->sourceVoices_){
-        // 元々停止していた音声は再開しない
-        if(instance_->isAlreadyPaused_.find(item.first) != instance_->isAlreadyPaused_.end()){
-            continue;
+            // ファイルの終端に達した場合アサート
+            if(file.eof()){
+                assert(0 && "Reached end of file without finding 'fmt ' chunk");
+                return SoundData{};
+            }
         }
 
-        // 再開
-        RestartAudio(item.first);
-    }
-}
+        // データチャンクの読み込み
+        ChunkHeader data;
+        while(true){
+            file.read((char*)&data, sizeof(data));
 
+            if(strncmp(data.id, "data", 4) == 0){
+                break;
+            } else{
+                // 不要なチャンクをスキップ
+                file.seekg(data.size, std::ios_base::cur);
+            }
 
-/// <summary>
-/// 音声の音量を設定する。
-/// </summary>
-/// <param name="filename">ファイル名</param>
-/// <param name="volume">音量。0.0: 無音  1.0: デフォルト。 1より大きくしすぎると音割れポッターになる</param>
-void AudioManager::SetAudioVolume(AudioHandle handle, float volume){
-    // 指定要素がなければ何もしない
-    if(instance_->sourceVoices_.find(handle) == instance_->sourceVoices_.end()){
-        return;
-    }
-    // 設定
-    instance_->sourceVoices_[handle]->SetVolume(volume * systemVolumeRate_);
-    instance_->volumeMap_[handle] = volume;
-}
-
-
-/// <summary>
-/// 音声の再生時間を取得する。
-/// </summary>
-/// <param name="handle"></param>
-/// <returns></returns>
-float AudioManager::GetAudioPlayTime(AudioHandle handle){
-    // まず sourceVoice を取得
-    auto itVoice = instance_->sourceVoices_.find(handle);
-    if(itVoice == instance_->sourceVoices_.end()){
-        return 0.0f;
-    }
-
-    IXAudio2SourceVoice* voice = itVoice->second;
-    if(!voice){
-        return 0.0f;
-    }
-
-    // 再生状態を取得
-    XAUDIO2_VOICE_STATE state{};
-    voice->GetState(&state);
-    uint64_t samplesPlayed = state.SamplesPlayed + instance_->sampleOffsets_[handle];
-
-    // 音源データを取得（handle がどのファイル鍵か必要）
-    // 例: audioHandle → keyName を保持している場合
-    const std::string& key = instance_->filenameMap_.at(handle);
-
-    auto itAudio = instance_->audios_.find(key);
-    if(itAudio == instance_->audios_.end()){
-        return 0.0f;
-    }
-
-    const SoundData& data = itAudio->second;
-
-    // 現在再生秒数
-    float sec = static_cast<float>(samplesPlayed) / data.wfex.nSamplesPerSec;
-    return sec;
-}
-
-
-/// <summary>
-/// 音声の再生時間を設定する。
-/// </summary>
-/// <param name="time"></param>
-void AudioManager::SetAudioPlayTime(AudioHandle& handle, float time){
-    auto itVoice = instance_->sourceVoices_.find(handle);
-    if(itVoice == instance_->sourceVoices_.end()) return;
-
-    // 元の情報を取得
-    std::string filename = instance_->filenameMap_[handle];
-    bool loop = instance_->loopFlagMap_[handle];
-    float volume = instance_->volumeMap_[handle];
-
-    // 一度音声を停止して再生し直す
-    EndAudio(handle);
-    handle = PlayAudio(filename,loop,volume,time);
-}
-
-/// <summary>
-/// 音声の長さを取得する。
-/// </summary>
-/// <param name="handle"></param>
-/// <returns></returns>
-float AudioManager::GetDuration(AudioHandle handle){
-    // 名前を取得
-    const std::string& key = instance_->filenameMap_.at(handle);
-
-    // fileNameから取得
-    return GetDuration(key);
-}
-
-/// <summary>
-/// 音源の長さを取得する(ファイル名から)
-/// </summary>
-/// <param name="audioName"></param>
-/// <returns></returns>
-float AudioManager::GetDuration(const std::string& audioName){
-    // あるか確認
-    auto itAudio = instance_->audios_.find(audioName);
-    if(itAudio == instance_->audios_.end()){
-        return 0.0f;
-    }
-
-    // 音源データを取得
-    const SoundData& data = itAudio->second;
-    const WAVEFORMATEX& wf = data.wfex;
-    // 1フレームのバイト数
-    uint32_t bytesPerFrame = wf.nBlockAlign;
-    // 総サンプル数（フレーム数）
-    uint32_t totalSamples = data.bufferSize / bytesPerFrame;
-    // 秒に変換
-    return static_cast<float>(totalSamples) / wf.nSamplesPerSec;
-}
-
-
-
-/// <summary>
-/// 音声が再生中かどうか取得
-/// </summary>
-/// <param name="filename">ファイル名</param>
-/// <returns>音声が再生されているか</returns>
-bool AudioManager::IsPlayingAudio(AudioHandle handle){
-    // 指定要素がなければfalse
-    if(instance_->isPlaying_.find(handle) == instance_->isPlaying_.end()){
-        return false;
-    }
-
-    // 再生しているかどうか返す
-    return instance_->isPlaying_[handle];
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-/*                                 音声ロード関数                                    */
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-// WAV,MP3,M4Aファイルに対応。
-void AudioManager::LoadAudio(const std::string& filename){
-
-    // 要素がなければ
-    if(instance_->audios_.find(filename) == instance_->audios_.end()){
-        // 音をロードして追加
-        std::filesystem::path path;
-        if(filename.starts_with("Resources")){
-            path = filename;
-        } else{
-            path = directoryPath_ + filename;
+            // ファイルの終端に達した場合アサート
+            if(file.eof()){
+                assert(0 && "Reached end of file without finding 'fmt ' chunk");
+                return SoundData{};
+            }
         }
 
-        // 拡張子を取得
-        std::string extention = path.extension().string();
+        // 読み込み結果を格納
+        SoundData soundData{};
+        soundData.wfex = format.fmt;
+        soundData.pBuffer = std::make_unique<BYTE[]>(data.size);
+        file.read((char*)soundData.pBuffer.get(), data.size);
+        soundData.bufferSize = data.size;
 
-        // 拡張子に応じて処理
-        if(extention == ".wav"){
-            instance_->audios_[filename] = instance_->LoadWave(path.generic_string().c_str());
+        // 閉じる
+        file.close();
 
-        } else if(extention == ".mp3" or extention == ".m4a"){
-            instance_->audios_[filename] = instance_->LoadMP3(path.generic_wstring().c_str());
-
-        } else if(extention == ".mp4"){
-            instance_->audios_[filename] = instance_->LoadMP4(path.generic_wstring().c_str());
-
-        } else{
-            return;
-        }
-    }
-}
-
-SoundData AudioManager::LoadWave(const char* filename){
-    std::ifstream file;
-
-    // ファイルをバイナリで開く
-    file.open(filename, std::ios_base::binary);
-    assert(file.is_open());
-
-    // waveの読み込み
-    RiffHeader riff;
-    file.read((char*)&riff, sizeof(riff));
-
-    // アサートチェック
-    assert(strncmp(riff.chunk.id, "RIFF", 4) == 0);
-    assert(strncmp(riff.type, "WAVE", 4) == 0);
-
-    // フォーマットチャンクの読み込み
-    FormatChunk format = {};
-    while(true){
-
-        ChunkHeader chunkHeader;
-
-        file.read((char*)&chunkHeader, sizeof(ChunkHeader));
-        if(strncmp(chunkHeader.id, "fmt ", 4) == 0){
-            format.chunk = chunkHeader;
-            file.read((char*)&format.fmt, format.chunk.size);
-            assert(format.chunk.size <= sizeof(format.fmt));
-            break;
-
-        } else{
-            file.seekg(chunkHeader.size, std::ios_base::cur);
-        }
-
-        // ファイルの終端に達した場合アサート
-        if(file.eof()){
-            assert(0 && "Reached end of file without finding 'fmt ' chunk");
-            return SoundData{};
-        }
+        return soundData;
     }
 
-    // データチャンクの読み込み
-    ChunkHeader data;
-    while(true){
-        file.read((char*)&data, sizeof(data));
 
-        if(strncmp(data.id, "data", 4) == 0){
-            break;
-        } else{
-            // 不要なチャンクをスキップ
-            file.seekg(data.size, std::ios_base::cur);
+    // MP3ファイルの読み込み
+    SoundData AudioManager::LoadMP3(const wchar_t* filename){
+
+        IMFSourceReader* pReader = nullptr;
+        IMFMediaType* pOutputType = nullptr;
+
+        // MP3ファイルのSource Readerを作成
+        HRESULT hr = MFCreateSourceReaderFromURL(filename, nullptr, &pReader);
+        if(FAILED(hr)){
+            throw std::runtime_error("Failed to create Source Reader.");
         }
 
-        // ファイルの終端に達した場合アサート
-        if(file.eof()){
-            assert(0 && "Reached end of file without finding 'fmt ' chunk");
-            return SoundData{};
+        // 出力タイプをPCM (WAV) に設定
+        hr = MFCreateMediaType(&pOutputType);
+        if(FAILED(hr)){
+            pReader->Release();
+            throw std::runtime_error("Failed to create output media type.");
         }
-    }
 
-    // 読み込み結果を格納
-    SoundData soundData{};
-    soundData.wfex = format.fmt;
-    soundData.pBuffer = std::make_unique<BYTE[]>(data.size);
-    file.read((char*)soundData.pBuffer.get(), data.size);
-    soundData.bufferSize = data.size;
+        hr = pOutputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
+        hr = pOutputType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
+        hr = pReader->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, nullptr, pOutputType);
 
-    // 閉じる
-    file.close();
+        if(FAILED(hr)){
+            pOutputType->Release();
+            pReader->Release();
+            throw std::runtime_error("Failed to set media type.");
+        }
 
-    return soundData;
-}
+        pOutputType->Release();
+        pOutputType = nullptr;
+        pReader->GetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, &pOutputType);
 
+        // サンプルを読み取ってデータを抽出
+        std::vector<BYTE> audioData;
 
-// MP3ファイルの読み込み
-SoundData AudioManager::LoadMP3(const wchar_t* filename){
+        while(true){
+            IMFSample* pMFSample{ nullptr };
+            DWORD dwStreamFlags{ 0 };
+            pReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &dwStreamFlags, nullptr, &pMFSample);
 
-    IMFSourceReader* pReader = nullptr;
-    IMFMediaType* pOutputType = nullptr;
+            if(dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM){
+                break;
+            }
 
-    // MP3ファイルのSource Readerを作成
-    HRESULT hr = MFCreateSourceReaderFromURL(filename, nullptr, &pReader);
-    if(FAILED(hr)){
-        throw std::runtime_error("Failed to create Source Reader.");
-    }
+            IMFMediaBuffer* pMFMediaBuffer{ nullptr };
+            pMFSample->ConvertToContiguousBuffer(&pMFMediaBuffer);
 
-    // 出力タイプをPCM (WAV) に設定
-    hr = MFCreateMediaType(&pOutputType);
-    if(FAILED(hr)){
-        pReader->Release();
-        throw std::runtime_error("Failed to create output media type.");
-    }
+            BYTE* pBuffer{ nullptr };
+            DWORD cbCurrentLength{ 0 };
+            pMFMediaBuffer->Lock(&pBuffer, nullptr, &cbCurrentLength);
 
-    hr = pOutputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-    hr = pOutputType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
-    hr = pReader->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, nullptr, pOutputType);
+            audioData.resize(audioData.size() + cbCurrentLength);
+            memcpy(audioData.data() + audioData.size() - cbCurrentLength, pBuffer, cbCurrentLength);
 
-    if(FAILED(hr)){
+            pMFMediaBuffer->Unlock();
+
+            pMFMediaBuffer->Release();
+            pMFSample->Release();
+        }
+
+        // SoundDataにデータを格納
+        SoundData soundData;
+        soundData.pBuffer = std::make_unique<BYTE[]>(audioData.size());
+        std::copy(audioData.begin(), audioData.end(), soundData.pBuffer.get());
+        soundData.bufferSize = static_cast<uint32_t>(audioData.size());
+
+        // フォーマット情報を取得
+        hr = pOutputType->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, (UINT32*)&soundData.wfex.nChannels);
+        hr = pOutputType->GetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, (UINT32*)&soundData.wfex.nSamplesPerSec);
+        hr = pOutputType->GetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, (UINT32*)&soundData.wfex.wBitsPerSample);
+
+        soundData.wfex.wFormatTag = WAVE_FORMAT_PCM;
+        soundData.wfex.nBlockAlign = soundData.wfex.nChannels * soundData.wfex.wBitsPerSample / 8;
+        soundData.wfex.nAvgBytesPerSec = soundData.wfex.nSamplesPerSec * soundData.wfex.nBlockAlign;
+
+        // 後始末
         pOutputType->Release();
         pReader->Release();
-        throw std::runtime_error("Failed to set media type.");
+
+        return soundData;
     }
 
-    pOutputType->Release();
-    pOutputType = nullptr;
-    pReader->GetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, &pOutputType);
+    // mp4ファイルから音声を取り出して読み込む関数
+    SoundData AudioManager::LoadMP4(const wchar_t* filename){
 
-    // サンプルを読み取ってデータを抽出
-    std::vector<BYTE> audioData;
-
-    while(true){
-        IMFSample* pMFSample{ nullptr };
-        DWORD dwStreamFlags{ 0 };
-        pReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &dwStreamFlags, nullptr, &pMFSample);
-
-        if(dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM){
-            break;
+        IMFSourceReader* pReader = nullptr;
+        IMFMediaType* pOutputType = nullptr;
+        // MP4ファイルのSource Readerを作成
+        HRESULT hr = MFCreateSourceReaderFromURL(filename, nullptr, &pReader);
+        if(FAILED(hr)){
+            throw std::runtime_error("Failed to create Source Reader.");
+        }
+        // 出力タイプをPCM (WAV) に設定
+        hr = MFCreateMediaType(&pOutputType);
+        if(FAILED(hr)){
+            pReader->Release();
+            throw std::runtime_error("Failed to create output media type.");
+        }
+        hr = pOutputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
+        hr = pOutputType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
+        hr = pReader->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, nullptr, pOutputType);
+        if(FAILED(hr)){
+            pOutputType->Release();
+            pReader->Release();
+            throw std::runtime_error("Failed to set media type.");
+        }
+        pOutputType->Release();
+        pOutputType = nullptr;
+        pReader->GetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, &pOutputType);
+        // サンプルを読み取ってデータを抽出
+        std::vector<BYTE> audioData;
+        while(true){
+            IMFSample* pMFSample{ nullptr };
+            DWORD dwStreamFlags{ 0 };
+            pReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &dwStreamFlags, nullptr, &pMFSample);
+            if(dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM){
+                break;
+            }
+            IMFMediaBuffer* pMFMediaBuffer{ nullptr };
+            pMFSample->ConvertToContiguousBuffer(&pMFMediaBuffer);
+            BYTE* pBuffer{ nullptr };
+            DWORD cbCurrentLength{ 0 };
+            pMFMediaBuffer->Lock(&pBuffer, nullptr, &cbCurrentLength);
+            audioData.resize(audioData.size() + cbCurrentLength);
+            memcpy(audioData.data() + audioData.size() - cbCurrentLength, pBuffer, cbCurrentLength);
+            pMFMediaBuffer->Unlock();
+            pMFMediaBuffer->Release();
+            pMFSample->Release();
         }
 
-        IMFMediaBuffer* pMFMediaBuffer{ nullptr };
-        pMFSample->ConvertToContiguousBuffer(&pMFMediaBuffer);
+        // SoundDataにデータを格納
+        SoundData soundData;
+        soundData.pBuffer = std::make_unique<BYTE[]>(audioData.size());
+        std::copy(audioData.begin(), audioData.end(), soundData.pBuffer.get());
+        soundData.bufferSize = static_cast<uint32_t>(audioData.size());
 
-        BYTE* pBuffer{ nullptr };
-        DWORD cbCurrentLength{ 0 };
-        pMFMediaBuffer->Lock(&pBuffer, nullptr, &cbCurrentLength);
+        // フォーマット情報を取得
+        hr = pOutputType->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, (UINT32*)&soundData.wfex.nChannels);
+        hr = pOutputType->GetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, (UINT32*)&soundData.wfex.nSamplesPerSec);
+        hr = pOutputType->GetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, (UINT32*)&soundData.wfex.wBitsPerSample);
+        soundData.wfex.wFormatTag = WAVE_FORMAT_PCM;
+        soundData.wfex.nBlockAlign = soundData.wfex.nChannels * soundData.wfex.wBitsPerSample / 8;
+        soundData.wfex.nAvgBytesPerSec = soundData.wfex.nSamplesPerSec * soundData.wfex.nBlockAlign;
 
-        audioData.resize(audioData.size() + cbCurrentLength);
-        memcpy(audioData.data() + audioData.size() - cbCurrentLength, pBuffer, cbCurrentLength);
-
-        pMFMediaBuffer->Unlock();
-
-        pMFMediaBuffer->Release();
-        pMFSample->Release();
-    }
-
-    // SoundDataにデータを格納
-    SoundData soundData;
-    soundData.pBuffer = std::make_unique<BYTE[]>(audioData.size());
-    std::copy(audioData.begin(), audioData.end(), soundData.pBuffer.get());
-    soundData.bufferSize = static_cast<uint32_t>(audioData.size());
-
-    // フォーマット情報を取得
-    hr = pOutputType->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, (UINT32*)&soundData.wfex.nChannels);
-    hr = pOutputType->GetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, (UINT32*)&soundData.wfex.nSamplesPerSec);
-    hr = pOutputType->GetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, (UINT32*)&soundData.wfex.wBitsPerSample);
-
-    soundData.wfex.wFormatTag = WAVE_FORMAT_PCM;
-    soundData.wfex.nBlockAlign = soundData.wfex.nChannels * soundData.wfex.wBitsPerSample / 8;
-    soundData.wfex.nAvgBytesPerSec = soundData.wfex.nSamplesPerSec * soundData.wfex.nBlockAlign;
-
-    // 後始末
-    pOutputType->Release();
-    pReader->Release();
-
-    return soundData;
-}
-
-// mp4ファイルから音声を取り出して読み込む関数
-SoundData AudioManager::LoadMP4(const wchar_t* filename){
-
-    IMFSourceReader* pReader = nullptr;
-    IMFMediaType* pOutputType = nullptr;
-    // MP4ファイルのSource Readerを作成
-    HRESULT hr = MFCreateSourceReaderFromURL(filename, nullptr, &pReader);
-    if(FAILED(hr)){
-        throw std::runtime_error("Failed to create Source Reader.");
-    }
-    // 出力タイプをPCM (WAV) に設定
-    hr = MFCreateMediaType(&pOutputType);
-    if(FAILED(hr)){
-        pReader->Release();
-        throw std::runtime_error("Failed to create output media type.");
-    }
-    hr = pOutputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-    hr = pOutputType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
-    hr = pReader->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, nullptr, pOutputType);
-    if(FAILED(hr)){
+        // 後始末
         pOutputType->Release();
         pReader->Release();
-        throw std::runtime_error("Failed to set media type.");
+
+        return soundData;
     }
-    pOutputType->Release();
-    pOutputType = nullptr;
-    pReader->GetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, &pOutputType);
-    // サンプルを読み取ってデータを抽出
-    std::vector<BYTE> audioData;
-    while(true){
-        IMFSample* pMFSample{ nullptr };
-        DWORD dwStreamFlags{ 0 };
-        pReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &dwStreamFlags, nullptr, &pMFSample);
-        if(dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM){
-            break;
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    /*                                  音声解放関数                                    */
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    void AudioManager::UnloadAudio(const std::string& filename){
+        // 指定要素がなければアサート
+        assert(instance_->audios_.find(filename) != instance_->audios_.end());
+        // 解放
+        instance_->UnloadAudio(&instance_->audios_[filename]);
+        instance_->audios_.erase(instance_->audios_.find(filename));
+    }
+
+    void AudioManager::UnloadAllAudio(){
+        for(auto& audio : instance_->audios_){
+            instance_->UnloadAudio(&audio.second);
         }
-        IMFMediaBuffer* pMFMediaBuffer{ nullptr };
-        pMFSample->ConvertToContiguousBuffer(&pMFMediaBuffer);
-        BYTE* pBuffer{ nullptr };
-        DWORD cbCurrentLength{ 0 };
-        pMFMediaBuffer->Lock(&pBuffer, nullptr, &cbCurrentLength);
-        audioData.resize(audioData.size() + cbCurrentLength);
-        memcpy(audioData.data() + audioData.size() - cbCurrentLength, pBuffer, cbCurrentLength);
-        pMFMediaBuffer->Unlock();
-        pMFMediaBuffer->Release();
-        pMFSample->Release();
+
+        instance_->audios_.clear();
+        instance_->sourceVoices_.clear();
     }
 
-    // SoundDataにデータを格納
-    SoundData soundData;
-    soundData.pBuffer = std::make_unique<BYTE[]>(audioData.size());
-    std::copy(audioData.begin(), audioData.end(), soundData.pBuffer.get());
-    soundData.bufferSize = static_cast<uint32_t>(audioData.size());
 
-    // フォーマット情報を取得
-    hr = pOutputType->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, (UINT32*)&soundData.wfex.nChannels);
-    hr = pOutputType->GetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, (UINT32*)&soundData.wfex.nSamplesPerSec);
-    hr = pOutputType->GetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, (UINT32*)&soundData.wfex.wBitsPerSample);
-    soundData.wfex.wFormatTag = WAVE_FORMAT_PCM;
-    soundData.wfex.nBlockAlign = soundData.wfex.nChannels * soundData.wfex.wBitsPerSample / 8;
-    soundData.wfex.nAvgBytesPerSec = soundData.wfex.nSamplesPerSec * soundData.wfex.nBlockAlign;
-
-    // 後始末
-    pOutputType->Release();
-    pReader->Release();
-
-    return soundData;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-/*                                  音声解放関数                                    */
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-void AudioManager::UnloadAudio(const std::string& filename){
-    // 指定要素がなければアサート
-    assert(instance_->audios_.find(filename) != instance_->audios_.end());
-    // 解放
-    instance_->UnloadAudio(&instance_->audios_[filename]);
-    instance_->audios_.erase(instance_->audios_.find(filename));
-}
-
-void AudioManager::UnloadAllAudio(){
-    for(auto& audio : instance_->audios_){
-        instance_->UnloadAudio(&audio.second);
+    void AudioManager::UnloadAudio(SoundData* soundData){
+        soundData->pBuffer = 0;
+        soundData->bufferSize = 0;
+        soundData->wfex = {};
     }
-
-    instance_->audios_.clear();
-    instance_->sourceVoices_.clear();
-}
-
-
-void AudioManager::UnloadAudio(SoundData* soundData){
-    soundData->pBuffer = 0;
-    soundData->bufferSize = 0;
-    soundData->wfex = {};
 }

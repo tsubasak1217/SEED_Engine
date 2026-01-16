@@ -18,83 +18,85 @@
 #include <SEED/Lib/Structs/ModelData.h>
 #include <SEED/Lib/Structs/ModelAnimation.h>
 
-/// <summary>
-/// モデルの読み込みや読み込んだモデルの情報の保持などを行うクラス
-/// </summary>
-class ModelManager{
+namespace SEED{
+    /// <summary>
+    /// モデルの読み込みや読み込んだモデルの情報の保持などを行うクラス
+    /// </summary>
+    class ModelManager{
 
-    friend class Model;
-    friend class PolygonManager;
+        friend class Model;
+        friend class PolygonManager;
 
-private:
+    private:
 
-    // privateコンストラクタ
-    ModelManager() = default;
+        // privateコンストラクタ
+        ModelManager() = default;
 
-    // コピー禁止
-    ModelManager(const ModelManager&) = delete;
-    void operator=(const ModelManager&) = delete;
+        // コピー禁止
+        ModelManager(const ModelManager&) = delete;
+        void operator=(const ModelManager&) = delete;
 
-public:
+    public:
 
-    ~ModelManager();
+        ~ModelManager();
 
-public:
+    public:
 
-    static const ModelManager* GetInstance();
-    static void Initialize();
-    static void StartUpLoad();
-    static void LoadModel(const std::string& filename);
+        static const ModelManager* GetInstance();
+        static void Initialize();
+        static void StartUpLoad();
+        static void LoadModel(const std::string& filename);
 
-private:
-    // Loadに必要な関数
-    ModelData* LoadModelFile(const std::string& directoryPath, const std::string& filename);
-    std::vector<MeshData> ParseMeshes(const aiScene* scene);
-    void CreateMeshlet(ModelData* modelData);
-    std::vector<ModelMaterialLoadData> ParseMaterials(const aiScene* scene, const std::string& modelName);
+    private:
+        // Loadに必要な関数
+        ModelData* LoadModelFile(const std::string& directoryPath, const std::string& filename);
+        std::vector<MeshData> ParseMeshes(const aiScene* scene);
+        void CreateMeshlet(ModelData* modelData);
+        std::vector<ModelMaterialLoadData> ParseMaterials(const aiScene* scene, const std::string& modelName);
 
-    // アニメーション関連
-    std::unordered_map<std::string,ModelAnimation> LoadAnimation(const std::string& directoryPath, const std::string& filename);
-    ModelNode ReadModelNode(const aiNode* node);
-    int32_t CreateJoint(const ModelNode& node,const std::optional<int32_t>& parent,std::vector<ModelJoint>& joints);
-    ModelSkeleton CreateSkeleton(const ModelNode& rootNode);
-    static void AnimatedSkeleton(const ModelAnimation& modelAnimation,const ModelSkeleton& defaultSkeleton, ModelSkeleton* pSkeleton,float time);
-    static ModelSkeleton InterpolateSkeleton(const ModelSkeleton& skeletonA, const ModelSkeleton& skeletonB, float t);
-    void UpdateSkeleton(ModelSkeleton* skeleton);
-    std::unordered_map<std::string, JointWeightData> CreateJointWeightData(const aiScene* scene);
-    void CreateVertexInfluence(const ModelSkeleton& skeleton, ModelData* modelData);
+        // アニメーション関連
+        std::unordered_map<std::string, ModelAnimation> LoadAnimation(const std::string& directoryPath, const std::string& filename);
+        ModelNode ReadModelNode(const aiNode* node);
+        int32_t CreateJoint(const ModelNode& node, const std::optional<int32_t>& parent, std::vector<ModelJoint>& joints);
+        ModelSkeleton CreateSkeleton(const ModelNode& rootNode);
+        static void AnimatedSkeleton(const ModelAnimation& modelAnimation, const ModelSkeleton& defaultSkeleton, ModelSkeleton* pSkeleton, float time);
+        static ModelSkeleton InterpolateSkeleton(const ModelSkeleton& skeletonA, const ModelSkeleton& skeletonB, float t);
+        void UpdateSkeleton(ModelSkeleton* skeleton);
+        std::unordered_map<std::string, JointWeightData> CreateJointWeightData(const aiScene* scene);
+        void CreateVertexInfluence(const ModelSkeleton& skeleton, ModelData* modelData);
 
-private:
-    static ModelManager* instance_;
-    std::unordered_map<std::string, ModelData*>modelData_;
-    static const std::string directoryPath_;
+    private:
+        static ModelManager* instance_;
+        std::unordered_map<std::string, ModelData*>modelData_;
+        static const std::string directoryPath_;
 
-public:
-    static ModelData* GetModelData(const std::string& fileName){
+    public:
+        static ModelData* GetModelData(const std::string& fileName){
 
-        std::string path = fileName;
+            std::string path = fileName;
 
-        // "Resources/"の階層からのパスなら"Moswls/"階層以降のパスに変換する
-        if(path.starts_with("Resources/Models")){
-            // "Resources/Models/"を削除
-            path = path.substr(17); // "Resources/Models"の長さは17
+            // "Resources/"の階層からのパスなら"Moswls/"階層以降のパスに変換する
+            if(path.starts_with("Resources/Models")){
+                // "Resources/Models/"を削除
+                path = path.substr(17); // "Resources/Models"の長さは17
+            }
+
+            // 見つからないなら読み込む
+            if(instance_->modelData_.find(path) == instance_->modelData_.end()){
+                // モデルを読み込む
+                instance_->LoadModel(path);
+            }
+
+            return instance_->modelData_[path];
         }
 
-        // 見つからないなら読み込む
-        if(instance_->modelData_.find(path) == instance_->modelData_.end()){
-            // モデルを読み込む
-            instance_->LoadModel(path);
+        static std::vector<std::string> GetModelNames(){
+            std::vector<std::string> modelNames;
+            modelNames.reserve(instance_->modelData_.size());
+            for(const auto& pair : instance_->modelData_){
+                modelNames.push_back(pair.first);
+            }
+            return modelNames;
         }
-
-        return instance_->modelData_[path];
-    }
-
-    static std::vector<std::string> GetModelNames(){
-        std::vector<std::string> modelNames;
-        modelNames.reserve(instance_->modelData_.size());
-        for(const auto& pair : instance_->modelData_){
-            modelNames.push_back(pair.first);
-        }
-        return modelNames;
-    }
-};
+    };
+}

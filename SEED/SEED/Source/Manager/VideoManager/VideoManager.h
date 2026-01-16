@@ -1,32 +1,34 @@
 #pragma once
 #include <unordered_map>
 
-struct VideoItems;
+namespace SEED{
+    struct VideoItems;
 
-/// <summary>
-/// ビデオ再生のために作成したデータなどを管理しておくクラス
-/// </summary>
-class VideoManager{
-    friend class VideoPlayer;
+    /// <summary>
+    /// ビデオ再生のために作成したデータなどを管理しておくクラス
+    /// </summary>
+    class VideoManager{
+        friend class VideoPlayer;
 
-private:
-    // privateコンストラクタ
-    VideoManager() = default;
-    // コピー禁止
-    VideoManager(const VideoManager&) = delete;
-    void operator=(const VideoManager&) = delete;
-    // インスタンス
-    static inline VideoManager* instance_ = nullptr;
+    private:
+        // privateコンストラクタ
+        VideoManager() = default;
+        // コピー禁止
+        VideoManager(const VideoManager&) = delete;
+        void operator=(const VideoManager&) = delete;
+        // インスタンス
+        static inline VideoManager* instance_ = nullptr;
 
-public:
-    static VideoManager* GetInstance();
-    void Update();
-    void Release();
-    void EndFrame();
+    public:
+        static VideoManager* GetInstance();
+        void Update();
+        void Release();
+        void EndFrame();
 
-private:
-    void Register(VideoPlayer* video);
+    private:
+        void Register(VideoPlayer* video);
 
-private:
-    std::unordered_map<VideoPlayer*, VideoItems> videoItems_; // 動画ファイル名とそのリソースのマッピング
-};
+    private:
+        std::unordered_map<VideoPlayer*, VideoItems> videoItems_; // 動画ファイル名とそのリソースのマッピング
+    };
+}

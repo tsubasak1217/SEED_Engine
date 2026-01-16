@@ -1,7 +1,8 @@
 #pragma once
 
-// 関数のdelegate型を定義する
-namespace FnType
-{
+namespace SEED{
+    // 関数のdelegate型を定義する
+    namespace FnType{
 
+    }
 }

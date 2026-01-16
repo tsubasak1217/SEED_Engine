@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_map>
-#include <SEED/Lib/Functions/MyFunc.h>
+#include <SEED/Lib/Functions/FileFunc.h>
 
 /// <summary>
 /// 音声情報を辞書登録して管理するクラス

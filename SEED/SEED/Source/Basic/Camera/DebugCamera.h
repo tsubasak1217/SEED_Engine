@@ -2,21 +2,24 @@
 #include <SEED/Source/Basic/Camera/BaseCamera.h>
 #include <SEED/Lib/Tensor/Vector3.h>
 
-/// <summary>
-/// デバッグカメラ
-/// </summary>
-struct DebugCamera : public BaseCamera{
-    DebugCamera();
-    ~DebugCamera()override;
-    void Update()override;
+namespace SEED{
 
-private:
-    void Move();
-    void MoveByPad();
-    void MoveByKeyboard();
+    /// <summary>
+    /// デバッグカメラ
+    /// </summary>
+    struct DebugCamera : public BaseCamera{
+        DebugCamera();
+        ~DebugCamera()override;
+        void Update()override;
 
-private:
-    Vector3 moveDirection_;
-    float moveSpeed_ = 30.0f;
-    float rotateSpeed_ = 0.025f;
-};
+    private:
+        void Move();
+        void MoveByPad();
+        void MoveByKeyboard();
+
+    private:
+        Vector3 moveDirection_;
+        float moveSpeed_ = 30.0f;
+        float rotateSpeed_ = 0.025f;
+    };
+}

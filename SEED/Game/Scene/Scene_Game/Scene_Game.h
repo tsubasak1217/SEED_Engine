@@ -20,7 +20,7 @@
 /// ゲームシーンクラス
 /// </summary>
 class Scene_Game
-    : public Scene_Base{
+    : public SEED::Scene_Base{
 
 public:
     Scene_Game();
@@ -33,9 +33,6 @@ public:
     void EndFrame() override;
     void HandOverColliders() override;
 
-public:
-    static void SetIsPlayTutorial(bool isPlay){ isPlayTutorial_ = isPlay; }
-
 private:
-    static inline bool isPlayTutorial_ = false;
+
 };

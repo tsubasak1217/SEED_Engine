@@ -1,9 +1,5 @@
 #include <Game/Scene/Scene_Clear/Scene_Clear.h>
 
-///etc
-#include <SEED/Lib/Functions/MyFunc.h>
-#include <Game/Components/ResultUpdateComponent.h>
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
 // コンストラクタ・デストラクタ
@@ -13,7 +9,6 @@ Scene_Clear::Scene_Clear() : Scene_Base(){
 }
 
 Scene_Clear::~Scene_Clear(){
-    AudioManager::EndAudio(bgmHandle_);
 }
 
 
@@ -24,11 +19,6 @@ Scene_Clear::~Scene_Clear(){
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Initialize(){
    SEED::Instance::SetMainCamera("default");
-
-    // リザルト更新用オブジェクトの生成
-    Hierarchy* hierarchy = GetHierarchy();
-    resultUpdater_ = hierarchy->CreateEmptyObject2D();
-    resultUpdater_->AddComponent<ResultUpdate2DComponent>();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,27 +27,9 @@ void Scene_Clear::Initialize(){
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Update(){
-
     // 共通更新
     Scene_Base::Update();
 
-    if(bgmHandle_ == -1){
-        bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("ResultBGM"), true, 0.5f);
-    }
-
-    // タイマーの更新
-    if(Input::IsTriggerAnyKey()){
-        step_++;
-        stepTimer_.Reset();
-    
-    } else if(stepTimer_.IsFinishedNow()){
-        step_++;
-        stepTimer_.Reset();
-    
-    }
-
-    // 時間の更新
-    stepTimer_.Update();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,8 +39,6 @@ void Scene_Clear::Update(){
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::Draw(){
     Scene_Base::Draw();
-
-    //
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,25 +56,5 @@ void Scene_Clear::BeginFrame(){
 //
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Scene_Clear::EndFrame(){
-
     Scene_Base::EndFrame();
-
-    // ステップのチェック
-    CheckStep();
-
-    if(sceneChangeOrder){
-        ChangeScene("Game");
-        return;
-    }
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// ステップのチェック
-/////////////////////////////////////////////////////////////////////////////////////////
-void Scene_Clear::CheckStep(){
-    if(step_ >= kMaxStep_){
-        if(Input::IsTriggerAnyKey() or Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
-            sceneChangeOrder = true;
-        }
-    }
 }

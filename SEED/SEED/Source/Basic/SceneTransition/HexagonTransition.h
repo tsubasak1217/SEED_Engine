@@ -9,53 +9,55 @@
 #include <SEED/Lib/Structs/Timer.h>
 #include <SEED/Lib/Structs/Color.h>
 
-/// <summary>
-/// 各六角形の情報
-/// </summary>
-struct TransitionHexagon{
-    Vector2 pos;
-    Color color;
-    float appearTime;
-    Timer scalingTimer;
-};
+namespace SEED{
+    /// <summary>
+    /// 各六角形の情報
+    /// </summary>
+    struct TransitionHexagon{
+        Vector2 pos;
+        Color color;
+        float appearTime;
+        Timer scalingTimer;
+    };
 
-/// <summary>
-/// 画面を六角形で埋め尽くしてシーン遷移をするクラス
-/// </summary>
-class HexagonTransition : public ISceneTransition{
-public:
-    HexagonTransition() = default;
-    ~HexagonTransition() = default;
+    /// <summary>
+    /// 画面を六角形で埋め尽くしてシーン遷移をするクラス
+    /// </summary>
+    class HexagonTransition : public ISceneTransition{
+    public:
+        HexagonTransition() = default;
+        ~HexagonTransition() = default;
 
-protected:
-    void Update()override;
-    void Draw()override;
+    protected:
+        void Update()override;
+        void Draw()override;
 
-public:
+    public:
 
-    // 遷移の開始
-    void StartTransition(float curSceneExitTime, float newSceneEnterTime)override {
-        ISceneTransition::StartTransition(curSceneExitTime, newSceneEnterTime);
-        CreateHexagonInfo();
-    }
+        // 遷移の開始
+        void StartTransition(float curSceneExitTime, float newSceneEnterTime)override{
+            ISceneTransition::StartTransition(curSceneExitTime, newSceneEnterTime);
+            CreateHexagonInfo();
+        }
 
-    // 六角形の情報セット
-    void SetHexagonInfo(
-        float hexagonRadius, // 六角形の半径
-        const std::vector<Color>& colorList = { {0.0f,0.0f,0.0f,1.0f} }// 色リスト
-    );
+        // 六角形の情報セット
+        void SetHexagonInfo(
+            float hexagonRadius, // 六角形の半径
+            const std::vector<Color>& colorList = { {0.0f,0.0f,0.0f,1.0f} }// 色リスト
+        );
 
-private:
-    void CreateHexagonInfo();
+    private:
+        void CreateHexagonInfo();
 
-private:
-    // リスト
-    std::vector<TransitionHexagon> hexagons_;
-    std::vector<Color> colorList_;
+    private:
+        // リスト
+        std::vector<TransitionHexagon> hexagons_;
+        std::vector<Color> colorList_;
 
-    // パラメータ
-    float hexagonRadius_ = 80.0f;
-    float angle_ = std::numbers::pi_v<float> / 2.0f;
-    float scaleTime = 0.2f;
-    bool isExitScene_ = false;
-};
+        // パラメータ
+        float hexagonRadius_ = 80.0f;
+        float angle_ = std::numbers::pi_v<float> / 2.0f;
+        float scaleTime = 0.2f;
+        bool isExitScene_ = false;
+    };
+}

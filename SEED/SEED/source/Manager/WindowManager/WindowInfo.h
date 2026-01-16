@@ -15,44 +15,46 @@ using Microsoft::WRL::ComPtr;
 // local
 #include <SEED/Lib/Tensor/Vector2.h>
 
-/// <summary>
-/// window情報をまとめたクラス
-/// </summary>
-class WindowInfo{
-public:
-    WindowInfo() = default;
-    ~WindowInfo();
-    WindowInfo(HWND windowHandle, std::wstring windowName);
-    void Update();
-    void Finalize();
+namespace SEED{
+    /// <summary>
+    /// window情報をまとめたクラス
+    /// </summary>
+    class WindowInfo{
+    public:
+        WindowInfo() = default;
+        ~WindowInfo();
+        WindowInfo(HWND windowHandle, std::wstring windowName);
+        void Update();
+        void Finalize();
 
-public:
-    void CreateSwapChain(IDXGIFactory4* dxgiFactory, ID3D12CommandQueue* commandQueue);
-    void Present(UINT syncInterval, UINT flags);
+    public:
+        void CreateSwapChain(IDXGIFactory4* dxgiFactory, ID3D12CommandQueue* commandQueue);
+        void Present(UINT syncInterval, UINT flags);
 
-public:
-    HWND GetWindowHandle()const{return windowHandle;}
-    Vector2 GetOriginalWindowSize()const{ return originalWindowSize; }
-    Vector2 GetCurrentWindowSize()const{ return currentWindowSize; }
-    Vector2 GetWindowScale()const{ return windowScale; }
-    ID3D12Resource* GetBackBuffer()const{ return swapChainResources[backBufferIndex].Get(); }
-    const D3D12_CPU_DESCRIPTOR_HANDLE& GetRtvHandle()const{ return doubleBufferRtvHandles[backBufferIndex]; }
-    void ToggleFullScreen();
+    public:
+        HWND GetWindowHandle()const{ return windowHandle; }
+        Vector2 GetOriginalWindowSize()const{ return originalWindowSize; }
+        Vector2 GetCurrentWindowSize()const{ return currentWindowSize; }
+        Vector2 GetWindowScale()const{ return windowScale; }
+        ID3D12Resource* GetBackBuffer()const{ return swapChainResources[backBufferIndex].Get(); }
+        const D3D12_CPU_DESCRIPTOR_HANDLE& GetRtvHandle()const{ return doubleBufferRtvHandles[backBufferIndex]; }
+        void ToggleFullScreen();
 
-private:
-    HWND windowHandle;
-    std::wstring windowName;
-    Vector2 originalWindowSize;
-    Vector2 currentWindowSize;
-    Vector2 windowScale;
-    RECT windowRect;
-    bool isFullScreen = false;
+    private:
+        HWND windowHandle;
+        std::wstring windowName;
+        Vector2 originalWindowSize;
+        Vector2 currentWindowSize;
+        Vector2 windowScale;
+        RECT windowRect;
+        bool isFullScreen = false;
 
-    // swapChainの情報
-    DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
-    ComPtr<IDXGISwapChain4> swapChain = nullptr;
-    ComPtr<ID3D12Resource> swapChainResources[2] = { nullptr };
-    uint32_t backBufferIndex;
-    // RTV用
-    D3D12_CPU_DESCRIPTOR_HANDLE doubleBufferRtvHandles[2]{};
-};
+        // swapChainの情報
+        DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
+        ComPtr<IDXGISwapChain4> swapChain = nullptr;
+        ComPtr<ID3D12Resource> swapChainResources[2] = { nullptr };
+        uint32_t backBufferIndex;
+        // RTV用
+        D3D12_CPU_DESCRIPTOR_HANDLE doubleBufferRtvHandles[2]{};
+    };
+}

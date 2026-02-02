@@ -2,7 +2,7 @@
 #include <cstdint>
 
 namespace SEED {
-    namespace Enums{
+    namespace GeneralEnum{
         /// <summary>
         ///左右
         /// </summary>

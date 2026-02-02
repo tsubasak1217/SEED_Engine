@@ -179,7 +179,7 @@ namespace SEED{
         //////////////////////////////////
 
         // 色の扱いがRGBAかHSVAかで分岐
-        if(colorMode_ == Enums::ColorMode::RGBA){
+        if(colorMode_ == GeneralEnum::ColorMode::RGBA){
             particle_.color = colorCurve_.GetValue4(t);
         } else{
             particle_.color = Methods::Math::HSV_to_RGB(colorCurve_.GetValue4(t));

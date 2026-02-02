@@ -32,7 +32,7 @@ namespace SEED{
 
     private:
         Curve colorCurve_;
-        Enums::ColorMode colorControlMode_ = Enums::ColorMode::RGBA;
+        GeneralEnum::ColorMode colorControlMode_ = GeneralEnum::ColorMode::RGBA;
         Timer timer_;
         float timeScale_ = 1.0f;
         bool isLoop_ = false;

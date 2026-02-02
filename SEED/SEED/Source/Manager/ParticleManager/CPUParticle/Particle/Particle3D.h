@@ -66,7 +66,7 @@ namespace SEED{
 
         // 色
         Color masterColor_;
-        Enums::ColorMode colorMode_ = Enums::ColorMode::RGBA;
+        GeneralEnum::ColorMode colorMode_ = GeneralEnum::ColorMode::RGBA;
 
         // テクスチャ
         uint32_t textureHandle_;

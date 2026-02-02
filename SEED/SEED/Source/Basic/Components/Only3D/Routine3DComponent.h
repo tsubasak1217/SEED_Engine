@@ -49,7 +49,7 @@ namespace SEED{
         bool disableScale_ = false;
         Timer timer_;
         float timeScale_ = 1.0f;
-        Enums::InterpolationType interpolationType_ = Enums::InterpolationType::CATMULLROM;
+        GeneralEnum::InterpolationType interpolationType_ = GeneralEnum::InterpolationType::CATMULLROM;
         std::vector<RoutinePoint3D> controlPoints_;
         Methods::Easing::Type easingType_ = Methods::Easing::Type::None;
 

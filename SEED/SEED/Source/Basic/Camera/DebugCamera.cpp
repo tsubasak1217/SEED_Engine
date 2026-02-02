@@ -32,15 +32,15 @@ namespace SEED{
     void DebugCamera::MoveByPad(){
         //移動方向の取得
         moveDirection_ = {
-            Input::GetStickValue(Enums::LR::LEFT).x,
-            Input::GetLRTriggerValue(Enums::LR::LEFT) - Input::GetLRTriggerValue(Enums::LR::RIGHT),
-            Input::GetStickValue(Enums::LR::LEFT).y
+            Input::GetStickValue(GeneralEnum::LR::LEFT).x,
+            Input::GetLRTriggerValue(GeneralEnum::LR::LEFT) - Input::GetLRTriggerValue(GeneralEnum::LR::RIGHT),
+            Input::GetStickValue(GeneralEnum::LR::LEFT).y
         };
 
         // 回転量の計算
         Vector3 rotateValue = {
-            -rotateSpeed_ * Input::GetStickValue(Enums::LR::RIGHT).y,
-            rotateSpeed_ * Input::GetStickValue(Enums::LR::RIGHT).x,
+            -rotateSpeed_ * Input::GetStickValue(GeneralEnum::LR::RIGHT).y,
+            rotateSpeed_ * Input::GetStickValue(GeneralEnum::LR::RIGHT).x,
             0.0f
         };
 

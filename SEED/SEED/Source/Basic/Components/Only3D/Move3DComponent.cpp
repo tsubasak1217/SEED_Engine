@@ -54,20 +54,20 @@ namespace SEED{
 
             if(button == PAD_BUTTON::L_STICK){
                 // Lスティックの入力を取得
-                Vector2 stickValue = Input::GetStickValue(Enums::LR::LEFT);
+                Vector2 stickValue = Input::GetStickValue(GeneralEnum::LR::LEFT);
                 stickValue.y > 0.0f ? direction_.z = stickValue.y : direction_.z;
 
             } else if(button == PAD_BUTTON::R_STICK){
                 // Rスティックの入力を取得
-                Vector2 stickValue = Input::GetStickValue(Enums::LR::RIGHT);
+                Vector2 stickValue = Input::GetStickValue(GeneralEnum::LR::RIGHT);
                 stickValue.y > 0.0f ? direction_.z = stickValue.y : direction_.z;
 
             } else if(button == PAD_BUTTON::LT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::LEFT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::LEFT);
                 direction_.z = triggerValue;
 
             } else if(button == PAD_BUTTON::RT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::RIGHT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::RIGHT);
                 direction_.z = triggerValue;
 
             } else if(Input::IsPressPadButton(button)){
@@ -78,20 +78,20 @@ namespace SEED{
         for(const PAD_BUTTON& button : backPadButtons_){
             if(button == PAD_BUTTON::L_STICK){
                 // Lスティックの入力を取得
-                Vector2 stickValue = Input::GetStickValue(Enums::LR::LEFT);
+                Vector2 stickValue = Input::GetStickValue(GeneralEnum::LR::LEFT);
                 stickValue.y < 0.0f ? direction_.z = stickValue.y : direction_.z;
 
             } else if(button == PAD_BUTTON::R_STICK){
                 // Rスティックの入力を取得
-                Vector2 stickValue = Input::GetStickValue(Enums::LR::RIGHT);
+                Vector2 stickValue = Input::GetStickValue(GeneralEnum::LR::RIGHT);
                 stickValue.y < 0.0f ? direction_.z = stickValue.y : direction_.z;
 
             } else if(button == PAD_BUTTON::LT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::LEFT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::LEFT);
                 direction_.z = -triggerValue;
 
             } else if(button == PAD_BUTTON::RT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::RIGHT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::RIGHT);
                 direction_.z = -triggerValue;
             } else if(Input::IsPressPadButton(button)){
                 direction_.z = -1.0f;
@@ -101,20 +101,20 @@ namespace SEED{
         for(const PAD_BUTTON& button : leftPadButtons_){
             if(button == PAD_BUTTON::L_STICK){
                 // Lスティックの入力を取得
-                Vector2 stickValue = Input::GetStickValue(Enums::LR::LEFT);
+                Vector2 stickValue = Input::GetStickValue(GeneralEnum::LR::LEFT);
                 stickValue.x < 0.0f ? direction_.x = stickValue.x : direction_.x;
 
             } else if(button == PAD_BUTTON::R_STICK){
                 // Rスティックの入力を取得
-                Vector2 stickValue = Input::GetStickValue(Enums::LR::RIGHT);
+                Vector2 stickValue = Input::GetStickValue(GeneralEnum::LR::RIGHT);
                 stickValue.x < 0.0f ? direction_.x = stickValue.x : direction_.x;
 
             } else if(button == PAD_BUTTON::LT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::LEFT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::LEFT);
                 direction_.x = -triggerValue;
 
             } else if(button == PAD_BUTTON::RT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::RIGHT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::RIGHT);
                 direction_.x = -triggerValue;
 
             } else if(Input::IsPressPadButton(button)){
@@ -125,20 +125,20 @@ namespace SEED{
         for(const PAD_BUTTON& button : rightPadButtons_){
             if(button == PAD_BUTTON::L_STICK){
                 // Lスティックの入力を取得
-                Vector2 stickValue = Input::GetStickValue(Enums::LR::LEFT);
+                Vector2 stickValue = Input::GetStickValue(GeneralEnum::LR::LEFT);
                 stickValue.x > 0.0f ? direction_.x = stickValue.x : direction_.x;
 
             } else if(button == PAD_BUTTON::R_STICK){
                 // Rスティックの入力を取得
-                Vector2 stickValue = Input::GetStickValue(Enums::LR::RIGHT);
+                Vector2 stickValue = Input::GetStickValue(GeneralEnum::LR::RIGHT);
                 stickValue.x > 0.0f ? direction_.x = stickValue.x : direction_.x;
 
             } else if(button == PAD_BUTTON::LT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::LEFT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::LEFT);
                 direction_.x = triggerValue;
 
             } else if(button == PAD_BUTTON::RT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::RIGHT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::RIGHT);
                 direction_.x = triggerValue;
 
             } else if(Input::IsPressPadButton(button)){
@@ -148,10 +148,10 @@ namespace SEED{
 
         for(const PAD_BUTTON& button : upPadButtons_){
             if(button == PAD_BUTTON::LT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::LEFT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::LEFT);
                 direction_.y = triggerValue;
             } else if(button == PAD_BUTTON::RT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::RIGHT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::RIGHT);
                 direction_.y = triggerValue;
             } else if(Input::IsPressPadButton(button)){
                 direction_.y = 1.0f;
@@ -160,10 +160,10 @@ namespace SEED{
 
         for(const PAD_BUTTON& button : downPadButtons_){
             if(button == PAD_BUTTON::LT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::LEFT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::LEFT);
                 direction_.y = -triggerValue;
             } else if(button == PAD_BUTTON::RT){
-                float triggerValue = Input::GetLRTriggerValue(Enums::LR::RIGHT);
+                float triggerValue = Input::GetLRTriggerValue(GeneralEnum::LR::RIGHT);
                 direction_.y = -triggerValue;
             } else if(Input::IsPressPadButton(button)){
                 direction_.y = -1.0f;

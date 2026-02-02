@@ -112,18 +112,18 @@ namespace SEED{
 
         // 左右トリガーの値を0.0 ~ 1.0で取得
         static float GetLRTriggerValue(
-            Enums::LR LEFTorRIGHT, uint8_t padNumber = 0,
+            GeneralEnum::LR LEFTorRIGHT, uint8_t padNumber = 0,
             INPUT_STATE padState = INPUT_STATE::CURRENT
         );
         // length 0 ~ 1 のベクトルで返ってくる
         static Vector2 GetStickValue(
-            Enums::LR stick_LorR, uint8_t padNumber = 0,
+            GeneralEnum::LR stick_LorR, uint8_t padNumber = 0,
             INPUT_STATE padState = INPUT_STATE::CURRENT
         );
 
         // スティックをトリガーとして取得
         static bool IsTriggerStick(
-            Enums::LR stick_LorR, Enums::DIRECTION4 direction, float border = 0.5f,
+            GeneralEnum::LR stick_LorR, GeneralEnum::DIRECTION4 direction, float border = 0.5f,
             uint8_t padNumber = 0
         );
 

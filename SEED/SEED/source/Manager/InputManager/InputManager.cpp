@@ -174,7 +174,7 @@ namespace SEED{
         if(IsPressAnyKey()){
             instance_->recentInputDevice_ = InputDevice::KEYBOARD;
         } else{
-            if(IsPressAnyPadButton() or Methods::Math::HasLength(GetStickValue(Enums::LR::LEFT)) or Methods::Math::HasLength(GetStickValue(Enums::LR::RIGHT))){
+            if(IsPressAnyPadButton() or Methods::Math::HasLength(GetStickValue(GeneralEnum::LR::LEFT)) or Methods::Math::HasLength(GetStickValue(GeneralEnum::LR::RIGHT))){
                 instance_->recentInputDevice_ = InputDevice::GAMEPAD;
             }
         }
@@ -563,9 +563,9 @@ namespace SEED{
                 result += instance_->IsPressPadButton(padNumber, b, INPUT_STATE::CURRENT);
             } else{
                 if(b == PAD_BUTTON::LT){
-                    result += GetLRTriggerValue(Enums::LR::LEFT) >= 0.9f;
+                    result += GetLRTriggerValue(GeneralEnum::LR::LEFT) >= 0.9f;
                 } else{
-                    result += GetLRTriggerValue(Enums::LR::RIGHT) >= 0.9f;
+                    result += GetLRTriggerValue(GeneralEnum::LR::RIGHT) >= 0.9f;
                 }
             }
         }
@@ -600,12 +600,12 @@ namespace SEED{
             } else{
                 if(b == PAD_BUTTON::LT){
                     result +=
-                        GetLRTriggerValue(Enums::LR::LEFT, padNumber, INPUT_STATE::CURRENT) >= 0.9f &&
-                        GetLRTriggerValue(Enums::LR::LEFT, padNumber, INPUT_STATE::BEFORE) < 0.9f;
+                        GetLRTriggerValue(GeneralEnum::LR::LEFT, padNumber, INPUT_STATE::CURRENT) >= 0.9f &&
+                        GetLRTriggerValue(GeneralEnum::LR::LEFT, padNumber, INPUT_STATE::BEFORE) < 0.9f;
                 } else{
                     result +=
-                        GetLRTriggerValue(Enums::LR::RIGHT, padNumber, INPUT_STATE::CURRENT) >= 0.9f &&
-                        GetLRTriggerValue(Enums::LR::RIGHT, padNumber, INPUT_STATE::BEFORE) < 0.9f;
+                        GetLRTriggerValue(GeneralEnum::LR::RIGHT, padNumber, INPUT_STATE::CURRENT) >= 0.9f &&
+                        GetLRTriggerValue(GeneralEnum::LR::RIGHT, padNumber, INPUT_STATE::BEFORE) < 0.9f;
                 }
             }
         }
@@ -639,12 +639,12 @@ namespace SEED{
             } else{
                 if(b == PAD_BUTTON::LT){
                     result +=
-                        GetLRTriggerValue(Enums::LR::LEFT, padNumber, INPUT_STATE::CURRENT) < 0.9f &&
-                        GetLRTriggerValue(Enums::LR::LEFT, padNumber, INPUT_STATE::BEFORE) >= 0.9f;
+                        GetLRTriggerValue(GeneralEnum::LR::LEFT, padNumber, INPUT_STATE::CURRENT) < 0.9f &&
+                        GetLRTriggerValue(GeneralEnum::LR::LEFT, padNumber, INPUT_STATE::BEFORE) >= 0.9f;
                 } else{
                     result +=
-                        GetLRTriggerValue(Enums::LR::RIGHT, padNumber, INPUT_STATE::CURRENT) < 0.9f &&
-                        GetLRTriggerValue(Enums::LR::RIGHT, padNumber, INPUT_STATE::BEFORE) >= 0.9f;
+                        GetLRTriggerValue(GeneralEnum::LR::RIGHT, padNumber, INPUT_STATE::CURRENT) < 0.9f &&
+                        GetLRTriggerValue(GeneralEnum::LR::RIGHT, padNumber, INPUT_STATE::BEFORE) >= 0.9f;
                 }
             }
         }
@@ -677,7 +677,7 @@ namespace SEED{
         return instance_->connected_[padNumber];
     }
 
-    float Input::GetLRTriggerValue(Enums::LR LEFTorRIGHT, uint8_t padNumber, INPUT_STATE padState){
+    float Input::GetLRTriggerValue(GeneralEnum::LR LEFTorRIGHT, uint8_t padNumber, INPUT_STATE padState){
 
         if(!instance_->isActive_){ return 0.0f; }
         float triggerValue;
@@ -691,13 +691,13 @@ namespace SEED{
         }
 
         // 方向を取得
-        triggerValue = (float)(LEFTorRIGHT == Enums::LR::LEFT ? pad->bLeftTrigger : pad->bRightTrigger);
+        triggerValue = (float)(LEFTorRIGHT == GeneralEnum::LR::LEFT ? pad->bLeftTrigger : pad->bRightTrigger);
         triggerValue /= 255.0f;
 
         return triggerValue;
     }
 
-    Vector2 Input::GetStickValue(Enums::LR stick, uint8_t padNumber, INPUT_STATE padState){
+    Vector2 Input::GetStickValue(GeneralEnum::LR stick, uint8_t padNumber, INPUT_STATE padState){
 
         if(!instance_->isActive_){ return Vector2(); }
         // パッド番号の範囲外の場合アサート
@@ -715,8 +715,8 @@ namespace SEED{
 
         // 方向を取得
         Vector2 value = {
-            (float)(stick == Enums::LR::LEFT ? pad->sThumbLX : pad->sThumbRX),
-            (float)(stick == Enums::LR::LEFT ? pad->sThumbLY : pad->sThumbRY)
+            (float)(stick == GeneralEnum::LR::LEFT ? pad->sThumbLX : pad->sThumbRX),
+            (float)(stick == GeneralEnum::LR::LEFT ? pad->sThumbLY : pad->sThumbRY)
         };
 
         // SHORT型の最大値で割って-1 ~ 1にして返す
@@ -729,7 +729,7 @@ namespace SEED{
     }
 
 
-    bool Input::IsTriggerStick(Enums::LR stick_LorR, Enums::DIRECTION4 direction, float border, uint8_t padNumber){
+    bool Input::IsTriggerStick(GeneralEnum::LR stick_LorR, GeneralEnum::DIRECTION4 direction, float border, uint8_t padNumber){
         if(!instance_->isActive_){ return false; }
         Vector2 stickValue[2] = {
             GetStickValue(stick_LorR,padNumber,INPUT_STATE::CURRENT),
@@ -738,13 +738,13 @@ namespace SEED{
 
         // 方向によって判定
         switch(direction){
-        case Enums::DIRECTION4::UP:
+        case GeneralEnum::DIRECTION4::UP:
             return stickValue[0].y >= border && stickValue[1].y < border;
-        case Enums::DIRECTION4::DOWN:
+        case GeneralEnum::DIRECTION4::DOWN:
             return stickValue[0].y <= -border && stickValue[1].y > -border;
-        case Enums::DIRECTION4::LEFT:
+        case GeneralEnum::DIRECTION4::LEFT:
             return stickValue[0].x <= -border && stickValue[1].x > -border;
-        case Enums::DIRECTION4::RIGHT:
+        case GeneralEnum::DIRECTION4::RIGHT:
             return stickValue[0].x >= border && stickValue[1].x < border;
         default:
             return false;
@@ -759,8 +759,8 @@ namespace SEED{
 
         instance_->isActive_ = true;
         bool result = IsPressAnyKey() or IsPressAnyPadButton()
-            or Methods::Math::HasLength(GetStickValue(Enums::LR::LEFT))
-            or Methods::Math::HasLength(GetStickValue(Enums::LR::RIGHT))
+            or Methods::Math::HasLength(GetStickValue(GeneralEnum::LR::LEFT))
+            or Methods::Math::HasLength(GetStickValue(GeneralEnum::LR::RIGHT))
             or IsMouseInputAny();
         instance_->isActive_ = false;
 

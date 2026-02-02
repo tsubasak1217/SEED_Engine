@@ -38,10 +38,10 @@ namespace SEED{
 
         // 色を計算
         Vector4 rgbaColor = Vector4(1);
-        if(colorControlMode_ == Enums::ColorMode::RGBA){
+        if(colorControlMode_ == GeneralEnum::ColorMode::RGBA){
             rgbaColor = colorCurve_.GetValue4(timer_.GetProgress());
 
-        } else if(colorControlMode_ == Enums::ColorMode::HSVA){
+        } else if(colorControlMode_ == GeneralEnum::ColorMode::HSVA){
             Vector4 hsvaValue = colorCurve_.GetValue4(timer_.GetProgress());
             rgbaColor = Methods::Math::HSV_to_RGB(hsvaValue);
         }
@@ -144,6 +144,6 @@ namespace SEED{
         timeScale_ = jsonData.value("timeScale", 1.0f);
         isLoop_ = jsonData.value("isLoop", false);
         isMultiply_ = jsonData.value("isMultiply", false);
-        colorControlMode_ = static_cast<Enums::ColorMode>(jsonData.value("colorControlMode", 0));
+        colorControlMode_ = static_cast<GeneralEnum::ColorMode>(jsonData.value("colorControlMode", 0));
     }
 }

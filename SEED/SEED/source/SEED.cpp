@@ -19,7 +19,7 @@ namespace SEED{
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     Instance* Instance::instance_ = nullptr;
-    std::wstring Instance::windowTitle_ = L"NETHMi";
+    std::wstring Instance::windowTitle_ = L"Game";
     std::wstring Instance::systemWindowTitle_ = L"System";
     uint32_t Instance::windowBackColor_ = Methods::Math::IntColor(27, 27, 27, 255);
 

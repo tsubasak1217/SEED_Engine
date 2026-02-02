@@ -808,7 +808,7 @@ namespace SEED{
     #ifdef _DEBUG
         ClientToScreen(WindowManager::GetHWND(SEED::Instance::systemWindowTitle_), &topLeft);
     #else
-        ClientToScreen(WindowManager::GetHWND(SEED::windowTitle_), &topLeft);
+        ClientToScreen(WindowManager::GetHWND(SEED::Instance::windowTitle_), &topLeft);
     #endif
 
         int clientWidth = int(repeatRange_.max.x - repeatRange_.min.x);

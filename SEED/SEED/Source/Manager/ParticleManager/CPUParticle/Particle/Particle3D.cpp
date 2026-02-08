@@ -224,7 +224,7 @@ namespace SEED{
         //////////////////////////////////
 
         // 色の扱いがRGBAかHSVAかで分岐
-        if(colorMode_ == GeneralEnum::ColorMode::RGBA){
+        if(colorMode_ == Enums::ColorMode::RGBA){
             particle_->masterColor_ = colorCurve_.GetValue4(t);
         } else{
             particle_->masterColor_ = Methods::Math::HSV_to_RGB(colorCurve_.GetValue4(t));

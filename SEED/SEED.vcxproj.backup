@@ -1,5 +1,5 @@
-<?xml version='1.0' encoding='utf-8'?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -118,11 +118,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\Effects\LivelyEffectsOwner.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\MouseVectorCircle.cpp" />
+    <ClCompile Include="Game\Objects\Tutorial\TutorialObjectManager.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.cpp" />
     <ClCompile Include="SEED\Lib\Functions\FileFunc.cpp" />
     <ClCompile Include="SEED\Lib\Functions\RandomFunc.cpp" />
     <ClCompile Include="SEED\Lib\Functions\StringFunc.cpp" />
     <ClCompile Include="SEED\Lib\Functions\SRTFunc.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Color.cpp" />
+    <ClCompile Include="Game\Components\ResultUpdateComponent.cpp" />
+    <ClCompile Include="Game\Config\PlaySettings.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Warning.cpp" />
+    <ClCompile Include="Game\Objects\Result\PlayResult.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Curve.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\AudioComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Components\3D&amp;2D\ColorControlComponent.cpp" />
@@ -134,8 +142,29 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.cpp" />
     <ClCompile Include="SEED\Source\Basic\Dictionary\LayerDictionary.cpp" />
     <ClCompile Include="Game\GameSystem.cpp" />
+    <ClCompile Include="Game\Manager\NotesEditor.cpp" />
+    <ClCompile Include="Game\Manager\RhythmGameManager.cpp" />
+    <ClCompile Include="Game\Manager\SongSelector.cpp" />
+    <ClCompile Include="Game\Objects\Combo\ComboObject.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\Judgement.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\PlayerInput.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\PlayField.cpp" />
+    <ClCompile Include="Game\Objects\Notes\NotesData.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Base.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
+    <ClCompile Include="Game\Objects\SongSelect\SelectBackGroundDrawer.cpp" />
+    <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Load\Scene_Load.cpp" />
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp" />
     <ClCompile Include="SEED\Lib\Structs\Timer.cpp" />
     <ClCompile Include="SEED\Lib\Tensor\Matrix3x3.cpp" />
@@ -264,12 +293,20 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SEED\Source\SEED.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\Effects\LivelyEffectsOwner.h" />
+    <ClInclude Include="Game\Objects\Judgement\MouseVectorCircle.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SongSelectUtils.h" />
+    <ClInclude Include="Game\Objects\Tutorial\TutorialObjectManager.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.h" />
     <ClInclude Include="SEED\Lib\enums\ColorMode.h" />
     <ClInclude Include="SEED\Lib\Functions\FileFunc.h" />
     <ClInclude Include="SEED\Lib\Functions\RandomFunc.h" />
     <ClInclude Include="SEED\Lib\Functions\StringFunc.h" />
     <ClInclude Include="SEED\Lib\Functions\SRTFunc.h" />
     <ClInclude Include="SEED\Lib\Structs\Color.h" />
+    <ClInclude Include="Game\Components\ResultUpdateComponent.h" />
+    <ClInclude Include="Game\Config\PlaySettings.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Warning.h" />
     <ClInclude Include="SEED\Lib\enums\InterpolateType.h" />
     <ClInclude Include="SEED\Lib\Structs\Curve.h" />
     <ClInclude Include="SEED\Source\Basic\Components\3D&amp;2D\AudioComponent.h" />
@@ -283,8 +320,31 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="SEED\Source\Basic\Components\Only3D\Routine3DComponent.h" />
     <ClInclude Include="SEED\Source\Basic\Dictionary\LayerDictionary.h" />
     <ClInclude Include="Game\GameSystem.h" />
+    <ClInclude Include="Game\Manager\NotesEditor.h" />
+    <ClInclude Include="Game\Manager\RhythmGameManager.h" />
+    <ClInclude Include="Game\Manager\SongSelector.h" />
+    <ClInclude Include="Game\Objects\Combo\ComboObject.h" />
+    <ClInclude Include="Game\Objects\Judgement\AnswerLane.h" />
+    <ClInclude Include="Game\Objects\Judgement\Judgement.h" />
+    <ClInclude Include="Game\Objects\Judgement\LaneBit.h" />
+    <ClInclude Include="Game\Objects\Judgement\PlayerInput.h" />
+    <ClInclude Include="Game\Objects\Judgement\PlayField.h" />
+    <ClInclude Include="Game\Objects\Notes\NotesData.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Base.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Hold.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_SideFlick.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
+    <ClInclude Include="Game\Objects\Result\PlayResult.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SelectBackGroundDrawer.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h" />
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
+    <ClInclude Include="Game\Scene\Scene_Load\Scene_Load.h" />
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h" />
     <ClInclude Include="SEED\Source\Basic\Components\Only2D\UIComponent.h" />
     <ClInclude Include="SEED\Source\Manager\InputManager\RawInput.h" />

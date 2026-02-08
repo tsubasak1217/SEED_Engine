@@ -25,8 +25,8 @@ namespace SEED{
         kMaxPhi_ = 3.14f * 0.7f;
         kMinPhi_ = 0.1f;
         // inputのデフォルト設定
-        angleInput_.Value = [](){ return Input::GetStickValue(GeneralEnum::LR::RIGHT); };
-        distanceInput_.Value = [](){ return Input::GetLRTriggerValue(GeneralEnum::LR::LEFT) - Input::GetLRTriggerValue(GeneralEnum::LR::RIGHT); };
+        angleInput_.Value = [](){ return Input::GetStickValue(Enums::LR::RIGHT); };
+        distanceInput_.Value = [](){ return Input::GetLRTriggerValue(Enums::LR::LEFT) - Input::GetLRTriggerValue(Enums::LR::RIGHT); };
 
         // カメラ共通の初期化処理
         BaseCamera::Initialize();

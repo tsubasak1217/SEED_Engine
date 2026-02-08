@@ -368,8 +368,3 @@ FodyWeavers.xsd
 *.ini
 *.vsix
 /SEED/imgui.ini
-
-# intermidiate
-/SEED/SEED/External/**/*.obj
-/SEED/SEED/External/**/*.pdb
-/SEED/SEED/External/**/*.ilk

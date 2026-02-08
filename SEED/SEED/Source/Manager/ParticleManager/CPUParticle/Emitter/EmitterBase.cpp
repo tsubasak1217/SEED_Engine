@@ -261,7 +261,7 @@ namespace SEED{
         }
 
         // 色の扱い
-        colorMode_ = (GeneralEnum::ColorMode)j.value("colorMode", 0);
+        colorMode_ = (Enums::ColorMode)j.value("colorMode", 0);
 
         // テクスチャの情報
         texturePaths_.clear();

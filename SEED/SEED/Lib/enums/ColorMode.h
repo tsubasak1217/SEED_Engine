@@ -2,7 +2,7 @@
 #include <cstdint>
 
 namespace SEED{
-    namespace GeneralEnum{
+    namespace Enums{
         /// <summary>
         /// 色の扱い方を定義
         /// </summary>

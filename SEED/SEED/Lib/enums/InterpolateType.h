@@ -1,7 +1,7 @@
 #pragma once
 
 namespace SEED {
-    namespace GeneralEnum{
+    namespace Enums{
         /// <summary>
         /// 補間方法
         /// </summary>

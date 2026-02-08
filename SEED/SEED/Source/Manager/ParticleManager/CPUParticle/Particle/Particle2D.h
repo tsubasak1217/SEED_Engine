@@ -53,7 +53,7 @@ namespace SEED{
 
         // 色
         Color masterColor_;
-        GeneralEnum::ColorMode colorMode_ = GeneralEnum::ColorMode::RGBA;
+        Enums::ColorMode colorMode_ = Enums::ColorMode::RGBA;
 
         // 重力関連
         bool isUseGravity_;

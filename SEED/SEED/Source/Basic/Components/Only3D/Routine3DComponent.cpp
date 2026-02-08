@@ -70,12 +70,12 @@ namespace SEED{
             }
 
             switch(interpolationType_){
-            case GeneralEnum::InterpolationType::LINEAR:
+            case Enums::InterpolationType::LINEAR:
             {
                 result = Methods::SRT::Interpolate(transforms, uniformT);
                 break;
             }
-            case GeneralEnum::InterpolationType::CATMULLROM:
+            case Enums::InterpolationType::CATMULLROM:
             {
                 result = Methods::SRT::CatmullRomInterpolate(transforms, uniformT, isConnectEdge_);
                 break;
@@ -132,12 +132,12 @@ namespace SEED{
 
         // ラインを描画
         switch(interpolationType_){
-        case GeneralEnum::InterpolationType::LINEAR:
+        case Enums::InterpolationType::LINEAR:
             for(int i = 0; i < controlPoints_.size() - 1; i++){
                 SEED::Instance::DrawLine(controlPoints_[i].first.translate, controlPoints_[i + 1].first.translate, { 0.0f,0.0f,1.0f,1.0f });
             }
             break;
-        case GeneralEnum::InterpolationType::CATMULLROM:
+        case Enums::InterpolationType::CATMULLROM:
             SEED::Instance::DrawSpline(points, 8, { 0.0f,0.0f,1.0f,1.0f });
             break;
         default:
@@ -422,12 +422,12 @@ namespace SEED{
         // 補間方法に応じて制御点の補間
         Transform result;
         switch(interpolationType_){
-        case GeneralEnum::InterpolationType::LINEAR:
+        case Enums::InterpolationType::LINEAR:
         {
             result = Methods::SRT::Interpolate(transforms, time);
             break;
         }
-        case GeneralEnum::InterpolationType::CATMULLROM:
+        case Enums::InterpolationType::CATMULLROM:
         {
             result = Methods::SRT::CatmullRomInterpolate(transforms, time);
             break;
@@ -493,7 +493,7 @@ namespace SEED{
         disableScale_ = jsonData.value("disableScale", false);
 
         // その他設定の読み込み
-        interpolationType_ = static_cast<GeneralEnum::InterpolationType>(jsonData.value("interpolationType", 0));
+        interpolationType_ = static_cast<Enums::InterpolationType>(jsonData.value("interpolationType", 0));
         easingType_ = static_cast<Methods::Easing::Type>(jsonData.value("easingType", 0));
         isLoop_ = jsonData.value("isLoop", false);
         isConnectEdge_ = jsonData.value("isConnectEdge", false);

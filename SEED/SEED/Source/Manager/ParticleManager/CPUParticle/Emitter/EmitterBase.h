@@ -97,7 +97,7 @@ namespace SEED{
         Curve positionInterpolationCurve_;// 位置補間カーブ
 
         // 色操作のモード
-        GeneralEnum::ColorMode colorMode_ = GeneralEnum::ColorMode::RGBA;// カラーモード
+        Enums::ColorMode colorMode_ = Enums::ColorMode::RGBA;// カラーモード
 
         // 管理用パラメータ -----------------------------------------
     public:// アクティブ・非アクティブ管理のための変数

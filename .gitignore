@@ -384,3 +384,11 @@ FodyWeavers.xsd
 !/SEED/SEED/External/imgui/Generated/Obj/imgui/Release/
 !/SEED/SEED/External/imgui/Generated/Obj/imgui/Release/imgui.lib
 !/SEED/SEED/External/imgui/Generated/Obj/imgui/Release/imgui.pdb
+
+# Exception: Include assimp library files
+!/SEED/SEED/External/assimp/lib/
+!/SEED/SEED/External/assimp/lib/Debug/
+!/SEED/SEED/External/assimp/lib/Debug/*.lib
+!/SEED/SEED/External/assimp/lib/Debug/*.pdb
+!/SEED/SEED/External/assimp/lib/Release/
+!/SEED/SEED/External/assimp/lib/Release/*.lib

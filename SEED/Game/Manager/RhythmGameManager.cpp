@@ -112,7 +112,7 @@ void RhythmGameManager::BeginFrame(){
 #ifdef _DEBUG
     SEED::Input::RepeatCursor(SEED::ImFunc::GetSceneWindowRange("GameWindow"));
 #else
-    Input::RepeatCursor();
+    SEED::Input::RepeatCursor();
 #endif
 
     PlayerInput::GetInstance()->BeginFrame();

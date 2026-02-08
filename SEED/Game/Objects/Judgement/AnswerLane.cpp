@@ -24,12 +24,12 @@ void AnswerLane::Update(){
 
     // 押したら横幅を広げて色を濃くする
     if(isPress){
-        leftTime += ClockManager::DeltaTime() * 2.0f;// 離して消えるときより早くする
+        leftTime += SEED::ClockManager::DeltaTime() * 2.0f;// 離して消えるときより早くする
         leftTime = std::clamp(leftTime, 0.0f, kVisibleTime);
 
         // 媒介変数の更新
         float t = leftTime / kVisibleTime;
-        float ease = EaseOutBack(t);
+        float ease = SEED::Methods::Easing::OutBack(t);
 
         // スケールの変更
         tri.scale.x = baseScale * ease;// 横幅を広げる
@@ -41,7 +41,7 @@ void AnswerLane::Update(){
 
         if(leftTime > 0.0f){
             // 時間を減少させる
-            leftTime -= ClockManager::DeltaTime();
+            leftTime -= SEED::ClockManager::DeltaTime();
             leftTime = std::clamp(leftTime, 0.0f, kVisibleTime);
 
             // 媒介変数の更新
@@ -58,7 +58,7 @@ void AnswerLane::Update(){
 
     // 判定結果用の更新
     if(evaluationLeftTime > 0.0f){
-        evaluationLeftTime -= ClockManager::DeltaTime();
+        evaluationLeftTime -= SEED::ClockManager::DeltaTime();
         evaluationLeftTime = std::clamp(evaluationLeftTime, 0.0f, kVisibleTime);
         // 媒介変数の更新
         float t = evaluationLeftTime / kVisibleTime;

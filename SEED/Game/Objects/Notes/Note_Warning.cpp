@@ -3,9 +3,9 @@
 Note_Warning::Note_Warning() : Note_Base(){
     noteType_ = NoteType::Warning;
     noteQuad_.get()->color = { 1.0f, 1.0f, 1.0f, 1.0f };// 色を白に
-    noteQuad_.get()->lightingType = LIGHTINGTYPE_NONE;// ライティングを無効に
+    noteQuad_.get()->lightingType = SEED::LIGHTINGTYPE_NONE;// ライティングを無効に
 
-    noteQuad_->GH = TextureManager::LoadTexture("Notes/wheel_aura.png");
+    noteQuad_->GH = SEED::TextureManager::LoadTexture("Notes/wheel_aura.png");
 }
 
 Note_Warning::~Note_Warning(){
@@ -19,11 +19,11 @@ void Note_Warning::Draw(float currentTime, float appearLength){
 
     // 警告オブジェクトの生成
     if(isEmitWarningObj_){
-        auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+        auto* hierarchy = SEED::GameSystem::GetScene()->GetHierarchy();
 
-        if(layer_ == UpDown::UP){
+        if(layer_ == SEED::GeneralEnum::UpDown::UP){
             hierarchy->LoadObject2D("PlayScene/Effects/warning_Up.prefab");
-        } else if(layer_ == UpDown::DOWN){
+        } else if(layer_ == SEED::GeneralEnum::UpDown::DOWN){
             hierarchy->LoadObject2D("PlayScene/Effects/warning_Down.prefab");
         }
 
@@ -31,7 +31,7 @@ void Note_Warning::Draw(float currentTime, float appearLength){
     }
 
     // 描画用の矩形を計算
-    static Quad noteRect;
+    static SEED::Topology::Quad noteRect;
     noteRect = PlayField::GetInstance()->GetNoteQuad(0.0f, lane_, layer_, 1.0f);
 
     // 頂点設定

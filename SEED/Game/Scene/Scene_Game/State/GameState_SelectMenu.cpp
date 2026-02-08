@@ -8,7 +8,7 @@
 GameState_SelectMenu::GameState_SelectMenu(){
 }
 
-GameState_SelectMenu::GameState_SelectMenu(Scene_Base* pScene){
+GameState_SelectMenu::GameState_SelectMenu(SEED::Scene_Base* pScene){
     pScene_ = pScene;
 }
 
@@ -43,27 +43,27 @@ void GameState_SelectMenu::Initialize(){
         if(i != selectedIndex_){
             // 通常初期化
             menuItemScalingTimers_[i].Initialize(0.2f);
-            menus_[i]->masterColor_ = Color(0.4f, 0.4f, 0.4f, 1.0f);
+            menus_[i]->masterColor_ = SEED::Color(0.4f, 0.4f, 0.4f, 1.0f);
         } else{
             // デフォルトでスケーリングを完了させておく
             menuItemScalingTimers_[i].Initialize(0.2f, 0.2f);
-            menus_[i]->masterColor_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
+            menus_[i]->masterColor_ = SEED::Color(1.0f, 1.0f, 1.0f, 1.0f);
         }
     }
 
     // 入力関数の初期化
     backInput_.Trigger = [&](){
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
             auto* escUI = pScene_->GetHierarchy()->GetGameObject2D("esc");
             if(escUI->GetIsCollided(mouseColliderObj_)){
                 return true;
             }
         }
-        return Input::IsTriggerKey(DIK_ESCAPE);
+        return SEED::Input::IsTriggerKey(DIK_ESCAPE);
     };
 
     selectInput_.Trigger = [&](){
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
             for(int32_t i = 0; i < menus_.size(); i++){
                 if(i != selectedIndex_){
                     if(menus_[i]->GetIsCollided(mouseColliderObj_)){
@@ -72,11 +72,11 @@ void GameState_SelectMenu::Initialize(){
                 }
             }
         }
-        return Input::IsTriggerKey({ DIK_W,DIK_S,DIK_A,DIK_D,DIK_UP,DIK_DOWN,DIK_LEFT,DIK_RIGHT });
+        return SEED::Input::IsTriggerKey({ DIK_W,DIK_S,DIK_A,DIK_D,DIK_UP,DIK_DOWN,DIK_LEFT,DIK_RIGHT });
     };
 
     selectInput_.Value = [&](){
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
             for(int32_t i = 0; i < menus_.size(); i++){
                 if(menus_[i]->GetIsCollided(mouseColliderObj_)){
                     // 今のインデックスとの差分を返す
@@ -85,7 +85,7 @@ void GameState_SelectMenu::Initialize(){
             }
         }
         // キーボード入力での値を返す
-        return Input::IsTriggerKey({ DIK_S,DIK_D,DIK_DOWN,DIK_RIGHT }) - Input::IsTriggerKey({ DIK_W,DIK_A,DIK_UP,DIK_LEFT });
+        return SEED::Input::IsTriggerKey({ DIK_S,DIK_D,DIK_DOWN,DIK_RIGHT }) - SEED::Input::IsTriggerKey({ DIK_W,DIK_A,DIK_UP,DIK_LEFT });
     };
 
     decideInput_.Trigger = [&](){
@@ -94,12 +94,12 @@ void GameState_SelectMenu::Initialize(){
             return false;
         }
 
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
             if(menus_[selectedIndex_]->GetIsCollided(mouseColliderObj_)){
                 return true;
             }
         }
-        return Input::IsTriggerKey(DIK_SPACE);
+        return SEED::Input::IsTriggerKey(DIK_SPACE);
     };
 }
 
@@ -125,7 +125,7 @@ void GameState_SelectMenu::Update(){
         }
 
         // スケーリング反映
-        float scale = 0.9f + 0.1f * menuItemScalingTimers_[i].GetEase(Easing::OutBack);
+        float scale = 0.9f + 0.1f * menuItemScalingTimers_[i].GetEase(SEED::Methods::Easing::Type::Out_Back);
         menus_[i]->aditionalTransform_.scale = Vector2(scale, scale);
     }
 
@@ -195,15 +195,15 @@ void GameState_SelectMenu::ManageState(){
                 if(!isInOptionPage_){
                     isExit_ = true;
                     // 透明にしていく
-                    backSpriteObj_->GetComponent<ColorControlComponent>()->RevercePlay();
+                    backSpriteObj_->GetComponent<SEED::ColorControlComponent>()->RevercePlay();
 
                     // メニュー項目も逆再生で画面外へ
                     for(int32_t i = 0; i < menus_.size(); i++){
-                        menus_[i]->GetComponent<Routine2DComponent>()->RevercePlay();
+                        menus_[i]->GetComponent<SEED::Routine2DComponent>()->RevercePlay();
                     }
 
                     // 音声再生
-                    AudioManager::PlayAudio(AudioDictionary::Get("OpenSelectMenu"), false, 0.5f);
+                    SEED::AudioManager::PlayAudio(AudioDictionary::Get("OpenSelectMenu"), false, 0.5f);
 
                 } else{
                     // optionページを閉じる
@@ -267,20 +267,20 @@ bool GameState_SelectMenu::SelectMenuItem(){
     if(inputDir != 0){
         // 選択インデックス更新
         selectedIndex_ += inputDir;
-        selectedIndex_ = MyFunc::Spiral(selectedIndex_, 0, SelectMenuItemCount - 1);
+        selectedIndex_ = SEED::Methods::Math::Spiral(selectedIndex_, 0, SelectMenuItemCount - 1);
 
         // 選択中の項目だけ色を変える
         for(int32_t i = 0; i < menus_.size(); i++){
 
             if(i != selectedIndex_){
-                menus_[i]->masterColor_ = Color(0.4f, 0.4f, 0.4f, 1.0f);
+                menus_[i]->masterColor_ = SEED::Color(0.4f, 0.4f, 0.4f, 1.0f);
             } else{
-                menus_[i]->masterColor_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
+                menus_[i]->masterColor_ = SEED::Color(1.0f, 1.0f, 1.0f, 1.0f);
             }
         }
 
         // 音声再生
-        AudioManager::PlayAudio(AudioDictionary::Get("SelecrMenuSelect"), false, 0.5f);
+        SEED::AudioManager::PlayAudio(AudioDictionary::Get("SelecrMenuSelect"), false, 0.5f);
         return true;
     }
 
@@ -293,8 +293,8 @@ bool GameState_SelectMenu::SelectMenuItem(){
 void GameState_SelectMenu::UpdateHelpTexts(){
 
     for(int32_t i = 0; i < menus_.size(); i++){
-        TextBox2D& helpText = menus_[i]->GetComponent<UIComponent>()->GetText(0);
-        Sprite& underLineSprite = menus_[i]->GetComponent<UIComponent>()->GetSprite(1);
+        SEED::TextBox2D& helpText = menus_[i]->GetComponent<SEED::UIComponent>()->GetText(0);
+        SEED::Sprite& underLineSprite = menus_[i]->GetComponent<SEED::UIComponent>()->GetSprite(1);
 
         // 選択中
         helpText.textDisplayRate = menuItemScalingTimers_[i].GetProgress();
@@ -309,11 +309,11 @@ void GameState_SelectMenu::UpdateHelpTexts(){
 void GameState_SelectMenu::InitializeSliderValues(){
 
     // スライダーの値の範囲設定
-    sliderValueRanges_[NotesSpeed] = Range1D(0.5f, 2.0f);
-    sliderValueRanges_[JudgeOffset] = Range1D(-0.3f, 0.3f);
-    sliderValueRanges_[DisplayOffset] = Range1D(-0.3f, 0.3f);
-    sliderValueRanges_[AnswerOffset] = Range1D(-0.3f, 0.3f);
-    sliderValueRanges_[MouseSensitivity] = Range1D(0.5f, 2.0f);
+    sliderValueRanges_[NotesSpeed] = SEED::Range1D(0.5f, 2.0f);
+    sliderValueRanges_[JudgeOffset] = SEED::Range1D(-0.3f, 0.3f);
+    sliderValueRanges_[DisplayOffset] = SEED::Range1D(-0.3f, 0.3f);
+    sliderValueRanges_[AnswerOffset] = SEED::Range1D(-0.3f, 0.3f);
+    sliderValueRanges_[MouseSensitivity] = SEED::Range1D(0.5f, 2.0f);
 
     // 現在の値を取得
     sliderValues_[NotesSpeed] = PlaySettings::GetInstance()->GetNoteSpeedRate();
@@ -373,10 +373,10 @@ void GameState_SelectMenu::LoadOptionItems(){
 
     // スライダー関連
     sliderObj_ = optionPageParent_->GetChild("slider");
-    sliderSprites_[LeftPoint] = &sliderObj_->GetComponent<UIComponent>()->GetSprite("left");
-    sliderSprites_[MidPoint] = &sliderObj_->GetComponent<UIComponent>()->GetSprite("mid");
-    sliderSprites_[RightPoint] = &sliderObj_->GetComponent<UIComponent>()->GetSprite("right");
-    sliderSprites_[Body] = &sliderObj_->GetComponent<UIComponent>()->GetSprite("body");
+    sliderSprites_[LeftPoint] = &sliderObj_->GetComponent<SEED::UIComponent>()->GetSprite("left");
+    sliderSprites_[MidPoint] = &sliderObj_->GetComponent<SEED::UIComponent>()->GetSprite("mid");
+    sliderSprites_[RightPoint] = &sliderObj_->GetComponent<SEED::UIComponent>()->GetSprite("right");
+    sliderSprites_[Body] = &sliderObj_->GetComponent<SEED::UIComponent>()->GetSprite("body");
 
     // テキスト関連
     sliderDetailTexts_[NotesSpeed] = "ノーツの動く速さを調整します。";
@@ -385,8 +385,8 @@ void GameState_SelectMenu::LoadOptionItems(){
     sliderDetailTexts_[AnswerOffset] = "アンサー音の再生タイミングを調整します。\nノーツの音が見た目とずれて聞こえる人におすすめ!\n(判定はそのままです)";
     sliderDetailTexts_[MouseSensitivity] = "マウスの感度を調整します。\nマウス操作がしづらいと感じる人におすすめ!";
 
-    optionTexts_[ValueText] = &sliderObj_->GetComponent<UIComponent>()->GetText(0);
-    optionTexts_[DetailText] = &optionPageParent_->GetChild("detail")->GetComponent<UIComponent>()->GetText(0);
+    optionTexts_[ValueText] = &sliderObj_->GetComponent<SEED::UIComponent>()->GetText(0);
+    optionTexts_[DetailText] = &optionPageParent_->GetChild("detail")->GetComponent<SEED::UIComponent>()->GetText(0);
     optionTexts_[DetailText]->text = sliderDetailTexts_[currentOptionItem_];
 
     // コライダー関連
@@ -454,7 +454,7 @@ void GameState_SelectMenu::CheckPress(){
 
         // カーソルがコライダー範囲内かつクリックされたら
         if(optionItems_[i]->GetIsCollided(mouseColliderObj_)){
-            if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
                 if((OptionPageItem)i != currentOptionItem_){
 
                     // 選択項目を更新
@@ -496,26 +496,26 @@ void GameState_SelectMenu::UpdateHeaders(){
     for(int32_t i = 0; i < optionItems_.size(); i++){
 
         if(i != OkButton){
-            TextBox2D& headerText = optionItems_[i]->GetComponent<UIComponent>()->GetText(0);
-            float ease = optionItemTimers_[i].GetEase(Easing::OutBack);
-            float hoverEase = optionItemHoverTimers_[i].GetEase(Easing::OutBack);
+            SEED::TextBox2D& headerText = optionItems_[i]->GetComponent<SEED::UIComponent>()->GetText(0);
+            float ease = optionItemTimers_[i].GetEase(SEED::Methods::Easing::Type::Out_Back);
+            float hoverEase = optionItemHoverTimers_[i].GetEase(SEED::Methods::Easing::Type::Out_Back);
             float baseScale = 0.8f + (0.2f * ease) + (0.1f * hoverEase);
 
             // 色とスケール更新
             if(i == (int)currentOptionItem_){
                 // 選択中のものは黄色っぽく
-                headerText.color = Color(1.0f, 1.0f, 0.0f, 0.1f + (0.9f + ease));
+                headerText.color = SEED::Color(1.0f, 1.0f, 0.0f, 0.1f + (0.9f + ease));
             } else{
                 // 選択されていないものは灰色
-                headerText.color = Color(1.0f, 1.0f, 1.0f, 0.1f + (0.9f + ease));
+                headerText.color = SEED::Color(1.0f, 1.0f, 1.0f, 0.1f + (0.9f + ease));
             }
 
             optionItems_[i]->aditionalTransform_.scale = Vector2(baseScale);
 
         } else{
             // okButtonはスケールのみ
-            float ease = optionItemTimers_[i].GetEase(Easing::OutBack);
-            float hoverEase = optionItemHoverTimers_[i].GetEase(Easing::OutBack);
+            float ease = optionItemTimers_[i].GetEase(SEED::Methods::Easing::Type::Out_Back);
+            float hoverEase = optionItemHoverTimers_[i].GetEase(SEED::Methods::Easing::Type::Out_Back);
             float baseScale = 0.8f + (0.2f * ease) + (0.1f * hoverEase);
             optionItems_[i]->aditionalTransform_.scale = Vector2(baseScale);
 
@@ -541,9 +541,9 @@ void GameState_SelectMenu::UpdateSlider(){
     sliderRightPos_ = sliderObj_->GetWorldTranslate() + Vector2(sliderSprites_[Body]->size.x, 0.0f);
 
     // スライダーをドラッグ中かどうか
-    if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
+    if(SEED::Input::IsPressMouse(SEED::MOUSE_BUTTON::LEFT)){
         if(sliderColliderObj_->GetIsCollided(mouseColliderObj_)){
-            if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
                 isDraggingSlider_ = true;
             }
         }
@@ -555,7 +555,7 @@ void GameState_SelectMenu::UpdateSlider(){
     // スライダーをドラッグ中なら
     if(isDraggingSlider_){
         // マウス位置に応じてtを更新
-        Vector2 mousePos = Input::GetMousePosition();
+        Vector2 mousePos = SEED::Input::GetMousePosition();
         float t = (mousePos.x - sliderLeftPos_.x) / (sliderRightPos_.x - sliderLeftPos_.x);
         t = std::clamp(t, 0.0f, 1.0f);
 
@@ -571,7 +571,7 @@ void GameState_SelectMenu::UpdateSlider(){
     }
 
     // 状態に応じて見た目を更新
-    float scale = 1.0f + 0.2f * sliderScalingTimer_.GetEase(Easing::OutBack);
+    float scale = 1.0f + 0.2f * sliderScalingTimer_.GetEase(SEED::Methods::Easing::Type::Out_Back);
     sliderColliderObj_->aditionalTransform_.scale = Vector2(scale);
     sliderColliderObj_->UpdateMatrix();
 
@@ -586,9 +586,9 @@ void GameState_SelectMenu::UpdateSlider(){
     } else{
         // スライダー本体の色更新
         if(sliderSprites_[Body]->transform.scale.x > 0.0f){
-            sliderSprites_[Body]->color = Color(0.0f, 1.0f, 0.0f, 1.0f);
+            sliderSprites_[Body]->color = SEED::Color(0.0f, 1.0f, 0.0f, 1.0f);
         } else{
-            sliderSprites_[Body]->color = Color(1.0f, 0.0f, 0.0f, 1.0f);
+            sliderSprites_[Body]->color = SEED::Color(1.0f, 0.0f, 0.0f, 1.0f);
         }
     }
 
@@ -605,7 +605,7 @@ void GameState_SelectMenu::UpdateSlider(){
 ///////////////////////////////////////////////////////////////////////////////
 void GameState_SelectMenu::ApplyAdditionalTransform(){
 
-    float ease = optionPageTimer_.GetEase(Easing::InOutExpo);
+    float ease = optionPageTimer_.GetEase(SEED::Methods::Easing::Type::InOut_Expo);
     for(int32_t i = 0; i < menus_.size(); i++){
         menus_[i]->aditionalTransform_.scale *= Vector2(1.0f - ease);
         menus_[i]->UpdateMatrix();
@@ -623,8 +623,8 @@ void GameState_SelectMenu::ApplyAdditionalTransform(){
 void GameState_SelectMenu::ApplyOptionSettings(){
 
     // 値を計算
-    Range1D valueRange = sliderValueRanges_[(int)currentOptionItem_];
-    float value = MyMath::Lerp(valueRange.min, valueRange.max, slidersT_[(int)currentOptionItem_]);
+    SEED::Range1D valueRange = sliderValueRanges_[(int)currentOptionItem_];
+    float value = SEED::Methods::Math::Lerp(valueRange.min, valueRange.max, slidersT_[(int)currentOptionItem_]);
 
     // 小数点2桁までに丸める(正:切り捨て 負:切り上げ)
     if(value >= 0.0f){
@@ -641,7 +641,7 @@ void GameState_SelectMenu::ApplyOptionSettings(){
     // スライダー位置更新
     sliderColliderObj_->SetWorldTranslate(
         Vector2(
-            MyMath::Lerp(sliderLeftPos_.x, sliderRightPos_.x, slidersT_[(int)currentOptionItem_]),
+            SEED::Methods::Math::Lerp(sliderLeftPos_.x, sliderRightPos_.x, slidersT_[(int)currentOptionItem_]),
             sliderColliderObj_->GetWorldTranslate().y
         )
     );

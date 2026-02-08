@@ -3,6 +3,7 @@
 #include <imgui_internal.h>
 #include <string>
 
+
 // ImGui拡張関数群(string以外の引数が異なるものは区別のためにImFuncに)
 namespace ImGui{
 

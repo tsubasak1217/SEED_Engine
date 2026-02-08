@@ -22,7 +22,7 @@ public:
 #endif // _DEBUG
 
     float duration_ = 0.0f;
-    Timer timer_;
+    SEED::Timer timer_;
     bool start_ = false;
     bool isEmitWarningObj_ = true;
 };

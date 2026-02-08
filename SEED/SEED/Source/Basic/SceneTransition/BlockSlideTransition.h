@@ -8,55 +8,57 @@
 #include <SEED/Lib/Structs/Range2D.h>
 #include <SEED/Lib/Structs/Timer.h>
 
-/// <summary>
-/// 各矩形の情報
-/// </summary>
-struct TransitionQuad{
-    Quad2D quad;
-    float appearTime;
-    float disappearTime;
-    Vector2 startPos;
-    Vector2 midPos;
-    Vector2 endPos;
-};
+namespace SEED{
+    /// <summary>
+    /// 各矩形の情報
+    /// </summary>
+    struct TransitionQuad{
+        Topology::Quad2D quad;
+        float appearTime;
+        float disappearTime;
+        Vector2 startPos;
+        Vector2 midPos;
+        Vector2 endPos;
+    };
 
-/// <summary>
-/// 矩形をスライドさせてシーン遷移を行うクラス
-/// </summary>
-class BlockSlideTransition : public ISceneTransition{
-public:
-    BlockSlideTransition() = default;
-    ~BlockSlideTransition() = default;
+    /// <summary>
+    /// 矩形をスライドさせてシーン遷移を行うクラス
+    /// </summary>
+    class BlockSlideTransition : public ISceneTransition{
+    public:
+        BlockSlideTransition() = default;
+        ~BlockSlideTransition() = default;
 
-protected:
-    void Update()override;
-    void Draw()override;
+    protected:
+        void Update()override;
+        void Draw()override;
 
-public:
+    public:
 
-    // 遷移の開始
-    void StartTransition(float curSceneExitTime, float newSceneEnterTime)override {
-        ISceneTransition::StartTransition(curSceneExitTime, newSceneEnterTime);
-        CreateQuadInfo();
-    }
+        // 遷移の開始
+        void StartTransition(float curSceneExitTime, float newSceneEnterTime)override{
+            ISceneTransition::StartTransition(curSceneExitTime, newSceneEnterTime);
+            CreateQuadInfo();
+        }
 
-    // 六角形の情報セット
-    void SetQuadInfo(
-        float quadWidth, // 六角形の半径
-        const std::vector<Vector4>& colorList = { {1.0f,1.0f,1.0f,1.0f} }// 色リスト
-    );
+        // 六角形の情報セット
+        void SetQuadInfo(
+            float quadWidth, // 六角形の半径
+            const std::vector<Vector4>& colorList = { {1.0f,1.0f,1.0f,1.0f} }// 色リスト
+        );
 
-private:
-    void CreateQuadInfo();
+    private:
+        void CreateQuadInfo();
 
-private:
-    // リスト
-    std::vector<TransitionQuad> quads_;
-    std::vector<Vector4> colorList_;
+    private:
+        // リスト
+        std::vector<TransitionQuad> quads_;
+        std::vector<Vector4> colorList_;
 
-    // パラメータ
-    float quadWidth_;
-    float scaleTime = 0.2f;
-    bool isExitScene_ = false;
-    float appearEndTimeT_ = 0.7f;
-};
+        // パラメータ
+        float quadWidth_;
+        float scaleTime = 0.2f;
+        bool isExitScene_ = false;
+        float appearEndTimeT_ = 0.7f;
+    };
+}

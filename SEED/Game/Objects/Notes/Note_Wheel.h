@@ -21,7 +21,7 @@ public:
 #endif // _DEBUG
 
 public:
-    UpDown direction_ = UpDown::NONE;
+    SEED::GeneralEnum::UpDown direction_ = SEED::GeneralEnum::UpDown::NONE;
     uint32_t wheelDirectionGH_;
     uint32_t wheelAuraGH_;
     Vector4 upDownColor_[2];

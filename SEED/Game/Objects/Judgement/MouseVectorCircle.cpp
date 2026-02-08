@@ -8,12 +8,12 @@
 void MouseVectorCircle::Initialize(){
 
     // オブジェクトの読み込み
-    Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    SEED::Hierarchy* hierarchy = SEED::GameSystem::GetScene()->GetHierarchy();
     circleObj_ = hierarchy->LoadObject2D("PlayScene/MouseVectorCircle.prefab");
     cursorObj_ = hierarchy->LoadObject2D("PlayScene/MouseVectorCursor.prefab");
 
     // 色の初期化
-    circleObj_->masterColor_ = Color(0.0f, 1.0f, 0.25f, 1.0f);
+    circleObj_->masterColor_ = SEED::Color(0.0f, 1.0f, 0.25f, 1.0f);
 
     // 初期スケールの設定
     circleObj_->SetWorldScale(Vector2(0.0f));
@@ -49,18 +49,18 @@ void MouseVectorCircle::Update(){
 
     if(circleObj_){
         // スケーリングの適用
-        float ease = scalingTimer_.GetEase(Easing::OutBack);
+        float ease = scalingTimer_.GetEase(SEED::Methods::Easing::Type::Out_Back);
         circleObj_->SetWorldScale(Vector2(ease));
 
         // マウスベクトルと長さを取得
-        Vector2 mouseVec = Input::GetMouseVector();
+        Vector2 mouseVec = SEED::Input::GetMouseVector();
         float deadZone = PlayerInput::GetInstance()->GetFlickDeadZone();// 無視するデッドゾーンの大きさ
         float len = mouseVec.Length();
 
         // 長さに応じた処理
         if(len >= deadZone){
             // フリック判定の際は緑っぽい色に
-            circleObj_->masterColor_ = Color(0.0f, 1.0f, 0.25f, 1.0f);
+            circleObj_->masterColor_ = SEED::Color(0.0f, 1.0f, 0.25f, 1.0f);
 
         } else{
 
@@ -70,7 +70,7 @@ void MouseVectorCircle::Update(){
             }
 
             // 黄色に徐々に戻す
-            circleObj_->masterColor_.AddHue(-2.0f * ClockManager::DeltaTime(), true);
+            circleObj_->masterColor_.AddHue(-2.0f * SEED::ClockManager::DeltaTime(), true);
         }
 
 
@@ -82,13 +82,13 @@ void MouseVectorCircle::Update(){
             // ラープ係数
             float lerpRate;
             if(len > deadZone){
-                lerpRate = 20.0f * ClockManager::DeltaTime();
+                lerpRate = 20.0f * SEED::ClockManager::DeltaTime();
             } else{
-                lerpRate = 5.0f * ClockManager::DeltaTime();
+                lerpRate = 5.0f * SEED::ClockManager::DeltaTime();
             }
 
             // 前フレームの位置からターゲットへ補間
-            prevMouseVec_ = MyMath::Lerp(prevMouseVec_, targetVec, lerpRate);
+            prevMouseVec_ = SEED::Methods::Math::Lerp(prevMouseVec_, targetVec, lerpRate);
 
             // カーソルの位置を更新
             cursorObj_->SetWorldTranslate(kWindowCenter + prevMouseVec_ * ease);

@@ -15,9 +15,9 @@
 /// <summary>
 /// リザルトシーンを更新するコンポーネント
 /// </summary>
-class ResultUpdate2DComponent : public IComponent{
+class ResultUpdate2DComponent : public SEED::IComponent{
 public:
-    ResultUpdate2DComponent(GameObject2D* pOwner, const std::string& tagName = "");
+    ResultUpdate2DComponent(SEED::GameObject2D* pOwner, const std::string& tagName = "");
     ~ResultUpdate2DComponent() = default;
     void BeginFrame()override;
     void Update()override;
@@ -30,13 +30,13 @@ public:// accessor
     void SetPlayResult(const PlayResult& result) { playResult_ = result; }
 
 private:
-    TimerArray timer_;
-    std::unordered_map<std::string, GameObject2D*> uiObjects_;
+    SEED::TimerArray timer_;
+    std::unordered_map<std::string, SEED::GameObject2D*> uiObjects_;
     PlayResult playResult_;
     PlayResult displayResult_;
     bool isFirstUpdate_ = true;
     bool isInitialized_ = false;
     std::unordered_map<ScoreRank, std::string> rankToString_;
-    GameObject* rankObj_ = nullptr;
-    GameObject* cameraPointObj_ = nullptr;
+    SEED::GameObject* rankObj_ = nullptr;
+    SEED::GameObject* cameraPointObj_ = nullptr;
 };

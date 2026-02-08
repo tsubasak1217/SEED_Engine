@@ -21,5 +21,5 @@ public:
 #endif // _DEBUG
 
 public:
-    LR flickDirection_ = LR::NONE;// フリックの方向
+    SEED::GeneralEnum::LR flickDirection_ = SEED::GeneralEnum::LR::NONE;// フリックの方向
 };

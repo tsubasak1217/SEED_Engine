@@ -10,10 +10,10 @@
 /// <summary>
 /// 楽曲を選択するステート
 /// </summary>
-class GameState_Select : public SceneState_Base{
+class GameState_Select : public SEED::SceneState_Base{
 public:
     GameState_Select();
-    GameState_Select(Scene_Base* pScene);
+    GameState_Select(SEED::Scene_Base* pScene);
     ~GameState_Select() override;
 
 public:
@@ -29,5 +29,5 @@ public:
 private:
     std::unique_ptr<SongSelector> songSelector_;
     std::unique_ptr<SelectBackGroundDrawer> backGroundDrawer_;
-    GameObject2D* mouseCursorObj_ = nullptr;
+    SEED::GameObject2D* mouseCursorObj_ = nullptr;
 };

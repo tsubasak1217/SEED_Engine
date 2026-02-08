@@ -1,7 +1,7 @@
 #include <SEED/Source/Basic/Camera/BaseCamera.h>
-#include <SEED/Lib/Functions/MatrixFunc.h>
-#include <SEED/Lib/Functions/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc.h>
+#include <SEED/Lib/Functions/MatrixMath.h>
+#include <SEED/Lib/Functions/RandomFunc.h>
+#include <SEED/Lib/Functions/Math.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <Environment/Environment.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
@@ -9,147 +9,149 @@
 
 float znearOffsetForLayer = 0.09f;
 
-BaseCamera::BaseCamera(){
-    Initialize();
-}
-
-void BaseCamera::Initialize(){
-    transform_.scale = { 1.0f,1.0f,1.0f }; // scale
-    transform_.rotate = Quaternion();
-    transform_.translate = { 0.0f,1.0f,-10.0f }; // translate
-    projectionMode_ = PERSPECTIVE;
-    clipRange_ = kWindowSize;
-    znear_ = 0.1f;
-    zfar_ = 1000.0f;
-    fov_ = 0.45f;
-    shakeTime_ = 0.0f;
-    shakePower_ = 0.0f;
-    UpdateMatrix();
-}
-
-void BaseCamera::UpdateMatrix(){
-
-    znear_ = std::clamp(znear_, 0.1f, zfar_);
-    float adjustedZnear = znear_ - znearOffsetForLayer;
-    adjustedZnear = std::clamp(adjustedZnear, 0.01f, zfar_);
-
-    // カメラのワールド行列
-    worldMat_ = AffineMatrix(
-        transform_.scale,
-        transform_.rotate,
-        transform_.translate + CalcShake()
-    );
-
-    Vector3 eulerRot = Quaternion::ToEuler(transform_.rotate);
-    worldMat2D_ = AffineMatrix(
-        { transform_.scale.x,transform_.scale.y,1.0f },
-        { 0.0f,0.0f,eulerRot.z },
-        { transform_.translate.x,transform_.translate.y,transform_.translate.z + CalcShake().z }
-    );
-
-    // カメラの逆行列
-    viewMat_ = InverseMatrix(worldMat_);
-    viewMat2D_ = InverseMatrix(worldMat2D_);
-
-    //射影行列の生成
-    projectionMat_ = PerspectiveMatrix(
-        fov_,
-        clipRange_.x / clipRange_.y,
-        znear_, zfar_
-    );
-
-    projectionMat2D_ = OrthoMatrix(
-        0.0f, clipRange_.x,
-        0.0f, clipRange_.y,
-        adjustedZnear, zfar_
-    );
-
-    // カメラ法線
-    normal_ = MyMath::Normalize(Multiply({ 0.0f,0.0f,1.0f }, RotateMatrix(transform_.rotate)));
-
-    // 平行投影の場合は2D射影行列を使用
-    if(projectionMode_ == ORTHO){
-        projectionMat_ = projectionMat2D_;
+namespace SEED{
+    BaseCamera::BaseCamera(){
+        Initialize();
     }
 
-    // ViewProjectionMatrixの計算
-    viewProjectionMat_ = Multiply(viewMat_, projectionMat_);
-    viewProjectionMat2D_ = Multiply(viewMat2D_, projectionMat2D_);
-
-    // viewport行列
-    viewportMat_ = ViewportMatrix(kWindowSize, { 0.0f,0.0f }, znear_, zfar_);
-    vpVp_ = Multiply(viewProjectionMat_, viewportMat_);
-
-    // shakeの時間を減らす
-    shakeTime_ = std::clamp(shakeTime_ - ClockManager::DeltaTime(), 0.0f, 1000000.0f);
-}
-
-void BaseCamera::Update(){
-    UpdateMatrix();
-}
-
-
-// カメラを揺らす
-void BaseCamera::SetShake(float time, float power, const Vector3 level){
-    kShakeTime_ = time;
-    shakeTime_ = kShakeTime_;
-    shakePower_ = power;
-    shakeLevel_ = level;
-}
-
-
-// シェイクの計算
-Vector3 BaseCamera::CalcShake(){
-    if(kShakeTime_ == 0.0f){
-        return { 0.0f,0.0f,0.0f };
+    void BaseCamera::Initialize(){
+        transform_.scale = { 1.0f,1.0f,1.0f }; // scale
+        transform_.rotate = Quaternion();
+        transform_.translate = { 0.0f,1.0f,-10.0f }; // translate
+        projectionMode_ = PERSPECTIVE;
+        clipRange_ = kWindowSize;
+        znear_ = 0.1f;
+        zfar_ = 1000.0f;
+        fov_ = 0.45f;
+        shakeTime_ = 0.0f;
+        shakePower_ = 0.0f;
+        UpdateMatrix();
     }
 
-    float t = shakeTime_ / kShakeTime_;
-    Vector3 rondomVec = MyFunc::RandomVector();
-    return (rondomVec * shakePower_ * t) * shakeLevel_;
-}
+    void BaseCamera::UpdateMatrix(){
 
-// スクリーン座標からワールド座標に変換
-Vector3 BaseCamera::ToWorldPosition(const Vector2& screenPos, float unNormalizedDepth){
-    Line ray = GetRay(screenPos);
-    Vector3 vec = MyMath::Normalize(ray.end_ - ray.origin_);
-    return ray.origin_ + vec * unNormalizedDepth;
-}
+        znear_ = std::clamp(znear_, 0.1f, zfar_);
+        float adjustedZnear = znear_ - znearOffsetForLayer;
+        adjustedZnear = std::clamp(adjustedZnear, 0.01f, zfar_);
 
-// ワールド座標からスクリーン座標に変換
-Vector2 BaseCamera::ToScreenPosition(const Vector3& worldPos){
-    Vector3 transformed = worldPos * vpVp_;
-    return { transformed.x, transformed.y };
-}
+        // カメラのワールド行列
+        worldMat_ = Methods::Matrix::AffineMatrix(
+            transform_.scale,
+            transform_.rotate,
+            transform_.translate + CalcShake()
+        );
+
+        Vector3 eulerRot = Quaternion::ToEuler(transform_.rotate);
+        worldMat2D_ = Methods::Matrix::AffineMatrix(
+            { transform_.scale.x,transform_.scale.y,1.0f },
+            { 0.0f,0.0f,eulerRot.z },
+            { transform_.translate.x,transform_.translate.y,transform_.translate.z + CalcShake().z }
+        );
+
+        // カメラの逆行列
+        viewMat_ = Methods::Matrix::InverseMatrix(worldMat_);
+        viewMat2D_ = Methods::Matrix::InverseMatrix(worldMat2D_);
+
+        //射影行列の生成
+        projectionMat_ = Methods::Matrix::PerspectiveMatrix(
+            fov_,
+            clipRange_.x / clipRange_.y,
+            znear_, zfar_
+        );
+
+        projectionMat2D_ = Methods::Matrix::OrthoMatrix(
+            0.0f, clipRange_.x,
+            0.0f, clipRange_.y,
+            adjustedZnear, zfar_
+        );
+
+        // カメラ法線
+        normal_ = Methods::Math::Normalize(Methods::Matrix::Multiply({ 0.0f,0.0f,1.0f }, Methods::Matrix::RotateMatrix(transform_.rotate)));
+
+        // 平行投影の場合は2D射影行列を使用
+        if(projectionMode_ == ORTHO){
+            projectionMat_ = projectionMat2D_;
+        }
+
+        // ViewProjectionMatrixの計算
+        viewProjectionMat_ = Methods::Matrix::Multiply(viewMat_, projectionMat_);
+        viewProjectionMat2D_ = Methods::Matrix::Multiply(viewMat2D_, projectionMat2D_);
+
+        // viewport行列
+        viewportMat_ = Methods::Matrix::ViewportMatrix(kWindowSize, { 0.0f,0.0f }, znear_, zfar_);
+        vpVp_ = Methods::Matrix::Multiply(viewProjectionMat_, viewportMat_);
+
+        // shakeの時間を減らす
+        shakeTime_ = std::clamp(shakeTime_ - ClockManager::DeltaTime(), 0.0f, 1000000.0f);
+    }
+
+    void BaseCamera::Update(){
+        UpdateMatrix();
+    }
 
 
-// znearとzfar間のレイを取得
-Line BaseCamera::GetRay(const Vector2& screenPos){
-    Vector3 ndcNear = {
-        (2.0f * screenPos.x) / clipRange_.x - 1.0f,
-        1.0f - (2.0f * screenPos.y) / clipRange_.y,
-        -1.0f,
-    };
-
-    Vector3 ndcFar = { ndcNear.x,ndcNear.y,1.0f };
-    Matrix4x4 invViewProjection = InverseMatrix(viewProjectionMat_);
-    Vector3 worldPos[2] = {
-        ndcNear * invViewProjection,
-        ndcFar * invViewProjection
-    };
-
-    return Line(worldPos[0], worldPos[1]);
-}
+    // カメラを揺らす
+    void BaseCamera::SetShake(float time, float power, const Vector3 level){
+        kShakeTime_ = time;
+        shakeTime_ = kShakeTime_;
+        shakePower_ = power;
+        shakeLevel_ = level;
+    }
 
 
-// 編集
-void BaseCamera::Edit(){
-#ifdef _DEBUG
+    // シェイクの計算
+    Vector3 BaseCamera::CalcShake(){
+        if(kShakeTime_ == 0.0f){
+            return { 0.0f,0.0f,0.0f };
+        }
 
-    ImGui::DragFloat2("ClipRange", &clipRange_.x, 1.0f, 1.0f, 3840.0f);
-    ImGui::DragFloat("Fov", &fov_, 0.01f, 0.1f, 3.0f);
-    ImGui::DragFloat3("Translate", &transform_.translate.x, 0.1f);
-    ImGui::DragFloat3("Scale", &transform_.scale.x, 0.1f);
+        float t = shakeTime_ / kShakeTime_;
+        Vector3 rondomVec = Methods::Rand::RandomVector();
+        return (rondomVec * shakePower_ * t) * shakeLevel_;
+    }
 
-#endif // _DEBUG
+    // スクリーン座標からワールド座標に変換
+    Vector3 BaseCamera::ToWorldPosition(const Vector2& screenPos, float unNormalizedDepth){
+        Topology::Line ray = GetRay(screenPos);
+        Vector3 vec = Methods::Math::Normalize(ray.end_ - ray.origin_);
+        return ray.origin_ + vec * unNormalizedDepth;
+    }
+
+    // ワールド座標からスクリーン座標に変換
+    Vector2 BaseCamera::ToScreenPosition(const Vector3& worldPos){
+        Vector3 transformed = worldPos * vpVp_;
+        return { transformed.x, transformed.y };
+    }
+
+
+    // znearとzfar間のレイを取得
+    Topology::Line BaseCamera::GetRay(const Vector2& screenPos){
+        Vector3 ndcNear = {
+            (2.0f * screenPos.x) / clipRange_.x - 1.0f,
+            1.0f - (2.0f * screenPos.y) / clipRange_.y,
+            -1.0f,
+        };
+
+        Vector3 ndcFar = { ndcNear.x,ndcNear.y,1.0f };
+        Matrix4x4 invViewProjection = Methods::Matrix::InverseMatrix(viewProjectionMat_);
+        Vector3 worldPos[2] = {
+            ndcNear * invViewProjection,
+            ndcFar * invViewProjection
+        };
+
+        return Topology::Line(worldPos[0], worldPos[1]);
+    }
+
+
+    // 編集
+    void BaseCamera::Edit(){
+    #ifdef _DEBUG
+
+        ImGui::DragFloat2("ClipRange", &clipRange_.x, 1.0f, 1.0f, 3840.0f);
+        ImGui::DragFloat("Fov", &fov_, 0.01f, 0.1f, 3.0f);
+        ImGui::DragFloat3("Translate", &transform_.translate.x, 0.1f);
+        ImGui::DragFloat3("Scale", &transform_.scale.x, 0.1f);
+
+    #endif // _DEBUG
+    }
 }

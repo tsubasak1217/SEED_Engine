@@ -4,13 +4,15 @@
 #include <SEED/Lib/Structs/blendMode.h>
 #include <memory>
 
-/// <summary>
-/// パイプラインステートオブジェクト(描画設定を一括に行うための構造体)
-/// </summary>
-struct PSO{
-    std::unique_ptr<IPipeline> pipeline;
-    std::unique_ptr<RootSignature> rootSignature;
-    BlendMode GetBlendMode() const {
-        return pipeline->blendMode_;
-    }
-};
+namespace SEED{
+    /// <summary>
+    /// パイプラインステートオブジェクト(描画設定を一括に行うための構造体)
+    /// </summary>
+    struct PSO{
+        std::unique_ptr<IPipeline> pipeline;
+        std::unique_ptr<RootSignature> rootSignature;
+        BlendMode GetBlendMode() const{
+            return pipeline->blendMode_;
+        }
+    };
+}

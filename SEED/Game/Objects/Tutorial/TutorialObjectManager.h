@@ -11,7 +11,7 @@
 class TutorialObjectManager{
 public:
     TutorialObjectManager();
-    TutorialObjectManager(const Timer* pSongPlayTimer);
+    TutorialObjectManager(const SEED::Timer* pSongPlayTimer);
     ~TutorialObjectManager();
     void Initialize();
     void Update();
@@ -30,12 +30,12 @@ private:
     struct TutorialData{
         std::string tutorialVideoFilePath;
         float startTime;
-        Timer tutorialTimer;
-        Timer videoScalingTimer = Timer(1.5f);
-        Quad2D videoQuad;
-        std::unique_ptr<VideoPlayer> videoPlayer;
-        GameObject2D* tutorialTitleObject = nullptr;
-        GameObject2D* tutorialTextObject = nullptr;
+        SEED::Timer tutorialTimer;
+        SEED::Timer videoScalingTimer = SEED::Timer(1.5f);
+        SEED::Topology::Quad2D videoQuad;
+        std::unique_ptr<SEED::VideoPlayer> videoPlayer;
+        SEED::GameObject2D* tutorialTitleObject = nullptr;
+        SEED::GameObject2D* tutorialTextObject = nullptr;
         bool isPlaying = false;
         std::string text;
         std::string explainText;
@@ -45,7 +45,7 @@ private:
 private:
 
     // 曲再生タイマーのポインタ
-    const Timer* pSongPlayTimer_ = nullptr;
+    const SEED::Timer* pSongPlayTimer_ = nullptr;
 
     // チュートリアルを管理する変数
     std::array<TutorialData, kTutorialCount> tutorials_;

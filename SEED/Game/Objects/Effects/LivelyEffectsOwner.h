@@ -7,9 +7,9 @@
 /// 盛り上がり演出オブジェクト
 /// </summary>
 struct LivelyEffect{
-    GameObject* parentObj_;
-    GameObject* effectObj_;
-    Timer moveTimer_;
+    SEED::GameObject* parentObj_;
+    SEED::GameObject* effectObj_;
+    SEED::Timer moveTimer_;
 };
 
 /// <summary>
@@ -25,7 +25,7 @@ public:
     void Edit();
 
 private:
-    Timer emitTimer_;
+    SEED::Timer emitTimer_;
     int32_t numEmitEvery_;
     float emitRangeRadius_;
     float baseDepth_;

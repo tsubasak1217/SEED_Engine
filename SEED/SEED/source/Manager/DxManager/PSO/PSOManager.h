@@ -13,80 +13,84 @@
 #include "RootSignature.h"
 #include "PSO.h"
 
+// 前方宣言
 struct ID3D12RootSignature;
 struct ID3D12PipelineState;
 
-// パイプラインの種類
-enum class PipelineType{
-    VSPipeline = 0,
-    MSPipeline,
-    CSPipeline,
-};
+namespace SEED{
 
-//////////////////////////////////////////////////////////////////////
-// PSOを管理するクラス
-//////////////////////////////////////////////////////////////////////
-class PSOManager{
-
-private:
-    static const int kTopologyCount = 2;
-    static const int kBlendModeCount = (int)BlendMode::kBlendModeCount;
-    static const int kCullModeCount = 3;
-
-    struct PSODictionary{
-        std::array<
-            std::array<
-                std::array<std::unique_ptr<PSO>, kBlendModeCount>,
-            kCullModeCount>,
-        kTopologyCount> dict_;// パイプラインの辞書
+    // パイプラインの種類
+    enum class PipelineType{
+        VSPipeline = 0,
+        MSPipeline,
+        CSPipeline,
     };
 
-private:
-    // コピー・ムーブ禁止
-    PSOManager(const PSOManager&) = delete;
-    void operator=(const PSOManager&) = delete;
-    void operator=(PSOManager&&) = delete;
+    //////////////////////////////////////////////////////////////////////
+    // PSOを管理するクラス
+    //////////////////////////////////////////////////////////////////////
+    class PSOManager{
 
-    // privateコンストラクタ
-    PSOManager() = default;
+    private:
+        static const int kTopologyCount = 2;
+        static const int kBlendModeCount = (int)BlendMode::kBlendModeCount;
+        static const int kCullModeCount = 3;
 
-    // インスタンス
-    static PSOManager* instance_;
+        struct PSODictionary{
+            std::array<
+                std::array<
+                std::array<std::unique_ptr<PSO>, kBlendModeCount>,
+                kCullModeCount>,
+                kTopologyCount> dict_;// パイプラインの辞書
+        };
 
-public:
+    private:
+        // コピー・ムーブ禁止
+        PSOManager(const PSOManager&) = delete;
+        void operator=(const PSOManager&) = delete;
+        void operator=(PSOManager&&) = delete;
 
-    static PSOManager* GetInstance();
-    ~PSOManager();
-    void Release();
+        // privateコンストラクタ
+        PSOManager() = default;
 
-public:
+        // インスタンス
+        static PSOManager* instance_;
 
-    // PSOの取得
-    static PSO* GetPSO(const std::string& name, BlendMode blendMode, D3D12_CULL_MODE cullMode, PolygonTopology topology);
-    static PSO* GetPSO_Compute(const std::string& name);
+    public:
 
-    // ファイルからPSOを生成
-    static void CreatePipelines(const std::string& filename);
+        static PSOManager* GetInstance();
+        ~PSOManager();
+        void Release();
 
-    // RootSignatureに対してバインド情報を設定する関数
-    static void SetBindInfo(
-        const std::string& pipelineName, const std::string& variableName,
-        std::variant<D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_GPU_VIRTUAL_ADDRESS, void*> info
-    );
+    public:
 
-private:
-    // PSOの生成
-    static void Create(RootSignature* pRootSignature, IPipeline* pPipeline,bool isCSPipeline = false);
+        // PSOの取得
+        static PSO* GetPSO(const std::string& name, BlendMode blendMode, D3D12_CULL_MODE cullMode, PolygonTopology topology);
+        static PSO* GetPSO_Compute(const std::string& name);
 
-    // シェーダー情報からRootSignatureの情報を作成する関数
-    void GenerateRootParameters(
-        RootSignature* rootSignature,
-        const std::string& shaderName,ID3D12ShaderReflection* reflection
-    );
-    void GenerateInputLayout(Pipeline* pipeline, ID3D12ShaderReflection* reflection);
-    DXGI_FORMAT GetFormatFromSignatureDesc(const D3D12_SIGNATURE_PARAMETER_DESC& desc);
+        // ファイルからPSOを生成
+        static void CreatePipelines(const std::string& filename);
 
-private:
-    std::unordered_map<std::string, PSODictionary> psoDictionary_;// パイプラインの辞書
-    std::unordered_map<std::string, std::unique_ptr<PSO>> csPsoDictionary_;// CSのパイプラインの辞書
-};
+        // RootSignatureに対してバインド情報を設定する関数
+        static void SetBindInfo(
+            const std::string& pipelineName, const std::string& variableName,
+            std::variant<D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_GPU_VIRTUAL_ADDRESS, void*> info
+        );
+
+    private:
+        // PSOの生成
+        static void Create(RootSignature* pRootSignature, IPipeline* pPipeline, bool isCSPipeline = false);
+
+        // シェーダー情報からRootSignatureの情報を作成する関数
+        void GenerateRootParameters(
+            RootSignature* rootSignature,
+            const std::string& shaderName, ID3D12ShaderReflection* reflection
+        );
+        void GenerateInputLayout(Pipeline* pipeline, ID3D12ShaderReflection* reflection);
+        DXGI_FORMAT GetFormatFromSignatureDesc(const D3D12_SIGNATURE_PARAMETER_DESC& desc);
+
+    private:
+        std::unordered_map<std::string, PSODictionary> psoDictionary_;// パイプラインの辞書
+        std::unordered_map<std::string, std::unique_ptr<PSO>> csPsoDictionary_;// CSのパイプラインの辞書
+    };
+}

@@ -1,5 +1,4 @@
 #include "NotesData.h"
-#include <SEED/Lib/Functions/MyFunc.h>
 #include <SEED/Source/Manager/ClockManager/ClockManager.h>
 #include <Game/Objects/Judgement/PlayerInput.h>
 #include <Game/Objects/Judgement/Judgement.h>
@@ -27,8 +26,8 @@ NotesData::NotesData(){
     waitTimer_.Initialize(6.0f);
 
     // 音源情報の初期化
-    AudioManager::LoadAudio(AudioDictionary::Get("Metronome")); // メトロノームのロード
-    AudioManager::LoadAudio(AudioDictionary::Get("Answer")); // アンサー音のロード
+    SEED::AudioManager::LoadAudio(AudioDictionary::Get("Metronome")); // メトロノームのロード
+    SEED::AudioManager::LoadAudio(AudioDictionary::Get("Answer")); // アンサー音のロード
 }
 
 
@@ -36,7 +35,7 @@ NotesData::NotesData(){
 // ノーツデータのデストラクタ
 ////////////////////////////////////////////////////////////////////
 NotesData::~NotesData(){
-    AudioManager::EndAudio(songAudioHandle_); // 音源の終了
+    SEED::AudioManager::EndAudio(songAudioHandle_); // 音源の終了
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -89,7 +88,7 @@ void NotesData::Update(){
 
         // すこし経過したら「Ready?」テキストを出現させる
         if(waitTimer_.GetTrigger(1.0f)){
-            auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+            auto* hierarchy = SEED::GameSystem::GetScene()->GetHierarchy();
             hierarchy->LoadObject2D("PlayScene/readyText.prefab");
         }
     }
@@ -171,11 +170,11 @@ std::vector<std::weak_ptr<Note_Base>> NotesData::GetNearNotes(float time){
 
     // 判定範囲を取得
     float borderTime = Judgement::GetInstance()->GetJudgeTime(Judgement::Evaluation::GOOD);
-    Range1D range(time - borderTime, time + borderTime);
+    SEED::Range1D range(time - borderTime, time + borderTime);
 
     // 範囲内にあるノーツを入れていく
     for(auto& note : notes_){
-        if(MyFunc::IsContain(range, note.first)){
+        if(SEED::Methods::Math::IsContain(range, note.first)){
             nearNotes.push_back(note.second);
         }
     }
@@ -326,15 +325,15 @@ void NotesData::PlayAudio(){
     if(songTimer_.currentTime >= startOffsetTime_){
         // 再生されていないなら再生
         if(!isSongStarted_){
-            AudioManager::EndAudio(songAudioHandle_); // 前の音源を終了
-            songAudioHandle_ = AudioManager::PlayAudio(songFilePath_, false, 1.0f, songTimer_.currentTime - startOffsetTime_);
+            SEED::AudioManager::EndAudio(songAudioHandle_); // 前の音源を終了
+            songAudioHandle_ = SEED::AudioManager::PlayAudio(songFilePath_, false, 1.0f, songTimer_.currentTime - startOffsetTime_);
             isSongStarted_ = true;
 
         } else{
             if(!isEnd_){
                 // 音ズレの許容時間と比較してズレていたら補正
                 static float toleranceTime = 1.0f / 60.0f;
-                float audioTime = AudioManager::GetAudioPlayTime(songAudioHandle_);
+                float audioTime = SEED::AudioManager::GetAudioPlayTime(songAudioHandle_);
 
                 // タイマーを音源に合わせる
                 float dif = (songTimer_.currentTime - startOffsetTime_) - audioTime;
@@ -350,8 +349,8 @@ void NotesData::PlayAudio(){
     } else{
         // 再生されているなら停止
         isSongStarted_ = false;
-        if(AudioManager::IsPlayingAudio(songAudioHandle_)){
-            AudioManager::EndAudio(songAudioHandle_);
+        if(SEED::AudioManager::IsPlayingAudio(songAudioHandle_)){
+            SEED::AudioManager::EndAudio(songAudioHandle_);
         }
 
         // メトロノームの再生
@@ -367,7 +366,7 @@ void NotesData::PlayAudio(){
         // 拍のラインを超えた瞬間であればメトロノームを鳴らす
         if((signatureCount[0] != signatureCount[1])){
             // メトロノームの再生
-            AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false);
+            SEED::AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false);
         }
     }
 
@@ -391,9 +390,9 @@ void NotesData::PlayAudio(){
         if(it->time <= borderTime[0] && it->time > borderTime[1]){
             // 鳴らしたら削除
             if(it->isExNote == false){
-                AudioManager::PlayAudio(AudioDictionary::Get("Answer"), false);
+                SEED::AudioManager::PlayAudio(AudioDictionary::Get("Answer"), false);
             } else{
-                AudioManager::PlayAudio(AudioDictionary::Get("AnswerEx"), false);
+                SEED::AudioManager::PlayAudio(AudioDictionary::Get("AnswerEx"), false);
             }
             it = answerInfo_.erase(it);
 
@@ -411,7 +410,7 @@ void NotesData::Pause(){
     isPauseMode_ = true;
     isStopped_ = true;
     songTimer_.Stop();
-    AudioManager::EndAudio(songAudioHandle_);
+    SEED::AudioManager::EndAudio(songAudioHandle_);
 }
 
 void NotesData::Resume(){
@@ -420,7 +419,7 @@ void NotesData::Resume(){
     // 再生状態にする
     songTimer_.Restart();
     if(songTimer_.currentTime >= startOffsetTime_){
-        songAudioHandle_ = AudioManager::PlayAudio(songFilePath_, false, 1.0f, songTimer_.currentTime - startOffsetTime_);
+        songAudioHandle_ = SEED::AudioManager::PlayAudio(songFilePath_, false, 1.0f, songTimer_.currentTime - startOffsetTime_);
     }
 }
 
@@ -428,9 +427,9 @@ void NotesData::Resume(){
 // 指定した時間範囲に指定した形式のノーツが存在するか検索する
 //////////////////////////////////////////////////////////////////////
 bool NotesData::SearchNoteByTime(float minTime, float maxTime, NoteType noteType)const{
-    Range1D searchRange(minTime, maxTime);
+    SEED::Range1D searchRange(minTime, maxTime);
     for(auto& note : notes_){
-        if(MyFunc::IsContain(searchRange, note.first)){
+        if(SEED::Methods::Math::IsContain(searchRange, note.first)){
             if(note.second->noteType_ == noteType){
                 return true;
             }
@@ -451,7 +450,7 @@ void NotesData::FromJson(const SongInfo& songInfo, int32_t difficulty){
     // 音源関連の情報を取得
     songFilePath_ = songInfo_.audioFilePath;
     audioVolume_ = songInfo_.songVolume;
-    AudioManager::LoadAudio(songFilePath_); // オーディオをロード
+    SEED::AudioManager::LoadAudio(songFilePath_); // オーディオをロード
 
     // 譜面データのファイルパスを保存
     jsonPath_ = songInfo_.jsonFilePath[playDifficulty_];
@@ -464,7 +463,7 @@ void NotesData::FromJson(const SongInfo& songInfo, int32_t difficulty){
 
 
     // ノーツデータの読み込み
-    nlohmann::json notesData = MyFunc::GetJson(jsonPath_);
+    nlohmann::json notesData = SEED::Methods::File::GetJson(jsonPath_);
     if(notesData.contains("notes")){
         for(const auto& noteJson : notesData["notes"]){
             std::string noteType = noteJson["noteType"];
@@ -507,9 +506,9 @@ void NotesData::FromJson(const SongInfo& songInfo, int32_t difficulty){
 
             // 上下反転
             if(PlaySettings::GetInstance()->GetIsReverseUD()){
-                note->layer_ = (note->layer_ == UpDown::UP)
-                    ? UpDown::DOWN
-                    : UpDown::UP;
+                note->layer_ = (note->layer_ == SEED::GeneralEnum::UpDown::UP)
+                    ? SEED::GeneralEnum::UpDown::DOWN
+                    : SEED::GeneralEnum::UpDown::UP;
             }
         }
     }
@@ -602,11 +601,11 @@ void NotesData::Edit(){
     static ImTextureID pauseIcon = nullptr;
 
     if(!playIcon or !pauseIcon){
-        playIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play2.png");
-        pauseIcon = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play.png");
+        playIcon = SEED::TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play2.png");
+        pauseIcon = SEED::TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play.png");
     }
 
-    ImFunc::CustomBegin("NotesData", MoveOnly_TitleBar);
+    SEED::ImFunc::CustomBegin("NotesData", SEED::MoveOnly_TitleBar);
     {
 
         // 再生・停止・時間変更
@@ -624,7 +623,7 @@ void NotesData::Edit(){
 
         ImGui::SameLine();
         if(ImGui::SliderFloat("曲時間", &songTimer_.currentTime, 0.0f, songTimer_.duration)){
-            AudioManager::EndAudio(songAudioHandle_);
+            SEED::AudioManager::EndAudio(songAudioHandle_);
 
             // ノーツの初期化
             notes_.clear();
@@ -637,9 +636,9 @@ void NotesData::Edit(){
         } else{
             if(!isStopped_ && !isEnd_){
                 if(songTimer_.currentTime >= startOffsetTime_){
-                    if(!AudioManager::IsPlayingAudio(songAudioHandle_)){
+                    if(!SEED::AudioManager::IsPlayingAudio(songAudioHandle_)){
                         songAudioHandle_ =
-                            AudioManager::PlayAudio(
+                            SEED::AudioManager::PlayAudio(
                                 songFilePath_, false, 1.0f, songTimer_.currentTime - startOffsetTime_
                             );
                     }
@@ -649,7 +648,7 @@ void NotesData::Edit(){
 
         // 音ズレの表示
         if(isSongStarted_){
-            float dif = std::fabsf((songTimer_.currentTime - startOffsetTime_) - AudioManager::GetAudioPlayTime(songAudioHandle_));
+            float dif = std::fabsf((songTimer_.currentTime - startOffsetTime_) - SEED::AudioManager::GetAudioPlayTime(songAudioHandle_));
             ImGui::Text("音ズレ: %.4f 秒", dif);
         }
 
@@ -668,7 +667,7 @@ void NotesData::Edit(){
 
 
     // 
-    if(Input::IsTriggerKey(DIK_RIGHT)){
+    if(SEED::Input::IsTriggerKey(DIK_RIGHT)){
 
     }
 }

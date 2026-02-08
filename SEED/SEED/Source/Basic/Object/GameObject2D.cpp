@@ -4,629 +4,630 @@
 #include <SEED/Source/Manager/Hierarchy/Hierarchy.h>
 #include <SEED/Source/Basic/Components/ComponentRegister.h>
 
+namespace SEED{
+    //////////////////////////////////////////////////////////////////////////
+    // static変数
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t GameObject2D::nextID_ = 0;
 
-//////////////////////////////////////////////////////////////////////////
-// static変数
-//////////////////////////////////////////////////////////////////////////
-uint32_t GameObject2D::nextID_ = 0;
 
 
-
-//////////////////////////////////////////////////////////////////////////
-// コンストラクタ ・ デストラクタ
-//////////////////////////////////////////////////////////////////////////
-GameObject2D::GameObject2D(Scene_Base* pScene){
-    objectID_ = nextID_++;
-    objectName_ = "Object2D_" + std::to_string(objectID_);
-    Initialize();
-    // シーンのヒエラルキーに登録
-    pScene->RegisterToHierarchy(this);
-    UpdateMatrix();
-}
-
-GameObject2D::~GameObject2D(){
-    // シーンのヒエラルキーから削除
-    GameSystem::GetScene()->RemoveFromHierarchy(this);
-    // 親子関係の解除
-    ReleaseParent();
-    // 子オブジェクトのリセット
-    ReleaseChildren();
-
-    // コンポーネントの終了処理
-    for(auto& component : components_){
-        component->Finalize();
+    //////////////////////////////////////////////////////////////////////////
+    // コンストラクタ ・ デストラクタ
+    //////////////////////////////////////////////////////////////////////////
+    GameObject2D::GameObject2D(Scene_Base* pScene){
+        objectID_ = nextID_++;
+        objectName_ = "Object2D_" + std::to_string(objectID_);
+        Initialize();
+        // シーンのヒエラルキーに登録
+        pScene->RegisterToHierarchy(this);
+        UpdateMatrix();
     }
 
-    components_.clear();
-}
+    GameObject2D::~GameObject2D(){
+        // シーンのヒエラルキーから削除
+        GameSystem::GetScene()->RemoveFromHierarchy(this);
+        // 親子関係の解除
+        ReleaseParent();
+        // 子オブジェクトのリセット
+        ReleaseChildren();
 
+        // コンポーネントの終了処理
+        for(auto& component : components_){
+            component->Finalize();
+        }
 
-//////////////////////////////////////////////////////////////////////////
-// 初期化処理
-//////////////////////////////////////////////////////////////////////////
-void GameObject2D::Initialize(){
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////
-// 更新処理
-//////////////////////////////////////////////////////////////////////////
-void GameObject2D::Update(){
-
-    // コンポーネントの更新
-    for(auto& component : components_){
-        if(!component->isActive_){ continue; }
-        component->Update();
+        components_.clear();
     }
 
+
+    //////////////////////////////////////////////////////////////////////////
+    // 初期化処理
+    //////////////////////////////////////////////////////////////////////////
+    void GameObject2D::Initialize(){
+    }
+
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // 更新処理
+    //////////////////////////////////////////////////////////////////////////
+    void GameObject2D::Update(){
+
+        // コンポーネントの更新
+        for(auto& component : components_){
+            if(!component->isActive_){ continue; }
+            component->Update();
+        }
+
+        // マトリックスの更新
+        UpdateMatrix();
+
+        // 生成されてからの時間を更新
+        aliveTime_ += ClockManager::DeltaTime();
+    }
+
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // 描画処理
+    //////////////////////////////////////////////////////////////////////////
+    void GameObject2D::Draw(){
+        // コンポーネントの描画
+        for(auto& component : components_){
+            if(!component->isActive_){ continue; }
+            component->Draw();
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // フレーム開始時処理
+    //////////////////////////////////////////////////////////////////////////
+    void GameObject2D::BeginFrame(){
+
+        // 座標の保存
+        prePos_ = GetWorldTranslate();
+
+        // 当たり判定フラグのリセットと保存
+        preIsCollideAny_ = isCollideAny_;
+        preIsCollideGhost_ = isCollideGhost_;
+        preIsCollideSolid_ = isCollideSolid_;
+        isCollideAny_ = false;
+        isCollideGhost_ = false;
+        isCollideSolid_ = false;
+
+        // 接地フラグのリセット
+        preIsOnGround_ = isOnGround_;
+        isOnGround_ = false;
+
+        //　天井に当たっているかのフラグのリセット
+        preIsCeiling_ = isCeiling_;
+        isCeiling_ = false;
+
+        // コンポーネントの開始処理
+        for(auto& component : components_){
+            if(!component->isActive_){ continue; }
+            component->BeginFrame();
+        }
+
+        // velocityを加算
+        AddWorldTranslate(velocity_);
+    }
+
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // フレーム終了時処理
+    //////////////////////////////////////////////////////////////////////////
+    void GameObject2D::EndFrame(){
+
+        // コンポーネントの終了処理
+        for(auto& component : components_){
+            if(!component->isActive_){ continue; }
+            component->EndFrame();
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
     // マトリックスの更新
-    UpdateMatrix();
-
-    // 生成されてからの時間を更新
-    aliveTime_ += ClockManager::DeltaTime();
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////
-// 描画処理
-//////////////////////////////////////////////////////////////////////////
-void GameObject2D::Draw(){
-    // コンポーネントの描画
-    for(auto& component : components_){
-        if(!component->isActive_){ continue; }
-        component->Draw();
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////
-// フレーム開始時処理
-//////////////////////////////////////////////////////////////////////////
-void GameObject2D::BeginFrame(){
-
-    // 座標の保存
-    prePos_ = GetWorldTranslate();
-
-    // 当たり判定フラグのリセットと保存
-    preIsCollideAny_ = isCollideAny_;
-    preIsCollideGhost_ = isCollideGhost_;
-    preIsCollideSolid_ = isCollideSolid_;
-    isCollideAny_ = false;
-    isCollideGhost_ = false;
-    isCollideSolid_ = false;
-
-    // 接地フラグのリセット
-    preIsOnGround_ = isOnGround_;
-    isOnGround_ = false;
-
-    //　天井に当たっているかのフラグのリセット
-    preIsCeiling_ = isCeiling_;
-    isCeiling_ = false;
-
-    // コンポーネントの開始処理
-    for(auto& component : components_){
-        if(!component->isActive_){ continue; }
-        component->BeginFrame();
-    }
-
-    // velocityを加算
-    AddWorldTranslate(velocity_);
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////
-// フレーム終了時処理
-//////////////////////////////////////////////////////////////////////////
-void GameObject2D::EndFrame(){
-
-    // コンポーネントの終了処理
-    for(auto& component : components_){
-        if(!component->isActive_){ continue; }
-        component->EndFrame();
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////
-// マトリックスの更新
-//////////////////////////////////////////////////////////////////////////
-void GameObject2D::UpdateMatrix(bool isUpdateChildren){
-
-    // ローカル変換行列の更新
-    localMat_ = AffineMatrix(
-        localTransform_.scale * aditionalTransform_.scale,
-        localTransform_.rotate + aditionalTransform_.rotate,
-        localTransform_.translate + aditionalTransform_.translate
-    );
-
-    // ワールド行列の更新
-    if(parent_){
-
-        Matrix3x3 parentMat = parent_->worldMat_;
-
-        if(isParentRotate_ + isParentScale_ + isParentTranslate_ == 3){
-
-            if(parent_->aditionalTransform_.scale.x == 0.0f && parent_->aditionalTransform_.scale.y == 0.0f){
-                worldMat_ = worldMat_;
-            }
-            worldMat_ = localMat_ * parentMat;
-        } else{
-
-            Matrix3x3 cancelMat = IdentityMat3();
-
-            // 親の行列から取り出した要素を打ち消す行列を作成
-            if(!isParentScale_){
-                Vector2 inverseScale = Vector2(1.0f, 1.0f) / ExtractScale(parentMat);
-                cancelMat = cancelMat * ScaleMatrix(inverseScale);
-            }
-
-            if(!isParentRotate_){
-                float inverseRotate = ExtractRotation(parentMat) * -1.0f;
-                cancelMat = cancelMat * RotateMatrix(inverseRotate);
-            }
-
-            if(!isParentTranslate_){
-                Vector2 inverseTranslate = ExtractTranslation(parentMat) * -1.0f;
-                cancelMat = cancelMat * TranslateMatrix(inverseTranslate);
-            }
-
-            Matrix3x3 canceledMat = cancelMat * parentMat;
-            worldMat_ = (localMat_ * parentMat) * cancelMat;
-
-        }
-    } else{
-        worldMat_ = localMat_;
-    }
-
-
-    // ワールド変換情報の更新
-    worldTransform_.translate = ExtractTranslation(worldMat_);
-    worldTransform_.rotate = ExtractRotation(worldMat_);
-    worldTransform_.scale = ExtractScale(worldMat_);
-
-    // フラグが立っていれば子オブジェクトのマトリックスも更新
-    if(isUpdateChildren){
-        for(auto* child : children_){
-            child->UpdateMatrix(true);
-        }
-    }
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-// アクティブ設定
-//////////////////////////////////////////////////////////////////////////
-void GameObject2D::SetIsActive(bool isActive, bool isUpdateChildren){
-    isActive_ = isActive;
-    if(isUpdateChildren){
-        for(auto* child : children_){
-            child->SetIsActive(isActive, true);
-        }
-    }
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-// 親子付け関連
-//////////////////////////////////////////////////////////////////////////
-
-
-void GameObject2D::SetParent(GameObject2D* parent){
-    ReleaseParent();
-    parent_ = parent;
-    parent->children_.push_back(this);
-}
-
-std::list<GameObject2D*> GameObject2D::GetAllChildren() const{
-    // 全ての子孫を取得する
-    std::list<GameObject2D*> allChildren;
-    for(const auto& child : children_){
-        allChildren.push_back(child);
-        auto descendants = child->GetAllChildren();
-        allChildren.insert(allChildren.end(), descendants.begin(), descendants.end());
-    }
-    return allChildren;
-}
-
-
-// 名前の一致する子を取得
-GameObject2D* GameObject2D::GetChild(const std::string& name){
-    if(children_.size() == 0){
-        return nullptr;
-    }
-
-    for(auto& child : children_){
-        if(child->GetName() == name){
-            return &(*child);
-        }
-    }
-
-    return nullptr;
-}
-
-// インデックスで子を取得
-GameObject2D* GameObject2D::GetChild(uint32_t index){
-    if(children_.size() == 0 || index >= children_.size()){
-        return nullptr;
-    }
-    auto it = children_.begin();
-    std::advance(it, index);
-    return *it;
-}
-
-void GameObject2D::RemoveChild(GameObject2D* child){
-    if(child){
-        child->ReleaseParent();
-        children_.remove(child);
-    }
-}
-
-void GameObject2D::ReleaseParent(){
-    if(parent_){
-        parent_->children_.remove(this);
-        parent_ = nullptr;
-    }
-}
-
-void GameObject2D::ReleaseChildren(){
-    auto childrenCopy = children_;
-    for(auto* child : childrenCopy){
-        child->ReleaseParent();
-    }
-    children_.clear();
-}
-
-// 自分の子孫かどうか確認する関数
-bool GameObject2D::IsDescendant(GameObject2D* obj) const{
-    if(obj == nullptr) return false;
-    // 子供の中に含まれているか確認
-    for(const auto& child : children_){
-        if(child->IsDescendant(obj)){
-            return true;
-        }
-    }
-    return false;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-// スケールの設定
-//////////////////////////////////////////////////////////////////////////
-
-void GameObject2D::SetWorldScale(const Vector2& scale){
-    // 親のスケールを考慮してワールド軸基準でスケールを設定
-    if(parent_ != nullptr){
-        Matrix3x3 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
-        localTransform_.scale = scale * invParentMat;
-    } else{
-        localTransform_.scale = scale;
-    }
-}
-
-void GameObject2D::SetLocalScale(const Vector2& scale){
-    localTransform_.scale = scale;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// Rotateの設定
-//////////////////////////////////////////////////////////////////////////
-void GameObject2D::SetWorldRotate(float rotate){
-    // 親の回転を考慮してワールド軸基準で回転を設定
-    if(parent_ != nullptr){
-        Matrix3x3 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
-        localTransform_.rotate = ExtractRotation(RotateMatrix(rotate) * invParentMat);
-    } else{
-        localTransform_.rotate = rotate;
-    }
-}
-
-void GameObject2D::SetLocalRotate(float rotate){
-    localTransform_.rotate = rotate;
-}
-
-void GameObject2D::AddWorldRotate(float addValue){
-    if(parent_ != nullptr){
-        Matrix3x3 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
-        float localAddValue = ExtractRotation(RotateMatrix(addValue) * invParentMat);
-        localTransform_.rotate += localAddValue;
-    } else{
-        localTransform_.rotate += addValue;
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////
-// 親子付けとかされてても常にワールド軸基準で指定した方向に移動を追加する関数
-//////////////////////////////////////////////////////////////////////////
-void GameObject2D::AddWorldTranslate(const Vector2& addValue){
-    if(parent_ != nullptr){
-        Matrix3x3 invParentMat = InverseMatrix(RotateMatrix(parent_->GetWorldRotate()));
-        Vector2 localAddValue = addValue * invParentMat;
-        localTransform_.translate += localAddValue;
-    } else{
-        localTransform_.translate += addValue;
-    }
-}
-
-void GameObject2D::SetWorldTranslate(const Vector2& translate){
-    // 親の位置を考慮してワールド軸基準で位置を設定
-    if(parent_ != nullptr){
-        // 親のスケールが0の場合は何もしない
-        if(parent_->GetWorldScale().Length() == 0.0f){
-            return;
-        }
-        // 親の行列の逆行列を取得して位置を変換
-        Matrix3x3 invParentMat = InverseMatrix(parent_->GetWorldMat());
-        localTransform_.translate = translate * invParentMat;
-    } else{
-        localTransform_.translate = translate;
-    }
-}
-
-void GameObject2D::SetLocalTranslate(const Vector2& translate){
-    localTransform_.translate = translate;
-}
-
-
-
-
-//////////////////////////////////////////////////////////////////////////
-// 衝突処理
-//////////////////////////////////////////////////////////////////////////  
-
-void GameObject2D::OnCollision(GameObject2D* other, Collider2D* collider){
-
-    if(other == nullptr){ return; }
-    // 衝突フラグを立てる
-    isCollideAny_ = true;
-    if(collider->isGhost_){
-        isCollideGhost_ = true;
-    } else{
-        isCollideSolid_ = true;
-    }
-
-    // 衝突中の処理
-    if(isCollideAny_){
-        OnCollisionStay(other);
-    }
-
-    // 衝突開始時の処理
-    if(isCollideAny_ && !preIsCollideAny_){
-        OnCollisionEnter(other);
-    }
-
-    // 衝突したオブジェクトを保存
-    collideObjects_.insert({ other->GetObjectID(),other });
-}
-
-void GameObject2D::CheckCollisionExit(){
-    // 衝突終了時の処理
-    for(const auto& [id, obj] : preCollideObjects_){
-        if(collideObjects_.find(id) == collideObjects_.end()){
-            OnCollisionExit(obj);
-        }
-    }
-
-    // 衝突中のオブジェクトを保存
-    preCollideObjects_ = collideObjects_;
-    collideObjects_.clear();
-}
-
-void GameObject2D::OnCollisionEnter(GameObject2D* other){
-    // コンポーネントに衝突イベントを通知
-    for(auto& component : components_){
-        component->OnCollisionEnter(other);
-    }
-}
-
-void GameObject2D::OnCollisionStay(GameObject2D* other){
-    // コンポーネントに衝突イベントを通知
-    for(auto& component : components_){
-        component->OnCollisionStay(other);
-    }
-}
-
-void GameObject2D::OnCollisionExit(GameObject2D* other){
-    // コンポーネントに衝突イベントを通知
-    for(auto& component : components_){
-        component->OnCollisionExit(other);
-    }
-}
-
-// 当たり判定が発生しているか取得
-bool GameObject2D::GetIsCollided(GameObject2D* obj){
-    if(preCollideObjects_.find(obj->GetObjectID()) != preCollideObjects_.end()){
-        return true;
-    }
-    return false;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// jsonデータの取得
-//////////////////////////////////////////////////////////////////////////
-nlohmann::json GameObject2D::GetJsonData(int32_t depth){
-    nlohmann::json json;
-
-    // 全般の情報
-    json["objectType"] = int(objectType_);
-    json["objectName"] = objectName_;
-
-    // 親子関係の情報
-    json["isParentRotate"] = isParentRotate_;
-    json["isParentScale"] = isParentScale_;
-    json["isParentTranslate"] = isParentTranslate_;
-
-    // transformの情報
-    json["transform"]["translate"] = localTransform_.translate;
-    json["transform"]["rotate"] = localTransform_.rotate;
-    json["transform"]["scale"] = localTransform_.scale;
-
-    // コンポーネントの情報
-    for(const auto& component : components_){
-        json["components"].push_back(component->GetJsonData());
-    }
-
-    // 子がいる場合は再帰的に子の情報も取得
-    for(const auto& child : children_){
-        json["children"].push_back(child->GetJsonData(depth + 1));
-    }
-
-    return json;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// jsonデータから読み込み値を設定する関数
-//////////////////////////////////////////////////////////////////////////
-void GameObject2D::LoadFromJson(const nlohmann::json& jsonData){
-
-    // 全般の情報
-    objectType_ = static_cast<ObjectType>(jsonData["objectType"]);
-    objectName_ = jsonData["objectName"];
-    // 親子関係の情報
-    isParentRotate_ = jsonData["isParentRotate"];
-    isParentScale_ = jsonData["isParentScale"];
-    isParentTranslate_ = jsonData["isParentTranslate"];
-    // transformの情報
-    localTransform_.translate = jsonData["transform"]["translate"];
-    localTransform_.rotate = jsonData["transform"]["rotate"];
-    localTransform_.scale = jsonData["transform"]["scale"];
-
-    // コンポーネントの読み込み
-    if(jsonData.contains("components")){
-        for(const auto& componentJson : jsonData["components"]){
-            ComponentRegister::LoadComponents(this, componentJson);
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////
-// 新しいGameObject2Dをjsonデータから作成する関数
-////////////////////////////////////////////////////////////////////////////
-GameObject2D* GameObject2D::CreateFromJson(const nlohmann::json& jsonData){
-    // 新しいGameObject2Dを作成
-    GameObject2D* newObject = new GameObject2D(GameSystem::GetScene());
-    // jsonデータから情報を読み込む
-    newObject->LoadFromJson(jsonData);
-    return newObject;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// 家族を再帰的に作成する関数
-//////////////////////////////////////////////////////////////////////////////
-std::vector<GameObject2D*> GameObject2D::CreateFamily(const nlohmann::json& jsonData, GameObject2D* parent){
-    static std::vector<GameObject2D*> familyObjects;
-    if(!parent){
-        familyObjects.clear(); // 最初のみ初期化
-    }
-
-    // 自分自身を作成し、追加
-    GameObject2D* self = CreateFromJson(jsonData);
-    familyObjects.push_back(self);
-
-    // 親がいる場合は親を設定
-    if(parent){
-        self->SetParent(parent);
-    }
-
-    // 子オブジェクトを再帰的に作成
-    if(jsonData.find("children") != jsonData.end()){
-        for(const auto& childJson : jsonData["children"]){
-            CreateFamily(childJson, self);
-        }
-    }
-
-    // 結果を返す
-    return familyObjects;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-// GUI編集処理
-//////////////////////////////////////////////////////////////////////////
-void GameObject2D::EditGUI(){
-#ifdef _DEBUG
-
-    // オブジェクトの名前を編集
-    std::string tag = "##" + std::to_string(objectID_);
-    ImFunc::InputText("オブジェクト名" + tag, objectName_);
-
-    ImGui::Text("------------- トランスフォーム -------------");
-    ImGui::DragFloat2("位置" + tag, &localTransform_.translate.x);
-    ImGui::DragFloat("回転" + tag, &localTransform_.rotate, 0.05f);
-    ImGui::DragFloat2("スケール" + tag, &localTransform_.scale.x, 0.05f);
-
-    ImGui::Text("--------------- ペアレント方式 ---------------");
-    ImGui::Checkbox("回転をペアレントする", &isParentRotate_);
-    ImGui::Checkbox("スケールをペアレントする", &isParentScale_);
-    ImGui::Checkbox("位置をペアレントする", &isParentTranslate_);
-
-    ImGui::Text("------------- コンポーネント一覧 -------------");
-
-    // コンポーネントのGUI編集
-    for(auto& component : components_){
-        // ラベルの設定
-        bool opened = ImFunc::CollapsingHeader(
-            component->componentTag_ + "##" + std::to_string(component->componentID_),
-            EditorColor::componentHeader
+    //////////////////////////////////////////////////////////////////////////
+    void GameObject2D::UpdateMatrix(bool isUpdateChildren){
+
+        // ローカル変換行列の更新
+        localMat_ = Methods::Matrix::AffineMatrix(
+            localTransform_.scale * aditionalTransform_.scale,
+            localTransform_.rotate + aditionalTransform_.rotate,
+            localTransform_.translate + aditionalTransform_.translate
         );
 
-        // 右クリックでコンテキストメニューを表示
-        if(ImGui::IsItemClicked(1)){
-            contextMenuComponent_ = component.get(); // コンテキストメニューの対象を設定
-            ImGui::OpenPopup("ComponentContextMenu");
+        // ワールド行列の更新
+        if(parent_){
+
+            Matrix3x3 parentMat = parent_->worldMat_;
+
+            if(isParentRotate_ + isParentScale_ + isParentTranslate_ == 3){
+
+                if(parent_->aditionalTransform_.scale.x == 0.0f && parent_->aditionalTransform_.scale.y == 0.0f){
+                    worldMat_ = worldMat_;
+                }
+                worldMat_ = localMat_ * parentMat;
+            } else{
+
+                Matrix3x3 cancelMat = Methods::Matrix::IdentityMat3();
+
+                // 親の行列から取り出した要素を打ち消す行列を作成
+                if(!isParentScale_){
+                    Vector2 inverseScale = Vector2(1.0f, 1.0f) / Methods::Matrix::ExtractScale(parentMat);
+                    cancelMat = cancelMat * Methods::Matrix::ScaleMatrix(inverseScale);
+                }
+
+                if(!isParentRotate_){
+                    float inverseRotate = Methods::Matrix::ExtractRotation(parentMat) * -1.0f;
+                    cancelMat = cancelMat * Methods::Matrix::RotateMatrix(inverseRotate);
+                }
+
+                if(!isParentTranslate_){
+                    Vector2 inverseTranslate = Methods::Matrix::ExtractTranslation(parentMat) * -1.0f;
+                    cancelMat = cancelMat * Methods::Matrix::TranslateMatrix(inverseTranslate);
+                }
+
+                Matrix3x3 canceledMat = cancelMat * parentMat;
+                worldMat_ = (localMat_ * parentMat) * cancelMat;
+
+            }
+        } else{
+            worldMat_ = localMat_;
         }
+
+
+        // ワールド変換情報の更新
+        worldTransform_.translate = Methods::Matrix::ExtractTranslation(worldMat_);
+        worldTransform_.rotate = Methods::Matrix::ExtractRotation(worldMat_);
+        worldTransform_.scale = Methods::Matrix::ExtractScale(worldMat_);
+
+        // フラグが立っていれば子オブジェクトのマトリックスも更新
+        if(isUpdateChildren){
+            for(auto* child : children_){
+                child->UpdateMatrix(true);
+            }
+        }
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // アクティブ設定
+    //////////////////////////////////////////////////////////////////////////
+    void GameObject2D::SetIsActive(bool isActive, bool isUpdateChildren){
+        isActive_ = isActive;
+        if(isUpdateChildren){
+            for(auto* child : children_){
+                child->SetIsActive(isActive, true);
+            }
+        }
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // 親子付け関連
+    //////////////////////////////////////////////////////////////////////////
+
+
+    void GameObject2D::SetParent(GameObject2D* parent){
+        ReleaseParent();
+        parent_ = parent;
+        parent->children_.push_back(this);
+    }
+
+    std::list<GameObject2D*> GameObject2D::GetAllChildren() const{
+        // 全ての子孫を取得する
+        std::list<GameObject2D*> allChildren;
+        for(const auto& child : children_){
+            allChildren.push_back(child);
+            auto descendants = child->GetAllChildren();
+            allChildren.insert(allChildren.end(), descendants.begin(), descendants.end());
+        }
+        return allChildren;
+    }
+
+
+    // 名前の一致する子を取得
+    GameObject2D* GameObject2D::GetChild(const std::string& name){
+        if(children_.size() == 0){
+            return nullptr;
+        }
+
+        for(auto& child : children_){
+            if(child->GetName() == name){
+                return &(*child);
+            }
+        }
+
+        return nullptr;
+    }
+
+    // インデックスで子を取得
+    GameObject2D* GameObject2D::GetChild(uint32_t index){
+        if(children_.size() == 0 || index >= children_.size()){
+            return nullptr;
+        }
+        auto it = children_.begin();
+        std::advance(it, index);
+        return *it;
+    }
+
+    void GameObject2D::RemoveChild(GameObject2D* child){
+        if(child){
+            child->ReleaseParent();
+            children_.remove(child);
+        }
+    }
+
+    void GameObject2D::ReleaseParent(){
+        if(parent_){
+            parent_->children_.remove(this);
+            parent_ = nullptr;
+        }
+    }
+
+    void GameObject2D::ReleaseChildren(){
+        auto childrenCopy = children_;
+        for(auto* child : childrenCopy){
+            child->ReleaseParent();
+        }
+        children_.clear();
+    }
+
+    // 自分の子孫かどうか確認する関数
+    bool GameObject2D::IsDescendant(GameObject2D* obj) const{
+        if(obj == nullptr) return false;
+        // 子供の中に含まれているか確認
+        for(const auto& child : children_){
+            if(child->IsDescendant(obj)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // スケールの設定
+    //////////////////////////////////////////////////////////////////////////
+
+    void GameObject2D::SetWorldScale(const Vector2& scale){
+        // 親のスケールを考慮してワールド軸基準でスケールを設定
+        if(parent_ != nullptr){
+            Matrix3x3 invParentMat = Methods::Matrix::InverseMatrix(Methods::Matrix::RotateMatrix(parent_->GetWorldRotate()));
+            localTransform_.scale = scale * invParentMat;
+        } else{
+            localTransform_.scale = scale;
+        }
+    }
+
+    void GameObject2D::SetLocalScale(const Vector2& scale){
+        localTransform_.scale = scale;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Rotateの設定
+    //////////////////////////////////////////////////////////////////////////
+    void GameObject2D::SetWorldRotate(float rotate){
+        // 親の回転を考慮してワールド軸基準で回転を設定
+        if(parent_ != nullptr){
+            Matrix3x3 invParentMat = Methods::Matrix::InverseMatrix(Methods::Matrix::RotateMatrix(parent_->GetWorldRotate()));
+            localTransform_.rotate = Methods::Matrix::ExtractRotation(Methods::Matrix::RotateMatrix(rotate) * invParentMat);
+        } else{
+            localTransform_.rotate = rotate;
+        }
+    }
+
+    void GameObject2D::SetLocalRotate(float rotate){
+        localTransform_.rotate = rotate;
+    }
+
+    void GameObject2D::AddWorldRotate(float addValue){
+        if(parent_ != nullptr){
+            Matrix3x3 invParentMat = Methods::Matrix::InverseMatrix(Methods::Matrix::RotateMatrix(parent_->GetWorldRotate()));
+            float localAddValue = Methods::Matrix::ExtractRotation(Methods::Matrix::RotateMatrix(addValue) * invParentMat);
+            localTransform_.rotate += localAddValue;
+        } else{
+            localTransform_.rotate += addValue;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // 親子付けとかされてても常にワールド軸基準で指定した方向に移動を追加する関数
+    //////////////////////////////////////////////////////////////////////////
+    void GameObject2D::AddWorldTranslate(const Vector2& addValue){
+        if(parent_ != nullptr){
+            Matrix3x3 invParentMat = Methods::Matrix::InverseMatrix(Methods::Matrix::RotateMatrix(parent_->GetWorldRotate()));
+            Vector2 localAddValue = addValue * invParentMat;
+            localTransform_.translate += localAddValue;
+        } else{
+            localTransform_.translate += addValue;
+        }
+    }
+
+    void GameObject2D::SetWorldTranslate(const Vector2& translate){
+        // 親の位置を考慮してワールド軸基準で位置を設定
+        if(parent_ != nullptr){
+            // 親のスケールが0の場合は何もしない
+            if(parent_->GetWorldScale().Length() == 0.0f){
+                return;
+            }
+            // 親の行列の逆行列を取得して位置を変換
+            Matrix3x3 invParentMat = Methods::Matrix::InverseMatrix(parent_->GetWorldMat());
+            localTransform_.translate = translate * invParentMat;
+        } else{
+            localTransform_.translate = translate;
+        }
+    }
+
+    void GameObject2D::SetLocalTranslate(const Vector2& translate){
+        localTransform_.translate = translate;
+    }
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // 衝突処理
+    //////////////////////////////////////////////////////////////////////////  
+
+    void GameObject2D::OnCollision(GameObject2D* other, Collider2D* collider){
+
+        if(other == nullptr){ return; }
+        // 衝突フラグを立てる
+        isCollideAny_ = true;
+        if(collider->isGhost_){
+            isCollideGhost_ = true;
+        } else{
+            isCollideSolid_ = true;
+        }
+
+        // 衝突中の処理
+        if(isCollideAny_){
+            OnCollisionStay(other);
+        }
+
+        // 衝突開始時の処理
+        if(isCollideAny_ && !preIsCollideAny_){
+            OnCollisionEnter(other);
+        }
+
+        // 衝突したオブジェクトを保存
+        collideObjects_.insert({ other->GetObjectID(),other });
+    }
+
+    void GameObject2D::CheckCollisionExit(){
+        // 衝突終了時の処理
+        for(const auto& [id, obj] : preCollideObjects_){
+            if(collideObjects_.find(id) == collideObjects_.end()){
+                OnCollisionExit(obj);
+            }
+        }
+
+        // 衝突中のオブジェクトを保存
+        preCollideObjects_ = collideObjects_;
+        collideObjects_.clear();
+    }
+
+    void GameObject2D::OnCollisionEnter(GameObject2D* other){
+        // コンポーネントに衝突イベントを通知
+        for(auto& component : components_){
+            component->OnCollisionEnter(other);
+        }
+    }
+
+    void GameObject2D::OnCollisionStay(GameObject2D* other){
+        // コンポーネントに衝突イベントを通知
+        for(auto& component : components_){
+            component->OnCollisionStay(other);
+        }
+    }
+
+    void GameObject2D::OnCollisionExit(GameObject2D* other){
+        // コンポーネントに衝突イベントを通知
+        for(auto& component : components_){
+            component->OnCollisionExit(other);
+        }
+    }
+
+    // 当たり判定が発生しているか取得
+    bool GameObject2D::GetIsCollided(GameObject2D* obj){
+        if(preCollideObjects_.find(obj->GetObjectID()) != preCollideObjects_.end()){
+            return true;
+        }
+        return false;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // jsonデータの取得
+    //////////////////////////////////////////////////////////////////////////
+    nlohmann::json GameObject2D::GetJsonData(int32_t depth){
+        nlohmann::json json;
+
+        // 全般の情報
+        json["objectType"] = int(objectType_);
+        json["objectName"] = objectName_;
+
+        // 親子関係の情報
+        json["isParentRotate"] = isParentRotate_;
+        json["isParentScale"] = isParentScale_;
+        json["isParentTranslate"] = isParentTranslate_;
+
+        // transformの情報
+        json["transform"]["translate"] = localTransform_.translate;
+        json["transform"]["rotate"] = localTransform_.rotate;
+        json["transform"]["scale"] = localTransform_.scale;
+
+        // コンポーネントの情報
+        for(const auto& component : components_){
+            json["components"].push_back(component->GetJsonData());
+        }
+
+        // 子がいる場合は再帰的に子の情報も取得
+        for(const auto& child : children_){
+            json["children"].push_back(child->GetJsonData(depth + 1));
+        }
+
+        return json;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // jsonデータから読み込み値を設定する関数
+    //////////////////////////////////////////////////////////////////////////
+    void GameObject2D::LoadFromJson(const nlohmann::json& jsonData){
+
+        // 全般の情報
+        objectType_ = static_cast<ObjectType>(jsonData["objectType"]);
+        objectName_ = jsonData["objectName"];
+        // 親子関係の情報
+        isParentRotate_ = jsonData["isParentRotate"];
+        isParentScale_ = jsonData["isParentScale"];
+        isParentTranslate_ = jsonData["isParentTranslate"];
+        // transformの情報
+        localTransform_.translate = jsonData["transform"]["translate"];
+        localTransform_.rotate = jsonData["transform"]["rotate"];
+        localTransform_.scale = jsonData["transform"]["scale"];
+
+        // コンポーネントの読み込み
+        if(jsonData.contains("components")){
+            for(const auto& componentJson : jsonData["components"]){
+                ComponentRegister::LoadComponents(this, componentJson);
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // 新しいGameObject2Dをjsonデータから作成する関数
+    ////////////////////////////////////////////////////////////////////////////
+    GameObject2D* GameObject2D::CreateFromJson(const nlohmann::json& jsonData){
+        // 新しいGameObject2Dを作成
+        GameObject2D* newObject = new GameObject2D(GameSystem::GetScene());
+        // jsonデータから情報を読み込む
+        newObject->LoadFromJson(jsonData);
+        return newObject;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // 家族を再帰的に作成する関数
+    //////////////////////////////////////////////////////////////////////////////
+    std::vector<GameObject2D*> GameObject2D::CreateFamily(const nlohmann::json& jsonData, GameObject2D* parent){
+        static std::vector<GameObject2D*> familyObjects;
+        if(!parent){
+            familyObjects.clear(); // 最初のみ初期化
+        }
+
+        // 自分自身を作成し、追加
+        GameObject2D* self = CreateFromJson(jsonData);
+        familyObjects.push_back(self);
+
+        // 親がいる場合は親を設定
+        if(parent){
+            self->SetParent(parent);
+        }
+
+        // 子オブジェクトを再帰的に作成
+        if(jsonData.find("children") != jsonData.end()){
+            for(const auto& childJson : jsonData["children"]){
+                CreateFamily(childJson, self);
+            }
+        }
+
+        // 結果を返す
+        return familyObjects;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////
+    // GUI編集処理
+    //////////////////////////////////////////////////////////////////////////
+    void GameObject2D::EditGUI(){
+    #ifdef _DEBUG
+
+        // オブジェクトの名前を編集
+        std::string tag = "##" + std::to_string(objectID_);
+        ImFunc::InputText("オブジェクト名" + tag, objectName_);
+
+        ImGui::Text("------------- トランスフォーム -------------");
+        ImGui::DragFloat2("位置" + tag, &localTransform_.translate.x);
+        ImGui::DragFloat("回転" + tag, &localTransform_.rotate, 0.05f);
+        ImGui::DragFloat2("スケール" + tag, &localTransform_.scale.x, 0.05f);
+
+        ImGui::Text("--------------- ペアレント方式 ---------------");
+        ImGui::Checkbox("回転をペアレントする", &isParentRotate_);
+        ImGui::Checkbox("スケールをペアレントする", &isParentScale_);
+        ImGui::Checkbox("位置をペアレントする", &isParentTranslate_);
+
+        ImGui::Text("------------- コンポーネント一覧 -------------");
 
         // コンポーネントのGUI編集
-        if(opened){
-            component->EditGUI();
-        }
-    }
+        for(auto& component : components_){
+            // ラベルの設定
+            bool opened = ImFunc::CollapsingHeader(
+                component->componentTag_ + "##" + std::to_string(component->componentID_),
+                EditorColor::componentHeader
+            );
 
-    // コンテキストメニューの表示
-    ContextMenu();
-
-    // コンポーネントの追加
-    ImGui::Separator();
-    if(ImGui::Button("コンポーネントを追加")){
-        ImGui::OpenPopup("AddComponentPopup");
-    }
-
-    if(ImGui::BeginPopup("AddComponentPopup")){
-        // 追加GUI
-        if(ComponentRegister::RegisterGUI(this)){
-            // 追加したコンポーネントを初期化し閉じる
-            components_.back()->Initialize();
-            ImGui::CloseCurrentPopup();
-        }
-        ImGui::EndPopup();
-    }
-
-#endif // _DEBUG
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// コンテキストメニューの表示
-//////////////////////////////////////////////////////////////////////////////
-void GameObject2D::ContextMenu(){
-#ifdef _DEBUG
-    if(ImGui::BeginPopup("ComponentContextMenu")){
-        // 選択中のコンポーネントがある場合
-        if(contextMenuComponent_){
-            // コンポーネントの削除
-            if(ImGui::MenuItem("コンポーネントを削除")){
-                auto it = std::find_if(components_.begin(), components_.end(),
-                    [this](const std::unique_ptr<IComponent>& comp){
-                    return comp.get() == contextMenuComponent_;
-                });
-                if(it != components_.end()){
-                    components_.erase(it);
-                }
-                contextMenuComponent_ = nullptr; // コンテキストメニューオブジェクトをクリア
+            // 右クリックでコンテキストメニューを表示
+            if(ImGui::IsItemClicked(1)){
+                contextMenuComponent_ = component.get(); // コンテキストメニューの対象を設定
+                ImGui::OpenPopup("ComponentContextMenu");
             }
-            ImGui::Separator();
+
+            // コンポーネントのGUI編集
+            if(opened){
+                component->EditGUI();
+            }
         }
-        ImGui::EndPopup();
+
+        // コンテキストメニューの表示
+        ContextMenu();
+
+        // コンポーネントの追加
+        ImGui::Separator();
+        if(ImGui::Button("コンポーネントを追加")){
+            ImGui::OpenPopup("AddComponentPopup");
+        }
+
+        if(ImGui::BeginPopup("AddComponentPopup")){
+            // 追加GUI
+            if(ComponentRegister::RegisterGUI(this)){
+                // 追加したコンポーネントを初期化し閉じる
+                components_.back()->Initialize();
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+
+    #endif // _DEBUG
     }
-#endif // _DEBUG
+
+
+    //////////////////////////////////////////////////////////////////////////////
+    // コンテキストメニューの表示
+    //////////////////////////////////////////////////////////////////////////////
+    void GameObject2D::ContextMenu(){
+    #ifdef _DEBUG
+        if(ImGui::BeginPopup("ComponentContextMenu")){
+            // 選択中のコンポーネントがある場合
+            if(contextMenuComponent_){
+                // コンポーネントの削除
+                if(ImGui::MenuItem("コンポーネントを削除")){
+                    auto it = std::find_if(components_.begin(), components_.end(),
+                        [this](const std::unique_ptr<IComponent>& comp){
+                        return comp.get() == contextMenuComponent_;
+                    });
+                    if(it != components_.end()){
+                        components_.erase(it);
+                    }
+                    contextMenuComponent_ = nullptr; // コンテキストメニューオブジェクトをクリア
+                }
+                ImGui::Separator();
+            }
+            ImGui::EndPopup();
+        }
+    #endif // _DEBUG
+    }
 }

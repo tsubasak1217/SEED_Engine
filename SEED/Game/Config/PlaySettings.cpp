@@ -55,7 +55,7 @@ PlaySettings* PlaySettings::GetInstance(){
 #ifdef _DEBUG
 
 void PlaySettings::Edit(){
-    ImFunc::CustomBegin("PlaySettings", MoveOnly_TitleBar);
+    SEED::ImFunc::CustomBegin("PlaySettings", SEED::MoveOnly_TitleBar);
 
     ImGui::DragFloat("kNoteAppearTime", &kNoteAppearTime, 0.001f, 0.0f,60.0f);
     ImGui::DragFloat("laneNoteSpeedRate", &laneNoteSpeedRate_, 0.001f, 0.0f, 10.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp);

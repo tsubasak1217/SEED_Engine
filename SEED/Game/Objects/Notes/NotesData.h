@@ -3,8 +3,7 @@
 #include <queue>
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <Game/Objects/Notes/Note_Base.h>
-#include <SEED/Lib/Functions/MyFunc.h>
-#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/Math.h>
 #include <SEED/Lib/Structs/Timer.h>
 #include <Game/Objects/SongSelect/SongInfo.h>
 
@@ -32,7 +31,7 @@ public:// アクセッサ
     float GetCurMusicTime()const{ return songTimer_.currentTime; }
     std::vector<std::weak_ptr<Note_Base>> GetNearNotes(float time);
     float GetDuration(){ return songTimer_.duration; }
-    const Timer* GetSongTimerPtr(){ return &songTimer_; }
+    const SEED::Timer* GetSongTimerPtr(){ return &songTimer_; }
     bool GetIsEnd(){ return isEnd_; }
     int32_t GetTotalCombo();
     void AddActiveHoldNote(std::weak_ptr<Note_Base> note){activeHoldNotes_.push_back(note);}
@@ -57,8 +56,8 @@ private:
     std::string jsonPath_;// 譜面データのファイルパス
 
     // タイマー関連
-    Timer songTimer_;// 曲の再生時間
-    Timer waitTimer_;// ノーツを出現させるまでの時間
+    SEED::Timer songTimer_;// 曲の再生時間
+    SEED::Timer waitTimer_;// ノーツを出現させるまでの時間
     float startOffsetTime_ = 0.0f;// 曲の開始オフセット時間(メトロノーム流す時間)
     bool isStopped_ = false;// 曲が停止しているかどうか
     bool isPauseMode_ = false;// 一時停止モードかどうか
@@ -78,7 +77,7 @@ private:
     std::list<TempoData> tempoDataList_;
     float songOffsetTime_ = 0.0f;// 曲全体のオフセット時間
 
-    Timer debugTimer_ = Timer(2.0f,2.0f);
+    SEED::Timer debugTimer_ = SEED::Timer(2.0f,2.0f);
 
 public:
 #ifdef _DEBUG

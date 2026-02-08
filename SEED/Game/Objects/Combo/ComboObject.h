@@ -9,9 +9,9 @@
 /// </summary>
 class ComboObject{
     int32_t comboCount_ = 0;
-    GameObject2D* comboTextObj_ = nullptr;
-    TextBox2D* text_ = nullptr;
-    Timer scalingTimer_;
+    SEED::GameObject2D* comboTextObj_ = nullptr;
+    SEED::TextBox2D* text_ = nullptr;
+    SEED::Timer scalingTimer_;
 
 public:// 基本関数
     ComboObject();

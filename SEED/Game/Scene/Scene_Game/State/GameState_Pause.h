@@ -10,10 +10,10 @@
 /// <summary>
 /// プレイシーンでのポーズ状態
 /// </summary>
-class GameState_Pause : public SceneState_Base{
+class GameState_Pause : public SEED::SceneState_Base{
 public:
     GameState_Pause();
-    GameState_Pause(Scene_Base* pScene);
+    GameState_Pause(SEED::Scene_Base* pScene);
     ~GameState_Pause() override;
 
 public:
@@ -40,22 +40,22 @@ private:
 
 private:
     // 読み込んだものを格納するポインタ
-    GameObject2D* pauseItemsParent_;
-    std::array<GameObject2D*, PauseMenuItemCount> menus_;
-    GameObject2D* backSpriteObj_ = nullptr;
-    GameObject2D* mouseColliderObj_ = nullptr;
+    SEED::GameObject2D* pauseItemsParent_;
+    std::array<SEED::GameObject2D*, PauseMenuItemCount> menus_;
+    SEED::GameObject2D* backSpriteObj_ = nullptr;
+    SEED::GameObject2D* mouseColliderObj_ = nullptr;
 
     //選択項目
     int32_t selectedIndex_ = 0;
 
     // 入力
-    InputHandler<int32_t> selectInput_;
-    InputHandler<bool> decideInput_;
-    InputHandler<bool> backInput_;
+    SEED::InputHandler<int32_t> selectInput_;
+    SEED::InputHandler<bool> decideInput_;
+    SEED::InputHandler<bool> backInput_;
 
     // タイマー関連
-    Timer pauseTimer_;
-    std::array<Timer, PauseMenuItemCount> scalingTimers_;
+    SEED::Timer pauseTimer_;
+    std::array<SEED::Timer, PauseMenuItemCount> scalingTimers_;
 
     // state遷移用
     bool isExit_ = false;

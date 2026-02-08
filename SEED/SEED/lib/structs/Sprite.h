@@ -4,74 +4,78 @@
 #include <cmath>
 #include <numbers>
 #include <json.hpp>
-#include <SEED/Lib/Functions/MyMath.h>
-#include <SEED/Lib/Functions/MatrixFunc.h>
+#include <SEED/Lib/Functions/Math.h>
+#include <SEED/Lib/Functions/MatrixMath.h>
 #include <SEED/Lib/Structs/Material.h>
 #include <SEED/Lib/Structs/blendMode.h>
 #include <SEED/Lib/Structs/DrawLocation.h>
 #include <SEED/Lib/Structs/Color.h>
 #include <SEED/Lib/Functions/DxFunc.h>
 
-/// <summary>
-/// スプライト画像構造体
-/// </summary>
-struct Sprite{
+namespace SEED{
 
-public:
-    Sprite();
-    Sprite(const std::string& filename);
-    Sprite(const std::string& filename, const Vector2& size);
-    void Draw(const std::optional<Color>& masterColor = std::nullopt);
+    /// <summary>
+    /// スプライト画像構造体
+    /// </summary>
+    struct Sprite{
 
-public:
+    public:
+        Sprite();
+        Sprite(const std::string& filename);
+        Sprite(const std::string& filename, const Vector2& size);
+        void Draw(const std::optional<Color>& masterColor = std::nullopt);
 
-    Vector2 size;
+    public:
 
-    // 描画設定類
-    uint32_t GH;
-    std::string texturePath;
-    Color color;
-    BlendMode blendMode;
-    D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;
+        Vector2 size;
 
-    // SRT
-    Transform2D transform;
-    Vector2 offset;
-    const Matrix3x3* parentMat = nullptr;
+        // 描画設定類
+        uint32_t GH;
+        std::string texturePath;
+        Color color;
+        BlendMode blendMode;
+        D3D12_CULL_MODE cullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_BACK;
 
-    // アンカーポイント
-    Vector2 anchorPoint;
+        // SRT
+        Transform2D transform;
+        Vector2 offset;
+        const Matrix3x3* parentMat = nullptr;
 
-    // 切り取り範囲
-    Vector2 clipLT;
-    Vector2 clipSize;
+        // アンカーポイント
+        Vector2 anchorPoint;
 
-    // UVトランスフォーム
-    Transform2D uvTransform;
-    bool flipX = false;
-    bool flipY = false;
+        // 切り取り範囲
+        Vector2 clipLT;
+        Vector2 clipSize;
 
-    // 解像度の変更を反映するかどうかの設定
-    bool isStaticDraw;
+        // UVトランスフォーム
+        Transform2D uvTransform;
+        bool flipX = false;
+        bool flipY = false;
 
-    // 描画位置の設定(前景か背景か)
-    DrawLocation drawLocation = DrawLocation::Front;
-    int32_t layer = 0;// 描画順。大きいほど手前に描画
+        // 解像度の変更を反映するかどうかの設定
+        bool isStaticDraw;
 
-    // 2D描画時にビュー行列を適用するかどうか
-    bool isApplyViewMat = false;
+        // 描画位置の設定(前景か背景か)
+        DrawLocation drawLocation = DrawLocation::Front;
+        int32_t layer = 0;// 描画順。大きいほど手前に描画
 
-private:
-    Vector2 defaultSize_ = {0.0f,0.0f};
+        // 2D描画時にビュー行列を適用するかどうか
+        bool isApplyViewMat = false;
 
-public:
-    Matrix4x4 GetWorldMatrix()const;
-    void SetTexture(const std::string& filename);
-    void ToDefaultSize();
-    Vector2 GetDefaultSize() const;
+    private:
+        Vector2 defaultSize_ = { 0.0f,0.0f };
 
-    // Json, ImGui
-    nlohmann::json ToJson() const;
-    void FromJson(const nlohmann::json& data);
-    void Edit(const std::string& hash = "");
-};
+    public:
+        Matrix4x4 GetWorldMatrix()const;
+        void SetTexture(const std::string& filename);
+        void ToDefaultSize();
+        Vector2 GetDefaultSize() const;
+
+        // Json, ImGui
+        nlohmann::json ToJson() const;
+        void FromJson(const nlohmann::json& data);
+        void Edit(const std::string& hash = "");
+    };
+
+} // namespace SEED

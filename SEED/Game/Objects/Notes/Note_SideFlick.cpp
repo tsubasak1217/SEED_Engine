@@ -21,7 +21,7 @@ Judgement::Evaluation Note_SideFlick::Judge(float curTime){
 
     // 入力情報を取得
     static auto input = PlayerInput::GetInstance();
-    LR flickDirection = input->GetSideFlickDirection();
+    SEED::GeneralEnum::LR flickDirection = input->GetSideFlickDirection();
     bool isFlick = input->GetIsSideFlick();
 
     // フリックしていないなら、判定しない
@@ -53,7 +53,7 @@ nlohmann::json Note_SideFlick::ToJson(){
 
 void Note_SideFlick::FromJson(const nlohmann::json& json){
     Note_Base::FromJson(json);
-    flickDirection_ = static_cast<LR>(json["flickDirection"]);
+    flickDirection_ = static_cast<SEED::GeneralEnum::LR>(json["flickDirection"]);
 }
 
 #ifdef _DEBUG

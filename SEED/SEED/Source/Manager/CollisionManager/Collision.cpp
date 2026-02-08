@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <SEED/Lib/Structs/Range1D.h>
 #include <SEED/Lib/Shapes/Line.h>
-#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/Math.h>
 #include <SEED/Lib/Functions/ShapeMath.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 
@@ -19,125 +19,126 @@
 
 float separator = 0.01f;
 
+
 /////////////////////////////////////////////////////////////////////////
 //						重複防止のためcpp内で宣言・定義
 /////////////////////////////////////////////////////////////////////////
-void CalcPushbackRatio(const Collider* collider1, const Collider* collider2, CollisionData* data);
-void CalcPushbackRatio(const Collider2D* collider1, const Collider2D* collider2, CollisionData2D* data);
+void CalcPushbackRatio(const SEED::Collider* collider1, const SEED::Collider* collider2, SEED::CollisionData* data);
+void CalcPushbackRatio(const SEED::Collider2D* collider1, const SEED::Collider2D* collider2, SEED::CollisionData2D* data);
 
 bool CheckProjentionCollision(
     std::vector<Vector3> vertices1, std::vector<Vector3>vertices2,
-    const Vector3& axis, CollisionData* pData = nullptr
+    const Vector3& axis, SEED::CollisionData* pData = nullptr
 );
 float CalcProjentionDepth(
     std::vector<Vector3> vertices1, std::vector<Vector3>vertices2,
     const Vector3& axis
 );
-Range1D GetProjectionRange(std::vector<Vector3> vertices, const Vector3& axis);
-bool CalcProjectionDepth(const ::Line& line, const Quad& plane, const Vector3& axis, CollisionData* pData = nullptr);
-bool Collision_OBB_OBB(const ::OBB& obb1, const ::OBB& obb2);
-bool Collision_AABB_OBB(const ::AABB& aabb, const ::OBB& obb);
-bool Collision_Line_OBB(const ::Line& line, const ::OBB& obb);
-CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb);
-CollisionData CollisionData_Point_OBB(const Vector3& point, const OBB& obb);
-bool Collision_AABB_AABB(const ::AABB& aabb1, const ::AABB& aabb2);
-bool Collision_Line_AABB(const ::Line& line, const ::AABB& aabb);
-CollisionData CollisionData_Line_AABB(const Line& line, const AABB& aabb);
-CollisionData CollisionData_Point_AABB(const Vector3& point, const AABB& aabb);
-bool Collision_Sphere_OBB(const ::Sphere& sphere, const ::OBB& obb);
-CollisionData CollisionData_MoveOBB_Sphere(Collider* obbCollider, Collider* sphereCollider);
-CollisionData CollisionData_OBB_MoveSphere(Collider* obbCollider, Collider* sphereCollider);
-bool Collision_Sphere_AABB(const ::Sphere& sphere, const ::AABB& aabb);
-bool Collision_Sphere_Line(const ::Sphere& sphere, const ::Line& line);
-bool Collision_Sphere_Sphere(const ::Sphere& sphere1, const ::Sphere& sphere2);
-CollisionData CollisionData_MoveSphere_MoveSphere(Collider* sphereCollider1, Collider* sphereCollider2);
-bool Collision_Quad_Line(const ::Quad& rectangle, const ::Line& line);
-Vector3 Collision_Quad_Line_Normal(const::Quad& rectangle, const::Line& line);
-bool Collision_Triangle_Line(const Triangle& triangle, const Line& line);
-CollisionData CollisionData_Line_Plane(const Line& line, const Quad& plane);
+SEED::Range1D GetProjectionRange(std::vector<Vector3> vertices, const Vector3& axis);
+bool CalcProjectionDepth(const SEED::Topology::Line& line, const SEED::Topology::Quad& plane, const Vector3& axis, SEED::CollisionData* pData = nullptr);
+bool Collision_OBB_OBB(const SEED::Topology::OBB& obb1, const SEED::Topology::OBB& obb2);
+bool Collision_AABB_OBB(const SEED::Topology::AABB& aabb, const SEED::Topology::OBB& obb);
+bool Collision_Line_OBB(const SEED::Topology::Line& line, const SEED::Topology::OBB& obb);
+SEED::CollisionData CollisionData_Line_OBB(const SEED::Topology::Line& line, const SEED::Topology::OBB& obb);
+SEED::CollisionData CollisionData_Point_OBB(const Vector3& point, const SEED::Topology::OBB& obb);
+bool Collision_AABB_AABB(const SEED::Topology::AABB& aabb1, const SEED::Topology::AABB& aabb2);
+bool Collision_Line_AABB(const SEED::Topology::Line& line, const SEED::Topology::AABB& aabb);
+SEED::CollisionData CollisionData_Line_AABB(const SEED::Topology::Line& line, const SEED::Topology::AABB& aabb);
+SEED::CollisionData CollisionData_Point_AABB(const Vector3& point, const SEED::Topology::AABB& aabb);
+bool Collision_Sphere_OBB(const SEED::Topology::Sphere& sphere, const SEED::Topology::OBB& obb);
+SEED::CollisionData CollisionData_MoveOBB_Sphere(SEED::Collider* obbCollider, SEED::Collider* sphereCollider);
+SEED::CollisionData CollisionData_OBB_MoveSphere(SEED::Collider* obbCollider, SEED::Collider* sphereCollider);
+bool Collision_Sphere_AABB(const SEED::Topology::Sphere& sphere, const SEED::Topology::AABB& aabb);
+bool Collision_Sphere_Line(const SEED::Topology::Sphere& sphere, const SEED::Topology::Line& line);
+bool Collision_Sphere_Sphere(const SEED::Topology::Sphere& sphere1, const SEED::Topology::Sphere& sphere2);
+SEED::CollisionData CollisionData_MoveSphere_MoveSphere(SEED::Collider* sphereCollider1, SEED::Collider* sphereCollider2);
+bool Collision_Quad_Line(const SEED::Topology::Quad& rectangle, const SEED::Topology::Line& line);
+Vector3 Collision_Quad_Line_Normal(const SEED::Topology::Quad& rectangle, const SEED::Topology::Line& line);
+bool Collision_Triangle_Line(const SEED::Topology::Triangle& triangle, const SEED::Topology::Line& line);
+SEED::CollisionData CollisionData_Line_Plane(const SEED::Topology::Line& line, const SEED::Topology::Quad& plane);
 
-CollisionData Collision_MoveSphere_AABB(Collider* sphereCollider, Collider* aabbCollider);
-CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabbCollider);
-CollisionData CollisionData_Capsule_Capusle(const ::Capsule& capsule1, const ::Capsule& capsule2);
-CollisionData CollisionData_Capsule_Sphere(const ::Capsule& capsule, const ::Sphere& sphere);
+SEED::CollisionData Collision_MoveSphere_AABB(SEED::Collider* sphereCollider, SEED::Collider* aabbCollider);
+SEED::CollisionData Collision_Sphere_MoveAABB(SEED::Collider* sphereCollider, SEED::Collider* aabbCollider);
+SEED::CollisionData CollisionData_Capsule_Capusle(const SEED::Topology::Capsule& capsule1, const SEED::Topology::Capsule& capsule2);
+SEED::CollisionData CollisionData_Capsule_Sphere(const SEED::Topology::Capsule& capsule, const SEED::Topology::Sphere& sphere);
 
 // 2DCollision
-float Line2DDistance(const ::Line2D& line1, const ::Line2D& line2);
+float Line2DDistance(const SEED::Topology::Line2D& line1, const SEED::Topology::Line2D& line2);
 
-bool Collision_AABB2D(const ::AABB2D& aabb1, const ::AABB2D& aabb2);
-CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* aabb2);
-bool Collision_Circle_Circle(const ::Circle& circle1, const ::Circle& circle2);
-CollisionData2D CollisionData2D_MoveCircle_MoveCircle(Collider2D* circle1, Collider2D* circle2);
-bool Collision_Circle_Quad2D(const ::Circle& circle, const ::Quad2D& quad);
-CollisionData2D CollisionData2D_MoveCircle_Quad2D(Collider2D* circle, Collider2D* quad);
-bool Collision_Capsule2D_Capsule2D(const ::Capsule2D& capsule1, const ::Capsule2D& capsule2);
-CollisionData2D CollisionData2D_Capsule2D_Capsule2D(const ::Capsule2D& capsule1, const ::Capsule2D& capsule2);
-CollisionData2D CircleVsConvexQuad(const Vector2& center, float radius, const Quad2D& quad);
-CollisionData2D CollisionData_MoveQuad2D_MoveQuad2D(Collider2D* quad1, Collider2D* quad2);
+bool Collision_AABB2D(const SEED::Topology::AABB2D& aabb1, const SEED::Topology::AABB2D& aabb2);
+SEED::CollisionData2D CollisionData_MoveAABB2D_AABB2D(SEED::Collider2D* aabb1, SEED::Collider2D* aabb2);
+bool Collision_Circle_Circle(const SEED::Topology::Circle& circle1, const SEED::Topology::Circle& circle2);
+SEED::CollisionData2D CollisionData2D_MoveCircle_MoveCircle(SEED::Collider2D* circle1, SEED::Collider2D* circle2);
+bool Collision_Circle_Quad2D(const SEED::Topology::Circle& circle, const SEED::Topology::Quad2D& quad);
+SEED::CollisionData2D CollisionData2D_MoveCircle_Quad2D(SEED::Collider2D* circle, SEED::Collider2D* quad);
+bool Collision_Capsule2D_Capsule2D(const SEED::Topology::Capsule2D& capsule1, const SEED::Topology::Capsule2D& capsule2);
+SEED::CollisionData2D CollisionData2D_Capsule2D_Capsule2D(const SEED::Topology::Capsule2D& capsule1, const SEED::Topology::Capsule2D& capsule2);
+SEED::CollisionData2D CircleVsConvexQuad(const Vector2& center, float radius, const SEED::Topology::Quad2D& quad);
+SEED::CollisionData2D CollisionData_MoveQuad2D_MoveQuad2D(SEED::Collider2D* quad1, SEED::Collider2D* quad2);
 
 /////////////////////////////////////////////////////////////////////////
 //						名前空間内の関数の定義
 /////////////////////////////////////////////////////////////////////////
+namespace SEED{
+    namespace Collision{
 
-namespace Collision{
+        namespace OBB{
+            bool OBB(const SEED::Topology::OBB& obb1, const SEED::Topology::OBB& obb2){ return Collision_OBB_OBB(obb1, obb2); }
+            bool AABB(const SEED::Topology::OBB& obb, const SEED::Topology::AABB& aabb){ return Collision_AABB_OBB(aabb, obb); }
+            bool Line(const SEED::Topology::OBB& obb, const SEED::Topology::Line& line){ return Collision_Line_OBB(line, obb); }
+            bool Sphere(const SEED::Topology::OBB& obb, const SEED::Topology::Sphere& sphere){ return Collision_Sphere_OBB(sphere, obb); }
+            SEED::CollisionData Sphere(Collider* obbCollider, Collider* sphereCollider){ return CollisionData_MoveOBB_Sphere(obbCollider, sphereCollider); }
+        }
 
-    namespace OBB{
-        bool OBB(const ::OBB& obb1, const ::OBB& obb2){ return Collision_OBB_OBB(obb1, obb2); }
-        bool AABB(const ::OBB& obb, const ::AABB& aabb){ return Collision_AABB_OBB(aabb, obb); }
-        bool Line(const ::OBB& obb, const ::Line& line){ return Collision_Line_OBB(line, obb); }
-        bool Sphere(const::OBB& obb, const::Sphere& sphere){ return Collision_Sphere_OBB(sphere, obb); }
-        CollisionData Sphere(Collider* obbCollider, Collider* sphereCollider){ return CollisionData_MoveOBB_Sphere(obbCollider, sphereCollider); }
-    }
+        namespace AABB{
+            bool OBB(const SEED::Topology::AABB& aabb, const SEED::Topology::OBB& obb){ return Collision_AABB_OBB(aabb, obb); }
+            bool AABB(const SEED::Topology::AABB& aabb1, const SEED::Topology::AABB& aabb2){ return Collision_AABB_AABB(aabb1, aabb2); }
+            bool Line(const SEED::Topology::AABB& aabb, const SEED::Topology::Line& line){ return Collision_Line_AABB(line, aabb); }
+            bool Sphere(const SEED::Topology::AABB& aabb, const SEED::Topology::Sphere& sphere){ return Collision_Sphere_AABB(sphere, aabb); }
+            SEED::CollisionData Sphere(Collider* aabbCollider, Collider* sphereCollider){ return Collision_Sphere_MoveAABB(sphereCollider, aabbCollider); }
+        }
 
-    namespace AABB{
-        bool OBB(const ::AABB& aabb, const ::OBB& obb){ return Collision_AABB_OBB(aabb, obb); }
-        bool AABB(const ::AABB& aabb1, const ::AABB& aabb2){ return Collision_AABB_AABB(aabb1, aabb2); }
-        bool Line(const ::AABB& aabb, const ::Line& line){ return Collision_Line_AABB(line, aabb); }
-        bool Sphere(const ::AABB& aabb, const ::Sphere& sphere){ return Collision_Sphere_AABB(sphere, aabb); }
-        CollisionData Sphere(Collider* aabbCollider, Collider* sphereCollider){ return Collision_Sphere_MoveAABB(sphereCollider, aabbCollider); }
-    }
+        namespace AABB2D{
+            bool AABB2D(const SEED::Topology::AABB2D& aabb1, const SEED::Topology::AABB2D& aabb2){ return Collision_AABB2D(aabb1, aabb2); }
+            SEED::CollisionData2D AABB2D(Collider2D* aabb1, Collider2D* aabb2){ return CollisionData_MoveAABB2D_AABB2D(aabb1, aabb2); }
+        }
 
-    namespace AABB2D{
-        bool AABB2D(const ::AABB2D& aabb1, const ::AABB2D& aabb2){ return Collision_AABB2D(aabb1, aabb2); }
-        CollisionData2D AABB2D(Collider2D* aabb1, Collider2D* aabb2){ return CollisionData_MoveAABB2D_AABB2D(aabb1, aabb2); }
-    }
+        namespace Line{
+            bool OBB(const SEED::Topology::Line& line, const SEED::Topology::OBB& obb){ return Collision_Line_OBB(line, obb); }
+            bool AABB(const SEED::Topology::Line& line, const SEED::Topology::AABB& aabb){ return Collision_Line_AABB(line, aabb); }
+            bool Sphere(const SEED::Topology::Line& line, const SEED::Topology::Sphere& sphere){ return Collision_Sphere_Line(sphere, line); }
+        }
 
-    namespace Line{
-        bool OBB(const ::Line& line, const ::OBB& obb){ return Collision_Line_OBB(line, obb); }
-        bool AABB(const ::Line& line, const ::AABB& aabb){ return Collision_Line_AABB(line, aabb); }
-        bool Sphere(const ::Line& line, const ::Sphere& sphere){ return Collision_Sphere_Line(sphere, line); }
-    }
+        namespace Sphere{
+            bool OBB(const SEED::Topology::Sphere& sphere, const SEED::Topology::OBB& obb){ return Collision_Sphere_OBB(sphere, obb); }
+            SEED::CollisionData OBB(Collider* sphereCollider, Collider* obbCollider){ return CollisionData_OBB_MoveSphere(obbCollider, sphereCollider); }
+            bool AABB(const SEED::Topology::Sphere& sphere, const SEED::Topology::AABB& aabb){ return Collision_Sphere_AABB(sphere, aabb); }
+            SEED::CollisionData AABB(Collider* sphereCollider, Collider* aabbCollider){ return Collision_MoveSphere_AABB(sphereCollider, aabbCollider); }
+            bool Line(const SEED::Topology::Sphere& sphere, const SEED::Topology::Line& line){ return Collision_Sphere_Line(sphere, line); }
+            bool Sphere(const SEED::Topology::Sphere& sphere1, const SEED::Topology::Sphere& sphere2){ return Collision_Sphere_Sphere(sphere1, sphere2); }
+            SEED::CollisionData Sphere(Collider* sphere1Collider, Collider* sphere2Collider){ return CollisionData_MoveSphere_MoveSphere(sphere1Collider, sphere2Collider); }
+        }
 
-    namespace Sphere{
-        bool OBB(const ::Sphere& sphere, const ::OBB& obb){ return Collision_Sphere_OBB(sphere, obb); }
-        CollisionData OBB(Collider* sphereCollider, Collider* obbCollider){ return CollisionData_OBB_MoveSphere(obbCollider, sphereCollider); }
-        bool AABB(const ::Sphere& sphere, const ::AABB& aabb){ return Collision_Sphere_AABB(sphere, aabb); }
-        CollisionData AABB(Collider* sphereCollider, Collider* aabbCollider){ return Collision_MoveSphere_AABB(sphereCollider, aabbCollider); }
-        bool Line(const ::Sphere& sphere, const ::Line& line){ return Collision_Sphere_Line(sphere, line); }
-        bool Sphere(const ::Sphere& sphere1, const ::Sphere& sphere2){ return Collision_Sphere_Sphere(sphere1, sphere2); }
-        CollisionData Sphere(Collider* sphere1Collider, Collider* sphere2Collider){ return CollisionData_MoveSphere_MoveSphere(sphere1Collider, sphere2Collider); }
-    }
+        namespace Circle{
+            bool Circle(const SEED::Topology::Circle& circle1, const SEED::Topology::Circle& circle2){ return Collision_Circle_Circle(circle1, circle2); }
+            SEED::CollisionData2D Circle(Collider2D* circle1, Collider2D* circle2){ return CollisionData2D_MoveCircle_MoveCircle(circle1, circle2); }
+            bool Quad2D(const SEED::Topology::Circle& circle, const SEED::Topology::Quad2D& quad){ return Collision_Circle_Quad2D(circle, quad); }
+            SEED::CollisionData2D Quad2D(Collider2D* circle, Collider2D* quad){ return CollisionData2D_MoveCircle_Quad2D(circle, quad); }
+        }
 
-    namespace Circle{
-        bool Circle(const ::Circle& circle1, const ::Circle& circle2){ return Collision_Circle_Circle(circle1, circle2); }
-        CollisionData2D Circle(Collider2D* circle1, Collider2D* circle2){ return CollisionData2D_MoveCircle_MoveCircle(circle1, circle2); }
-        bool Quad2D(const ::Circle& circle, const ::Quad2D& quad){ return Collision_Circle_Quad2D(circle, quad); }
-        CollisionData2D Quad2D(Collider2D* circle, Collider2D* quad){ return CollisionData2D_MoveCircle_Quad2D(circle, quad); }
-    }
+        namespace Quad{
+            SEED::CollisionData Line(const SEED::Topology::Quad& quad, const SEED::Topology::Line& line){ return CollisionData_Line_Plane(line, quad); }
+        }
 
-    namespace Quad{
-        CollisionData Line(const::Quad& quad, const::Line& line){ return CollisionData_Line_Plane(line, quad); }
-    }
+        namespace Quad2D{
 
-    namespace Quad2D{
+        }
 
-    }
-
-    namespace Capsule2D{
-        bool Capsule2D(const ::Capsule2D& capsule1, const ::Capsule2D& capsule2){ return Collision_Capsule2D_Capsule2D(capsule1, capsule2); }
+        namespace Capsule2D{
+            bool Capsule2D(const SEED::Topology::Capsule2D& capsule1, const SEED::Topology::Capsule2D& capsule2){ return Collision_Capsule2D_Capsule2D(capsule1, capsule2); }
+        }
     }
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +154,7 @@ namespace Collision{
 //======================================= 質量比を求める関数 =======================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void CalcPushbackRatio(const Collider* collider1, const Collider* collider2, CollisionData* data){
+void CalcPushbackRatio(const SEED::Collider* collider1, const SEED::Collider* collider2, SEED::CollisionData* data){
 
     // もしどちらかが押し戻ししない設定なら終了
     if(collider1->isGhost_ or collider2->isGhost_){
@@ -186,7 +187,7 @@ void CalcPushbackRatio(const Collider* collider1, const Collider* collider2, Col
     return;
 }
 
-void CalcPushbackRatio(const Collider2D* collider1, const Collider2D* collider2, CollisionData2D* data){
+void CalcPushbackRatio(const SEED::Collider2D* collider1, const SEED::Collider2D* collider2, SEED::CollisionData2D* data){
 
     // もしどちらかが押し戻ししない設定なら終了
     if(collider1->isGhost_ or collider2->isGhost_){
@@ -224,13 +225,13 @@ void CalcPushbackRatio(const Collider2D* collider1, const Collider2D* collider2,
 //======================================= 射影範囲を取得する関数 =====================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Range1D GetProjectionRange(std::vector<Vector3> vertices, const Vector3& axis){
-    Vector3 normalAxis = MyMath::Normalize(axis);
-    float min = MyMath::Dot(vertices[0], normalAxis);
+SEED::Range1D GetProjectionRange(std::vector<Vector3> vertices, const Vector3& axis){
+    Vector3 normalAxis = SEED::Methods::Math::Normalize(axis);
+    float min = SEED::Methods::Math::Dot(vertices[0], normalAxis);
     float max = min;
 
     for(size_t i = 1; i < vertices.size(); i++){
-        float proj = MyMath::Dot(vertices[i], normalAxis);
+        float proj = SEED::Methods::Math::Dot(vertices[i], normalAxis);
         if(proj < min) min = proj;
         if(proj > max) max = proj;
     }
@@ -243,15 +244,15 @@ Range1D GetProjectionRange(std::vector<Vector3> vertices, const Vector3& axis){
 //=================================== 影が重なっているか判定する関数 ===================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 bool CheckProjentionCollision(
-    std::vector<Vector3> vertices1, std::vector<Vector3> vertices2, const Vector3& axis, CollisionData* pData
+    std::vector<Vector3> vertices1, std::vector<Vector3> vertices2, const Vector3& axis, SEED::CollisionData* pData
 ){
     // 射影した範囲を取得
-    Range1D range[2];// xにはmin, yにはmaxが入る
+    SEED::Range1D range[2];// xにはmin, yにはmaxが入る
     range[0] = GetProjectionRange(vertices1, axis);
     range[1] = GetProjectionRange(vertices2, axis);
 
     // すべての影の中のmin,maxを計算
-    Range1D allRange = { (std::min)(range[0].min,range[1].min),(std::max)(range[0].max,range[1].max) };
+    SEED::Range1D allRange = { (std::min)(range[0].min,range[1].min),(std::max)(range[0].max,range[1].max) };
 
     // 影の長さの合計値
     float sumLength = (range[0].max - range[0].min) + (range[1].max - range[1].min);
@@ -274,7 +275,7 @@ bool CheckProjentionCollision(
                 depth = sumLength - subLength;
             }
 
-            Vector3 normalAxis = MyMath::Normalize(axis);
+            Vector3 normalAxis = SEED::Methods::Math::Normalize(axis);
             pData->collideDepth = depth + separator;
         }
 
@@ -287,12 +288,12 @@ bool CheckProjentionCollision(
 float CalcProjentionDepth(std::vector<Vector3> vertices1, std::vector<Vector3> vertices2, const Vector3& axis){
 
     // 射影した範囲を取得
-    Range1D range[2];// xにはmin, yにはmaxが入る
+    SEED::Range1D range[2];// xにはmin, yにはmaxが入る
     range[0] = GetProjectionRange(vertices1, axis);
     range[1] = GetProjectionRange(vertices2, axis);
 
     // すべての影の中のmin,maxを計算
-    Range1D allRange = { (std::min)(range[0].min,range[1].min),(std::max)(range[0].max,range[1].max) };
+    SEED::Range1D allRange = { (std::min)(range[0].min,range[1].min),(std::max)(range[0].max,range[1].max) };
 
     // 影の長さの合計値
     float sumLength = (range[0].max - range[0].min) + (range[1].max - range[1].min);
@@ -311,15 +312,15 @@ float CalcProjentionDepth(std::vector<Vector3> vertices1, std::vector<Vector3> v
 }
 
 
-bool CalcProjectionDepth(const::Line& line, const Quad& plane, const Vector3& axis, CollisionData* pData){
+bool CalcProjectionDepth(const SEED::Topology::Line& line, const SEED::Topology::Quad& plane, const Vector3& axis, SEED::CollisionData* pData){
 
     // 計算用変数
     std::vector<Vector3> vertices1 = { plane.localVertex[0],plane.localVertex[1],plane.localVertex[2],plane.localVertex[3] };
     std::vector<Vector3> vertices2 = { line.origin_,line.end_ };
-    Range1D range[2];
+    SEED::Range1D range[2];
 
     // 平面にLineのベクトル方向の厚みを持たせる(Lineの影に完全に含まれると正しい計算ができないため)
-    Vector3 vec = MyMath::Normalize(line.end_ - line.origin_);
+    Vector3 vec = SEED::Methods::Math::Normalize(line.end_ - line.origin_);
     for(int i = 0; i < 4; i++){
         vertices1.push_back(plane.localVertex[i] + vec * 100.0f);
     }
@@ -329,7 +330,7 @@ bool CalcProjectionDepth(const::Line& line, const Quad& plane, const Vector3& ax
     range[1] = GetProjectionRange(vertices2, axis);
 
     // すべての影の中のmin,maxを計算
-    Range1D allRange = { (std::min)(range[0].min,range[1].min),(std::max)(range[0].max,range[1].max) };
+    SEED::Range1D allRange = { (std::min)(range[0].min,range[1].min),(std::max)(range[0].max,range[1].max) };
 
     // 影の長さの合計値
     float sumLength = (range[0].max - range[0].min) + (range[1].max - range[1].min);
@@ -355,7 +356,7 @@ bool CalcProjectionDepth(const::Line& line, const Quad& plane, const Vector3& ax
 //======================================= OBB同士の衝突判定 =========================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//bool Collision_OBB_OBB(const ::OBB& obb1, const ::OBB& obb2, CollisionData* pData){
+//bool Collision_OBB_OBB(const SEED::Topology::OBB& obb1, const SEED::Topology::OBB& obb2, SEED::CollisionData* pData){
 //
 //    float longSegmrnt[2] = {
 //    (std::max)({obb1.halfSize.x * 2,obb1.halfSize.y * 2,obb1.halfSize.z * 2}),
@@ -363,7 +364,7 @@ bool CalcProjectionDepth(const::Line& line, const Quad& plane, const Vector3& ax
 //    };
 //
 //    // 長い辺の長さの合計が中心間の距離よりも短ければ衝突していない
-//    if(MyMath::Length(obb1.center - obb2.center) > longSegmrnt[0] + longSegmrnt[1]){
+//    if(Methods::Math::Length(obb1.center - obb2.center) > longSegmrnt[0] + longSegmrnt[1]){
 //        return false;
 //    }
 //
@@ -429,7 +430,7 @@ bool CalcProjectionDepth(const::Line& line, const Quad& plane, const Vector3& ax
 //
 //        for(int j = 0; j < 6; j++){
 //            Vector3 tmpNormal = Collision_Quad_Line_Normal(rect[j], line);
-//            if(MyMath::Dot(pData->moveVec1, tmpNormal) < 0.0f){
+//            if(Methods::Math::Dot(pData->moveVec1, tmpNormal) < 0.0f){
 //                hitNormal = tmpNormal;
 //                pData->pushBackAxis = hitNormal;
 //                CalcProjectionDepth(line, rect[j], hitNormal, pData);
@@ -505,8 +506,8 @@ bool CalcProjectionDepth(const::Line& line, const Quad& plane, const Vector3& ax
 //            for(int32_t i = 0; i < 3; i++){
 //                for(int32_t j = 0; j < 3; j++){
 //
-//                    Vector3 axis = MyMath::Cross(normal[0][i], normal[1][j]);
-//                    if(MyMath::Length(axis) < 1e-6f) { // ゼロベクトルを無視
+//                    Vector3 axis = Methods::Math::Cross(normal[0][i], normal[1][j]);
+//                    if(Methods::Math::Length(axis) < 1e-6f) { // ゼロベクトルを無視
 //                        continue;
 //                    }
 //
@@ -543,7 +544,7 @@ bool CalcProjectionDepth(const::Line& line, const Quad& plane, const Vector3& ax
 //    }
 //}
 
-bool Collision_OBB_OBB(const ::OBB& obb1, const ::OBB& obb2){
+bool Collision_OBB_OBB(const SEED::Topology::OBB& obb1, const SEED::Topology::OBB& obb2){
 
     float longSegmrnt[2] = {
     (std::max)({obb1.halfSize.x * 2,obb1.halfSize.y * 2,obb1.halfSize.z * 2}),
@@ -551,7 +552,7 @@ bool Collision_OBB_OBB(const ::OBB& obb1, const ::OBB& obb2){
     };
 
     // 長い辺の長さの合計が中心間の距離よりも短ければ衝突していない
-    if(MyMath::Length(obb1.center - obb2.center) > longSegmrnt[0] + longSegmrnt[1]){
+    if(SEED::Methods::Math::Length(obb1.center - obb2.center) > longSegmrnt[0] + longSegmrnt[1]){
         return false;
     }
 
@@ -577,8 +578,8 @@ bool Collision_OBB_OBB(const ::OBB& obb1, const ::OBB& obb2){
 
     // ワールド行列を作成
     Matrix4x4 OBBworldMat[2] = {
-        AffineMatrix({1.0f,1.0f,1.0f},obb1.rotate,obb1.center),
-        AffineMatrix({1.0f,1.0f,1.0f},obb2.rotate,obb2.center)
+        SEED::Methods::Matrix::AffineMatrix({1.0f,1.0f,1.0f},obb1.rotate,obb1.center),
+        SEED::Methods::Matrix::AffineMatrix({1.0f,1.0f,1.0f},obb2.rotate,obb2.center)
     };
 
     // ワールド座標に変換
@@ -610,8 +611,8 @@ bool Collision_OBB_OBB(const ::OBB& obb1, const ::OBB& obb2){
     // 分離軸候補を洗い出す(クロス積編)
     for(int32_t i = 0; i < 3; i++){
         for(int32_t j = 0; j < 3; j++){
-            Vector3 axis = MyMath::Cross(axes[0][i], axes[1][j]);
-            if(MyMath::Length(axis) < 1e-6f){ // ゼロベクトルを無視
+            Vector3 axis = SEED::Methods::Math::Cross(axes[0][i], axes[1][j]);
+            if(SEED::Methods::Math::Length(axis) < 1e-6f){ // ゼロベクトルを無視
                 continue;
             }
 
@@ -630,9 +631,9 @@ bool Collision_OBB_OBB(const ::OBB& obb1, const ::OBB& obb2){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= AABBとOBBの衝突判定 =======================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_AABB_OBB(const::AABB& aabb, const::OBB& obb){
+bool Collision_AABB_OBB(const SEED::Topology::AABB& aabb, const SEED::Topology::OBB& obb){
 
-    OBB AABB_to_OBB;
+    SEED::Topology::OBB AABB_to_OBB;
     AABB_to_OBB.halfSize = aabb.halfSize;
     AABB_to_OBB.center = aabb.center;
 
@@ -642,13 +643,13 @@ bool Collision_AABB_OBB(const::AABB& aabb, const::OBB& obb){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 線分とOBBの衝突判定 =======================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_Line_OBB(const::Line& line, const::OBB& obb){
+bool Collision_Line_OBB(const SEED::Topology::Line& line, const SEED::Topology::OBB& obb){
 
     // ローカル頂点
     std::array<Vector3, 8>vertices = obb.GetVertices();
 
     // 平面を作成
-    Quad rect[6] = {
+    SEED::Topology::Quad rect[6] = {
         { vertices[0],vertices[1],vertices[2],vertices[3] },// 手前
         { vertices[5],vertices[4],vertices[7],vertices[6] },// 奥
         { vertices[1],vertices[0],vertices[5],vertices[4] },// 上
@@ -671,14 +672,14 @@ bool Collision_Line_OBB(const::Line& line, const::OBB& obb){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // お互い静止している線分とOBBの衝突判定
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
-    CollisionData result;
+SEED::CollisionData CollisionData_Line_OBB(const SEED::Topology::Line& line, const SEED::Topology::OBB& obb){
+    SEED::CollisionData result;
 
     // OBBの頂点を取得
     std::array<Vector3, 8>obbVertices = obb.GetVertices();
 
     // 面にする
-    Quad quads[6] = {
+    SEED::Topology::Quad quads[6] = {
         { obbVertices[0],obbVertices[1],obbVertices[2],obbVertices[3] },// 手前
         { obbVertices[5],obbVertices[4],obbVertices[7],obbVertices[6] },// 奥
         { obbVertices[1],obbVertices[0],obbVertices[5],obbVertices[4] },// 上
@@ -689,10 +690,10 @@ CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
 
     // 線分と面で当たり判定を行い、当たった場合に法線を取得
     std::vector<Vector3>hitNormals;
-    std::vector<Quad*>hitQuads;
+    std::vector<SEED::Topology::Quad*>hitQuads;
     for(int i = 0; i < 6; i++){
         Vector3 hitNormal = Collision_Quad_Line_Normal(quads[i], line);
-        if(MyMath::Length(hitNormal) > 0.0f){
+        if(SEED::Methods::Math::Length(hitNormal) > 0.0f){
             hitNormals.push_back(hitNormal);
             hitQuads.push_back(&quads[i]);
         }
@@ -701,7 +702,7 @@ CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
     // 法線情報が無ければ次の判定へ
     if(hitNormals.size() == 0){
 
-        CollisionData data[2] = {
+        SEED::CollisionData data[2] = {
             CollisionData_Point_OBB(line.origin_, obb),
             CollisionData_Point_OBB(line.end_, obb)
         };
@@ -731,12 +732,12 @@ CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
 
         // 法線を分離軸にしてめり込み深度を計算
         for(int i = 0; i < hitNormals.size(); i++){
-            Vector3 axis = MyMath::Normalize(hitNormals[i]);
-            CollisionData data;
+            Vector3 axis = SEED::Methods::Math::Normalize(hitNormals[i]);
+            SEED::CollisionData data;
             CalcProjectionDepth(line, *hitQuads[i], axis, &data);
             if(data.collideDepth >= 0.0f){
                 if(data.collideDepth < result.collideDepth){
-                    if(MyMath::Dot(line.end_ - line.origin_, axis) < 0.0f){
+                    if(SEED::Methods::Math::Dot(line.end_ - line.origin_, axis) < 0.0f){
                         result.collideDepth = data.collideDepth;
                         result.hitNormal = axis;
                     } else{
@@ -761,11 +762,11 @@ CollisionData CollisionData_Line_OBB(const Line& line, const OBB& obb){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 点とOBBの衝突判定 ========================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData CollisionData_Point_OBB(const Vector3& point, const OBB& obb){
-    CollisionData result;
+SEED::CollisionData CollisionData_Point_OBB(const Vector3& point, const SEED::Topology::OBB& obb){
+    SEED::CollisionData result;
 
     // OBB基準の座標に変換
-    Vector3 localPoint = (point - obb.center) * InverseMatrix(RotateMatrix(obb.rotate));
+    Vector3 localPoint = (point - obb.center) * SEED::Methods::Matrix::InverseMatrix(SEED::Methods::Matrix::RotateMatrix(obb.rotate));
 
     // OBBに含まれているか確認
     if(localPoint.x > -obb.halfSize.x && localPoint.x < obb.halfSize.x &&
@@ -799,7 +800,7 @@ CollisionData CollisionData_Point_OBB(const Vector3& point, const OBB& obb){
     else if(minDist == dzMax) result.hitNormal = { 0.0f, 0.0f, 1.0f };
 
     result.collideDepth = minDist + separator; // 衝突深度を最小距離として扱う
-    result.hitNormal.value() *= RotateMatrix(obb.rotate); // OBBの回転を考慮して法線を変換
+    result.hitNormal.value() *= SEED::Methods::Matrix::RotateMatrix(obb.rotate); // OBBの回転を考慮して法線を変換
 
     return result;
 }
@@ -807,7 +808,7 @@ CollisionData CollisionData_Point_OBB(const Vector3& point, const OBB& obb){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= AABB同士の衝突判定 ========================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_AABB_AABB(const::AABB& aabb1, const::AABB& aabb2){
+bool Collision_AABB_AABB(const SEED::Topology::AABB& aabb1, const SEED::Topology::AABB& aabb2){
 
     Vector3 min[2] = {
         aabb1.center - aabb1.halfSize,
@@ -832,7 +833,7 @@ bool Collision_AABB_AABB(const::AABB& aabb1, const::AABB& aabb2){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 線分とAABBの衝突判定 =======================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_Line_AABB(const::Line& line, const::AABB& aabb){
+bool Collision_Line_AABB(const SEED::Topology::Line& line, const SEED::Topology::AABB& aabb){
     float tmin = 0.0f;
     float tmax = 1.0f;
     Vector3 min = aabb.center - aabb.halfSize;
@@ -879,14 +880,14 @@ bool Collision_Line_AABB(const::Line& line, const::AABB& aabb){
 }
 
 
-CollisionData CollisionData_Line_AABB(const Line& line, const AABB& aabb){
-    CollisionData result;
+SEED::CollisionData CollisionData_Line_AABB(const SEED::Topology::Line& line, const SEED::Topology::AABB& aabb){
+    SEED::CollisionData result;
 
     Vector3 start = line.origin_;
     Vector3 end = line.end_;
     Vector3 direction = end - start;
 
-    if(MyMath::Length(direction) < 1e-6f){
+    if(SEED::Methods::Math::Length(direction) < 1e-6f){
         return CollisionData_Point_AABB(start, aabb);
     }
 
@@ -900,8 +901,8 @@ CollisionData CollisionData_Line_AABB(const Line& line, const AABB& aabb){
         end.z > aabb.center.z - aabb.halfSize.z && end.z < aabb.center.z + aabb.halfSize.z);
 
     if(isStartInside && isEndInside){
-        CollisionData data_origin = CollisionData_Point_AABB(start, aabb);
-        CollisionData data_end = CollisionData_Point_AABB(end, aabb);
+        SEED::CollisionData data_origin = CollisionData_Point_AABB(start, aabb);
+        SEED::CollisionData data_end = CollisionData_Point_AABB(end, aabb);
 
         // 衝突深度が浅い方を採用
         if(data_origin.collideDepth < data_end.collideDepth){
@@ -974,9 +975,9 @@ CollisionData CollisionData_Line_AABB(const Line& line, const AABB& aabb){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 点とAABBの衝突判定 ========================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData CollisionData_Point_AABB(const Vector3& point, const AABB& aabb){
+SEED::CollisionData CollisionData_Point_AABB(const Vector3& point, const SEED::Topology::AABB& aabb){
 
-    CollisionData result;
+    SEED::CollisionData result;
     Vector3 min = aabb.center - aabb.halfSize;
     Vector3 max = aabb.center + aabb.halfSize;
 
@@ -1014,17 +1015,17 @@ CollisionData CollisionData_Point_AABB(const Vector3& point, const AABB& aabb){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 球とOBBの衝突判定 =========================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_Sphere_OBB(const::Sphere& sphere, const::OBB& obb){
+bool Collision_Sphere_OBB(const SEED::Topology::Sphere& sphere, const SEED::Topology::OBB& obb){
     // AABBに戻したOBB
-    AABB OBBlocal(obb.halfSize * -1.0f, obb.halfSize);
+    SEED::Topology::AABB OBBlocal(obb.halfSize * -1.0f, obb.halfSize);
 
     // OBBの回転を打ち消す行列
-    Matrix4x4 inverseOBB = InverseMatrix(AffineMatrix({ 1.0f,1.0f,1.0f }, obb.rotate, obb.center));
+    Matrix4x4 inverseOBB = SEED::Methods::Matrix::InverseMatrix(SEED::Methods::Matrix::AffineMatrix({ 1.0f,1.0f,1.0f }, obb.rotate, obb.center));
 
     // OBBに合わせて戻した球の作成
-    Sphere moved;
+    SEED::Topology::Sphere moved;
     moved = sphere;
-    moved.center = Multiply(sphere.center, inverseOBB);
+    moved.center = SEED::Methods::Matrix::Multiply(sphere.center, inverseOBB);
 
     // 判定
     return Collision_Sphere_AABB(moved, OBBlocal);
@@ -1036,12 +1037,12 @@ bool Collision_Sphere_OBB(const::Sphere& sphere, const::OBB& obb){
 //=================================== 動いているOBBと球の衝突判定 =====================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CollisionData CollisionData_MoveOBB_Sphere(Collider* obbCollider, Collider* sphereCollider){
-    CollisionData result;
+SEED::CollisionData CollisionData_MoveOBB_Sphere(SEED::Collider* obbCollider, SEED::Collider* sphereCollider){
+    SEED::CollisionData result;
 
     // 形状が違う場合エラー
-    if(obbCollider->GetColliderType() != ColliderType::OBB ||
-        sphereCollider->GetColliderType() != ColliderType::Sphere){
+    if(obbCollider->GetColliderType() != SEED::ColliderType::OBB ||
+        sphereCollider->GetColliderType() != SEED::ColliderType::Sphere){
         result.error = true;
         return result;
     }
@@ -1052,23 +1053,23 @@ CollisionData CollisionData_MoveOBB_Sphere(Collider* obbCollider, Collider* sphe
     }
 
     // OBBの情報を取得
-    Collider_OBB* convertedOBB = dynamic_cast<Collider_OBB*>(obbCollider);
-    OBB obb[2] = {
+    SEED::Collider_OBB* convertedOBB = dynamic_cast<SEED::Collider_OBB*>(obbCollider);
+    SEED::Topology::OBB obb[2] = {
         convertedOBB->GetOBB(),
         convertedOBB->GetPreOBB()
     };
 
     // 球の情報を取得
-    Collider_Sphere* convertedSphere = dynamic_cast<Collider_Sphere*>(sphereCollider);
-    Sphere sphere[2] = {
+    SEED::Collider_Sphere* convertedSphere = dynamic_cast<SEED::Collider_Sphere*>(sphereCollider);
+    SEED::Topology::Sphere sphere[2] = {
         convertedSphere->GetSphere(),
         convertedSphere->GetPreSphere()
     };
 
     // 早期リターンチェック
     float dist[2] = {
-        MyMath::Length(obb[1].center - sphere[0].center),
-        MyMath::Length(obb[0].center - sphere[0].center)
+        SEED::Methods::Math::Length(obb[1].center - sphere[0].center),
+        SEED::Methods::Math::Length(obb[0].center - sphere[0].center)
     };
 
     float maxRadius = (std::max)({ sphere[0].radius,sphere[1].radius });
@@ -1083,12 +1084,12 @@ CollisionData CollisionData_MoveOBB_Sphere(Collider* obbCollider, Collider* sphe
     Vector3 obbMove = obb[1].center - obb[0].center;
 
     // 静止拡張OBB vs 線分の当たり判定に変換
-    OBB forJudgeOBB = obb[0];
+    SEED::Topology::OBB forJudgeOBB = obb[0];
     forJudgeOBB.center = obb[1].center;
     forJudgeOBB.halfSize += Vector3(maxRadius, maxRadius, maxRadius);
 
     // 線分を求める
-    Line judgeLine = { sphere[0].center,sphere[0].center - obbMove };
+    SEED::Topology::Line judgeLine = { sphere[0].center,sphere[0].center - obbMove };
 
     // 線分とOBBの衝突情報取得
     result = CollisionData_Line_OBB(judgeLine, forJudgeOBB);
@@ -1108,12 +1109,12 @@ CollisionData CollisionData_MoveOBB_Sphere(Collider* obbCollider, Collider* sphe
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //=================================== OBBと動いている球の衝突判定 =====================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData CollisionData_OBB_MoveSphere(Collider* obbCollider, Collider* sphereCollider){
-    CollisionData result;
+SEED::CollisionData CollisionData_OBB_MoveSphere(SEED::Collider* obbCollider, SEED::Collider* sphereCollider){
+    SEED::CollisionData result;
 
     // 形状が違う場合エラー
-    if(obbCollider->GetColliderType() != ColliderType::OBB ||
-        sphereCollider->GetColliderType() != ColliderType::Sphere){
+    if(obbCollider->GetColliderType() != SEED::ColliderType::OBB ||
+        sphereCollider->GetColliderType() != SEED::ColliderType::Sphere){
         result.error = true;
         return result;
     }
@@ -1124,23 +1125,23 @@ CollisionData CollisionData_OBB_MoveSphere(Collider* obbCollider, Collider* sphe
     }
 
     // OBBの情報を取得
-    Collider_OBB* convertedOBB = dynamic_cast<Collider_OBB*>(obbCollider);
-    OBB obb[2] = {
+    SEED::Collider_OBB* convertedOBB = dynamic_cast<SEED::Collider_OBB*>(obbCollider);
+    SEED::Topology::OBB obb[2] = {
         convertedOBB->GetOBB(),
         convertedOBB->GetPreOBB()
     };
 
     // 球の情報を取得
-    Collider_Sphere* convertedSphere = dynamic_cast<Collider_Sphere*>(sphereCollider);
-    Sphere sphere[2] = {
+    SEED::Collider_Sphere* convertedSphere = dynamic_cast<SEED::Collider_Sphere*>(sphereCollider);
+    SEED::Topology::Sphere sphere[2] = {
         convertedSphere->GetSphere(),
         convertedSphere->GetPreSphere()
     };
 
     // 早期リターンチェック
     float dist[2] = {
-        MyMath::Length(obb[1].center - sphere[0].center),
-        MyMath::Length(obb[0].center - sphere[0].center)
+        SEED::Methods::Math::Length(obb[1].center - sphere[0].center),
+        SEED::Methods::Math::Length(obb[0].center - sphere[0].center)
     };
 
     float maxRadius = (std::max)({ sphere[0].radius,sphere[1].radius });
@@ -1155,11 +1156,11 @@ CollisionData CollisionData_OBB_MoveSphere(Collider* obbCollider, Collider* sphe
     Vector3 sphereMove = sphere[1].center - sphere[0].center;
 
     // 静止拡張OBB vs 線分の当たり判定に変換
-    OBB forJudgeOBB = obb[0];
+    SEED::Topology::OBB forJudgeOBB = obb[0];
     forJudgeOBB.halfSize += Vector3(maxRadius, maxRadius, maxRadius);
 
     // 線分を求める
-    Line judgeLine = { sphere[1].center,sphere[0].center };
+    SEED::Topology::Line judgeLine = { sphere[1].center,sphere[0].center };
 
     // 線分とOBBの衝突情報取得
     result = CollisionData_Line_OBB(judgeLine, forJudgeOBB);
@@ -1178,14 +1179,14 @@ CollisionData CollisionData_OBB_MoveSphere(Collider* obbCollider, Collider* sphe
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 球とAABBの衝突判定 ========================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_Sphere_AABB(const::Sphere& sphere, const::AABB& aabb){
+bool Collision_Sphere_AABB(const SEED::Topology::Sphere& sphere, const SEED::Topology::AABB& aabb){
     Vector3 closestPos;
     Vector3 min = aabb.center - aabb.halfSize;
     Vector3 max = aabb.center + aabb.halfSize;
     closestPos.x = std::clamp(sphere.center.x, min.x, max.x);
     closestPos.y = std::clamp(sphere.center.y, min.y, max.y);
     closestPos.z = std::clamp(sphere.center.z, min.z, max.z);
-    float dist = MyMath::Length(sphere.center - closestPos);
+    float dist = SEED::Methods::Math::Length(sphere.center - closestPos);
 
     return dist <= sphere.radius ? true : false;
 }
@@ -1194,13 +1195,13 @@ bool Collision_Sphere_AABB(const::Sphere& sphere, const::AABB& aabb){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //==========================~============== 球と線分の衝突判定 =======================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_Sphere_Line(const::Sphere& sphere, const::Line& line){
+bool Collision_Sphere_Line(const SEED::Topology::Sphere& sphere, const SEED::Topology::Line& line){
     Vector3 lineVec = line.end_ - line.origin_;
-    Vector3 lineDir = MyMath::Normalize(lineVec);
+    Vector3 lineDir = SEED::Methods::Math::Normalize(lineVec);
     Vector3 lineToSphere = sphere.center - line.origin_;
-    float t = MyMath::Dot(lineToSphere, lineDir);
+    float t = SEED::Methods::Math::Dot(lineToSphere, lineDir);
     Vector3 closestPoint = line.origin_ + lineDir * t;
-    float dist = MyMath::Length(sphere.center - closestPoint);
+    float dist = SEED::Methods::Math::Length(sphere.center - closestPoint);
 
     return dist <= sphere.radius ? true : false;
 }
@@ -1208,8 +1209,8 @@ bool Collision_Sphere_Line(const::Sphere& sphere, const::Line& line){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //========================================= 球同士の衝突判定 =========================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_Sphere_Sphere(const::Sphere& sphere1, const::Sphere& sphere2){
-    float distance = MyMath::Length(sphere1.center - sphere2.center);
+bool Collision_Sphere_Sphere(const SEED::Topology::Sphere& sphere1, const SEED::Topology::Sphere& sphere2){
+    float distance = SEED::Methods::Math::Length(sphere1.center - sphere2.center);
     float sumRadius = sphere1.radius + sphere2.radius;
     return distance <= sumRadius;
 }
@@ -1217,13 +1218,13 @@ bool Collision_Sphere_Sphere(const::Sphere& sphere1, const::Sphere& sphere2){
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //===================================== 動いてる球同士の衝突判定 =======================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData CollisionData_MoveSphere_MoveSphere(Collider* sphereCollider1, Collider* sphereCollider2){
+SEED::CollisionData CollisionData_MoveSphere_MoveSphere(SEED::Collider* sphereCollider1, SEED::Collider* sphereCollider2){
 
-    CollisionData result;
+    SEED::CollisionData result;
 
     // 形状が違う場合エラー
-    if(sphereCollider1->GetColliderType() != ColliderType::Sphere or
-        sphereCollider2->GetColliderType() != ColliderType::Sphere){
+    if(sphereCollider1->GetColliderType() != SEED::ColliderType::Sphere or
+        sphereCollider2->GetColliderType() != SEED::ColliderType::Sphere){
         return result;
     }
 
@@ -1233,15 +1234,15 @@ CollisionData CollisionData_MoveSphere_MoveSphere(Collider* sphereCollider1, Col
     }
 
     // 球の情報を取得
-    Collider_Sphere* convertedSphere1 = dynamic_cast<Collider_Sphere*>(sphereCollider1);
-    Collider_Sphere* convertedSphere2 = dynamic_cast<Collider_Sphere*>(sphereCollider2);
+    SEED::Collider_Sphere* convertedSphere1 = dynamic_cast<SEED::Collider_Sphere*>(sphereCollider1);
+    SEED::Collider_Sphere* convertedSphere2 = dynamic_cast<SEED::Collider_Sphere*>(sphereCollider2);
 
-    Sphere sphere1[2] = {
+    SEED::Topology::Sphere sphere1[2] = {
         convertedSphere1->GetSphere(),
         convertedSphere1->GetPreSphere()
     };
 
-    Sphere sphere2[2] = {
+    SEED::Topology::Sphere sphere2[2] = {
         convertedSphere2->GetSphere(),
         convertedSphere2->GetPreSphere()
     };
@@ -1253,7 +1254,7 @@ CollisionData CollisionData_MoveSphere_MoveSphere(Collider* sphereCollider1, Col
     };
 
     // カプセルeにする
-    Capsule capsule[2] = {
+    SEED::Topology::Capsule capsule[2] = {
         { sphere1[0].center, sphere1[1].center, maxRadius[0] },
         { sphere2[0].center, sphere2[1].center, maxRadius[1] }
     };
@@ -1274,9 +1275,9 @@ CollisionData CollisionData_MoveSphere_MoveSphere(Collider* sphereCollider1, Col
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 四角形と線の衝突判定 =======================================//
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_Quad_Line(const::Quad& rectangle, const::Line& line){
+bool Collision_Quad_Line(const SEED::Topology::Quad& rectangle, const SEED::Topology::Line& line){
 
-    Triangle triangle[2] = {
+    SEED::Topology::Triangle triangle[2] = {
         { rectangle.localVertex[0],rectangle.localVertex[1],rectangle.localVertex[2] },
         { rectangle.localVertex[1],rectangle.localVertex[3],rectangle.localVertex[2] }
     };
@@ -1286,17 +1287,17 @@ bool Collision_Quad_Line(const::Quad& rectangle, const::Line& line){
     return false;
 }
 
-Vector3 Collision_Quad_Line_Normal(const::Quad& rectangle, const::Line& line){
+Vector3 Collision_Quad_Line_Normal(const SEED::Topology::Quad& rectangle, const SEED::Topology::Line& line){
 
     Vector3 normal = { 0.0f,0.0f,0.0f };
-    Triangle triangle[2] = {
+    SEED::Topology::Triangle triangle[2] = {
         { rectangle.localVertex[0],rectangle.localVertex[1],rectangle.localVertex[2] },
         { rectangle.localVertex[1],rectangle.localVertex[3],rectangle.localVertex[2] }
     };
 
     if(Collision_Triangle_Line(triangle[0], line)){
         normal =
-            MyMath::Normalize(MyMath::Cross(
+            SEED::Methods::Math::Normalize(SEED::Methods::Math::Cross(
                 triangle[0].localVertex[1] - triangle[0].localVertex[0],
                 triangle[0].localVertex[2] - triangle[0].localVertex[1]
             ));
@@ -1304,7 +1305,7 @@ Vector3 Collision_Quad_Line_Normal(const::Quad& rectangle, const::Line& line){
 
     if(Collision_Triangle_Line(triangle[1], line)){
         normal =
-            MyMath::Normalize(MyMath::Cross(
+            SEED::Methods::Math::Normalize(SEED::Methods::Math::Cross(
                 triangle[1].localVertex[1] - triangle[1].localVertex[0],
                 triangle[1].localVertex[2] - triangle[1].localVertex[1]
             ));
@@ -1316,17 +1317,17 @@ Vector3 Collision_Quad_Line_Normal(const::Quad& rectangle, const::Line& line){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 三角形と線の衝突判定 =======================================//
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_Triangle_Line(const Triangle& triangle, const Line& line){
-    Vector3 normal = MyMath::Normalize(
-        MyMath::Cross(triangle.localVertex[1] - triangle.localVertex[0], triangle.localVertex[2] - triangle.localVertex[1])
+bool Collision_Triangle_Line(const SEED::Topology::Triangle& triangle, const SEED::Topology::Line& line){
+    Vector3 normal = SEED::Methods::Math::Normalize(
+        SEED::Methods::Math::Cross(triangle.localVertex[1] - triangle.localVertex[0], triangle.localVertex[2] - triangle.localVertex[1])
     );
     Vector3 dif = line.end_ - line.origin_;
-    float dot = MyMath::Dot(normal, dif);
+    float dot = SEED::Methods::Math::Dot(normal, dif);
 
     if(dot == 0.0f){ return false; }// 平行な場合当たらない
 
     // tを求める
-    float distance = MyMath::Dot(triangle.localVertex[0] - line.origin_, normal);
+    float distance = SEED::Methods::Math::Dot(triangle.localVertex[0] - line.origin_, normal);
     float t = distance / dot;
 
     // 衝突点
@@ -1334,16 +1335,16 @@ bool Collision_Triangle_Line(const Triangle& triangle, const Line& line){
 
     // 三角形の各頂点から見たすべてのクロス積を計算
     Vector3 cross[3] = {
-        MyMath::Cross(triangle.localVertex[1] - triangle.localVertex[0],hitPos - triangle.localVertex[1]),
-        MyMath::Cross(triangle.localVertex[2] - triangle.localVertex[1],hitPos - triangle.localVertex[2]),
-        MyMath::Cross(triangle.localVertex[0] - triangle.localVertex[2],hitPos - triangle.localVertex[0])
+        SEED::Methods::Math::Cross(triangle.localVertex[1] - triangle.localVertex[0],hitPos - triangle.localVertex[1]),
+        SEED::Methods::Math::Cross(triangle.localVertex[2] - triangle.localVertex[1],hitPos - triangle.localVertex[2]),
+        SEED::Methods::Math::Cross(triangle.localVertex[0] - triangle.localVertex[2],hitPos - triangle.localVertex[0])
     };
 
     // ひとつでも巻いている向きが違えばfalse
     float triDot[3] = {
-        MyMath::Dot(cross[0], cross[1]),
-        MyMath::Dot(cross[0], cross[2]),
-        MyMath::Dot(cross[1], cross[2])
+        SEED::Methods::Math::Dot(cross[0], cross[1]),
+        SEED::Methods::Math::Dot(cross[0], cross[2]),
+        SEED::Methods::Math::Dot(cross[1], cross[2])
     };
 
     if(triDot[0] < 0.0f){ return false; }
@@ -1353,10 +1354,10 @@ bool Collision_Triangle_Line(const Triangle& triangle, const Line& line){
     // 線の二点が面のどちら側にいるか
     float pointDistance[2] = {
         distance,
-        distance - MyMath::Dot(line.end_ - line.origin_,normal),
+        distance - SEED::Methods::Math::Dot(line.end_ - line.origin_,normal),
     };
 
-    if(line.type_ == RAY){
+    if(line.type_ == SEED::Topology::LINE_TYPE::RAY){
 
         if(pointDistance[0] >= 0.0f){
             if(pointDistance[1] >= pointDistance[0]){
@@ -1368,7 +1369,7 @@ bool Collision_Triangle_Line(const Triangle& triangle, const Line& line){
             }
         }
 
-    } else if(line.type_ == SEGMENT){
+    } else if(line.type_ == SEED::Topology::LINE_TYPE::SEGMENT){
 
         // 二点がどちらも同じ側にいたら当たっていない
         if(pointDistance[0] > 0.0f){
@@ -1393,20 +1394,20 @@ bool Collision_Triangle_Line(const Triangle& triangle, const Line& line){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 線と平面の衝突判定 =======================================//
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData CollisionData_Line_Plane(const Line& line, const Quad& plane){
-    CollisionData result;
+SEED::CollisionData CollisionData_Line_Plane(const SEED::Topology::Line& line, const SEED::Topology::Quad& plane){
+    SEED::CollisionData result;
 
     // 平面の法線
-    Vector3 normal = MyMath::Normalize(MyMath::Cross(plane.localVertex[1] - plane.localVertex[0], plane.localVertex[2] - plane.localVertex[1]));
+    Vector3 normal = SEED::Methods::Math::Normalize(SEED::Methods::Math::Cross(plane.localVertex[1] - plane.localVertex[0], plane.localVertex[2] - plane.localVertex[1]));
 
     // 線分の始点から終点へのベクトル
     Vector3 lineVec = line.end_ - line.origin_;
 
     // 線分の始点から平面までの距離
-    float distance = MyMath::Dot(plane.localVertex[0] - line.origin_, normal);
+    float distance = SEED::Methods::Math::Dot(plane.localVertex[0] - line.origin_, normal);
 
     // 線分の始点から平面までの距離と線分の方向ベクトルの内積
-    float dot = MyMath::Dot(normal, lineVec);
+    float dot = SEED::Methods::Math::Dot(normal, lineVec);
 
     // 線分が平行な場合
     if(dot == 0.0f){
@@ -1422,16 +1423,16 @@ CollisionData CollisionData_Line_Plane(const Line& line, const Quad& plane){
 
     // 三角形の各頂点から見たすべてのクロス積を計算
     Vector3 cross[3] = {
-        MyMath::Cross(plane.localVertex[1] - plane.localVertex[0], hitPos - plane.localVertex[1]),
-        MyMath::Cross(plane.localVertex[2] - plane.localVertex[1], hitPos - plane.localVertex[2]),
-        MyMath::Cross(plane.localVertex[0] - plane.localVertex[2], hitPos - plane.localVertex[0])
+        SEED::Methods::Math::Cross(plane.localVertex[1] - plane.localVertex[0], hitPos - plane.localVertex[1]),
+        SEED::Methods::Math::Cross(plane.localVertex[2] - plane.localVertex[1], hitPos - plane.localVertex[2]),
+        SEED::Methods::Math::Cross(plane.localVertex[0] - plane.localVertex[2], hitPos - plane.localVertex[0])
     };
 
     // ひとつでも巻いている向きが違えばfalse
     float triDot[3] = {
-        MyMath::Dot(cross[0], cross[1]),
-        MyMath::Dot(cross[0], cross[2]),
-        MyMath::Dot(cross[1], cross[2])
+        SEED::Methods::Math::Dot(cross[0], cross[1]),
+        SEED::Methods::Math::Dot(cross[0], cross[2]),
+        SEED::Methods::Math::Dot(cross[1], cross[2])
     };
 
     if(triDot[0] < 0.0f){ result.isCollide = false; }
@@ -1441,10 +1442,10 @@ CollisionData CollisionData_Line_Plane(const Line& line, const Quad& plane){
     // 線の二点が面のどちら側にいるか
     float pointDistance[2] = {
         distance,
-        distance - MyMath::Dot(line.end_ - line.origin_, normal),
+        distance - SEED::Methods::Math::Dot(line.end_ - line.origin_, normal),
     };
 
-    if(line.type_ == RAY){
+    if(line.type_ == SEED::Topology::LINE_TYPE::RAY){
 
         if(pointDistance[0] >= 0.0f){
             if(pointDistance[1] >= pointDistance[0]){
@@ -1456,7 +1457,7 @@ CollisionData CollisionData_Line_Plane(const Line& line, const Quad& plane){
             }
         }
 
-    } else if(line.type_ == SEGMENT){
+    } else if(line.type_ == SEED::Topology::LINE_TYPE::SEGMENT){
 
         // 二点がどちらも同じ側にいたら当たっていない
         if(pointDistance[0] > 0.0f){
@@ -1485,16 +1486,16 @@ CollisionData CollisionData_Line_Plane(const Line& line, const Quad& plane){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //==================================== カプセル同士の衝突判定 =======================================//
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision::Capsule::Capsule(const::Capsule& capsule1, const::Capsule& capsule2){
+bool Collision_Capsule_Capsule(const SEED::Topology::Capsule& capsule1, const SEED::Topology::Capsule& capsule2){
 
     // ラインの作成
-    ::Line line[2] = {
-        ::Line(capsule1.origin, capsule1.end),
-        ::Line(capsule2.origin, capsule2.end)
+    SEED::Topology::Line line[2] = {
+        SEED::Topology::Line(capsule1.origin, capsule1.end),
+        SEED::Topology::Line(capsule2.origin, capsule2.end)
     };
 
     // 線分同士の最短距離を取得
-    float closestDistance = LineDistance(line[0], line[1]);
+    float closestDistance = SEED::Methods::Shape::LineDistance(line[0], line[1]);
 
     // カプセルの半径の和よりも短ければ衝突している
     return closestDistance <= capsule1.radius + capsule2.radius;
@@ -1502,25 +1503,25 @@ bool Collision::Capsule::Capsule(const::Capsule& capsule1, const::Capsule& capsu
 
 
 // 
-CollisionData CollisionData_Capsule_Capusle(const::Capsule& capsule1, const::Capsule& capsule2){
+SEED::CollisionData CollisionData_Capsule_Capusle(const SEED::Topology::Capsule& capsule1, const SEED::Topology::Capsule& capsule2){
 
-    CollisionData result;
+    SEED::CollisionData result;
 
     // ラインの作成
-    Line l1 = { capsule1.origin, capsule1.end };
-    Line l2 = { capsule2.origin, capsule2.end };
+    SEED::Topology::Line l1 = { capsule1.origin, capsule1.end };
+    SEED::Topology::Line l2 = { capsule2.origin, capsule2.end };
 
     // 線分同士の最近傍点を二か所求める
-    std::array<Vector3, 2> closest = LineClosestPoints(l1, l2);
+    std::array<Vector3, 2> closest = SEED::Methods::Shape::LineClosestPoints(l1, l2);
 
-    float dist = MyMath::Length(closest[0] - closest[1]);
+    float dist = SEED::Methods::Math::Length(closest[0] - closest[1]);
     float sumRadius = capsule1.radius + capsule2.radius;
 
     // 最近傍点同士の距離が半径の和よりも短ければ衝突している
     if(dist < sumRadius){
         result.isCollide = true;
         result.hitPos = (closest[0] + closest[1]) * 0.5f;
-        result.hitNormal = MyMath::Normalize(closest[0] - closest[1]);
+        result.hitNormal = SEED::Methods::Math::Normalize(closest[0] - closest[1]);
         result.collideDepth = sumRadius - dist;
 
     } else{
@@ -1534,8 +1535,8 @@ CollisionData CollisionData_Capsule_Capusle(const::Capsule& capsule1, const::Cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //==================================== カプセルと球の衝突判定 =======================================//
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData CollisionData_Capsule_Sphere(const::Capsule& capsule, const::Sphere& sphere){
-    CollisionData result;
+SEED::CollisionData CollisionData_Capsule_Sphere(const SEED::Topology::Capsule& capsule, const SEED::Topology::Sphere& sphere){
+    SEED::CollisionData result;
 
     // カプセルの始点から終点へのベクトル
     Vector3 capsuleVec = capsule.end - capsule.origin;
@@ -1544,7 +1545,7 @@ CollisionData CollisionData_Capsule_Sphere(const::Capsule& capsule, const::Spher
     Vector3 capsuleToSphere = sphere.center - capsule.origin;
 
     // カプセルの始点から球までの距離
-    float t = MyMath::Dot(capsuleToSphere, capsuleVec) / MyMath::Length(capsuleVec);
+    float t = SEED::Methods::Math::Dot(capsuleToSphere, capsuleVec) / SEED::Methods::Math::Length(capsuleVec);
 
     // 線分の始点から最近点までのベクトル
     Vector3 closestPoint = capsule.origin + capsuleVec * t;
@@ -1553,18 +1554,18 @@ CollisionData CollisionData_Capsule_Sphere(const::Capsule& capsule, const::Spher
     Vector3 closestToSphere = sphere.center - closestPoint;
 
     // 最近点から球までの距離
-    float distance = MyMath::Length(closestToSphere);
+    float distance = SEED::Methods::Math::Length(closestToSphere);
 
     // 最近点がカプセルの始点側にある場合
     if(t < 0.0f){
-        distance = MyMath::Length(sphere.center - capsule.origin);
+        distance = SEED::Methods::Math::Length(sphere.center - capsule.origin);
         closestPoint = capsule.origin;
         closestToSphere = sphere.center - capsule.origin;
     }
 
     // 最近点がカプセルの終点側にある場合
-    if(t > MyMath::Length(capsuleVec)){
-        distance = MyMath::Length(sphere.center - capsule.end);
+    if(t > SEED::Methods::Math::Length(capsuleVec)){
+        distance = SEED::Methods::Math::Length(sphere.center - capsule.end);
         closestPoint = capsule.end;
         closestToSphere = sphere.center - capsule.end;
     }
@@ -1573,7 +1574,7 @@ CollisionData CollisionData_Capsule_Sphere(const::Capsule& capsule, const::Spher
     if(distance <= sphere.radius + capsule.radius){
         result.isCollide = true;
         result.hitPos = closestPoint;
-        result.hitNormal = MyMath::Normalize(closestToSphere);
+        result.hitNormal = SEED::Methods::Math::Normalize(closestToSphere);
         result.collideDepth = distance - (sphere.radius + capsule.radius);
     }
 
@@ -1586,14 +1587,14 @@ CollisionData CollisionData_Capsule_Sphere(const::Capsule& capsule, const::Spher
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //=================================== 動いている球とAABBの衝突判定 ===================================//
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData Collision_MoveSphere_AABB(Collider* sphereCollider, Collider* aabbCollider){
+SEED::CollisionData Collision_MoveSphere_AABB(SEED::Collider* sphereCollider, SEED::Collider* aabbCollider){
 
     // 衝突データを格納する構造体
-    CollisionData collisionData;
+    SEED::CollisionData collisionData;
 
     // 例外形状の検出
-    if(sphereCollider->GetColliderType() != ColliderType::Sphere){ collisionData.error = true; }
-    if(aabbCollider->GetColliderType() != ColliderType::AABB){ collisionData.error = true; }
+    if(sphereCollider->GetColliderType() != SEED::ColliderType::Sphere){ collisionData.error = true; }
+    if(aabbCollider->GetColliderType() != SEED::ColliderType::AABB){ collisionData.error = true; }
     if(collisionData.error){ return collisionData; }
 
     // 最大AABBが衝突していなけ得れば当たっていない
@@ -1602,16 +1603,16 @@ CollisionData Collision_MoveSphere_AABB(Collider* sphereCollider, Collider* aabb
     }
 
     // 球の情報を取得
-    Collider_Sphere* convertedSphere = dynamic_cast<Collider_Sphere*>(sphereCollider);
-    Sphere sphere[2] = {
+    SEED::Collider_Sphere* convertedSphere = dynamic_cast<SEED::Collider_Sphere*>(sphereCollider);
+    SEED::Topology::Sphere sphere[2] = {
         convertedSphere->GetSphere(),
         convertedSphere->GetPreSphere()
     };
 
-    // AABBの情報を取得し、OBBに変換
-    Collider_AABB* convertedAABB = dynamic_cast<Collider_AABB*>(aabbCollider);
-    AABB aabb = convertedAABB->GetAABB();
-    OBB obb;
+    // SEED::Topology::AABBの情報を取得し、OBBに変換
+    SEED::Collider_AABB* convertedAABB = dynamic_cast<SEED::Collider_AABB*>(aabbCollider);
+    SEED::Topology::AABB aabb = convertedAABB->GetAABB();
+    SEED::Topology::OBB obb;
     obb.center = aabb.center;
     float maxRadius = (std::max)({ sphere[0].radius,sphere[1].radius });
     obb.halfSize = aabb.halfSize + Vector3(maxRadius, maxRadius, maxRadius);
@@ -1619,7 +1620,7 @@ CollisionData Collision_MoveSphere_AABB(Collider* sphereCollider, Collider* aabb
 
     // 移動ベクトルを計算
     Vector3 sphereMove = sphere[1].center - sphere[0].center;
-    Line line = { sphere[1].center,sphere[0].center };
+    SEED::Topology::Line line = { sphere[1].center,sphere[0].center };
 
     // OBBと線分の当たり判定情報の取得
     collisionData = CollisionData_Line_OBB(line, obb);
@@ -1635,14 +1636,14 @@ CollisionData Collision_MoveSphere_AABB(Collider* sphereCollider, Collider* aabb
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //=================================== 球と動いているAABBの衝突判定 ===================================//
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabbCollider){
+SEED::CollisionData Collision_Sphere_MoveAABB(SEED::Collider* sphereCollider, SEED::Collider* aabbCollider){
 
     // 衝突データを格納する構造体
-    CollisionData collisionData;
+    SEED::CollisionData collisionData;
 
     // 例外形状の検出
-    if(sphereCollider->GetColliderType() != ColliderType::Sphere){ collisionData.error = true; }
-    if(aabbCollider->GetColliderType() != ColliderType::AABB){ collisionData.error = true; }
+    if(sphereCollider->GetColliderType() != SEED::ColliderType::Sphere){ collisionData.error = true; }
+    if(aabbCollider->GetColliderType() != SEED::ColliderType::AABB){ collisionData.error = true; }
     if(collisionData.error){ return collisionData; }
 
     // 最大AABBが衝突していなけ得れば当たっていない
@@ -1651,13 +1652,13 @@ CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabb
     }
 
     // 球の情報を取得
-    Collider_Sphere* convertedSphere = dynamic_cast<Collider_Sphere*>(sphereCollider);
-    Sphere sphere[2] = { convertedSphere->GetSphere(),convertedSphere->GetPreSphere() };
+    SEED::Collider_Sphere* convertedSphere = dynamic_cast<SEED::Collider_Sphere*>(sphereCollider);
+    SEED::Topology::Sphere sphere[2] = { convertedSphere->GetSphere(),convertedSphere->GetPreSphere() };
 
-    // AABBの情報を取得し、OBBに変換
-    Collider_AABB* convertedAABB = dynamic_cast<Collider_AABB*>(aabbCollider);
-    AABB aabb[2] = { convertedAABB->GetAABB(),convertedAABB->GetPreAABB() };
-    OBB obb;
+    // SEED::Topology::AABBの情報を取得し、OBBに変換
+    SEED::Collider_AABB* convertedAABB = dynamic_cast<SEED::Collider_AABB*>(aabbCollider);
+    SEED::Topology::AABB aabb[2] = { convertedAABB->GetAABB(),convertedAABB->GetPreAABB() };
+    SEED::Topology::OBB obb;
     obb.center = aabb[1].center;
     float maxRadius = (std::max)({ sphere[0].radius,sphere[1].radius });
     obb.halfSize = aabb[0].halfSize + Vector3(maxRadius, maxRadius, maxRadius);
@@ -1665,7 +1666,7 @@ CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabb
 
     // 移動ベクトルを計算
     Vector3 obbMove = aabb[1].center - aabb[0].center;
-    Line line = { sphere[0].center,sphere[0].center - obbMove };
+    SEED::Topology::Line line = { sphere[0].center,sphere[0].center - obbMove };
 
     // OBBと線分の当たり判定情報の取得
     collisionData = CollisionData_Line_OBB(line, obb);
@@ -1681,15 +1682,15 @@ CollisionData Collision_Sphere_MoveAABB(Collider* sphereCollider, Collider* aabb
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 2Dの線分同士の距離 =======================================//
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-float Line2DDistance(const::Line2D& line1, const::Line2D& line2){
+float Line2DDistance(const SEED::Topology::Line2D& line1, const SEED::Topology::Line2D& line2){
     Vector2 p1 = line1.end_ - line1.origin_;
     Vector2 p2 = line2.end_ - line2.origin_;
     Vector2 p3 = line1.origin_ - line2.origin_;
-    float a = MyMath::Dot(p1, p1);
-    float b = MyMath::Dot(p1, p2);
-    float c = MyMath::Dot(p2, p2);
-    float d = MyMath::Dot(p1, p3);
-    float e = MyMath::Dot(p2, p3);
+    float a = SEED::Methods::Math::Dot(p1, p1);
+    float b = SEED::Methods::Math::Dot(p1, p2);
+    float c = SEED::Methods::Math::Dot(p2, p2);
+    float d = SEED::Methods::Math::Dot(p1, p3);
+    float e = SEED::Methods::Math::Dot(p2, p3);
     float denom = a * c - b * b;
     float s = 0.0f;
     float t = 0.0f;
@@ -1701,13 +1702,13 @@ float Line2DDistance(const::Line2D& line1, const::Line2D& line2){
     }
     Vector2 closestPointLine1 = line1.origin_ + p1 * s;
     Vector2 closestPointLine2 = line2.origin_ + p2 * t;
-    return MyMath::Length(closestPointLine1 - closestPointLine2);
+    return SEED::Methods::Math::Length(closestPointLine1 - closestPointLine2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 2DのAABB同士の衝突判定 =======================================//
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_AABB2D(const::AABB2D& aabb1, const::AABB2D& aabb2){
+bool Collision_AABB2D(const SEED::Topology::AABB2D& aabb1, const SEED::Topology::AABB2D& aabb2){
     Vector2 min1 = aabb1.center - aabb1.halfSize;
     Vector2 max1 = aabb1.center + aabb1.halfSize;
     Vector2 min2 = aabb2.center - aabb2.halfSize;
@@ -1718,12 +1719,12 @@ bool Collision_AABB2D(const::AABB2D& aabb1, const::AABB2D& aabb2){
     return overlapX && overlapY;
 }
 
-CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* aabb2){
-    CollisionData2D result;
+SEED::CollisionData2D CollisionData_MoveAABB2D_AABB2D(SEED::Collider2D* aabb1, SEED::Collider2D* aabb2){
+    SEED::CollisionData2D result;
 
     // 形状が違う場合は無効
-    if(aabb1->GetColliderType() != ColliderType2D::AABB ||
-        aabb2->GetColliderType() != ColliderType2D::AABB){
+    if(aabb1->GetColliderType() != SEED::ColliderType2D::AABB ||
+        aabb2->GetColliderType() != SEED::ColliderType2D::AABB){
         return result;
     }
 
@@ -1732,11 +1733,11 @@ CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* a
         return result;
     }
 
-    // AABBを取得
-    auto* convertedAABB1 = dynamic_cast<Collider_AABB2D*>(aabb1);
-    auto* convertedAABB2 = dynamic_cast<Collider_AABB2D*>(aabb2);
-    AABB2D moving = convertedAABB1->GetAABB();
-    AABB2D target = convertedAABB2->GetAABB();
+    // SEED::Topology::AABBを取得
+    auto* convertedAABB1 = dynamic_cast<SEED::Collider_AABB2D*>(aabb1);
+    auto* convertedAABB2 = dynamic_cast<SEED::Collider_AABB2D*>(aabb2);
+    SEED::Topology::AABB2D moving = convertedAABB1->GetAABB();
+    SEED::Topology::AABB2D target = convertedAABB2->GetAABB();
     Vector2 vel = moving.center - convertedAABB1->GetPreAABB().center;
 
     // =============================
@@ -1764,9 +1765,9 @@ CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* a
     }
 
     // =============================
-    // 動的衝突チェック（Swept AABB）
+    // 動的衝突チェック（Swept SEED::Topology::AABB）
     // =============================
-    AABB2D expanded = target;
+    SEED::Topology::AABB2D expanded = target;
     expanded.halfSize.x += moving.halfSize.x;
     expanded.halfSize.y += moving.halfSize.y;
 
@@ -1820,7 +1821,7 @@ CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* a
     result.isCollide = true;
     result.hitNormal = bestNormal; // ← 確定
     float time = tFirst;
-    result.collideDepth = MyMath::Length(vel) * (1.0f - time);
+    result.collideDepth = SEED::Methods::Math::Length(vel) * (1.0f - time);
 
     CalcPushbackRatio(aabb1, aabb2, &result);
 
@@ -1831,18 +1832,18 @@ CollisionData2D CollisionData_MoveAABB2D_AABB2D(Collider2D* aabb1, Collider2D* a
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 円同士の衝突判定 =========================================//
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_Circle_Circle(const::Circle& circle1, const::Circle& circle2){
-    float distance = MyMath::Length(circle1.center - circle2.center);
+bool Collision_Circle_Circle(const SEED::Topology::Circle& circle1, const SEED::Topology::Circle& circle2){
+    float distance = SEED::Methods::Math::Length(circle1.center - circle2.center);
     float sumRadius = circle1.radius + circle2.radius;
     return distance <= sumRadius;
 }
 
-CollisionData2D CollisionData2D_MoveCircle_MoveCircle(Collider2D* circle1, Collider2D* circle2){
-    CollisionData2D result;
+SEED::CollisionData2D CollisionData2D_MoveCircle_MoveCircle(SEED::Collider2D* circle1, SEED::Collider2D* circle2){
+    SEED::CollisionData2D result;
 
     // 形状が違う場合エラー
-    if(circle1->GetColliderType() != ColliderType2D::Circle or
-        circle2->GetColliderType() != ColliderType2D::Circle){
+    if(circle1->GetColliderType() != SEED::ColliderType2D::Circle or
+        circle2->GetColliderType() != SEED::ColliderType2D::Circle){
         return result;
     }
 
@@ -1852,9 +1853,9 @@ CollisionData2D CollisionData2D_MoveCircle_MoveCircle(Collider2D* circle1, Colli
     }
 
     // 円の情報を取得
-    Collider_Circle* convertedCircle1 = dynamic_cast<Collider_Circle*>(circle1);
-    Collider_Circle* convertedCircle2 = dynamic_cast<Collider_Circle*>(circle2);
-    Circle circle[2][2] = {
+    SEED::Collider_Circle* convertedCircle1 = dynamic_cast<SEED::Collider_Circle*>(circle1);
+    SEED::Collider_Circle* convertedCircle2 = dynamic_cast<SEED::Collider_Circle*>(circle2);
+    SEED::Topology::Circle circle[2][2] = {
         { convertedCircle1->GetCircle(),convertedCircle1->GetPreCircle() },
         { convertedCircle2->GetCircle(),convertedCircle2->GetPreCircle() }
     };
@@ -1866,7 +1867,7 @@ CollisionData2D CollisionData2D_MoveCircle_MoveCircle(Collider2D* circle1, Colli
     };
 
     // カプセルにする
-    Capsule2D capsule[2] = {
+    SEED::Topology::Capsule2D capsule[2] = {
         { circle[0][0].center, circle[0][1].center, maxRadius[0] },
         { circle[1][0].center, circle[1][1].center, maxRadius[1] }
     };
@@ -1880,17 +1881,17 @@ CollisionData2D CollisionData2D_MoveCircle_MoveCircle(Collider2D* circle1, Colli
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 2Dの円と四角形の衝突判定 ===================================//
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_Circle_Quad2D(const::Circle& circle, const::Quad2D& quad){
+bool Collision_Circle_Quad2D(const SEED::Topology::Circle& circle, const SEED::Topology::Quad2D& quad){
     quad; circle;
     return false;
 }
 
 // 未実装
-CollisionData2D CollisionData2D_MoveCircle_Quad2D(Collider2D* circle, Collider2D* quad){
-    CollisionData2D result;
+SEED::CollisionData2D CollisionData2D_MoveCircle_Quad2D(SEED::Collider2D* circle, SEED::Collider2D* quad){
+    SEED::CollisionData2D result;
     // 形状が違う場合エラー
-    if(circle->GetColliderType() != ColliderType2D::Circle or
-        quad->GetColliderType() != ColliderType2D::Quad){
+    if(circle->GetColliderType() != SEED::ColliderType2D::Circle or
+        quad->GetColliderType() != SEED::ColliderType2D::Quad){
         return result;
     }
     // 最大AABBが衝突していなけ得れば当たっていない
@@ -1898,8 +1899,8 @@ CollisionData2D CollisionData2D_MoveCircle_Quad2D(Collider2D* circle, Collider2D
         return result;
     }
     // 円の情報を取得
-    Collider_Circle* convertedCircle = dynamic_cast<Collider_Circle*>(circle);
-    Circle circleData[2] = {
+    SEED::Collider_Circle* convertedCircle = dynamic_cast<SEED::Collider_Circle*>(circle);
+    SEED::Topology::Circle circleData[2] = {
         convertedCircle->GetCircle(),
         convertedCircle->GetPreCircle()
     };
@@ -1912,11 +1913,11 @@ CollisionData2D CollisionData2D_MoveCircle_Quad2D(Collider2D* circle, Collider2D
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //======================================= 2Dのカプセル同士の衝突判定 ===================================//
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-bool Collision_Capsule2D_Capsule2D(const::Capsule2D& capsule1, const::Capsule2D& capsule2){
+bool Collision_Capsule2D_Capsule2D(const SEED::Topology::Capsule2D& capsule1, const SEED::Topology::Capsule2D& capsule2){
     // ラインの作成
-    ::Line2D line[2] = {
-        ::Line2D(capsule1.origin, capsule1.end),
-        ::Line2D(capsule2.origin, capsule2.end)
+    SEED::Topology::Line2D line[2] = {
+        SEED::Topology::Line2D(capsule1.origin, capsule1.end),
+        SEED::Topology::Line2D(capsule2.origin, capsule2.end)
     };
     // 線分同士の最短距離を取得
     float closestDistance = Line2DDistance(line[0], line[1]);
@@ -1927,22 +1928,22 @@ bool Collision_Capsule2D_Capsule2D(const::Capsule2D& capsule1, const::Capsule2D&
 
 
 
-CollisionData2D CollisionData2D_Capsule2D_Capsule2D(const::Capsule2D& capsule1, const::Capsule2D& capsule2){
-    CollisionData2D result;
+SEED::CollisionData2D CollisionData2D_Capsule2D_Capsule2D(const SEED::Topology::Capsule2D& capsule1, const SEED::Topology::Capsule2D& capsule2){
+    SEED::CollisionData2D result;
 
     // ラインの作成
-    Line2D l1 = { capsule1.origin, capsule1.end };
-    Line2D l2 = { capsule2.origin, capsule2.end };
+    SEED::Topology::Line2D l1 = { capsule1.origin, capsule1.end };
+    SEED::Topology::Line2D l2 = { capsule2.origin, capsule2.end };
     // 線分同士の最近傍点を二か所求める
-    std::array<Vector2, 2> closest = MyMath::LineClosestPoints(l1, l2);
+    std::array<Vector2, 2> closest = SEED::Methods::Math::LineClosestPoints(l1, l2);
 
-    float dist = MyMath::Length(closest[0] - closest[1]);
+    float dist = SEED::Methods::Math::Length(closest[0] - closest[1]);
     float sumRadius = capsule1.radius + capsule2.radius;
     // 最近傍点同士の距離が半径の和よりも短ければ衝突している
     if(dist < sumRadius){
         result.isCollide = true;
         result.hitPos = (closest[0] + closest[1]) * 0.5f;
-        result.hitNormal = MyMath::Normalize(closest[0] - closest[1]);
+        result.hitNormal = SEED::Methods::Math::Normalize(closest[0] - closest[1]);
         result.collideDepth = sumRadius - dist;
     }
 
@@ -1951,10 +1952,10 @@ CollisionData2D CollisionData2D_Capsule2D_Capsule2D(const::Capsule2D& capsule1, 
 
 
 // 円 vs 凸四角形（頂点配列 v[4]）
-CollisionData2D CircleVsConvexQuad(
-    const Vector2& center, float radius, const Quad2D& quad
+SEED::CollisionData2D CircleVsConvexQuad(
+    const Vector2& center, float radius, const SEED::Topology::Quad2D& quad
 ){
-    CollisionData2D result;
+    SEED::CollisionData2D result;
     bool inside = true;
     float minOverlap = FLT_MAX;
     Vector2 bestDir{ 0,0 };
@@ -1965,7 +1966,7 @@ CollisionData2D CircleVsConvexQuad(
         Vector2 b = quad.localVertex[(i + 1) % 4];
 
         // 最近傍点を求める
-        Vector2 closest = MyMath::ClosestPoint(center, a, b);
+        Vector2 closest = SEED::Methods::Math::ClosestPoint(center, a, b);
 
         Vector2 diff = { center.x - closest.x, center.y - closest.y };
         float dist2 = diff.x * diff.x + diff.y * diff.y;
@@ -1997,11 +1998,11 @@ CollisionData2D CircleVsConvexQuad(
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //==================================== 動いている2Dの四角形同士の衝突判定 ================================//
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-CollisionData2D CollisionData_MoveQuad2D_MoveQuad2D(Collider2D* quad1, Collider2D* quad2){
-    CollisionData2D result;
+SEED::CollisionData2D CollisionData_MoveQuad2D_MoveQuad2D(SEED::Collider2D* quad1, SEED::Collider2D* quad2){
+    SEED::CollisionData2D result;
     // 形状が違う場合エラー
-    if(quad1->GetColliderType() != ColliderType2D::Quad or
-        quad2->GetColliderType() != ColliderType2D::Quad){
+    if(quad1->GetColliderType() != SEED::ColliderType2D::Quad or
+        quad2->GetColliderType() != SEED::ColliderType2D::Quad){
         return result;
     }
 

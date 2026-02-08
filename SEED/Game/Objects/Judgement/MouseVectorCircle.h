@@ -19,13 +19,13 @@ public:
     void SetNotesData(const NotesData* pNotesData);
 
 private:
-    GameObject2D* circleObj_ = nullptr;
-    GameObject2D* cursorObj_ = nullptr;
+    SEED::GameObject2D* circleObj_ = nullptr;
+    SEED::GameObject2D* cursorObj_ = nullptr;
     const NotesData* pNotesData_ = nullptr;
     bool isScalingUp_;
-    Timer scalingTimer_;
+    SEED::Timer scalingTimer_;
     float searchTimeWidth_ = 1.5f;
     float radius = 92.0f;
     Vector2 prevMouseVec_;
-    Color circleColor_;
+    SEED::Color circleColor_;
 };

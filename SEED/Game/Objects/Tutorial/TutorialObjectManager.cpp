@@ -8,7 +8,7 @@
 TutorialObjectManager::TutorialObjectManager(){
 }
 
-TutorialObjectManager::TutorialObjectManager(const Timer* pSongPlayTimer){
+TutorialObjectManager::TutorialObjectManager(const SEED::Timer* pSongPlayTimer){
     pSongPlayTimer_ = pSongPlayTimer;
 }
 
@@ -58,7 +58,7 @@ void TutorialObjectManager::Initialize(){
     // ビデオの読み込み
     for(int i = 0; i < (int)TutorialName::kTutorialCount; i++){
         // ビデオプレイヤーの作成
-        tutorials_[i].videoPlayer = std::make_unique<VideoPlayer>(tutorials_[i].tutorialVideoFilePath, false);
+        tutorials_[i].videoPlayer = std::make_unique<SEED::VideoPlayer>(tutorials_[i].tutorialVideoFilePath, false);
 
         // ビデオのサイズに応じてQuadを設定
         Vector2 videoSize = tutorials_[i].videoPlayer->GetVideoSize();
@@ -66,15 +66,15 @@ void TutorialObjectManager::Initialize(){
 
         // X値基準でQuadを作成(チュートリアル動画は横長なので)
         float videoWidth = kWindowSize.x * 0.8f; // 画面幅の80%に設定
-        tutorials_[i].videoQuad = MakeQuad2D(Vector2(1.0f, aspectRatio) * videoWidth);
+        tutorials_[i].videoQuad = SEED::Methods::Shape::MakeQuad2D(Vector2(1.0f, aspectRatio) * videoWidth);
         tutorials_[i].videoQuad.translate = kWindowCenter; // 画面中央に配置
-        tutorials_[i].videoQuad.lightingType = LIGHTINGTYPE_NONE; // ライティングを無効化
+        tutorials_[i].videoQuad.lightingType = SEED::LIGHTINGTYPE_NONE; // ライティングを無効化
         tutorials_[i].videoQuad.isApplyViewMat = false; // ビュー行列を適用しない
         tutorials_[i].videoQuad.layer = 5; // 手前に描画
     }
 
     // 読み込み改善のために先に一度読み込んですぐ削除
-    Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    SEED::Hierarchy* hierarchy = SEED::GameSystem::GetScene()->GetHierarchy();
     hierarchy->EraseObject(hierarchy->LoadObject2D("PlayScene/Tutorial/tutorialText.prefab"));
     hierarchy->EraseObject(hierarchy->LoadObject2D("PlayScene/Tutorial/tutorialText2.prefab"));
 }
@@ -94,7 +94,7 @@ void TutorialObjectManager::Update(){
     for(int i = 0; i < (int)TutorialName::kTutorialCount; i++){
 
         // ビデオの矩形情報を更新
-        tutorials_[i].videoQuad.scale = Vector2(tutorials_[i].videoScalingTimer.GetEase(Easing::OutBack));
+        tutorials_[i].videoQuad.scale = Vector2(tutorials_[i].videoScalingTimer.GetEase(SEED::Methods::Easing::Type::Out_Back));
 
         // 終了している場合はスキップ
         if(tutorials_[i].tutorialTimer.IsFinished()){
@@ -102,7 +102,7 @@ void TutorialObjectManager::Update(){
             tutorials_[i].videoScalingTimer.Update(-1.0f);
 
             if(tutorials_[i].videoScalingTimer.IsReturnNow()){
-                Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
+                SEED::Hierarchy* hierarchy = SEED::GameSystem::GetScene()->GetHierarchy();
                 hierarchy->EraseObject(tutorials_[i].tutorialTitleObject);
                 hierarchy->EraseObject(tutorials_[i].tutorialTextObject);
                 tutorials_[i].videoPlayer->Unload();
@@ -119,9 +119,9 @@ void TutorialObjectManager::Update(){
 
                 if(tutorials_[i].videoScalingTimer.GetProgress() == 0.0f){
                     // 下部のテキストオブジェクトを読み込む
-                    Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
+                    SEED::Hierarchy* hierarchy = SEED::GameSystem::GetScene()->GetHierarchy();
                     tutorials_[i].tutorialTextObject = hierarchy->LoadObject2D("PlayScene/Tutorial/tutorialText2.prefab");
-                    tutorials_[i].tutorialTextObject->GetComponent<UIComponent>()->GetText(0).text = tutorials_[i].explainText;
+                    tutorials_[i].tutorialTextObject->GetComponent<SEED::UIComponent>()->GetText(0).text = tutorials_[i].explainText;
                 }
 
 
@@ -138,10 +138,10 @@ void TutorialObjectManager::Update(){
                 tutorials_[i].isPlaying = true;
 
                 // テキストオブジェクトを読み込む
-                Hierarchy* hierarchy = GameSystem::GetScene()->GetHierarchy();
+                SEED::Hierarchy* hierarchy = SEED::GameSystem::GetScene()->GetHierarchy();
                 tutorials_[i].tutorialTitleObject = hierarchy->LoadObject2D("PlayScene/Tutorial/tutorialText.prefab");
-                GameObject2D* text = tutorials_[i].tutorialTitleObject->GetChild("Text");
-                text->GetComponent<UIComponent>()->GetText(0).text = tutorials_[i].text;
+                SEED::GameObject2D* text = tutorials_[i].tutorialTitleObject->GetChild("Text");
+                text->GetComponent<SEED::UIComponent>()->GetText(0).text = tutorials_[i].text;
                 text->Update();
             }
         }

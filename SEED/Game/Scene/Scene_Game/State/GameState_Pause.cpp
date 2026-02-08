@@ -7,7 +7,7 @@
 GameState_Pause::GameState_Pause(){
 }
 
-GameState_Pause::GameState_Pause(Scene_Base* pScene){
+GameState_Pause::GameState_Pause(SEED::Scene_Base* pScene){
     pScene_ = pScene;
 }
 
@@ -31,9 +31,9 @@ void GameState_Pause::Initialize(){
 
     for(int32_t i = 0; i < menus_.size(); i++){
         if(selectedIndex_ != i){
-            menus_[i]->masterColor_ = Color(0.4f, 0.4f, 0.4f, 1.0f);
-            menus_[i]->GetComponent<ColorControlComponent>()->SetIsActive(false);
-            menus_[i]->GetChild("backScrollObject")->GetComponent<Routine2DComponent>()->RevercePlay();
+            menus_[i]->masterColor_ = SEED::Color(0.4f, 0.4f, 0.4f, 1.0f);
+            menus_[i]->GetComponent<SEED::ColorControlComponent>()->SetIsActive(false);
+            menus_[i]->GetChild("backScrollObject")->GetComponent<SEED::Routine2DComponent>()->RevercePlay();
         }
     }
 
@@ -56,7 +56,7 @@ void GameState_Pause::Initialize(){
     // 入力関数の初期化
     selectInput_.Trigger = [&](){
 
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
             for(int32_t i = 0; i < menus_.size(); i++){
                 if(i != selectedIndex_){
                     if(menus_[i]->GetIsCollided(mouseColliderObj_)){
@@ -66,12 +66,12 @@ void GameState_Pause::Initialize(){
             }
             return false;
         }
-        int inputDir = Input::IsTriggerKey(DIK_S) - Input::IsTriggerKey(DIK_W);
+        int inputDir = SEED::Input::IsTriggerKey(DIK_S) - SEED::Input::IsTriggerKey(DIK_W);
         return inputDir != 0;
     };
 
     selectInput_.Value = [&](){
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
             for(int32_t i = 0; i < menus_.size(); i++){
                 if(menus_[i]->GetIsCollided(mouseColliderObj_)){
                     // 今のインデックスとの差分を返す
@@ -80,7 +80,7 @@ void GameState_Pause::Initialize(){
             }
         }
         // キーボード入力での値を返す
-        return Input::IsTriggerKey({ DIK_S,DIK_DOWN }) - Input::IsTriggerKey({ DIK_W,DIK_UP });
+        return SEED::Input::IsTriggerKey({ DIK_S,DIK_DOWN }) - SEED::Input::IsTriggerKey({ DIK_W,DIK_UP });
     };
 
     decideInput_.Trigger = [&](){
@@ -89,16 +89,16 @@ void GameState_Pause::Initialize(){
             return false;
         }
 
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
             if(menus_[selectedIndex_]->GetIsCollided(mouseColliderObj_)){
                 return true;
             }
         }
-        return Input::IsTriggerKey(DIK_SPACE);
+        return SEED::Input::IsTriggerKey(DIK_SPACE);
     };
 
     backInput_.Trigger = [&](){
-        return Input::IsTriggerKey(DIK_ESCAPE);
+        return SEED::Input::IsTriggerKey(DIK_ESCAPE);
     };
 }
 
@@ -111,7 +111,7 @@ void GameState_Pause::Finalize(){
 void GameState_Pause::Update(){
 
     // マウスカーソル位置更新
-    mouseColliderObj_->aditionalTransform_.translate = Input::GetMousePosition();
+    mouseColliderObj_->aditionalTransform_.translate = SEED::Input::GetMousePosition();
     mouseColliderObj_->UpdateMatrix();
 
     // メニュー項目選択
@@ -128,7 +128,7 @@ void GameState_Pause::Update(){
         }
 
         // スケーリング反映
-        float scale = 0.9f + 0.1f * scalingTimers_[i].GetEase(Easing::OutBack);
+        float scale = 0.9f + 0.1f * scalingTimers_[i].GetEase(SEED::Methods::Easing::Type::Out_Back);
         menus_[i]->aditionalTransform_.scale = Vector2(scale, scale);
     }
 
@@ -180,15 +180,15 @@ void GameState_Pause::ManageState(){
             if(backInput_.Trigger()){
                 isExit_ = true;
                 // 透明にしていく
-                backSpriteObj_->GetComponent<ColorControlComponent>()->RevercePlay();
+                backSpriteObj_->GetComponent<SEED::ColorControlComponent>()->RevercePlay();
 
                 // メニュー項目も逆再生で画面外へ
                 for(int32_t i = 0; i < menus_.size(); i++){
-                    menus_[i]->GetComponent<Routine2DComponent>()->RevercePlay();
+                    menus_[i]->GetComponent<SEED::Routine2DComponent>()->RevercePlay();
                 }
 
                 // 音声再生
-                AudioManager::PlayAudio(AudioDictionary::Get("Return"), false, 0.5f);
+                SEED::AudioManager::PlayAudio(AudioDictionary::Get("Return"), false, 0.5f);
             }
         }
 
@@ -202,10 +202,10 @@ void GameState_Pause::ManageState(){
                 switch(selectedIndex_){
                 case Resume:// ポーズ解除
                     // 背景を透明にしていく
-                    backSpriteObj_->GetComponent<ColorControlComponent>()->RevercePlay();
+                    backSpriteObj_->GetComponent<SEED::ColorControlComponent>()->RevercePlay();
                     // メニュー項目も逆再生で画面外へ
                     for(int32_t i = 0; i < menus_.size(); i++){
-                        menus_[i]->GetComponent<Routine2DComponent>()->RevercePlay();
+                        menus_[i]->GetComponent<SEED::Routine2DComponent>()->RevercePlay();
                     }
                     isExit_ = true;
                     break;
@@ -251,27 +251,27 @@ void GameState_Pause::SelectMenuItem(){
     // 選択インデックス更新
     int prevIndex = selectedIndex_;
     selectedIndex_ += inputDir;
-    selectedIndex_ = MyFunc::Spiral(selectedIndex_, 0, PauseMenuItemCount - 1);
+    selectedIndex_ = SEED::Methods::Math::Spiral(selectedIndex_, 0, PauseMenuItemCount - 1);
 
     if(inputDir != 0){
 
         // 逆方向に再生する
-        menus_[prevIndex]->GetChild("backScrollObject")->GetComponent<Routine2DComponent>()->RevercePlay();
-        menus_[selectedIndex_]->GetChild("backScrollObject")->GetComponent<Routine2DComponent>()->RevercePlay();
+        menus_[prevIndex]->GetChild("backScrollObject")->GetComponent<SEED::Routine2DComponent>()->RevercePlay();
+        menus_[selectedIndex_]->GetChild("backScrollObject")->GetComponent<SEED::Routine2DComponent>()->RevercePlay();
 
         // 選択中の項目だけ色を変える
         for(int32_t i = 0; i < menus_.size(); i++){
 
             if(i != selectedIndex_){
-                menus_[i]->GetComponent<ColorControlComponent>()->SetIsActive(false);
-                menus_[i]->masterColor_ = Color(0.4f, 0.4f, 0.4f, 1.0f);
+                menus_[i]->GetComponent<SEED::ColorControlComponent>()->SetIsActive(false);
+                menus_[i]->masterColor_ = SEED::Color(0.4f, 0.4f, 0.4f, 1.0f);
             } else{
-                menus_[i]->GetComponent<ColorControlComponent>()->SetIsActive(true);
+                menus_[i]->GetComponent<SEED::ColorControlComponent>()->SetIsActive(true);
             }
         }
 
         // 音声再生
-        AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
+        SEED::AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
 
         // アイテム変更フラグを立てる
         isItemChanged_ = true;

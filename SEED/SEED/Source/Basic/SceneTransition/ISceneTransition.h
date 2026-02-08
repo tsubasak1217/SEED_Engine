@@ -8,29 +8,30 @@
 #include <SEED/Lib/Structs/Range2D.h>
 #include <SEED/Lib/Functions/Easing.h>
 
+namespace SEED{
+    /// <summary>
+    /// シーン遷移の基底クラス
+    /// </summary>
+    class ISceneTransition{
+        friend class SceneTransitionDrawer;
+    public:
+        ISceneTransition() = default;
+        virtual ~ISceneTransition() = default;
 
-/// <summary>
-/// シーン遷移の基底クラス
-/// </summary>
-class ISceneTransition {
-    friend class SceneTransitionDrawer;
-public:
-    ISceneTransition() = default;
-    virtual ~ISceneTransition() = default;
+    protected:
+        virtual void Update() = 0;
+        virtual void Draw() = 0;
 
-protected:
-    virtual void Update() = 0;
-    virtual void Draw() = 0;
+    public:
+        virtual void StartTransition(
+            float curSceneExitTime, // シーンが終了するまでの時間
+            float newSceneEnterTime   // 次のシーンの開始までの時間
+        );
 
-public:
-    virtual void StartTransition(
-        float curSceneExitTime, // シーンが終了するまでの時間
-        float newSceneEnterTime   // 次のシーンの開始までの時間
-    );
-
-protected:
-    // タイマー
-    Timer curSceneExitTimer_;
-    Timer newSceneEnterTimer_;
-    bool isStart_ = false;
-};
+    protected:
+        // タイマー
+        Timer curSceneExitTimer_;
+        Timer newSceneEnterTimer_;
+        bool isStart_ = false;
+    };
+}

@@ -1,6 +1,6 @@
 #include <SEED/Lib/Tensor/Quaternion.h>
-#include <SEED/Lib/Functions/MyMath.h>
-#include <SEED/Lib/Functions/MatrixFunc.h>
+#include <SEED/Lib/Functions/Math.h>
+#include <SEED/Lib/Functions/MatrixMath.h>
 #include <cmath> 
 #include <numbers>
 #include <DirectXMath.h>
@@ -198,7 +198,7 @@ Quaternion Quaternion::AngleAxis(float angle, const Vector3& axis){
     float cos = std::cosf(angle * 0.5f);
 
     // 単位ベクトルとしての軸を取得
-    Vector3 normAxis = MyMath::Normalize(axis);
+    Vector3 normAxis = SEED::Methods::Math::Normalize(axis);
 
     // クォータニオンの成分を設定
     return Quaternion(
@@ -337,7 +337,7 @@ Vector3 Quaternion::MakeForward() const{
     Vector3 right = MakeRight();
 
 
-    return MyMath::Cross(-up, right);
+    return SEED::Methods::Math::Cross(-up, right);
 }
 
 
@@ -359,7 +359,7 @@ Vector3 Quaternion::MakeUp() const{
     result.y = ww - xx + yy - zz;
     result.z = 2.0f * (yz + wx);
 
-    return MyMath::Normalize(result);
+    return SEED::Methods::Math::Normalize(result);
 }
 
 
@@ -381,7 +381,7 @@ Vector3 Quaternion::MakeRight() const{
     result.y = 2.0f * (xy + wz);
     result.z = 2.0f * (xz - wy);
 
-    return MyMath::Normalize(result);
+    return SEED::Methods::Math::Normalize(result);
 }
 
 
@@ -433,20 +433,20 @@ Matrix4x4 Quaternion::DirectionToDirection(const Vector3& from, const Vector3& t
 //////////////////////////////////////////////////////////
 Quaternion Quaternion::LookAt(const Vector3& from, const Vector3& to){
     // FromベクトルとToベクトルの正規化
-    Vector3 fromN = MyMath::Normalize(from);
-    Vector3 toN = MyMath::Normalize(to);
+    Vector3 fromN = SEED::Methods::Math::Normalize(from);
+    Vector3 toN = SEED::Methods::Math::Normalize(to);
 
     // FromベクトルとToベクトルの内積
-    float dot = MyMath::Dot(fromN, toN);
+    float dot = SEED::Methods::Math::Dot(fromN, toN);
 
     // FromベクトルとToベクトルが逆方向の場合
     if(dot < -0.999999f) {
         // 任意の軸を選択して180度回転
-        Vector3 axis = MyMath::Cross(Vector3(0.0f, 0.0f, 1.0f), fromN);
-        if(MyMath::Length(axis) < 0.000001f) {
-            axis = MyMath::Cross(Vector3(1.0f, 0.0f, 0.0f), fromN);
+        Vector3 axis = SEED::Methods::Math::Cross(Vector3(0.0f, 0.0f, 1.0f), fromN);
+        if(SEED::Methods::Math::Length(axis) < 0.000001f) {
+            axis = SEED::Methods::Math::Cross(Vector3(1.0f, 0.0f, 0.0f), fromN);
         }
-        axis = MyMath::Normalize(axis);
+        axis = SEED::Methods::Math::Normalize(axis);
         return Quaternion(axis, (float)std::numbers::pi);
     }
 
@@ -456,7 +456,7 @@ Quaternion Quaternion::LookAt(const Vector3& from, const Vector3& to){
     }
 
     // 通常のケース（dotが-1 < dot < 1 の場合）
-    Vector3 axis = MyMath::Normalize(MyMath::Cross(fromN, toN));  // 外積で回転軸を計算
+    Vector3 axis = SEED::Methods::Math::Normalize(SEED::Methods::Math::Cross(fromN, toN));  // 外積で回転軸を計算
     float angle = std::acos(dot);  // dotが[-1, 1]の範囲なので安全
     return Quaternion::AngleAxis(angle, axis);
 }

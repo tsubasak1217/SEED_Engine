@@ -5,10 +5,10 @@ Note_Hold::Note_Hold() : Note_Base(){
     noteType_ = NoteType::Hold;
 
     // ホールドノーツのテクスチャの設定
-    textureGHs_[0] = TextureManager::LoadTexture("Notes/holdNote_Head.png");
-    textureGHs_[1] = TextureManager::LoadTexture("Notes/holdNote_Head.png");
-    textureGHs_[2] = TextureManager::LoadTexture("Notes/holdNote_Body.png");
-    textureGHs_[3] = TextureManager::LoadTexture("Notes/holdNote_HeadEx.png");
+    textureGHs_[0] = SEED::TextureManager::LoadTexture("Notes/holdNote_Head.png");
+    textureGHs_[1] = SEED::TextureManager::LoadTexture("Notes/holdNote_Head.png");
+    textureGHs_[2] = SEED::TextureManager::LoadTexture("Notes/holdNote_Body.png");
+    textureGHs_[3] = SEED::TextureManager::LoadTexture("Notes/holdNote_HeadEx.png");
 
     // ホールドノーツの色の設定
     noteColors_[0] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -16,7 +16,7 @@ Note_Hold::Note_Hold() : Note_Base(){
     noteColors_[2] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     // ライティングを無効に
-    noteQuad_.get()->lightingType = LIGHTINGTYPE_NONE;
+    noteQuad_.get()->lightingType = SEED::LIGHTINGTYPE_NONE;
 }
 
 Note_Hold::~Note_Hold(){
@@ -31,7 +31,7 @@ void Note_Hold::Update(){
 /////////////////////////////////////////////////////////////////////
 void Note_Hold::Draw(float currentTime, float appearLength){
 
-    static Quad noteRect[3];
+    static SEED::Topology::Quad noteRect[3];
     float timeRatio[2] = { (time_ - currentTime) / appearLength,((time_ + kHoldTime_) - currentTime) / appearLength };
 
     // 描画用の矩形を計算
@@ -108,10 +108,10 @@ Judgement::Evaluation Note_Hold::Judge(float curTime){
     // 自身のレーンが押されているか
     isHold_ = input->GetIsPress(lane);
     if(isHold_){
-        isReleased_ = !Input::IsPressMouse(MOUSE_BUTTON::LEFT);
+        isReleased_ = !SEED::Input::IsPressMouse(SEED::MOUSE_BUTTON::LEFT);
     }
 
-    if(Input::IsReleaseMouse(MOUSE_BUTTON::LEFT)){
+    if(SEED::Input::IsReleaseMouse(SEED::MOUSE_BUTTON::LEFT)){
         isReleased_ = true;
     }
 
@@ -122,7 +122,7 @@ Judgement::Evaluation Note_Hold::Judge(float curTime){
         if(!isHold_){
             if(curTime > time_){
                 // 離している時間を加算
-                releaseTime_ += ClockManager::DeltaTime();
+                releaseTime_ += SEED::ClockManager::DeltaTime();
             }
             return Judgement::Evaluation::NONE;
 
@@ -162,7 +162,7 @@ Judgement::Evaluation Note_Hold::Judge(float curTime){
             if(!isHold_){
                 if(curTime > time_){
                     // 離している時間を加算
-                    releaseTime_ += ClockManager::DeltaTime();
+                    releaseTime_ += SEED::ClockManager::DeltaTime();
                 }
             }
         }

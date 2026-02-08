@@ -15,32 +15,32 @@ NotesEditor::NotesEditor(){
 
     laneLTPos_ = { 30,30 };
     laneSize_ = { 300,900 };
-    textureIDs_["laneField"] = TextureManager::GetImGuiTexture("PlayField/editorLane.png");
-    textureIDs_["playIcon"] = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play2.png");
-    textureIDs_["pauseIcon"] = TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play.png");
+    textureIDs_["laneField"] = SEED::TextureManager::GetImGuiTexture("PlayField/editorLane.png");
+    textureIDs_["playIcon"] = SEED::TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play2.png");
+    textureIDs_["pauseIcon"] = SEED::TextureManager::GetImGuiTexture("../../SEED/EngineResources/Textures/play.png");
 
     // note
-    textureIDs_["tap"] = TextureManager::GetImGuiTexture("Notes/tapNote.png");
-    textureIDs_["tapEx"] = TextureManager::GetImGuiTexture("Notes/tapNoteEx.png");
-    textureIDs_["holdHead"] = TextureManager::GetImGuiTexture("Notes/holdNote_Head.png");
-    textureIDs_["holdHeadEx"] = TextureManager::GetImGuiTexture("Notes/holdNote_HeadEx.png");
-    textureIDs_["holdBody"] = TextureManager::GetImGuiTexture("Notes/holdNote_Body.png");
-    textureIDs_["wheel"] = TextureManager::GetImGuiTexture("Notes/wheel_Edit.png");
-    textureIDs_["rf_LT"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LT.png");
-    textureIDs_["rf_RT"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RT.png");
-    textureIDs_["rf_LB"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LB.png");
-    textureIDs_["rf_RB"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RB.png");
-    textureIDs_["rf_L"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_L.png");
-    textureIDs_["rf_R"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_R.png");
-    textureIDs_["rf_U"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_U.png");
-    textureIDs_["rf_D"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_D.png");
-    textureIDs_["rf_ALL"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_All.png");
-    textureIDs_["rf_LT_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LT_EX.png");
-    textureIDs_["rf_RT_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RT_EX.png");
-    textureIDs_["rf_LB_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LB_EX.png");
-    textureIDs_["rf_RB_EX"] = TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RB_EX.png");
-    textureIDs_["warning"] = TextureManager::GetImGuiTexture("Notes/warning.png");
-    textureIDs_["white"] = TextureManager::GetImGuiTexture("DefaultAssets/white1x1.png");
+    textureIDs_["tap"] = SEED::TextureManager::GetImGuiTexture("Notes/tapNote.png");
+    textureIDs_["tapEx"] = SEED::TextureManager::GetImGuiTexture("Notes/tapNoteEx.png");
+    textureIDs_["holdHead"] = SEED::TextureManager::GetImGuiTexture("Notes/holdNote_Head.png");
+    textureIDs_["holdHeadEx"] = SEED::TextureManager::GetImGuiTexture("Notes/holdNote_HeadEx.png");
+    textureIDs_["holdBody"] = SEED::TextureManager::GetImGuiTexture("Notes/holdNote_Body.png");
+    textureIDs_["wheel"] = SEED::TextureManager::GetImGuiTexture("Notes/wheel_Edit.png");
+    textureIDs_["rf_LT"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LT.png");
+    textureIDs_["rf_RT"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RT.png");
+    textureIDs_["rf_LB"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LB.png");
+    textureIDs_["rf_RB"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RB.png");
+    textureIDs_["rf_L"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_L.png");
+    textureIDs_["rf_R"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_R.png");
+    textureIDs_["rf_U"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_U.png");
+    textureIDs_["rf_D"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_D.png");
+    textureIDs_["rf_ALL"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_All.png");
+    textureIDs_["rf_LT_EX"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LT_EX.png");
+    textureIDs_["rf_RT_EX"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RT_EX.png");
+    textureIDs_["rf_LB_EX"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_LB_EX.png");
+    textureIDs_["rf_RB_EX"] = SEED::TextureManager::GetImGuiTexture("Notes/recFlick_Edit_RB_EX.png");
+    textureIDs_["warning"] = SEED::TextureManager::GetImGuiTexture("Notes/warning.png");
+    textureIDs_["white"] = SEED::TextureManager::GetImGuiTexture("DefaultAssets/white1x1.png");
 
     // name
     laneTextureNameMap_[LaneBit::RECTFLICK_LT] = "rf_LT";
@@ -77,13 +77,13 @@ void NotesEditor::Initialize(const SongInfo& songInfo, int32_t difficulty){
 void NotesEditor::Edit(){
 #ifdef _DEBUG
     // ウィンドウが表示されていない場合は終了
-    if(!ImFunc::CustomBegin("NotesEditor", MoveOnly_TitleBar)){
-        AudioManager::PauseAudio(audioHandle_); // ウィンドウがフォーカスされていない場合は音声を一時停止
+    if(!SEED::ImFunc::CustomBegin("NotesEditor", SEED::MoveOnly_TitleBar)){
+        SEED::AudioManager::PauseAudio(audioHandle_); // ウィンドウがフォーカスされていない場合は音声を一時停止
         ImGui::End();
         return;
 
     } else{
-        AudioManager::RestartAudio(audioHandle_); // ウィンドウがフォーカスされている場合は音声を再開
+        SEED::AudioManager::RestartAudio(audioHandle_); // ウィンドウがフォーカスされている場合は音声を再開
     }
 
 
@@ -137,7 +137,7 @@ void NotesEditor::Edit(){
 
     // 時間の更新
     if(isPlaying_){
-        curLaneTime_ += ClockManager::DeltaTime();
+        curLaneTime_ += SEED::ClockManager::DeltaTime();
         curLaneTime_ = std::clamp(curLaneTime_, 0.0f, duration_); // 範囲外チェック
     }
 
@@ -163,7 +163,7 @@ void NotesEditor::UpdateTimeScale(){
         // マウスホイールの回転でタイムスケールを変更
         float wheel = -ImGui::GetIO().MouseWheel;
         if(wheel != 0.0f){
-            timeScale_ += wheel * 10.0f * ClockManager::DeltaTime(); // スケールを調整
+            timeScale_ += wheel * 10.0f * SEED::ClockManager::DeltaTime(); // スケールを調整
             timeScale_ = (std::max)(timeScale_, 0.1f); // 最小値を設定
         }
     }
@@ -197,10 +197,10 @@ void NotesEditor::DisplayLane(){
         isPlaying_ = !isPlaying_; // 再生/停止の切り替え
         if(isPlaying_){
             if(!songInfo_.audioFilePath.empty()){
-                audioHandle_ = AudioManager::PlayAudio(songInfo_.audioFilePath, false, audioVolume_, curLaneTime_); // 音声を再生
+                audioHandle_ = SEED::AudioManager::PlayAudio(songInfo_.audioFilePath, false, audioVolume_, curLaneTime_); // 音声を再生
             }
         } else{
-            AudioManager::EndAudio(audioHandle_); // 音声を停止
+            SEED::AudioManager::EndAudio(audioHandle_); // 音声を停止
         }
     }
 
@@ -210,13 +210,13 @@ void NotesEditor::DisplayLane(){
     static bool isSliderActive = false; // スライダーがアクティブかどうかのフラグ
     if(ImGui::SliderFloat("時間", &curLaneTime_, 0.0f, duration_, "%.2f")){
         isSliderActive = true;
-        AudioManager::EndAudio(audioHandle_); // 音声を停止
+        SEED::AudioManager::EndAudio(audioHandle_); // 音声を停止
     } else{
         if(isSliderActive){
             isSliderActive = false;
             if(isPlaying_){
                 if(!songInfo_.audioFilePath.empty()){
-                    audioHandle_ = AudioManager::PlayAudio(songInfo_.audioFilePath, false, audioVolume_, curLaneTime_); // 音声を再生
+                    audioHandle_ = SEED::AudioManager::PlayAudio(songInfo_.audioFilePath, false, audioVolume_, curLaneTime_); // 音声を再生
                 }
             }
         }
@@ -257,8 +257,8 @@ void NotesEditor::DisplayTempoData(){
         bool isDraw = false; // 描画フラグ
 
         // 時間が表示範囲内にない場合はスキップ
-        if(MyFunc::IsContain({ curLaneTime_,endTime }, tempoData.time) or
-            MyFunc::IsContain({ curLaneTime_,endTime }, dataEndTime) or
+        if(SEED::Methods::Math::IsContain({ curLaneTime_,endTime }, tempoData.time) or
+            SEED::Methods::Math::IsContain({ curLaneTime_,endTime }, dataEndTime) or
             (curLaneTime_ > tempoData.time && endTime <= dataEndTime)
             ){
             isDraw = true; // 描画フラグを立てる
@@ -326,7 +326,7 @@ void NotesEditor::DisplayTempoData(){
 
         }
 
-        if(MyFunc::IsContain({ curLaneTime_,endTime }, tempoData.time)){
+        if(SEED::Methods::Math::IsContain({ curLaneTime_,endTime }, tempoData.time)){
             // ボタンの表示
             static ImVec2 buttonPos;
             bool isButtonPressed[2];
@@ -404,10 +404,10 @@ void NotesEditor::EditNotes(){
 
     // 編集ノーツ種の選択
     ImGui::Checkbox("レーン編集", &isEditOnLane_);
-    ImFunc::Combo("編集ノーツタイプ", editNoteType_, { "タップ","ホールド","レクトフリック","ホイール","警告" });
+    SEED::ImFunc::Combo("編集ノーツタイプ", editNoteType_, { "タップ","ホールド","レクトフリック","ホイール","警告" });
 
     // 小節の分割モードの選択
-    if(ImFunc::Combo("分数", divisionMode_, { "1/4","1/6","1/8","1/12","1/16","1/24","1/32","1/48","1/64" })){
+    if(SEED::ImFunc::Combo("分数", divisionMode_, { "1/4","1/6","1/8","1/12","1/16","1/24","1/32","1/48","1/64" })){
         switch(divisionMode_){
         case Div_4: division_ = 4.0f; break; // 1/4
         case Div_6: division_ = 6.0f; break; // 1/6
@@ -477,11 +477,11 @@ void NotesEditor::CreateNoteOnLane(){
 
 
     // 上下どちらにマウスがあるかを判定
-    UpDown layer;
+    SEED::GeneralEnum::UpDown layer;
     if(mousePos.y < worldLaneLTPos_.y + laneSize_.y * 0.5f){
-        layer = UpDown::UP; // 上半分
+        layer = SEED::GeneralEnum::UpDown::UP; // 上半分
     } else{
-        layer = UpDown::DOWN; // 下半分
+        layer = SEED::GeneralEnum::UpDown::DOWN; // 下半分
     }
 
     // どこのレーンに配置するかを判定
@@ -499,11 +499,11 @@ void NotesEditor::CreateNoteOnLane(){
     float navLineDrawPosY = 0.0f;
     bool isContained = false;
 
-    if(layer == UpDown::UP){
+    if(layer == SEED::GeneralEnum::UpDown::UP){
         for(int i = 0; i < upLayerBorders_.size(); i++){
             int nextIdx = std::clamp(i + 1, 0, int(upLayerBorders_.size()) - 1);
 
-            if(MyFunc::IsContain(
+            if(SEED::Methods::Math::IsContain(
                 { upLayerBorders_[nextIdx].laneYPosition,upLayerBorders_[i].laneYPosition },
                 mousePos.y)){
 
@@ -538,7 +538,7 @@ void NotesEditor::CreateNoteOnLane(){
     } else{
         for(int i = 0; i < downLayerBorders_.size(); i++){
             int nextIdx = std::clamp(i + 1, 0, int(downLayerBorders_.size()) - 1);
-            if(MyFunc::IsContain(
+            if(SEED::Methods::Math::IsContain(
                 { downLayerBorders_[nextIdx].laneYPosition,downLayerBorders_[i].laneYPosition },
                 mousePos.y)){
 
@@ -625,7 +625,7 @@ void NotesEditor::CreateNoteOnLane(){
             notes_.emplace_back(std::make_unique<Note_Wheel>());
             if(Note_Wheel* note = dynamic_cast<Note_Wheel*>(notes_.back().get())){
                 note->layer_ = layer; // レイヤーを設定
-                note->direction_ = UpDown::UP;
+                note->direction_ = SEED::GeneralEnum::UpDown::UP;
                 note->laneBit_ = LaneBit::WHEEL_UP;
                 note->time_ = timeLocation; // 時間を設定
             }
@@ -686,7 +686,7 @@ void NotesEditor::DisplayNotes(){
         }
 
         // 描画位置を計算
-        float displayY = judgeLineY + (laneSize_.y * 0.5f) * std::clamp(t, 0.0f, 1.0f) * (note->layer_ == UpDown::UP ? -1.0f : 1.0f);
+        float displayY = judgeLineY + (laneSize_.y * 0.5f) * std::clamp(t, 0.0f, 1.0f) * (note->layer_ == SEED::GeneralEnum::UpDown::UP ? -1.0f : 1.0f);
         float laneX = laneBorders_[note->lane_]; // レーンのX座標
 
         if(note->noteType_ == NoteType::Tap){
@@ -706,7 +706,7 @@ void NotesEditor::DisplayNotes(){
 
             // ボタンを押している間ドラッグ状態にする
             if(ImGui::IsItemActive()){
-                if(Input::IsMouseMoved()){
+                if(SEED::Input::IsMouseMoved()){
                     note->isDragging_ = true; // ドラッグ中にする
                     draggingNote_ = note.get(); // ドラッグ中のノーツを保存
                 }
@@ -732,7 +732,7 @@ void NotesEditor::DisplayNotes(){
         } else if(note->noteType_ == NoteType::Hold){
             Note_Hold* holdNote = dynamic_cast<Note_Hold*>(note.get());
             float t2 = (holdNote->time_ + holdNote->kHoldTime_ - curLaneTime_) / (kVisibleTime_ * timeScale_);
-            float displayY2 = judgeLineY + (laneSize_.y * 0.5f) * std::clamp(t2, 0.0f, 1.0f) * (holdNote->layer_ == UpDown::UP ? -1.0f : 1.0f);
+            float displayY2 = judgeLineY + (laneSize_.y * 0.5f) * std::clamp(t2, 0.0f, 1.0f) * (holdNote->layer_ == SEED::GeneralEnum::UpDown::UP ? -1.0f : 1.0f);
             if(displayY2 == displayY){ displayY2 += 1.0f; }
 
             /*-------------- ボディの描画 -------------*/
@@ -744,7 +744,7 @@ void NotesEditor::DisplayNotes(){
                 // ノーツにボタン判定を作成
                 label = "holdBody##" + std::to_string(noteIdx);
                 // クリックしたらノーツを編集状態にする
-                if(note->layer_ == UpDown::UP){
+                if(note->layer_ == SEED::GeneralEnum::UpDown::UP){
                     ImGui::SetCursorScreenPos(ImVec2(p1.x, p2.y) + ImVec2(0.0f, noteHeight * 0.5f));
                     ImVec2 buttonSize = ImVec2(p2.x, p1.y) - ImVec2(p1.x, p2.y) - ImVec2(0.0f, noteHeight);
                     if(ImGui::InvisibleButton(label.c_str(), buttonSize)){
@@ -759,7 +759,7 @@ void NotesEditor::DisplayNotes(){
 
                 // ボタンを押している間ドラッグ状態にする
                 if(ImGui::IsItemActive()){
-                    if(Input::IsMouseMoved()){
+                    if(SEED::Input::IsMouseMoved()){
                         note->isDragging_ = true; // ドラッグ中にする
                         holdNote->isDraggingHoldEnd_ = false;
                         holdNote->isDraggingHoldStart_ = false;
@@ -799,7 +799,7 @@ void NotesEditor::DisplayNotes(){
 
                 // ボタンを押している間ドラッグ状態にする
                 if(ImGui::IsItemActive()){
-                    if(Input::IsMouseMoved()){
+                    if(SEED::Input::IsMouseMoved()){
                         note->isDragging_ = true; // ドラッグ中にする
                         holdNote->isDraggingHoldStart_ = true; // ホールドの先頭をドラッグ中にする
                         holdNote->isDraggingHoldEnd_ = false; // ホールドの末尾はドラッグ中でない
@@ -843,7 +843,7 @@ void NotesEditor::DisplayNotes(){
 
                 // ボタンを押している間ドラッグ状態にする
                 if(ImGui::IsItemActive()){
-                    if(Input::IsMouseMoved()){
+                    if(SEED::Input::IsMouseMoved()){
                         note->isDragging_ = true; // ドラッグ中にする
                         holdNote->isDraggingHoldEnd_ = true; // ホールドの終端をドラッグ中にする
                         holdNote->isDraggingHoldStart_ = false;
@@ -885,7 +885,7 @@ void NotesEditor::DisplayNotes(){
             }
             // ボタンを押している間ドラッグ状態にする
             if(ImGui::IsItemActive()){
-                if(Input::IsMouseMoved()){
+                if(SEED::Input::IsMouseMoved()){
                     note->isDragging_ = true; // ドラッグ中にする
                     draggingNote_ = note.get(); // ドラッグ中のノーツを保存
                     edittingNote_ = note.get();
@@ -924,7 +924,7 @@ void NotesEditor::DisplayNotes(){
 
             // ボタンを押している間ドラッグ状態にする
             if(ImGui::IsItemActive()){
-                if(Input::IsMouseMoved()){
+                if(SEED::Input::IsMouseMoved()){
                     note->isDragging_ = true; // ドラッグ中にする
                     draggingNote_ = note.get(); // ドラッグ中のノーツを保存
                     edittingNote_ = note.get();
@@ -943,7 +943,7 @@ void NotesEditor::DisplayNotes(){
                 alpha = 255;
             }
 
-            float direction = wheelNote->direction_ == UpDown::UP ? 1.0f : -1.0f; // 上向きなら1.0、下向きなら-1.0
+            float direction = wheelNote->direction_ == SEED::GeneralEnum::UpDown::UP ? 1.0f : -1.0f; // 上向きなら1.0、下向きなら-1.0
             ImGuiCol color = direction == 1.0f ? IM_COL32(255, 0, 255, alpha) : IM_COL32(0, 255, 255, alpha); // 上向きはピンク、下向きは水色
             pDrawList_->AddImage(textureIDs_["wheel"], p1, p2, ImVec2(0, 0), ImVec2(direction, direction), color);
 
@@ -953,7 +953,7 @@ void NotesEditor::DisplayNotes(){
             // 終点
             Note_Warning* warning = dynamic_cast<Note_Warning*>(note.get());
             float t2 = (warning->time_ + warning->duration_ - curLaneTime_) / (kVisibleTime_ * timeScale_);
-            float displayY2 = judgeLineY + (laneSize_.y * 0.5f) * std::clamp(t2, 0.0f, 1.0f) * (warning->layer_ == UpDown::UP ? -1.0f : 1.0f);
+            float displayY2 = judgeLineY + (laneSize_.y * 0.5f) * std::clamp(t2, 0.0f, 1.0f) * (warning->layer_ == SEED::GeneralEnum::UpDown::UP ? -1.0f : 1.0f);
             if(displayY2 == displayY){ displayY2 += 1.0f; }
 
             /*-------------- ボディの描画 -------------*/
@@ -965,7 +965,7 @@ void NotesEditor::DisplayNotes(){
                 // ノーツにボタン判定を作成
                 label = "warningNoteBody##" + std::to_string(noteIdx);
                 // クリックしたらノーツを編集状態にする
-                if(note->layer_ == UpDown::UP){
+                if(note->layer_ == SEED::GeneralEnum::UpDown::UP){
                     ImGui::SetCursorScreenPos(ImVec2(p1.x, p2.y) + ImVec2(0.0f, noteHeight * 0.5f));
                     ImVec2 buttonSize = ImVec2(p2.x, p1.y) - ImVec2(p1.x, p2.y) - ImVec2(0.0f, noteHeight);
                     if(ImGui::InvisibleButton(label.c_str(), buttonSize)){
@@ -980,7 +980,7 @@ void NotesEditor::DisplayNotes(){
 
                 // ボタンを押している間ドラッグ状態にする
                 if(ImGui::IsItemActive()){
-                    if(Input::IsMouseMoved()){
+                    if(SEED::Input::IsMouseMoved()){
                         note->isDragging_ = true; // ドラッグ中にする
                         draggingNote_ = note.get(); // ドラッグ中のノーツを保存
                         edittingNote_ = note.get();
@@ -1019,7 +1019,7 @@ void NotesEditor::DisplayNotes(){
 
                 // ボタンを押している間ドラッグ状態にする
                 if(ImGui::IsItemActive()){
-                    if(Input::IsMouseMoved()){
+                    if(SEED::Input::IsMouseMoved()){
                         note->isDragging_ = true; // ドラッグ中にする
                         draggingNote_ = note.get(); // ドラッグ中のノーツを保存
                     }
@@ -1082,11 +1082,11 @@ void NotesEditor::DraggingNote(){
     }
 
     // 上下どちらにマウスがあるかを判定
-    UpDown layer;
+    SEED::GeneralEnum::UpDown layer;
     if(mousePos.y < worldLaneLTPos_.y + laneSize_.y * 0.5f){
-        layer = UpDown::UP; // 上半分
+        layer = SEED::GeneralEnum::UpDown::UP; // 上半分
     } else{
-        layer = UpDown::DOWN; // 下半分
+        layer = SEED::GeneralEnum::UpDown::DOWN; // 下半分
     }
 
     // どこのレーンに配置するかを判定
@@ -1103,11 +1103,11 @@ void NotesEditor::DraggingNote(){
     float divisionRate = division_ / 4.0f;
     bool isContained = false;
 
-    if(layer == UpDown::UP){
+    if(layer == SEED::GeneralEnum::UpDown::UP){
         for(int i = 0; i < upLayerBorders_.size(); i++){
             int nextIdx = std::clamp(i + 1, 0, int(upLayerBorders_.size()) - 1);
 
-            if(MyFunc::IsContain(
+            if(SEED::Methods::Math::IsContain(
                 { upLayerBorders_[nextIdx].laneYPosition,upLayerBorders_[i].laneYPosition },
                 mousePos.y)){
 
@@ -1137,7 +1137,7 @@ void NotesEditor::DraggingNote(){
     } else{
         for(int i = 0; i < downLayerBorders_.size(); i++){
             int nextIdx = std::clamp(i + 1, 0, int(downLayerBorders_.size()) - 1);
-            if(MyFunc::IsContain(
+            if(SEED::Methods::Math::IsContain(
                 { downLayerBorders_[nextIdx].laneYPosition,downLayerBorders_[i].laneYPosition },
                 mousePos.y)){
 
@@ -1187,15 +1187,15 @@ void NotesEditor::DraggingNote(){
 
                 // 両端をドラッグしながら上下に出たら、時間をずらす
                 if(note->isDraggingHoldEnd_ || note->isDraggingHoldStart_){
-                    if(layer == UpDown::UP){
+                    if(layer == SEED::GeneralEnum::UpDown::UP){
                         if(mousePos.y < worldLaneLTPos_.y){
-                            curLaneTime_ += ClockManager::DeltaTime() * timeScale_; // 上にドラッグしたら時間を進める
+                            curLaneTime_ += SEED::ClockManager::DeltaTime() * timeScale_; // 上にドラッグしたら時間を進める
                             curLaneTime_ = std::clamp(curLaneTime_, 0.0f, FLT_MAX); // 時間を0以上に制限
                             timeLocation = curLaneTime_ + kVisibleTime_ * timeScale_;
                         }
                     } else{
                         if(mousePos.y > worldLaneLTPos_.y + laneSize_.y){
-                            curLaneTime_ += ClockManager::DeltaTime() * timeScale_; // 下にドラッグしたら時間を進める
+                            curLaneTime_ += SEED::ClockManager::DeltaTime() * timeScale_; // 下にドラッグしたら時間を進める
                             curLaneTime_ = std::clamp(curLaneTime_, 0.0f, FLT_MAX); // 時間を0以上に制限
                             timeLocation = curLaneTime_ + kVisibleTime_ * timeScale_;
                         }
@@ -1204,7 +1204,7 @@ void NotesEditor::DraggingNote(){
 
                 if(note->isDraggingHoldEnd_){
                     if(layer != note->layer_){
-                        curLaneTime_ -= ClockManager::DeltaTime() * timeScale_;
+                        curLaneTime_ -= SEED::ClockManager::DeltaTime() * timeScale_;
                         curLaneTime_ = std::clamp(curLaneTime_, 0.0f, FLT_MAX); // 時間を0以上に制限
                         timeLocation = curLaneTime_;
                     }
@@ -1212,7 +1212,7 @@ void NotesEditor::DraggingNote(){
 
                 } else if(note->isDraggingHoldStart_){
                     if(layer != note->layer_){
-                        curLaneTime_ -= ClockManager::DeltaTime() * timeScale_;
+                        curLaneTime_ -= SEED::ClockManager::DeltaTime() * timeScale_;
                         curLaneTime_ = std::clamp(curLaneTime_, 0.0f, FLT_MAX); // 時間を0以上に制限
                         timeLocation = curLaneTime_; // レイヤーが変わったら時間を現在の時間に戻す
                     }
@@ -1291,7 +1291,7 @@ void NotesEditor::ScrollOnLane(){
     float laneCenterY = worldLaneLTPos_.y + laneSize_.y * 0.5f;
     static bool isScrolling = false; // スクロール中フラグ
     static bool isPause = false;
-    static UpDown scrollLayer = UpDown::NONE;
+    static SEED::GeneralEnum::UpDown scrollLayer = SEED::GeneralEnum::UpDown::NONE;
     static ImVec2 prevMousePos; // 前回のマウス座標
     static float savedTimeVelocity;
 
@@ -1304,7 +1304,7 @@ void NotesEditor::ScrollOnLane(){
         }
 
         // 再生の停止
-        AudioManager::EndAudio(audioHandle_);
+        SEED::AudioManager::EndAudio(audioHandle_);
 
         if(isPlaying_){
             isPause = true; // 一時停止フラグを立てる
@@ -1313,9 +1313,9 @@ void NotesEditor::ScrollOnLane(){
 
         // 上下どちらにマウスがあるかを判定
         if(mousePos.y < worldLaneLTPos_.y + laneSize_.y * 0.5f){
-            scrollLayer = UpDown::UP; // 上半分
+            scrollLayer = SEED::GeneralEnum::UpDown::UP; // 上半分
         } else{
-            scrollLayer = UpDown::DOWN; // 下半分
+            scrollLayer = SEED::GeneralEnum::UpDown::DOWN; // 下半分
         }
 
         isScrolling = true;
@@ -1326,7 +1326,7 @@ void NotesEditor::ScrollOnLane(){
         ImVec2 dif = mousePos - prevMousePos;
         float t[2]{};
 
-        if(scrollLayer == UpDown::DOWN){
+        if(scrollLayer == SEED::GeneralEnum::UpDown::DOWN){
             t[0] = (prevMousePos.y - laneCenterY) / (laneSize_.y * 0.5f);
             t[1] = (mousePos.y - laneCenterY) / (laneSize_.y * 0.5f);
         } else{
@@ -1348,7 +1348,7 @@ void NotesEditor::ScrollOnLane(){
         if(isPause){
             if(std::fabsf(savedTimeVelocity) < 0.001f){
                 if(!songInfo_.audioFilePath.empty()){
-                    audioHandle_ = AudioManager::PlayAudio(songInfo_.audioFilePath, false, audioVolume_, curLaneTime_); // 音声を再生
+                    audioHandle_ = SEED::AudioManager::PlayAudio(songInfo_.audioFilePath, false, audioVolume_, curLaneTime_); // 音声を再生
                 }
                 isPause = false; // 再生中フラグを設定
                 isPlaying_ = true; // 再生中フラグを設定
@@ -1393,7 +1393,7 @@ void NotesEditor::PlayMetronome(){
 
             // データが切り替わった瞬間の場合
             if(preLanetime < tempoData.time){
-                AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false, 2.0f); // メトロノーム音を再生
+                SEED::AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false, 2.0f); // メトロノーム音を再生
             } else{
                 float beatDuration = 60.0f / tempoData.bpm; // 一拍の長さを計算
                 int beatCount[2] = {
@@ -1404,9 +1404,9 @@ void NotesEditor::PlayMetronome(){
                 // ビート数が変わった場合のみメトロノーム音を再生
                 if(beatCount[0] != beatCount[1]){
                     if(beatCount[0] % tempoData.timeSignature_numerator == 0){
-                        AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false, 2.0f); // メトロノーム音を再生
+                        SEED::AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false, 2.0f); // メトロノーム音を再生
                     } else{
-                        AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false, 1.0f); // メトロノーム音を再生（弱拍）
+                        SEED::AudioManager::PlayAudio(AudioDictionary::Get("Metronome"), false, 1.0f); // メトロノーム音を再生（弱拍）
                     }
                 }
             }
@@ -1430,7 +1430,7 @@ void NotesEditor::PlayAnswerSE(){
         if(it != notes_.begin()){
             --it; // 1つ前のノーツを取得
             if(it->get()->time_ + answerOffsetTime_ > preLaneTime){
-                AudioManager::PlayAudio(AudioDictionary::Get("Answer"), false, 1.0f); // 判定音を再生
+                SEED::AudioManager::PlayAudio(AudioDictionary::Get("Answer"), false, 1.0f); // 判定音を再生
             } else{
                 break;
             }
@@ -1457,7 +1457,7 @@ void NotesEditor::FileControl(){
 
 
     static std::filesystem::path loadFilePath = "Resources/NoteDatas/"; // 読み込み先のパスを設定
-    std::string selectedFile = ImFunc::FolderView("譜面データ一覧", loadFilePath);
+    std::string selectedFile = SEED::ImFunc::FolderView("譜面データ一覧", loadFilePath);
     selectedFile;
 
 
@@ -1465,16 +1465,16 @@ void NotesEditor::FileControl(){
 
         ImGui::SeparatorText("譜面単位の情報");
         ImGui::SliderInt("難易度", &difficulty_, 1, 15);
-        ImFunc::InputText("譜面制作者名", notesDesignerName_);
+        SEED::ImFunc::InputText("譜面制作者名", notesDesignerName_);
         ImGui::Spacing();
 
         ImGui::SeparatorText("曲単位の情報");
-        ImFunc::InputText("曲名", songName_);
-        ImFunc::InputText("アーティスト名", artistName_);
-        ImFunc::Combo("ジャンル", songGenre_, { "Original", "GameMusic" });
+        SEED::ImFunc::InputText("曲名", songName_);
+        SEED::ImFunc::InputText("アーティスト名", artistName_);
+        SEED::ImFunc::Combo("ジャンル", songGenre_, { "Original", "GameMusic" });
         ImGui::DragFloat("曲自体のオフセット値", &offsetTime_, 0.001f, -1.0f, 1.0f);
         if(ImGui::DragFloat("楽曲の音量", &audioVolume_, 0.005f, 0.0f, 3.0f)){
-            AudioManager::SetAudioVolume(audioHandle_, audioVolume_);
+            SEED::AudioManager::SetAudioVolume(audioHandle_, audioVolume_);
         }
         ImGui::DragFloat2("セレクトでの音源再生範囲", &previewRange_.min, 0.01f, 0.0f, duration_);
 
@@ -1662,7 +1662,7 @@ void NotesEditor::OutputToJson(){
         notesJson["maxCombo"] = comboCount; // コンボ数を保存
 
         // ファイルに出力
-        MyFunc::CreateJsonFile(songInfo_.jsonFilePath[(int32_t)trackDifficulty_], notesJson);
+        SEED::Methods::File::CreateJsonFile(songInfo_.jsonFilePath[(int32_t)trackDifficulty_], notesJson);
     }
 
 
@@ -1677,7 +1677,7 @@ void NotesEditor::OutputToJson(){
 
         // ファイルに出力
         std::string outDir = "Resources/NoteDatas/" + songInfo_.folderName + "/songInfo.json";
-        MyFunc::CreateJsonFile(outDir, songInfoJson);
+        SEED::Methods::File::CreateJsonFile(outDir, songInfoJson);
     }
 
 }

@@ -1,5 +1,4 @@
 #include "SongSelector.h"
-#include <SEED/Lib/Functions/MyFunc.h>
 #include <SEED/Source/SEED.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Lib/Structs/Transform.h>
@@ -25,7 +24,7 @@ SongSelector::~SongSelector(){
 void SongSelector::Initialize(){
 
     // NoteDatasの階層にあるフォルダ名を一覧取得
-    auto songFolders = MyFunc::GetFolderList("Resources/NoteDatas", true, false);
+    auto songFolders = SEED::Methods::File::GetFolderList("Resources/NoteDatas", true, false);
 
     // フォルダ名を元に楽曲情報を構築
     for(const auto& folderName : songFolders){
@@ -69,17 +68,17 @@ void SongSelector::Initialize(){
     UpdateUIContents(true);
 
     // ジャケット矩形の初期化
-    jacket3D_ = MakeEqualQuad(3.0f);
+    jacket3D_ = SEED::Methods::Shape::MakeEqualQuad(3.0f);
     jacket3D_.cullMode = D3D12_CULL_MODE_NONE; // カリングなし
-    jacket3D_.lightingType = LIGHTINGTYPE_NONE; // ライティングなし
-    jacket3D_.GH = TextureManager::LoadTexture(
+    jacket3D_.lightingType = SEED::LIGHTINGTYPE_NONE; // ライティングなし
+    jacket3D_.GH = SEED::TextureManager::LoadTexture(
         "../../Resources/NoteDatas/" + currentSong.first->folderName + "/" + currentSong.first->folderName + ".png"
     );
 
     // カメラコントロールポイントの読み込み
-    auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    auto* hierarchy = SEED::GameSystem::GetScene()->GetHierarchy();
     cameraControlPts_ = hierarchy->LoadObject("SelectScene/cameraControlPts.prefab");
-    auto& controlPoints = cameraControlPts_->GetComponent<Routine3DComponent>()->GetControlPoints();
+    auto& controlPoints = cameraControlPts_->GetComponent<SEED::Routine3DComponent>()->GetControlPoints();
     if(!controlPoints.empty()){
         preCameraTransform_ = controlPoints[0].first;
     }
@@ -88,12 +87,12 @@ void SongSelector::Initialize(){
     pMouseCursor_ = hierarchy->GetGameObject2D("cursorColliderObj");
 
     // カメラの取得
-   SEED::Instance::RemoveCamera("gameCamera");
-   SEED::Instance::SetMainCamera("default");
-    camera_ =SEED::Instance::GetMainCamera();
+    SEED::Instance::RemoveCamera("gameCamera");
+    SEED::Instance::SetMainCamera("default");
+    camera_ = SEED::Instance::GetMainCamera();
 
     // パーティクルを初期化しエミッターを読み込む
-    ParticleManager::DeleteAll();// 既存のエフェクトを削除
+    SEED::ParticleManager::DeleteAll();// 既存のエフェクトを削除
     hierarchy->LoadObject("SelectScene/cubeParticle.prefab");
 
     // 入力関数の初期化
@@ -114,8 +113,8 @@ void SongSelector::EndFrame(){
                 "Resources/NoteDatas/" + currentSong.first->folderName + "/" + currentSong.first->folderName + ".png"
             );
 
-            auto* scene = GameSystem::GetScene();
-            GameSystem::GetScene()->ChangeState(new GameState_Play(scene, *currentSong.first, (int)currentDifficulty));
+            auto* scene = SEED::GameSystem::GetScene();
+            SEED::GameSystem::GetScene()->ChangeState(new GameState_Play(scene, *currentSong.first, (int)currentDifficulty));
             return;
         }
     }
@@ -175,7 +174,7 @@ void SongSelector::Update(){
 ////////////////////////////////////////////////////////////////////
 void SongSelector::Draw(){
     // ジャケットの描画
-   SEED::Instance::DrawQuad(jacket3D_);
+    SEED::Instance::DrawQuad(jacket3D_);
 }
 
 ///////////////////////////////////////////////////////////////
@@ -185,32 +184,32 @@ void SongSelector::InitializeInput(){
 
     // 縦方向入力-----------------------------------------------------
     verticalInput_.Value = [&]{
-        if(GameSystem::GetScene()->HasEvent()){
-            return UpDown::NONE;// イベント中は入力を受け付けない
+        if(SEED::GameSystem::GetScene()->HasEvent()){
+            return SEED::GeneralEnum::UpDown::NONE;// イベント中は入力を受け付けない
         }
-        if(Input::IsPressKey({ DIK_W,DIK_UP })){
-            return UpDown::UP;
+        if(SEED::Input::IsPressKey({ DIK_W,DIK_UP })){
+            return SEED::GeneralEnum::UpDown::UP;
         }
-        if(Input::IsPressKey({ DIK_S,DIK_DOWN })){
-            return UpDown::DOWN;
+        if(SEED::Input::IsPressKey({ DIK_S,DIK_DOWN })){
+            return SEED::GeneralEnum::UpDown::DOWN;
         }
-        if(mouseInputVertical_ != UpDown::NONE){
+        if(mouseInputVertical_ != SEED::GeneralEnum::UpDown::NONE){
             return mouseInputVertical_;
         }
-        return UpDown::NONE;
+        return SEED::GeneralEnum::UpDown::NONE;
     };
     verticalInput_.Trigger = [&]{
-        if(GameSystem::GetScene()->HasEvent()){
+        if(SEED::GameSystem::GetScene()->HasEvent()){
             return false;// イベント中は入力を受け付けない
         }
 
         // キーボードでの方向入力
-        if(Input::IsTriggerKey({ DIK_W,DIK_UP,DIK_S,DIK_DOWN })){
+        if(SEED::Input::IsTriggerKey({ DIK_W,DIK_UP,DIK_S,DIK_DOWN })){
             return true;
         }
 
         // マウスでの方向入力
-        if(mouseInputVertical_ != UpDown::NONE){
+        if(mouseInputVertical_ != SEED::GeneralEnum::UpDown::NONE){
             return true;
         }
 
@@ -219,28 +218,28 @@ void SongSelector::InitializeInput(){
 
     // ソート変更入力-------------------------------------------------
     modeChangeInput_.Value = [&]{
-        if(GameSystem::GetScene()->HasEvent()){
-            return LR::NONE;// イベント中は入力を受け付けない
+        if(SEED::GameSystem::GetScene()->HasEvent()){
+            return SEED::GeneralEnum::LR::NONE;// イベント中は入力を受け付けない
         }
-        if(Input::IsPressKey(DIK_Q)){
-            return LR::LEFT;
+        if(SEED::Input::IsPressKey(DIK_Q)){
+            return SEED::GeneralEnum::LR::LEFT;
         }
-        if(Input::IsPressKey(DIK_E)){
-            return LR::RIGHT;
+        if(SEED::Input::IsPressKey(DIK_E)){
+            return SEED::GeneralEnum::LR::RIGHT;
         }
-        if(mouseInputModeChange_ != LR::NONE){
+        if(mouseInputModeChange_ != SEED::GeneralEnum::LR::NONE){
             return mouseInputModeChange_;
         }
-        return LR::NONE;
+        return SEED::GeneralEnum::LR::NONE;
     };
     modeChangeInput_.Trigger = [&]{
-        if(GameSystem::GetScene()->HasEvent()){
+        if(SEED::GameSystem::GetScene()->HasEvent()){
             return false;// イベント中は入力を受け付けない
         }
-        if(Input::IsTriggerKey({ DIK_Q,DIK_E })){
+        if(SEED::Input::IsTriggerKey({ DIK_Q,DIK_E })){
             return true;
         }
-        if(mouseInputModeChange_ != LR::NONE){
+        if(mouseInputModeChange_ != SEED::GeneralEnum::LR::NONE){
             return true;
         }
         return false;
@@ -248,22 +247,22 @@ void SongSelector::InitializeInput(){
 
     // 難易度変更入力-------------------------------------------------
     difficultyChangeInput_.Value = []{
-        if(GameSystem::GetScene()->HasEvent()){
-            return LR::NONE;// イベント中は入力を受け付けない
+        if(SEED::GameSystem::GetScene()->HasEvent()){
+            return SEED::GeneralEnum::LR::NONE;// イベント中は入力を受け付けない
         }
-        if(Input::IsPressKey({ DIK_A,DIK_LEFT })){
-            return LR::LEFT;
+        if(SEED::Input::IsPressKey({ DIK_A,DIK_LEFT })){
+            return SEED::GeneralEnum::LR::LEFT;
         }
-        if(Input::IsPressKey({ DIK_D,DIK_RIGHT })){
-            return LR::RIGHT;
+        if(SEED::Input::IsPressKey({ DIK_D,DIK_RIGHT })){
+            return SEED::GeneralEnum::LR::RIGHT;
         }
-        return LR::NONE;
+        return SEED::GeneralEnum::LR::NONE;
     };
     difficultyChangeInput_.Trigger = []{
-        if(GameSystem::GetScene()->HasEvent()){
+        if(SEED::GameSystem::GetScene()->HasEvent()){
             return false;// イベント中は入力を受け付けない
         }
-        if(Input::IsTriggerKey({ DIK_A,DIK_LEFT,DIK_D,DIK_RIGHT })){
+        if(SEED::Input::IsTriggerKey({ DIK_A,DIK_LEFT,DIK_D,DIK_RIGHT })){
             return true;
         }
         return false;
@@ -271,10 +270,10 @@ void SongSelector::InitializeInput(){
 
     // 決定入力-------------------------------------------------------
     decideInput_.Trigger = [&]{
-        if(GameSystem::GetScene()->HasEvent()){
+        if(SEED::GameSystem::GetScene()->HasEvent()){
             return false;// イベント中は入力を受け付けない
         }
-        if(Input::IsTriggerKey({ DIK_SPACE,DIK_RETURN })){
+        if(SEED::Input::IsTriggerKey({ DIK_SPACE,DIK_RETURN })){
             return true;
         }
         if(mouseDecideInput_){
@@ -285,10 +284,10 @@ void SongSelector::InitializeInput(){
 
     // 戻る入力-------------------------------------------------------
     backInput_.Trigger = [&]{
-        if(GameSystem::GetScene()->HasEvent()){
+        if(SEED::GameSystem::GetScene()->HasEvent()){
             return false;// イベント中は入力を受け付けない
         }
-        if(Input::IsTriggerKey(DIK_ESCAPE)){
+        if(SEED::Input::IsTriggerKey(DIK_ESCAPE)){
             return true;
         }
         if(mouseBackInput_){
@@ -304,14 +303,14 @@ void SongSelector::InitializeInput(){
 ///////////////////////////////////////////////////////////////
 void SongSelector::InitializeUIs(){
     // コントロールポイントの読み込み
-    auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    auto* hierarchy = SEED::GameSystem::GetScene()->GetHierarchy();
     songControlPts_ = hierarchy->LoadObject2D("SelectScene/songControlPts.prefab");
     difficultyControlPts_ = hierarchy->LoadObject2D("SelectScene/difficultyControlPts.prefab");
     songControlPts_->SetIsActive(false);
     difficultyControlPts_->SetIsActive(false);
 
     // UIアイテムの数の初期化
-    size_t size = songControlPts_->GetComponent<Routine2DComponent>()->GetControlPoints().size() - 2;
+    size_t size = songControlPts_->GetComponent<SEED::Routine2DComponent>()->GetControlPoints().size() - 2;
     visibleSongs.resize(size);
     visibleGroups.resize(size);
     songUIs.resize(size);
@@ -319,9 +318,9 @@ void SongSelector::InitializeUIs(){
 
     // centerのTransform2Dを取得
     int centerIdx = (int)(size / 2);
-    songUICenterTransform_ = songControlPts_->GetComponent<Routine2DComponent>()->GetControlPoint(centerIdx + 1);
-    centerIdx = (int)difficultyControlPts_->GetComponent<Routine2DComponent>()->GetControlPoints().size() / 2;
-    difficultyUICenterTransform_ = difficultyControlPts_->GetComponent<Routine2DComponent>()->GetControlPoint(centerIdx);
+    songUICenterTransform_ = songControlPts_->GetComponent<SEED::Routine2DComponent>()->GetControlPoint(centerIdx + 1);
+    centerIdx = (int)difficultyControlPts_->GetComponent<SEED::Routine2DComponent>()->GetControlPoints().size() / 2;
+    difficultyUICenterTransform_ = difficultyControlPts_->GetComponent<SEED::Routine2DComponent>()->GetControlPoint(centerIdx);
 
     // 楽曲UI・グループUIの読み込み
     for(size_t i = 0; i < size; i++){
@@ -533,7 +532,7 @@ void SongSelector::SortInGroup(){
             std::sort(
                 songs.begin(), songs.end(),
                 [](const Track& a, const Track& b){
-                return MyFunc::CompareStr(a.first->songName, b.first->songName);
+                return SEED::Methods::String::CompareStr(a.first->songName, b.first->songName);
             });
             break;
 
@@ -542,7 +541,7 @@ void SongSelector::SortInGroup(){
             std::sort(
                 songs.begin(), songs.end(),
                 [](const Track& a, const Track& b){
-                return MyFunc::CompareStr(a.first->artistName, b.first->artistName);
+                return SEED::Methods::String::CompareStr(a.first->artistName, b.first->artistName);
             });
             break;
 
@@ -649,8 +648,8 @@ void SongSelector::UpdateVisibleSongs(bool isPlayAudio, bool isUpdateUIs){
 
             // 今の曲を停止して再生
             preSongName_ = currentSong.first->audioFilePath;
-            AudioManager::EndAudio(songHandle_);
-            songHandle_ = AudioManager::PlayAudio(
+            SEED::AudioManager::EndAudio(songHandle_);
+            songHandle_ = SEED::AudioManager::PlayAudio(
                 currentSong.first->audioFilePath,
                 true,
                 0.0f,
@@ -664,8 +663,8 @@ void SongSelector::UpdateVisibleSongs(bool isPlayAudio, bool isUpdateUIs){
             songVolumeFadeOutTimer_.Reset();
 
             // 今の曲を停止して再生
-            AudioManager::EndAudio(songHandle_);
-            songHandle_ = AudioManager::PlayAudio(
+            SEED::AudioManager::EndAudio(songHandle_);
+            songHandle_ = SEED::AudioManager::PlayAudio(
                 AudioDictionary::Get("SelectBGM"),
                 true, 0.5f
             );
@@ -683,14 +682,14 @@ void SongSelector::UpdateVisibleSongs(bool isPlayAudio, bool isUpdateUIs){
         // 後方の要素を設定
         for(int i = centerIdx_; i < visibleSongs.size(); i++){
             int32_t dif = i - centerIdx_;
-            int32_t index = MyFunc::Spiral(currentSongIndex + dif, 0, int32_t(currentGroup->groupMembers.size()) - 1);
+            int32_t index = SEED::Methods::Math::Spiral(currentSongIndex + dif, 0, int32_t(currentGroup->groupMembers.size()) - 1);
             visibleSongs[i] = &currentGroup->groupMembers[index];
         }
 
         // 前方の要素を設定
         for(int i = centerIdx_; i >= 0; i--){
             int32_t dif = i - centerIdx_;
-            int32_t index = MyFunc::Spiral(currentSongIndex + dif, 0, int32_t(currentGroup->groupMembers.size()) - 1);
+            int32_t index = SEED::Methods::Math::Spiral(currentSongIndex + dif, 0, int32_t(currentGroup->groupMembers.size()) - 1);
             visibleSongs[i] = &currentGroup->groupMembers[index];
         }
     }
@@ -719,14 +718,14 @@ void SongSelector::UpdateVisibleGroups(bool isUpdateUIs){
         // 後方の要素を設定
         for(int i = centerIdx_; i < visibleGroups.size(); i++){
             int32_t dif = i - centerIdx_;
-            int32_t index = MyFunc::Spiral(currentGroupIndex + dif, 0, int32_t(songGroups.size()) - 1);
+            int32_t index = SEED::Methods::Math::Spiral(currentGroupIndex + dif, 0, int32_t(songGroups.size()) - 1);
             visibleGroups[i] = &songGroups[index];
         }
 
         // 前方の要素を設定
         for(int i = centerIdx_; i >= 0; i--){
             int32_t dif = i - centerIdx_;
-            int32_t index = MyFunc::Spiral(currentGroupIndex + dif, 0, int32_t(songGroups.size()) - 1);
+            int32_t index = SEED::Methods::Math::Spiral(currentGroupIndex + dif, 0, int32_t(songGroups.size()) - 1);
             visibleGroups[i] = &songGroups[index];
         }
     }
@@ -787,26 +786,26 @@ void SongSelector::SelectItems(){
 void SongSelector::SelectSong(){
 
     // 各種入力値の取得
-    UpDown verticalValue = verticalInput_.Value();
-    LR modeChangeValue = modeChangeInput_.Value();
-    LR difficultyChangeValue = difficultyChangeInput_.Value();
+    SEED::GeneralEnum::UpDown verticalValue = verticalInput_.Value();
+    SEED::GeneralEnum::LR modeChangeValue = modeChangeInput_.Value();
+    SEED::GeneralEnum::LR difficultyChangeValue = difficultyChangeInput_.Value();
 
     // 縦方向入力がある場合
-    if(verticalValue != UpDown::NONE){
+    if(verticalValue != SEED::GeneralEnum::UpDown::NONE){
         inputTimer_.Update(1.0f, true);
 
         // タイマーがループしたらインデックスを更新
         if(inputTimer_.IsLoopedNow()){
             // 可視曲の更新
-            currentSongIndex += (verticalValue == UpDown::UP) ? -1 : 1;
-            currentSongIndex = MyFunc::Spiral(currentSongIndex, 0, int32_t(currentGroup->groupMembers.size()) - 1);
+            currentSongIndex += (verticalValue == SEED::GeneralEnum::UpDown::UP) ? -1 : 1;
+            currentSongIndex = SEED::Methods::Math::Spiral(currentSongIndex, 0, int32_t(currentGroup->groupMembers.size()) - 1);
             isShiftItem_ = true;
             shiftDirection_ = verticalValue;
             UpdateVisibleSongs();
             itemShiftTimer_.Reset();
 
             // 音声再生
-            AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
+            SEED::AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
 
             return;
         }
@@ -818,10 +817,10 @@ void SongSelector::SelectSong(){
 
     if(!isShiftItem_){
         // ソートモードの変更
-        if(modeChangeValue != LR::NONE && modeChangeInput_.Trigger()){
+        if(modeChangeValue != SEED::GeneralEnum::LR::NONE && modeChangeInput_.Trigger()){
             int sortModeInt = (int)currentSortMode;
-            sortModeInt += (modeChangeValue == LR::LEFT) ? -1 : 1;
-            sortModeInt = MyFunc::Spiral(sortModeInt, 0, (int)SortMode::kMaxCount - 1);
+            sortModeInt += (modeChangeValue == SEED::GeneralEnum::LR::LEFT) ? -1 : 1;
+            sortModeInt = SEED::Methods::Math::Spiral(sortModeInt, 0, (int)SortMode::kMaxCount - 1);
             currentSortMode = (SortMode)sortModeInt;
 
             // ソート処理を実行
@@ -831,15 +830,15 @@ void SongSelector::SelectSong(){
             UpdateUIContents();
 
             // 音声再生
-            AudioManager::PlayAudio(AudioDictionary::Get("ChangeMode"), false, 0.5f);
+            SEED::AudioManager::PlayAudio(AudioDictionary::Get("ChangeMode"), false, 0.5f);
 
             return;
         }
 
         // 難易度の変更
-        if(difficultyChangeInput_.Value() != LR::NONE && difficultyChangeInput_.Trigger()){
+        if(difficultyChangeInput_.Value() != SEED::GeneralEnum::LR::NONE && difficultyChangeInput_.Trigger()){
             int difficultyInt = (int)currentDifficulty;
-            difficultyInt += (difficultyChangeValue == LR::LEFT) ? -1 : 1;
+            difficultyInt += (difficultyChangeValue == SEED::GeneralEnum::LR::LEFT) ? -1 : 1;
             difficultyInt = std::clamp(difficultyInt, 0, (int)TrackDifficulty::kMaxDifficulty - 1);
 
             // 難易度が変わっていたら更新
@@ -855,7 +854,7 @@ void SongSelector::SelectSong(){
                 UpdateUIContents();
 
                 // 音声再生
-                AudioManager::PlayAudio(AudioDictionary::Get("ChangeMode"), false, 0.5f);
+                SEED::AudioManager::PlayAudio(AudioDictionary::Get("ChangeMode"), false, 0.5f);
                 return;
             }
         }
@@ -873,7 +872,7 @@ void SongSelector::SelectSong(){
             }
 
             // 音声再生
-            AudioManager::PlayAudio(AudioDictionary::Get("DecideSong"), false, 0.5f);
+            SEED::AudioManager::PlayAudio(AudioDictionary::Get("DecideSong"), false, 0.5f);
 
             return;
         }
@@ -897,14 +896,14 @@ void SongSelector::SelectSong(){
 
             // グループ選択時はデフォルト選曲BGMを再生
             preSongName_.clear();
-            AudioManager::EndAudio(songHandle_);
-            songHandle_ = AudioManager::PlayAudio(
+            SEED::AudioManager::EndAudio(songHandle_);
+            songHandle_ = SEED::AudioManager::PlayAudio(
                 AudioDictionary::Get("SelectBGM"),
                 true, 0.5f
             );
 
             // 音声再生
-            AudioManager::PlayAudio(AudioDictionary::Get("Return"), false, 0.5f);
+            SEED::AudioManager::PlayAudio(AudioDictionary::Get("Return"), false, 0.5f);
 
             // UIのアクティブ状態を切り替え
             for(auto& ui : groupUIs){
@@ -925,24 +924,24 @@ void SongSelector::SelectSong(){
 void SongSelector::SelectGroup(){
 
     // 各種入力値の取得
-    UpDown verticalValue = verticalInput_.Value();
-    LR modeChangeValue = modeChangeInput_.Value();
+    SEED::GeneralEnum::UpDown verticalValue = verticalInput_.Value();
+    SEED::GeneralEnum::LR modeChangeValue = modeChangeInput_.Value();
 
     // 縦方向入力がある場合
-    if(verticalValue != UpDown::NONE){
+    if(verticalValue != SEED::GeneralEnum::UpDown::NONE){
         inputTimer_.Update(1.0f, true);
 
         // タイマーがループしたらインデックスを更新
         if(inputTimer_.IsLoopedNow()){
-            currentGroupIndex += (verticalValue == UpDown::UP) ? -1 : 1;
-            currentGroupIndex = MyFunc::Spiral(currentGroupIndex, 0, int32_t(songGroups.size()) - 1);
+            currentGroupIndex += (verticalValue == SEED::GeneralEnum::UpDown::UP) ? -1 : 1;
+            currentGroupIndex = SEED::Methods::Math::Spiral(currentGroupIndex, 0, int32_t(songGroups.size()) - 1);
             isShiftItem_ = true;
             shiftDirection_ = verticalValue;
             itemShiftTimer_.Reset();
             UpdateVisibleGroups();
 
             // 音声再生
-            AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
+            SEED::AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
 
             return;
         }
@@ -953,10 +952,10 @@ void SongSelector::SelectGroup(){
     }
 
     // グループモードの変更
-    if(modeChangeValue != LR::NONE && modeChangeInput_.Trigger()){
+    if(modeChangeValue != SEED::GeneralEnum::LR::NONE && modeChangeInput_.Trigger()){
         int groupModeInt = (int)currentGroupMode;
-        groupModeInt += (modeChangeValue == LR::LEFT) ? -1 : 1;
-        groupModeInt = MyFunc::Spiral(groupModeInt, 0, (int)GroupMode::kMaxCount - 1);
+        groupModeInt += (modeChangeValue == SEED::GeneralEnum::LR::LEFT) ? -1 : 1;
+        groupModeInt = SEED::Methods::Math::Spiral(groupModeInt, 0, (int)GroupMode::kMaxCount - 1);
         currentGroupMode = (GroupMode)groupModeInt;
         // ソート処理を実行
         Sort();
@@ -965,7 +964,7 @@ void SongSelector::SelectGroup(){
         UpdateUIContents();
 
         // 音声再生
-        AudioManager::PlayAudio(AudioDictionary::Get("ChangeMode"), false, 0.5f);
+        SEED::AudioManager::PlayAudio(AudioDictionary::Get("ChangeMode"), false, 0.5f);
 
         return;
     }
@@ -994,18 +993,18 @@ void SongSelector::SelectGroup(){
             }
 
             // 音声再生
-            AudioManager::PlayAudio(AudioDictionary::Get("DecideSong"), false, 0.5f);
+            SEED::AudioManager::PlayAudio(AudioDictionary::Get("DecideSong"), false, 0.5f);
 
             return;
         }
 
         // escでメニュー表示
         if(backInput_.Trigger()){
-            auto* scene = GameSystem::GetScene();
+            auto* scene = SEED::GameSystem::GetScene();
             scene->CauseEvent(new GameState_SelectMenu(scene));
 
             // 音声再生
-            AudioManager::PlayAudio(AudioDictionary::Get("OpenSelectMenu"), false, 0.5f);
+            SEED::AudioManager::PlayAudio(AudioDictionary::Get("OpenSelectMenu"), false, 0.5f);
 
             return;
         }
@@ -1018,17 +1017,17 @@ void SongSelector::SelectGroup(){
 void SongSelector::SelectDifficulty(){
 
     // 各種入力値の取得
-    UpDown verticalValue = verticalInput_.Value();
+    SEED::GeneralEnum::UpDown verticalValue = verticalInput_.Value();
 
     // 縦方向入力がある場合
-    if(verticalValue != UpDown::NONE){
+    if(verticalValue != SEED::GeneralEnum::UpDown::NONE){
         inputTimer_.Update(1.0f, true);
 
         // タイマーがループしたらインデックスを更新
         if(inputTimer_.IsLoopedNow()){
             // 難易度の更新
             TrackDifficulty previousDifficulty = currentDifficulty;
-            int nextDiffInt = int(currentDifficulty) + ((verticalValue == UpDown::UP) ? 1 : -1);
+            int nextDiffInt = int(currentDifficulty) + ((verticalValue == SEED::GeneralEnum::UpDown::UP) ? 1 : -1);
             nextDiffInt = std::clamp(nextDiffInt, 0, (int)TrackDifficulty::kMaxDifficulty - 1);
             currentDifficulty = (TrackDifficulty)nextDiffInt;
 
@@ -1042,7 +1041,7 @@ void SongSelector::SelectDifficulty(){
                 currentSong = { currentSong.first,currentDifficulty };
 
                 // 音声再生
-                AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
+                SEED::AudioManager::PlayAudio(AudioDictionary::Get("ItemSelect"), false, 0.5f);
             }
             return;
         }
@@ -1059,7 +1058,7 @@ void SongSelector::SelectDifficulty(){
             isPlayWaiting_ = true;
 
             // 音声再生
-            AudioManager::PlayAudio(AudioDictionary::Get("ToPlay"), false, 0.5f);
+            SEED::AudioManager::PlayAudio(AudioDictionary::Get("ToPlay"), false, 0.5f);
 
             return;
         }
@@ -1082,7 +1081,7 @@ void SongSelector::SelectDifficulty(){
             }
 
             // 音声再生
-            AudioManager::PlayAudio(AudioDictionary::Get("Return"), false, 0.5f);
+            SEED::AudioManager::PlayAudio(AudioDictionary::Get("Return"), false, 0.5f);
 
             return;
         }
@@ -1096,17 +1095,17 @@ void SongSelector::ShiftItem(bool allUpdate){
 
     // タイマーの更新
     itemShiftTimer_.Update();
-    float ease = itemShiftTimer_.GetEase(Easing::OutSine);
+    float ease = itemShiftTimer_.GetEase(SEED::Methods::Easing::Type::Out_Sine);
 
     // アイテムの移動処理
     if(selectMode_ == SelectMode::Song or allUpdate){
         // コントロールポイントの取得
-        std::vector<RoutinePoint2D> controlPts = songControlPts_->GetComponent<Routine2DComponent>()->GetControlPoints();
+        std::vector<RoutinePoint2D> controlPts = songControlPts_->GetComponent<SEED::Routine2DComponent>()->GetControlPoints();
 
         // 動かす方向の取得
         int32_t dir = 0;
-        if(shiftDirection_ != UpDown::NONE){
-            dir = (shiftDirection_ == UpDown::UP) ? -1 : 1;
+        if(shiftDirection_ != SEED::GeneralEnum::UpDown::NONE){
+            dir = (shiftDirection_ == SEED::GeneralEnum::UpDown::UP) ? -1 : 1;
         }
 
         // アイテム移動処理
@@ -1116,7 +1115,7 @@ void SongSelector::ShiftItem(bool allUpdate){
             int32_t originIdx = aimIdx + dir;
 
             // 補完して行列を更新
-            songUIs[i]->localTransform_ = MyFunc::Interpolate(
+            songUIs[i]->localTransform_ = SEED::Methods::SRT::Interpolate(
                 controlPts[originIdx].first,
                 controlPts[aimIdx].first,
                 ease
@@ -1137,12 +1136,12 @@ void SongSelector::ShiftItem(bool allUpdate){
 
     if(selectMode_ == SelectMode::Group or allUpdate){
         // コントロールポイントの取得
-        std::vector<RoutinePoint2D> controlPts = songControlPts_->GetComponent<Routine2DComponent>()->GetControlPoints();
+        std::vector<RoutinePoint2D> controlPts = songControlPts_->GetComponent<SEED::Routine2DComponent>()->GetControlPoints();
 
         // 動かす方向の取得
         int32_t dir = 0;
-        if(shiftDirection_ != UpDown::NONE){
-            dir = (shiftDirection_ == UpDown::UP) ? -1 : 1;
+        if(shiftDirection_ != SEED::GeneralEnum::UpDown::NONE){
+            dir = (shiftDirection_ == SEED::GeneralEnum::UpDown::UP) ? -1 : 1;
         }
 
         // アイテム移動処理
@@ -1152,7 +1151,7 @@ void SongSelector::ShiftItem(bool allUpdate){
             int32_t originIdx = aimIdx + dir;
 
             // 補完して行列を更新
-            groupUIs[i]->localTransform_ = MyFunc::Interpolate(
+            groupUIs[i]->localTransform_ = SEED::Methods::SRT::Interpolate(
                 controlPts[originIdx].first,
                 controlPts[aimIdx].first,
                 ease
@@ -1174,12 +1173,12 @@ void SongSelector::ShiftItem(bool allUpdate){
     if(selectMode_ == SelectMode::Difficulty or allUpdate){
 
         // コントロールポイントの取得
-        std::vector<RoutinePoint2D> controlPts = difficultyControlPts_->GetComponent<Routine2DComponent>()->GetControlPoints();
+        std::vector<RoutinePoint2D> controlPts = difficultyControlPts_->GetComponent<SEED::Routine2DComponent>()->GetControlPoints();
 
         // 動かす方向の取得
         int32_t dir = 0;
-        if(shiftDirection_ != UpDown::NONE){
-            dir = (shiftDirection_ == UpDown::UP) ? 1 : -1;
+        if(shiftDirection_ != SEED::GeneralEnum::UpDown::NONE){
+            dir = (shiftDirection_ == SEED::GeneralEnum::UpDown::UP) ? 1 : -1;
         }
 
         // アイテム移動処理
@@ -1188,7 +1187,7 @@ void SongSelector::ShiftItem(bool allUpdate){
             int32_t originIdx = int32_t(currentDifficulty) - dir + i;
             int32_t aimIdx = originIdx + dir;
             // 補完して行列を更新
-            difficultyUIs[i]->localTransform_ = MyFunc::Interpolate(
+            difficultyUIs[i]->localTransform_ = SEED::Methods::SRT::Interpolate(
                 controlPts[originIdx].first,
                 controlPts[aimIdx].first,
                 ease
@@ -1211,7 +1210,7 @@ void SongSelector::ShiftItem(bool allUpdate){
     // タイマーが終了したらリセット
     if(itemShiftTimer_.IsFinished()){
         isShiftItem_ = false;
-        shiftDirection_ = UpDown::NONE;
+        shiftDirection_ = SEED::GeneralEnum::UpDown::NONE;
     }
 }
 
@@ -1225,7 +1224,7 @@ void SongSelector::CameraControl(){
     if(!cameraControlPts_){ return; }
 
     // 制御点一覧の取得
-    auto& controlPoints = cameraControlPts_->GetComponent<Routine3DComponent>()->GetControlPoints();
+    auto& controlPoints = cameraControlPts_->GetComponent<SEED::Routine3DComponent>()->GetControlPoints();
     // 制御点が足りない場合は抜ける
     if(controlPoints.size() < 4){ return; }
 
@@ -1251,11 +1250,11 @@ void SongSelector::CameraControl(){
 
     // カメラ移動タイマーの更新
     cameraMoveTimer_.Update();
-    float ease = cameraMoveTimer_.GetEase(Easing::InOutExpo);
+    float ease = cameraMoveTimer_.GetEase(SEED::Methods::Easing::Type::InOut_Expo);
 
     // カメラの位置・注視点を補完して更新
     camera_->SetTransform(
-        MyFunc::Interpolate(
+        SEED::Methods::SRT::Interpolate(
             preCameraTransform_,
             controlPoints[cameraControlIdx_].first,
             ease
@@ -1272,15 +1271,15 @@ void SongSelector::UpdateJacket(){
 
         // ジャケットを回転
         float rotateSpeed = 3.14f * 0.25f;
-        jacket3D_.rotate.y += rotateSpeed * ClockManager::DeltaTime();
+        jacket3D_.rotate.y += rotateSpeed * SEED::ClockManager::DeltaTime();
 
         // 上下に揺らす
         float swingHeight = 0.1f; // 揺らす高さ
-        float t = std::sin(ClockManager::TotalTime() * 2.0f) * swingHeight; // サイン波で上下に揺らす
+        float t = std::sin(SEED::ClockManager::TotalTime() * 2.0f) * swingHeight; // サイン波で上下に揺らす
         jacket3D_.translate.y = t; // ジャケットのY座標を更新
 
         // ジャケットのテクスチャを更新
-        jacket3D_.GH = TextureManager::LoadTexture(
+        jacket3D_.GH = SEED::TextureManager::LoadTexture(
             "../../Resources/NoteDatas/" + currentSong.first->folderName + "/" + currentSong.first->folderName + ".png"
         );
 
@@ -1296,14 +1295,14 @@ void SongSelector::UpdateUIContents(bool allUpdate){
         // 曲選択UIの更新
         for(int32_t i = 0; i < songUIs.size(); i++){
 
-            auto* ui = songUIs[i]->GetComponent<UIComponent>();
+            auto* ui = songUIs[i]->GetComponent<SEED::UIComponent>();
             int32_t difficulty = (int)visibleSongs[i]->second;
             SongInfo* songInfo = visibleSongs[i]->first;
 
             // 画像の更新
             ui->GetSprite("itemBG").color = uiBackColors_[(int)difficulty];
             ui->GetSprite("levelBG").color = uiBackColors_[(int)difficulty];
-            ui->GetSprite("Jacket").GH = TextureManager::LoadTexture(
+            ui->GetSprite("Jacket").GH = SEED::TextureManager::LoadTexture(
                 "../../Resources/NoteDatas/" + songInfo->folderName + "/" + songInfo->folderName + ".png"
             );
 
@@ -1326,15 +1325,15 @@ void SongSelector::UpdateUIContents(bool allUpdate){
 
             // AP,FCアイコンの表示更新
             if(songInfo->clearIcons[difficulty] == ClearIcon::Perfect){
-                ui->GetSprite("clearIcon").GH = TextureManager::LoadTexture("Select/apIcon.png");
-                ui->GetSprite("clearIcon").color = Color(1.0f);
+                ui->GetSprite("clearIcon").GH = SEED::TextureManager::LoadTexture("Select/apIcon.png");
+                ui->GetSprite("clearIcon").color = SEED::Color(1.0f);
 
             } else if(songInfo->clearIcons[difficulty] == ClearIcon::FullCombo){
-                ui->GetSprite("clearIcon").GH = TextureManager::LoadTexture("Select/fcIcon.png");
-                ui->GetSprite("clearIcon").color = Color(1.0f);
+                ui->GetSprite("clearIcon").GH = SEED::TextureManager::LoadTexture("Select/fcIcon.png");
+                ui->GetSprite("clearIcon").color = SEED::Color(1.0f);
 
             } else{
-                ui->GetSprite("clearIcon").color = Color(0.0f);
+                ui->GetSprite("clearIcon").color = SEED::Color(0.0f);
             }
         }
     }
@@ -1342,7 +1341,7 @@ void SongSelector::UpdateUIContents(bool allUpdate){
     if(selectMode_ == SelectMode::Group or allUpdate){
         // グループ選択UIの更新
         for(int32_t i = 0; i < groupUIs.size(); i++){
-            auto* ui = groupUIs[i]->GetComponent<UIComponent>();
+            auto* ui = groupUIs[i]->GetComponent<SEED::UIComponent>();
             SongGroup* group = visibleGroups[i];
 
             // Spriteの更新
@@ -1356,14 +1355,14 @@ void SongSelector::UpdateUIContents(bool allUpdate){
     if(selectMode_ == SelectMode::Difficulty or allUpdate){
         // 難易度選択UIの更新
         for(int32_t i = 0; i < difficultyUIs.size(); i++){
-            auto* ui = difficultyUIs[i]->GetComponent<UIComponent>();
+            auto* ui = difficultyUIs[i]->GetComponent<SEED::UIComponent>();
             auto* songInfo = currentSong.first;
             int32_t difficulty = int(TrackDifficulty::Parallel) - i;
 
             // 画像の更新
             ui->GetSprite("itemBG").color = uiBackColors_[difficulty];
             ui->GetSprite("levelBG").color = uiBackColors_[difficulty];
-            ui->GetSprite("Jacket").GH = TextureManager::LoadTexture(
+            ui->GetSprite("Jacket").GH = SEED::TextureManager::LoadTexture(
                 "../../Resources/NoteDatas/" + songInfo->folderName + "/" + songInfo->folderName + ".png"
             );
 
@@ -1386,15 +1385,15 @@ void SongSelector::UpdateUIContents(bool allUpdate){
 
             // AP,FCアイコンの表示更新
             if(songInfo->clearIcons[difficulty] == ClearIcon::Perfect){
-                ui->GetSprite("clearIcon").GH = TextureManager::LoadTexture("Select/apIcon.png");
-                ui->GetSprite("clearIcon").color = Color(1.0f);
+                ui->GetSprite("clearIcon").GH = SEED::TextureManager::LoadTexture("Select/apIcon.png");
+                ui->GetSprite("clearIcon").color = SEED::Color(1.0f);
 
             } else if(songInfo->clearIcons[difficulty] == ClearIcon::FullCombo){
-                ui->GetSprite("clearIcon").GH = TextureManager::LoadTexture("Select/fcIcon.png");
-                ui->GetSprite("clearIcon").color = Color(1.0f);
+                ui->GetSprite("clearIcon").GH = SEED::TextureManager::LoadTexture("Select/fcIcon.png");
+                ui->GetSprite("clearIcon").color = SEED::Color(1.0f);
 
             } else{
-                ui->GetSprite("clearIcon").color = Color(0.0f);
+                ui->GetSprite("clearIcon").color = SEED::Color(0.0f);
             }
         }
     }
@@ -1406,7 +1405,7 @@ void SongSelector::UpdateUIContents(bool allUpdate){
 void SongSelector::ToDifficultySelectUpdate(float timeScale){
 
     toDifficultySelectTimer_.Update(timeScale);
-    float ease = toDifficultySelectTimer_.GetEase(Easing::InOutExpo);
+    float ease = toDifficultySelectTimer_.GetEase(SEED::Methods::Easing::Type::InOut_Expo);
 
     // UIの拡縮
     for(int i = 0; i < songUIs.size(); i++){
@@ -1423,7 +1422,7 @@ void SongSelector::ToDifficultySelectUpdate(float timeScale){
         int32_t idx = int32_t(TrackDifficulty::Parallel) - i;
         if(idx == (int)currentDifficulty){
             difficultyUIs[i]->aditionalTransform_.scale = Vector2(1.0f);
-            difficultyUIs[i]->localTransform_.translate = MyMath::Lerp(
+            difficultyUIs[i]->localTransform_.translate = SEED::Methods::Math::Lerp(
                 songUICenterTransform_.translate,
                 difficultyUICenterTransform_.translate,
                 ease
@@ -1471,13 +1470,13 @@ void SongSelector::ToDifficultySelectUpdate(float timeScale){
 //////////////////////////////////////////////////////////////////////////////////
 void SongSelector::PlayWaitUpdate(){
     playWaitTimer_.Update();
-    float ease = playWaitTimer_.GetEase(Easing::OutExpo);
+    float ease = playWaitTimer_.GetEase(SEED::Methods::Easing::Type::Out_Expo);
 
     // UIのフェードアウトと中央寄せ
     for(int i = 0; i < difficultyUIs.size(); i++){
         int32_t idx = int32_t(TrackDifficulty::Parallel) - i;
         if(idx == (int)currentDifficulty){
-            difficultyUIs[i]->localTransform_.translate = MyMath::Lerp(
+            difficultyUIs[i]->localTransform_.translate = SEED::Methods::Math::Lerp(
                 difficultyUICenterTransform_.translate,
                 kWindowCenter,
                 ease
@@ -1492,9 +1491,9 @@ void SongSelector::PlayWaitUpdate(){
     if(playWaitTimer_.IsFinishedNow()){
         // トランジション演出開始
         sceneOutTimer_.Restart();
-        auto* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+        auto* transition = SEED::SceneTransitionDrawer::AddTransition<SEED::HexagonTransition>();
         transition->SetHexagonInfo(32.0f);
-        transition->StartTransition(sceneOutTimer_.duration - ClockManager::DeltaTime(), 1.0f);
+        transition->StartTransition(sceneOutTimer_.duration - SEED::ClockManager::DeltaTime(), 1.0f);
     }
 
     // 遷移タイマー
@@ -1527,24 +1526,24 @@ void SongSelector::UpdateSelectButtonUIs(){
     }
 
     // ボタンの入力に反応して一時的に大きくする用のタイマー更新
-    UpDown inputDir = verticalInput_.Value();
+    SEED::GeneralEnum::UpDown inputDir = verticalInput_.Value();
     {
-        if(inputDir == UpDown::UP){
+        if(inputDir == SEED::GeneralEnum::UpDown::UP){
             buttonUIPressScaleTimer_Up_.Reset();
 
-        } else if(inputDir == UpDown::DOWN){
+        } else if(inputDir == SEED::GeneralEnum::UpDown::DOWN){
             buttonUIPressScaleTimer_Down_.Reset();
         }
         buttonUIPressScaleTimer_Up_.Update();
         buttonUIPressScaleTimer_Down_.Update();
     }
 
-    LR modeChangeDir = modeChangeInput_.Value();
+    SEED::GeneralEnum::LR modeChangeDir = modeChangeInput_.Value();
     {
-        if(modeChangeDir == LR::LEFT){
+        if(modeChangeDir == SEED::GeneralEnum::LR::LEFT){
             buttonUIPressScaleTimer_Q_.Reset();
 
-        } else if(modeChangeDir == LR::RIGHT){
+        } else if(modeChangeDir == SEED::GeneralEnum::LR::RIGHT){
             buttonUIPressScaleTimer_E_.Reset();
         }
         buttonUIPressScaleTimer_Q_.Update();
@@ -1552,7 +1551,7 @@ void SongSelector::UpdateSelectButtonUIs(){
     }
 
 
-    float ease = buttonUIScalingTimer_.GetEase(Easing::InOutExpo);
+    float ease = buttonUIScalingTimer_.GetEase(SEED::Methods::Easing::Type::InOut_Expo);
     float sinValue = std::sinf((3.14f / 1.5f) * songSelectButtonUI_->GetAliveTime());
     float waveRadius = 5.0f;
 
@@ -1561,7 +1560,7 @@ void SongSelector::UpdateSelectButtonUIs(){
             // 必要な変数の取得・計算
             auto* songChild = songSelectButtonUI_->GetChild(i);
             auto* difficultyChild = difficultySelectButtonUI_->GetChild(i);
-            Timer* buttonUIPressScaleTimer = (i == 0) ? &buttonUIPressScaleTimer_Up_ : &buttonUIPressScaleTimer_Down_;
+            SEED::Timer* buttonUIPressScaleTimer = (i == 0) ? &buttonUIPressScaleTimer_Up_ : &buttonUIPressScaleTimer_Down_;
             float baseScale = 1.0f + 0.2f * (1.0f - buttonUIPressScaleTimer->GetProgress());
 
             // 上下ボタンUIの拡縮
@@ -1590,7 +1589,7 @@ void SongSelector::UpdateSelectButtonUIs(){
 
         {// QEボタンUIの更新
             auto* modeChangeUIChild = modeChangeButtonUI_->GetChild(i);
-            Timer* modeChangeButtonScaleTimer = (i == 0) ? &buttonUIPressScaleTimer_Q_ : &buttonUIPressScaleTimer_E_;
+            SEED::Timer* modeChangeButtonScaleTimer = (i == 0) ? &buttonUIPressScaleTimer_Q_ : &buttonUIPressScaleTimer_E_;
             float baseScale = 1.0f + 0.2f * (1.0f - modeChangeButtonScaleTimer->GetProgress());
 
             // 上下ボタンUIの拡縮
@@ -1606,22 +1605,22 @@ void SongSelector::UpdateSelectButtonUIs(){
 
 
     // 表示内容の更新
-    if(GameSystem::GetScene()->HasEvent()){
-        backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "閉じる";
-        backButtonUI_->GetComponent<UIComponent>()->GetText(0).isStaticDraw = true;
-        backButtonUI_->GetComponent<UIComponent>()->GetSprite(0).isStaticDraw = true;
+    if(SEED::GameSystem::GetScene()->HasEvent()){
+        backButtonUI_->GetComponent<SEED::UIComponent>()->GetText(0).text = "閉じる";
+        backButtonUI_->GetComponent<SEED::UIComponent>()->GetText(0).isStaticDraw = true;
+        backButtonUI_->GetComponent<SEED::UIComponent>()->GetSprite(0).isStaticDraw = true;
 
     } else{
         if(selectMode_ == SelectMode::Group){
-            backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "プレイ設定/メニュー";
+            backButtonUI_->GetComponent<SEED::UIComponent>()->GetText(0).text = "プレイ設定/メニュー";
             modeChangeButtonUI_->SetIsActive(true);
-            auto& text = modeChangeButtonUI_->GetChild("modeText")->GetComponent<UIComponent>()->GetText(0);
+            auto& text = modeChangeButtonUI_->GetChild("modeText")->GetComponent<SEED::UIComponent>()->GetText(0);
             text.text = ModeUtil::groupModeNames[(int)currentGroupMode];
 
         } else if(selectMode_ == SelectMode::Song){
-            backButtonUI_->GetComponent<UIComponent>()->GetText(0).text = "もどる";
+            backButtonUI_->GetComponent<SEED::UIComponent>()->GetText(0).text = "もどる";
             modeChangeButtonUI_->SetIsActive(true);
-            auto& text = modeChangeButtonUI_->GetChild("modeText")->GetComponent<UIComponent>()->GetText(0);
+            auto& text = modeChangeButtonUI_->GetChild("modeText")->GetComponent<SEED::UIComponent>()->GetText(0);
             text.text = ModeUtil::sortModeNames[(int)currentSortMode];
 
         } else{
@@ -1669,12 +1668,12 @@ void SongSelector::MasterVolumeAdjust(){
 
             songVolumeFadeInTimer_.Update();
             float fadeInT = songVolumeFadeInTimer_.GetProgress();
-            AudioManager::SetAudioVolume(songHandle_, fadeInT * currentSong.first->songVolume);
+            SEED::AudioManager::SetAudioVolume(songHandle_, fadeInT * currentSong.first->songVolume);
 
         } else{// フェードアウト処理
 
             // 境界時間を過ぎていたらフェードアウト開始
-            float curAudioTime = AudioManager::GetAudioPlayTime(songHandle_);
+            float curAudioTime = SEED::AudioManager::GetAudioPlayTime(songHandle_);
             float fadeOutBorderTime = currentSong.first->songPreviewRange.max - songVolumeFadeOutTimer_.duration;
 
             if(curAudioTime >= fadeOutBorderTime){
@@ -1682,15 +1681,15 @@ void SongSelector::MasterVolumeAdjust(){
 
                 // フェードアウト処理
                 float fadeOutT = 1.0f - songVolumeFadeOutTimer_.GetProgress();
-                AudioManager::SetAudioVolume(songHandle_, fadeOutT * currentSong.first->songVolume);
+                SEED::AudioManager::SetAudioVolume(songHandle_, fadeOutT * currentSong.first->songVolume);
 
                 // フェードアウトが終了したらプレビュー位置に戻して再生し直す
                 if(songVolumeFadeOutTimer_.IsFinished()){
                     songVolumeFadeOutTimer_.Reset();
                     songVolumeFadeInTimer_.Reset();
 
-                    AudioManager::EndAudio(songHandle_);
-                    songHandle_ = AudioManager::PlayAudio(
+                    SEED::AudioManager::EndAudio(songHandle_);
+                    songHandle_ = SEED::AudioManager::PlayAudio(
                         currentSong.first->audioFilePath,
                         true,
                         0.0f,
@@ -1711,20 +1710,20 @@ void SongSelector::CheckMouseInput(){
     {// 縦方向のマウス入力チェック
 
         // マウスホイールでの方向入力
-        int32_t mouseWheel = Input::GetMouseWheel();
+        int32_t mouseWheel = SEED::Input::GetMouseWheel();
         if(mouseWheel > 0){
-            mouseInputVertical_ = UpDown::UP;
+            mouseInputVertical_ = SEED::GeneralEnum::UpDown::UP;
         } else if(mouseWheel < 0){
-            mouseInputVertical_ = UpDown::DOWN;
+            mouseInputVertical_ = SEED::GeneralEnum::UpDown::DOWN;
         }
 
         // マウスボタンでの方向入力
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
 
-            std::vector<GameObject2D*> upColliderObjs;
+            std::vector<SEED::GameObject2D*> upColliderObjs;
             upColliderObjs.push_back(songSelectButtonUI_->GetChild(0));
 
-            std::vector<GameObject2D*> downColliderObjs;
+            std::vector<SEED::GameObject2D*> downColliderObjs;
             downColliderObjs.push_back(songSelectButtonUI_->GetChild(1));
 
             switch(selectMode_){
@@ -1766,41 +1765,41 @@ void SongSelector::CheckMouseInput(){
             // マウスカーソルと当たっているものに応じて方向を返す
             for(auto& upObj : upColliderObjs){
                 if(upObj->GetIsCollided(pMouseCursor_)){
-                    mouseInputVertical_ = UpDown::UP;
+                    mouseInputVertical_ = SEED::GeneralEnum::UpDown::UP;
                 }
             }
 
             for(auto& downObj : downColliderObjs){
                 if(downObj->GetIsCollided(pMouseCursor_)){
-                    mouseInputVertical_ = UpDown::DOWN;
+                    mouseInputVertical_ = SEED::GeneralEnum::UpDown::DOWN;
                 }
             }
 
-        } else if(!Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
+        } else if(!SEED::Input::IsPressMouse(SEED::MOUSE_BUTTON::LEFT)){
             if(mouseWheel == 0){
-                mouseInputVertical_ = UpDown::NONE;
+                mouseInputVertical_ = SEED::GeneralEnum::UpDown::NONE;
             }
         }
     }
 
     {// モード変更のマウス入力チェック
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
 
             // マウスカーソルと当たっているものに応じて方向を返す
             if(modeChangeButtonUI_->GetChild(0)->GetIsCollided(pMouseCursor_)){
-                mouseInputModeChange_ = LR::LEFT;
+                mouseInputModeChange_ = SEED::GeneralEnum::LR::LEFT;
 
             } else if(modeChangeButtonUI_->GetChild(1)->GetIsCollided(pMouseCursor_)){
-                mouseInputModeChange_ = LR::RIGHT;
+                mouseInputModeChange_ = SEED::GeneralEnum::LR::RIGHT;
             }
 
         } else{
-            mouseInputModeChange_ = LR::NONE;
+            mouseInputModeChange_ = SEED::GeneralEnum::LR::NONE;
         }
     }
 
     {// 戻るマウス入力チェック
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
             // マウスカーソルと当たっているものに応じて決定・戻るを返す
             if(backButtonUI_->GetIsCollided(pMouseCursor_)){
                 mouseBackInput_ = true;
@@ -1811,9 +1810,9 @@ void SongSelector::CheckMouseInput(){
     }
 
     {// 決定マウス入力チェック
-        if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
             // マウスカーソルと当たっているものに応じて決定・戻るを返す
-            GameObject2D* centerUI = nullptr;
+            SEED::GameObject2D* centerUI = nullptr;
             if(selectMode_ == SelectMode::Group){
                 centerUI = groupUIs[centerIdx_];
             } else if(selectMode_ == SelectMode::Song){
@@ -1836,7 +1835,7 @@ void SongSelector::CheckMouseInput(){
 void SongSelector::Edit(){
 #ifdef _DEBUG
 
-    ImFunc::CustomBegin("SongSelector", MoveOnly_TitleBar);
+    SEED::ImFunc::CustomBegin("SongSelector", SEED::MoveOnly_TitleBar);
     {
         // 色の編集
         for(int i = 0; i < uiBackColors_.size(); i++){
@@ -1898,14 +1897,14 @@ void SongSelector::ToJson(){
     j["currentDifficulty"] = (int)currentDifficulty;
 
     // JSONの保存
-    MyFunc::CreateJsonFile("Resources/Jsons/Settings/song_selector.json", j);
+    SEED::Methods::File::CreateJsonFile("Resources/Jsons/Settings/song_selector.json", j);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 // JSONから読み込み
 //////////////////////////////////////////////////////////////////////////////////
 void SongSelector::FromJson(){
-    nlohmann::json j = MyFunc::GetJson("Resources/Jsons/Settings/song_selector.json");
+    nlohmann::json j = SEED::Methods::File::GetJson("Resources/Jsons/Settings/song_selector.json");
     if(!j.empty()){
 
         // 色の読み込み

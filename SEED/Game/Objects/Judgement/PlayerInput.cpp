@@ -1,6 +1,6 @@
 #include "PlayerInput.h"
-#include <SEED/Lib/Functions/MyMath.h>
-#include <SEED/Lib/Functions/MatrixFunc.h>
+#include <SEED/Lib/Functions/Math.h>
+#include <SEED/Lib/Functions/MatrixMath.h>
 #include <Game/Objects/Judgement/PlayField.h>
 #include <SEED/Lib/enums/Direction.h>
 #include <Game/Objects/Judgement/MouseVectorCircle.h>
@@ -17,8 +17,8 @@ PlayerInput::PlayerInput(){
     {
         tap_.Value = []{
             return
-                Input::IsPressKey(DIK_A) or Input::IsPressKey(DIK_S) or Input::IsPressKey(DIK_D) or
-                Input::IsPressKey(DIK_F) or Input::IsPressKey(DIK_SPACE) or Input::IsPressMouse(MOUSE_BUTTON::LEFT);
+                SEED::Input::IsPressKey(DIK_A) or SEED::Input::IsPressKey(DIK_S) or SEED::Input::IsPressKey(DIK_D) or
+                SEED::Input::IsPressKey(DIK_F) or SEED::Input::IsPressKey(DIK_SPACE) or SEED::Input::IsPressMouse(SEED::MOUSE_BUTTON::LEFT);
         };
         tap_.Trigger = [&]{
             return tapLane_.size() > 0;
@@ -34,21 +34,21 @@ PlayerInput::PlayerInput(){
     ///////////////////////////////////////////////////////
     {
         sideFlick_.Value = [&]{
-            float horizontalVal = Input::GetMouseVector().x;
-            if(horizontalVal > flickDeadZone_){ return LR::RIGHT; }
-            if(horizontalVal < -flickDeadZone_){ return LR::LEFT; }
-            return LR::NONE;
+            float horizontalVal = SEED::Input::GetMouseVector().x;
+            if(horizontalVal > flickDeadZone_){ return SEED::GeneralEnum::LR::RIGHT; }
+            if(horizontalVal < -flickDeadZone_){ return SEED::GeneralEnum::LR::LEFT; }
+            return SEED::GeneralEnum::LR::NONE;
         };
 
         sideFlick_.PreValue = [&]{
-            float horizontalVal = Input::GetMouseVector(INPUT_STATE::BEFORE).x;
-            if(horizontalVal > flickDeadZone_){ return LR::RIGHT; }
-            if(horizontalVal < -flickDeadZone_){ return LR::LEFT; }
-            return LR::NONE;
+            float horizontalVal = SEED::Input::GetMouseVector(SEED::INPUT_STATE::BEFORE).x;
+            if(horizontalVal > flickDeadZone_){ return SEED::GeneralEnum::LR::RIGHT; }
+            if(horizontalVal < -flickDeadZone_){ return SEED::GeneralEnum::LR::LEFT; }
+            return SEED::GeneralEnum::LR::NONE;
         };
 
         sideFlick_.Trigger = [&]{
-            return (sideFlick_.Value() != LR::NONE) && (sideFlick_.PreValue() == LR::NONE);
+            return (sideFlick_.Value() != SEED::GeneralEnum::LR::NONE) && (sideFlick_.PreValue() == SEED::GeneralEnum::LR::NONE);
         };
     }
 
@@ -58,40 +58,40 @@ PlayerInput::PlayerInput(){
     {
         rectFlick_.Value = [&]{
             // LT,RT,LB,RB方向のマウスフリック判定を取得
-            Vector2 flickVec = Input::GetMouseVector();
+            Vector2 flickVec = SEED::Input::GetMouseVector();
 
             // 長さがデッドゾーンより小さければ無視
-            if(MyMath::Length(flickVec) < flickDeadZone_){ return DIRECTION8::NONE; }
+            if(SEED::Methods::Math::Length(flickVec) < flickDeadZone_){ return SEED::GeneralEnum::DIRECTION8::NONE; }
 
             // 方向を取得
-            if(flickVec.x > 0.0f && flickVec.y <= 0.0f){ return DIRECTION8::RIGHTTOP; }
-            if(flickVec.x > 0.0f && flickVec.y > 0.0f){ return DIRECTION8::RIGHTBOTTOM; }
-            if(flickVec.x <= 0.0f && flickVec.y > 0.0f){ return DIRECTION8::LEFTBOTTOM; }
-            if(flickVec.x <= 0.0f && flickVec.y <= 0.0f){ return DIRECTION8::LEFTTOP; }
+            if(flickVec.x > 0.0f && flickVec.y <= 0.0f){ return SEED::GeneralEnum::DIRECTION8::RIGHTTOP; }
+            if(flickVec.x > 0.0f && flickVec.y > 0.0f){ return SEED::GeneralEnum::DIRECTION8::RIGHTBOTTOM; }
+            if(flickVec.x <= 0.0f && flickVec.y > 0.0f){ return SEED::GeneralEnum::DIRECTION8::LEFTBOTTOM; }
+            if(flickVec.x <= 0.0f && flickVec.y <= 0.0f){ return SEED::GeneralEnum::DIRECTION8::LEFTTOP; }
 
             // どの方向にも当てはまらなければ無視
-            return DIRECTION8::NONE;
+            return SEED::GeneralEnum::DIRECTION8::NONE;
         };
 
         rectFlick_.PreValue = [&]{
             // LT,RT,LB,RB方向のマウスフリック判定を取得
-            Vector2 flickVec = Input::GetMouseVector(INPUT_STATE::BEFORE);
+            Vector2 flickVec = SEED::Input::GetMouseVector(SEED::INPUT_STATE::BEFORE);
 
             // 長さがデッドゾーンより小さければ無視
-            if(MyMath::Length(flickVec) < flickDeadZone_){ return DIRECTION8::NONE; }
+            if(SEED::Methods::Math::Length(flickVec) < flickDeadZone_){ return SEED::GeneralEnum::DIRECTION8::NONE; }
 
             // 方向を取得
-            if(flickVec.x > 0.0f && flickVec.y <= 0.0f){ return DIRECTION8::RIGHTTOP; }
-            if(flickVec.x > 0.0f && flickVec.y > 0.0f){ return DIRECTION8::RIGHTBOTTOM; }
-            if(flickVec.x <= 0.0f && flickVec.y > 0.0f){ return DIRECTION8::LEFTBOTTOM; }
-            if(flickVec.x <= 0.0f && flickVec.y <= 0.0f){ return DIRECTION8::LEFTTOP; }
+            if(flickVec.x > 0.0f && flickVec.y <= 0.0f){ return SEED::GeneralEnum::DIRECTION8::RIGHTTOP; }
+            if(flickVec.x > 0.0f && flickVec.y > 0.0f){ return SEED::GeneralEnum::DIRECTION8::RIGHTBOTTOM; }
+            if(flickVec.x <= 0.0f && flickVec.y > 0.0f){ return SEED::GeneralEnum::DIRECTION8::LEFTBOTTOM; }
+            if(flickVec.x <= 0.0f && flickVec.y <= 0.0f){ return SEED::GeneralEnum::DIRECTION8::LEFTTOP; }
 
             // どの方向にも当てはまらなければ無視
-            return DIRECTION8::NONE;
+            return SEED::GeneralEnum::DIRECTION8::NONE;
         };
 
         rectFlick_.Trigger = [&]{
-            return (rectFlick_.Value() != DIRECTION8::NONE) && (rectFlick_.PreValue() == DIRECTION8::NONE);
+            return (rectFlick_.Value() != SEED::GeneralEnum::DIRECTION8::NONE) && (rectFlick_.PreValue() == SEED::GeneralEnum::DIRECTION8::NONE);
         };
     }
 
@@ -101,12 +101,12 @@ PlayerInput::PlayerInput(){
     {
         hold_.Value = [&]{
             std::unordered_set<int32_t> holdLane;
-            if(Input::IsPressKey(DIK_A)){ holdLane.insert(0); }
-            if(Input::IsPressKey(DIK_S)){ holdLane.insert(1); }
-            if(Input::IsPressKey(DIK_D)){ holdLane.insert(2); }
-            if(Input::IsPressKey(DIK_F)){ holdLane.insert(3); }
-            if(Input::IsPressKey(DIK_SPACE)){ holdLane.insert(4); }
-            if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){ holdLane.insert(cursorLane_.Value()); }
+            if(SEED::Input::IsPressKey(DIK_A)){ holdLane.insert(0); }
+            if(SEED::Input::IsPressKey(DIK_S)){ holdLane.insert(1); }
+            if(SEED::Input::IsPressKey(DIK_D)){ holdLane.insert(2); }
+            if(SEED::Input::IsPressKey(DIK_F)){ holdLane.insert(3); }
+            if(SEED::Input::IsPressKey(DIK_SPACE)){ holdLane.insert(4); }
+            if(SEED::Input::IsPressMouse(SEED::MOUSE_BUTTON::LEFT)){ holdLane.insert(cursorLane_.Value()); }
             return holdLane;
 
         };
@@ -142,18 +142,18 @@ PlayerInput::PlayerInput(){
     ///////////////////////////////////////////////////////
     {
         wheelScroll_.PreValue = []{
-            int32_t wheel = Input::GetMouseWheel(INPUT_STATE::BEFORE);
-            if(wheel == 0){ return UpDown::NONE; }
-            return (wheel > 0) ? UpDown::UP : UpDown::DOWN;
+            int32_t wheel = SEED::Input::GetMouseWheel(SEED::INPUT_STATE::BEFORE);
+            if(wheel == 0){ return SEED::GeneralEnum::UpDown::NONE; }
+            return (wheel > 0) ? SEED::GeneralEnum::UpDown::UP : SEED::GeneralEnum::UpDown::DOWN;
         };
         wheelScroll_.Value = []{
-            int32_t wheel = Input::GetMouseWheel();
-            if(wheel == 0){ return UpDown::NONE; }
-            return (wheel > 0) ? UpDown::UP : UpDown::DOWN;
+            int32_t wheel = SEED::Input::GetMouseWheel();
+            if(wheel == 0){ return SEED::GeneralEnum::UpDown::NONE; }
+            return (wheel > 0) ? SEED::GeneralEnum::UpDown::UP : SEED::GeneralEnum::UpDown::DOWN;
         };
         wheelScroll_.Trigger = [&]{
-            if(wheelScroll_.PreValue() != UpDown::NONE){ return false; }
-            return wheelScroll_.Value() != UpDown::NONE;
+            if(wheelScroll_.PreValue() != SEED::GeneralEnum::UpDown::NONE){ return false; }
+            return wheelScroll_.Value() != SEED::GeneralEnum::UpDown::NONE;
         };
     }
 }
@@ -182,25 +182,25 @@ void PlayerInput::Initialize(){
     cursorPos_ = kWindowCenter.x;
     preCursorPos_ = kWindowCenter.x;
     // カーソルの端の位置を設定
-    edgePos_[(int)LR::LEFT] = cursorPos_ - PlayField::kPlayFieldSizeX_ * 0.5f;
-    edgePos_[(int)LR::RIGHT] = cursorPos_ + PlayField::kPlayFieldSizeX_ * 0.5f;
+    edgePos_[(int)SEED::GeneralEnum::LR::LEFT] = cursorPos_ - PlayField::kPlayFieldSizeX_ * 0.5f;
+    edgePos_[(int)SEED::GeneralEnum::LR::RIGHT] = cursorPos_ + PlayField::kPlayFieldSizeX_ * 0.5f;
 
     for(int i = 0; i < 2; i++){
-        cursor_[i] = Triangle();
-        cursor_[i].GH = TextureManager::LoadTexture("PlayField/cursor_half.png");
-        cursor_[i].lightingType = LIGHTINGTYPE_NONE;
+        cursor_[i] = SEED::Topology::Triangle();
+        cursor_[i].GH = SEED::TextureManager::LoadTexture("PlayField/cursor_half.png");
+        cursor_[i].lightingType = SEED::LIGHTINGTYPE_NONE;
         //cursor_[i].blendMode = BlendMode::ADD;
 
-        cursor2D_[i] = Triangle2D();
-        cursor2D_[i].GH = TextureManager::LoadTexture("PlayField/cursor_half.png");
+        cursor2D_[i] = SEED::Topology::Triangle2D();
+        cursor2D_[i].GH = SEED::TextureManager::LoadTexture("PlayField/cursor_half.png");
         //cursor2D_[i].color = { 1.0f,0.0f,1.0f,1.0f };
 
-        cursorLine_[i] = Quad();
-        cursorLine_[i].GH = TextureManager::LoadTexture("PlayField/cursorLine.png");
+        cursorLine_[i] = SEED::Topology::Quad();
+        cursorLine_[i].GH = SEED::TextureManager::LoadTexture("PlayField/cursorLine.png");
         cursorLine_[i].color = { 1.0f,1.0f,0.0f,1.0f };
     }
 
-    auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    auto* hierarchy = SEED::GameSystem::GetScene()->GetHierarchy();
     cursorIconObj_ = hierarchy->LoadObject2D("PlayScene/cursorIcon.prefab");
 
     // パラメータの初期化
@@ -222,16 +222,16 @@ void PlayerInput::Update(){
         PlayField::GetInstance()->GetPlayFieldPointWorld(0),
         PlayField::GetInstance()->GetPlayFieldPointWorld(2)
     };
-    float dist = MyMath::Length(corsorWorldPos - farPos[0]);
+    float dist = SEED::Methods::Math::Length(corsorWorldPos - farPos[0]);
     float keyWidth = PlayField::GetInstance()->GetKeyWidthWorld();
     float zRate = 0.015f;
     float keyWidthRate = 0.35f;
 
     // カーソル矩形の位置を更新
-    cursor_[0].localVertex[0] = corsorWorldPos + MyMath::Normalize(farPos[0] - corsorWorldPos) * dist * zRate;
+    cursor_[0].localVertex[0] = corsorWorldPos + SEED::Methods::Math::Normalize(farPos[0] - corsorWorldPos) * dist * zRate;
     cursor_[0].localVertex[1] = corsorWorldPos + Vector3(keyWidth * keyWidthRate, 0.0f, 0.0f);
     cursor_[0].localVertex[2] = corsorWorldPos - Vector3(keyWidth * keyWidthRate, 0.0f, 0.0f);
-    cursor_[1].localVertex[0] = corsorWorldPos + MyMath::Normalize(farPos[1] - corsorWorldPos) * dist * zRate;
+    cursor_[1].localVertex[0] = corsorWorldPos + SEED::Methods::Math::Normalize(farPos[1] - corsorWorldPos) * dist * zRate;
     cursor_[1].localVertex[1] = corsorWorldPos - Vector3(keyWidth * keyWidthRate, 0.0f, 0.0f);
     cursor_[1].localVertex[2] = corsorWorldPos + Vector3(keyWidth * keyWidthRate, 0.0f, 0.0f);
 
@@ -258,7 +258,7 @@ void PlayerInput::Update(){
     }
 
 
-    BaseCamera* camera =SEED::Instance::GetMainCamera();
+    SEED::BaseCamera* camera =SEED::Instance::GetMainCamera();
     for(int i = 0; i < 3; i++){
         cursor2D_[0].localVertex[i] = camera->ToScreenPosition(cursor_[0].localVertex[i]);
         cursor2D_[1].localVertex[i] = camera->ToScreenPosition(cursor_[1].localVertex[i]);
@@ -295,7 +295,7 @@ void PlayerInput::BeginFrame(){
     preCursorPos_ = cursorPos_;
 
     // カーソルの移動量を取得
-    Vector2 mouseVal = Input::GetMouseVector();
+    Vector2 mouseVal = SEED::Input::GetMouseVector();
 
     // カーソルの移動量を加算
     cursorPos_ += mouseVal.x * PlaySettings::GetInstance()->GetTotalCursorSenstivity();
@@ -386,24 +386,24 @@ std::unordered_set<int32_t> PlayerInput::SystemGetTapLane(){
     std::unordered_set<int32_t> tapLane;
 
     // タップしたレーンを取得
-    if(Input::IsTriggerKey(DIK_A)){ tapLane.insert(0); }
-    if(Input::IsTriggerKey(DIK_S)){ tapLane.insert(1); }
-    if(Input::IsTriggerKey(DIK_D)){ tapLane.insert(2); }
-    if(Input::IsTriggerKey(DIK_F)){ tapLane.insert(3); }
-    if(Input::IsTriggerKey(DIK_SPACE)){ tapLane.insert(4); }
+    if(SEED::Input::IsTriggerKey(DIK_A)){ tapLane.insert(0); }
+    if(SEED::Input::IsTriggerKey(DIK_S)){ tapLane.insert(1); }
+    if(SEED::Input::IsTriggerKey(DIK_D)){ tapLane.insert(2); }
+    if(SEED::Input::IsTriggerKey(DIK_F)){ tapLane.insert(3); }
+    if(SEED::Input::IsTriggerKey(DIK_SPACE)){ tapLane.insert(4); }
 
     // マウスをトリガーしたとき
-    if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+    if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
         tapLane.insert(cursorLane_.Value());
 
     } else{
         // マウスを押しているとき
-        if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsPressMouse(SEED::MOUSE_BUTTON::LEFT)){
             // レーンが切り替わったら
             int preLane = cursorLane_.PreValue();
             int curLane = cursorLane_.Value();
             int kLaneCount = PlayField::kKeyCount_;
-            float horizontalVal = Input::GetMouseVector().x * PlaySettings::GetInstance()->GetTotalCursorSenstivity();
+            float horizontalVal = SEED::Input::GetMouseVector().x * PlaySettings::GetInstance()->GetTotalCursorSenstivity();
 
             // 間のレーンをタップしたことにする(左⇔右のカーソルがループすることも考慮)
             if(curLane != preLane){
@@ -446,21 +446,21 @@ std::unordered_set<int32_t> PlayerInput::SystemGetReleaseLane(){
     std::unordered_set<int32_t> releaseLane;
 
     // リリースしたレーンを取得
-    if(Input::IsReleaseKey(DIK_A)){ releaseLane.insert(0); }
-    if(Input::IsReleaseKey(DIK_S)){ releaseLane.insert(1); }
-    if(Input::IsReleaseKey(DIK_D)){ releaseLane.insert(2); }
-    if(Input::IsReleaseKey(DIK_F)){ releaseLane.insert(3); }
-    if(Input::IsReleaseKey(DIK_SPACE)){ releaseLane.insert(4); }
-    if(Input::IsReleaseMouse(MOUSE_BUTTON::LEFT)){
+    if(SEED::Input::IsReleaseKey(DIK_A)){ releaseLane.insert(0); }
+    if(SEED::Input::IsReleaseKey(DIK_S)){ releaseLane.insert(1); }
+    if(SEED::Input::IsReleaseKey(DIK_D)){ releaseLane.insert(2); }
+    if(SEED::Input::IsReleaseKey(DIK_F)){ releaseLane.insert(3); }
+    if(SEED::Input::IsReleaseKey(DIK_SPACE)){ releaseLane.insert(4); }
+    if(SEED::Input::IsReleaseMouse(SEED::MOUSE_BUTTON::LEFT)){
         releaseLane.insert(cursorLane_.Value());
     } else{
         // マウスを押しているとき
-        if(Input::IsPressMouse(MOUSE_BUTTON::LEFT)){
+        if(SEED::Input::IsPressMouse(SEED::MOUSE_BUTTON::LEFT)){
             // レーンが切り替わったら
             int preLane = cursorLane_.PreValue();
             int curLane = cursorLane_.Value();
             int kLaneCount = PlayField::kKeyCount_;
-            float horizontalVal = Input::GetMouseVector().x;
+            float horizontalVal = SEED::Input::GetMouseVector().x;
 
             // 間のレーンをタップしたことにする(左⇔右のカーソルがループすることも考慮)
             if(curLane != preLane){
@@ -507,11 +507,11 @@ void PlayerInput::DecideLaneInput(){
 
     // マウス右ボタン押していればループ、押していなければクランプ
     float margin = PlayField::kKeyWidth_ * 0.25f;
-    if(Input::IsPressMouse(MOUSE_BUTTON::RIGHT)){
-        isLooped_ = cursorPos_ < edgePos_[(int)LR::LEFT] || cursorPos_ > edgePos_[(int)LR::RIGHT];
-        cursorPos_ = MyFunc::Spiral(cursorPos_, edgePos_[(int)LR::LEFT] + margin, edgePos_[(int)LR::RIGHT] - margin);
+    if(SEED::Input::IsPressMouse(SEED::MOUSE_BUTTON::RIGHT)){
+        isLooped_ = cursorPos_ < edgePos_[(int)SEED::GeneralEnum::LR::LEFT] || cursorPos_ > edgePos_[(int)SEED::GeneralEnum::LR::RIGHT];
+        cursorPos_ = SEED::Methods::Math::Spiral(cursorPos_, edgePos_[(int)SEED::GeneralEnum::LR::LEFT] + margin, edgePos_[(int)SEED::GeneralEnum::LR::RIGHT] - margin);
     } else{
-        cursorPos_ = std::clamp(cursorPos_, edgePos_[(int)LR::LEFT] + margin, edgePos_[(int)LR::RIGHT] - margin);
+        cursorPos_ = std::clamp(cursorPos_, edgePos_[(int)SEED::GeneralEnum::LR::LEFT] + margin, edgePos_[(int)SEED::GeneralEnum::LR::RIGHT] - margin);
     }
 
     // ホールドしているレーンを取得
@@ -534,7 +534,7 @@ void PlayerInput::DisplayInputInfo(){
     auto& hlLane = GetHoldLane();
     auto& relLane = GetReleaseLane();
 
-    ImFunc::CustomBegin("input", MoveOnly_TitleBar);
+    SEED::ImFunc::CustomBegin("input", SEED::MoveOnly_TitleBar);
 
     // タップ判定
     {
@@ -545,7 +545,7 @@ void PlayerInput::DisplayInputInfo(){
             ImGui::SameLine();
         }
         ImGui::Text("}");
-        ImGui::Text("マウスを押しているか:%d", Input::IsPressMouse(MOUSE_BUTTON::LEFT));
+        ImGui::Text("マウスを押しているか:%d", SEED::Input::IsPressMouse(SEED::MOUSE_BUTTON::LEFT));
         ImGui::Separator();
     }
 
@@ -577,31 +577,31 @@ void PlayerInput::DisplayInputInfo(){
     {
         ImGui::Text("カーソルのレーン: %d", GetCursorLane());
         ImGui::Text("前のカーソルのレーン: %d", GetPreCursorLane());
-        Vector2 mouseVal = Input::GetMouseVector() * PlaySettings::GetInstance()->GetTotalCursorSenstivity();
+        Vector2 mouseVal = SEED::Input::GetMouseVector() * PlaySettings::GetInstance()->GetTotalCursorSenstivity();
         ImGui::Text("マウスの移動量: %.2f", mouseVal.x);
         ImGui::Separator();
     }
 
     // フリック
     {
-        LR sideFlick = GetSideFlickDirection();
-        ImGui::Text("SideFlick: %d | %d", sideFlick == LR::LEFT, sideFlick == LR::RIGHT);
+        SEED::GeneralEnum::LR sideFlick = GetSideFlickDirection();
+        ImGui::Text("SideFlick: %d | %d", sideFlick == SEED::GeneralEnum::LR::LEFT, sideFlick == SEED::GeneralEnum::LR::RIGHT);
         ImGui::Separator();
 
-        DIRECTION8 rectFlick = GetRectFlickDirection();
+        SEED::GeneralEnum::DIRECTION8 rectFlick = GetRectFlickDirection();
         ImGui::Text("RectFlick");
-        ImGui::Text("%d,%d", rectFlick == DIRECTION8::LEFTTOP, rectFlick == DIRECTION8::RIGHTTOP);
-        ImGui::Text("%d,%d", rectFlick == DIRECTION8::LEFTBOTTOM, rectFlick == DIRECTION8::RIGHTBOTTOM);
+        ImGui::Text("%d,%d", rectFlick == SEED::GeneralEnum::DIRECTION8::LEFTTOP, rectFlick == SEED::GeneralEnum::DIRECTION8::RIGHTTOP);
+        ImGui::Text("%d,%d", rectFlick == SEED::GeneralEnum::DIRECTION8::LEFTBOTTOM, rectFlick == SEED::GeneralEnum::DIRECTION8::RIGHTBOTTOM);
         ImGui::Separator();
     }
 
     // ホイールスクロール
     {
-        UpDown wheelScroll = GetWheelScrollDirection();
-        ImGui::Text("wheel↑ %d", wheelScroll == UpDown::UP);
-        ImGui::Text("wheel↓ %d", wheelScroll == UpDown::DOWN);
+        SEED::GeneralEnum::UpDown wheelScroll = GetWheelScrollDirection();
+        ImGui::Text("wheel↑ %d", wheelScroll == SEED::GeneralEnum::UpDown::UP);
+        ImGui::Text("wheel↓ %d", wheelScroll == SEED::GeneralEnum::UpDown::DOWN);
         ImGui::Text("Trigger %d", GetIsWheelTrigger());
-        int32_t scrollVal = Input::GetMouseWheel();
+        int32_t scrollVal = SEED::Input::GetMouseWheel();
         ImGui::Text("ホイールの移動量: %f", scrollVal);
 
         ImGui::Separator();

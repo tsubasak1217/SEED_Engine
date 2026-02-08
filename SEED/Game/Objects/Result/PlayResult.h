@@ -19,8 +19,8 @@ struct PlayResult{
     bool isFullCombo = false;
     bool isAllPerfect = false;
     nlohmann::json notesJson = nlohmann::json::object();
-    GameObject2D* scoreTextObj = nullptr;
-    TextBox2D* scoreText = nullptr;
+    SEED::GameObject2D* scoreTextObj = nullptr;
+    SEED::TextBox2D* scoreText = nullptr;
     std::string title = "none";
 
 public:

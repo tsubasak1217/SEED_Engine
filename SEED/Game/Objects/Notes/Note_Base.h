@@ -47,8 +47,8 @@ public:
     void SetNoteType(NoteType type) { noteType_ = type; }
     int32_t GetLane() const { return lane_; }
     void SetLane(int32_t lane) { lane_ = lane; }
-    UpDown GetLayer() const { return layer_; }
-    void SetLayer(UpDown layer) { layer_ = layer; }
+    SEED::GeneralEnum::UpDown GetLayer() const { return layer_; }
+    void SetLayer(SEED::GeneralEnum::UpDown layer) { layer_ = layer; }
     LaneBit GetLaneBit() const { return laneBit_; }
     void SetLaneBit(LaneBit bit) { laneBit_ = bit; }
     float GetTime() const { return time_; }
@@ -63,7 +63,7 @@ public:
     // 後方互換性のためpublicメンバとして残す（将来的に削除予定）
     NoteType noteType_ = NoteType::None;// ノーツの種類
     int32_t lane_;// レーン番号
-    UpDown layer_ = UpDown::NONE;// 上下の方向
+    SEED::GeneralEnum::UpDown layer_ = SEED::GeneralEnum::UpDown::NONE;// 上下の方向
     LaneBit laneBit_;// レーンのビットフラグ
     float time_;// 出現時間
     std::vector<std::shared_ptr<Note_Base>> controlPoints_;// スライドノーツなどの制御点の情報
@@ -79,5 +79,5 @@ public:
 
 
 protected:
-    std::unique_ptr<Quad> noteQuad_;// ノーツの画像
+    std::unique_ptr<SEED::Topology::Quad> noteQuad_;// ノーツの画像
 };

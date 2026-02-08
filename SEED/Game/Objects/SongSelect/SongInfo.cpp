@@ -14,7 +14,7 @@ void SongInfo::Initialize(const std::string& _folderName){
     std::string directoryPath = "Resources/NoteDatas/" + _folderName + "/";
 
     // 楽曲情報jsonの存在を確認
-    nlohmann::json generalData = MyFunc::GetJson(directoryPath + "songInfo.json", true);
+    nlohmann::json generalData = SEED::Methods::File::GetJson(directoryPath + "songInfo.json", true);
 
     if(!generalData.empty()){
         // 共通情報を取得
@@ -23,7 +23,7 @@ void SongInfo::Initialize(const std::string& _folderName){
         bpm = generalData.value("bpm",0.0f);
         genre = (SongGenre)generalData.value("genre",0);
         songOffsetTime = generalData.value("offsetTime", 0.0f);
-        songPreviewRange = generalData.value("previewRange",Range1D());
+        songPreviewRange = generalData.value("previewRange", SEED::Range1D());
         songVolume = generalData.value("songVolume", 0.5f);
     
     } else{
@@ -33,12 +33,12 @@ void SongInfo::Initialize(const std::string& _folderName){
         bpm = 0.0f;
         genre = (SongGenre)0;
         songOffsetTime = 0.0f;
-        songPreviewRange = Range1D();
+        songPreviewRange = SEED::Range1D();
         songVolume = 0.5f;
     }
 
     // audioファイルパスを設定
-    audioFilePath = directoryPath + MyFunc::GetFileList(
+    audioFilePath = directoryPath + SEED::Methods::File::GetFileList(
         directoryPath,{ ".wav", ".mp3", ".m4a" }
     ).front().string();
 
@@ -47,7 +47,7 @@ void SongInfo::Initialize(const std::string& _folderName){
     for(int i = 0; i < diffcultySize; i++){
         // JSONファイルを読み込む
         jsonFilePath[i] = directoryPath + difficultyName[i] + ".json";
-        nlohmann::json noteData = MyFunc::GetJson(jsonFilePath[i], true);
+        nlohmann::json noteData = SEED::Methods::File::GetJson(jsonFilePath[i], true);
         noteDatas[i] = noteData;
 
         // ファイルが存在しない場合はスキップ
@@ -61,7 +61,7 @@ void SongInfo::Initialize(const std::string& _folderName){
 
     // スコア情報を初期化
     directoryPath = "Resources/ScoreDatas/" + _folderName + "/scoreData.json";
-    nlohmann::json scoreData = MyFunc::GetJson(directoryPath);
+    nlohmann::json scoreData = SEED::Methods::File::GetJson(directoryPath);
 
     if(!scoreData.empty()){
         for(int i = 0; i < diffcultySize; i++){

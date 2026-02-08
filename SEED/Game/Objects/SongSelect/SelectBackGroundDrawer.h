@@ -21,8 +21,8 @@ public:
     inline static TrackDifficulty currentDifficulty; // 現在の難易度
 
 private:
-    GameObject* bgColorListObj_ = nullptr;
-    std::array<Color, (int)TrackDifficulty::kMaxDifficulty> clearColors_;
+    SEED::GameObject* bgColorListObj_ = nullptr;
+    std::array<SEED::Color, (int)TrackDifficulty::kMaxDifficulty> clearColors_;
 
 private:
     // スクロールする背景の描画

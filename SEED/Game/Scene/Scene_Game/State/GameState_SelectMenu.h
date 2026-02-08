@@ -11,10 +11,10 @@
 /// <summary>
 /// プレイシーンでのポーズ状態
 /// </summary>
-class GameState_SelectMenu : public SceneState_Base{
+class GameState_SelectMenu : public SEED::SceneState_Base{
 public:
     GameState_SelectMenu();
-    GameState_SelectMenu(Scene_Base* pScene);
+    GameState_SelectMenu(SEED::Scene_Base* pScene);
     ~GameState_SelectMenu() override;
 
 public:
@@ -79,28 +79,28 @@ private:
 private:
     // 読み込んだものを格納するポインタ-----------
     // メニュー画面関連
-    GameObject2D* menuItemsParent_;
-    std::array<GameObject2D*, SelectMenuItemCount> menus_;
-    GameObject2D* backSpriteObj_ = nullptr;
+    SEED::GameObject2D* menuItemsParent_;
+    std::array<SEED::GameObject2D*, SelectMenuItemCount> menus_;
+    SEED::GameObject2D* backSpriteObj_ = nullptr;
     // オプション画面関連
-    GameObject2D* optionPageParent_;
-    GameObject2D* sliderObj_;
-    std::array<GameObject2D*, kOptionPageItemCount> optionItems_;
-    std::array<Sprite*, kSliderSpriteCount> sliderSprites_;
-    std::array<TextBox2D*, kSliderTextCount> optionTexts_;
+    SEED::GameObject2D* optionPageParent_;
+    SEED::GameObject2D* sliderObj_;
+    std::array<SEED::GameObject2D*, kOptionPageItemCount> optionItems_;
+    std::array<SEED::Sprite*, kSliderSpriteCount> sliderSprites_;
+    std::array<SEED::TextBox2D*, kSliderTextCount> optionTexts_;
 
     // コライダーオブジェクト
-    GameObject2D* mouseColliderObj_;
-    GameObject2D* sliderColliderObj_;
+    SEED::GameObject2D* mouseColliderObj_;
+    SEED::GameObject2D* sliderColliderObj_;
 
     // 座標
     Vector2 sliderLeftPos_;
     Vector2 sliderRightPos_;
 
     // 入力
-    InputHandler<bool> backInput_;
-    InputHandler<int32_t> selectInput_;
-    InputHandler<bool> decideInput_;
+    SEED::InputHandler<bool> backInput_;
+    SEED::InputHandler<int32_t> selectInput_;
+    SEED::InputHandler<bool> decideInput_;
 
     //選択関連
     int32_t selectedIndex_ = 0;
@@ -110,16 +110,16 @@ private:
     bool isItemChanged_ = false;
     std::array<float, kOptionPageItemCount - 1> slidersT_;
     std::array<float, kOptionPageItemCount - 1> sliderValues_;
-    std::array<Range1D, kOptionPageItemCount - 1> sliderValueRanges_;
+    std::array<SEED::Range1D, kOptionPageItemCount - 1> sliderValueRanges_;
     std::array<std::string, kOptionPageItemCount - 1> sliderDetailTexts_;
 
     // タイマー関連
-    Timer menuTransitionTimer_;
-    Timer optionPageTimer_;
-    Timer sliderScalingTimer_;
-    std::array<Timer, SelectMenuItemCount> menuItemScalingTimers_;
-    std::array<Timer, kOptionPageItemCount> optionItemTimers_;
-    std::array<Timer, kOptionPageItemCount> optionItemHoverTimers_;
+    SEED::Timer menuTransitionTimer_;
+    SEED::Timer optionPageTimer_;
+    SEED::Timer sliderScalingTimer_;
+    std::array<SEED::Timer, SelectMenuItemCount> menuItemScalingTimers_;
+    std::array<SEED::Timer, kOptionPageItemCount> optionItemTimers_;
+    std::array<SEED::Timer, kOptionPageItemCount> optionItemHoverTimers_;
 
     // state遷移用
     bool isExit_ = false;

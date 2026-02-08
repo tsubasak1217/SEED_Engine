@@ -6,11 +6,11 @@
 /// <summary>
 /// 音ゲーをプレイするステート
 /// </summary>
-class GameState_Play : public SceneState_Base{
+class GameState_Play : public SEED::SceneState_Base{
 public:
     GameState_Play() = default;
-    GameState_Play(Scene_Base* pScene);
-    GameState_Play(Scene_Base* pScene, const SongInfo& songInfo,int32_t difficulty);
+    GameState_Play(SEED::Scene_Base* pScene);
+    GameState_Play(SEED::Scene_Base* pScene, const SongInfo& songInfo,int32_t difficulty);
     ~GameState_Play() override;
 
 public:

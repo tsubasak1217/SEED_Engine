@@ -72,7 +72,7 @@ private:
     SongGroup* currentGroup = nullptr; // 現在選択中のグループ
     Track currentSong; // 現在選択中の楽曲
     int32_t centerIdx_;
-    UpDown shiftDirection_ = UpDown::NONE; // アイテム移動方向
+    SEED::GeneralEnum::UpDown shiftDirection_ = SEED::GeneralEnum::UpDown::NONE; // アイテム移動方向
 
     // 各種モード
     SelectMode selectMode_ = SelectMode::Group;// 選択中のものを判別するための変数
@@ -80,51 +80,51 @@ private:
     SortMode currentSortMode = SortMode::Difficulty;; // ソートモード
 
     // コントロールポイント
-    GameObject2D* songControlPts_ = nullptr; // 楽曲選択時コントロールポイント
-    GameObject2D* difficultyControlPts_ = nullptr; // 難易度選択時コントロールポイント
-    GameObject* cameraControlPts_ = nullptr; // カメラ制御用コントロールポイント
+    SEED::GameObject2D* songControlPts_ = nullptr; // 楽曲選択時コントロールポイント
+    SEED::GameObject2D* difficultyControlPts_ = nullptr; // 難易度選択時コントロールポイント
+    SEED::GameObject* cameraControlPts_ = nullptr; // カメラ制御用コントロールポイント
 
     // 表示曲・グループのリスト
     std::vector<Track*> visibleSongs; // 表示されている楽曲のリスト
     std::vector<SongGroup*> visibleGroups; // 表示されているグループのリスト
-    std::vector<GameObject2D*> songUIs; // 楽曲UIのリスト
-    std::vector<GameObject2D*> groupUIs; // グループUIのリスト
-    std::vector<GameObject2D*> difficultyUIs; // 難易度ごとUIのリスト
+    std::vector<SEED::GameObject2D*> songUIs; // 楽曲UIのリスト
+    std::vector<SEED::GameObject2D*> groupUIs; // グループUIのリスト
+    std::vector<SEED::GameObject2D*> difficultyUIs; // 難易度ごとUIのリスト
 
     // ボタンUI
-    GameObject2D* songSelectButtonUI_ = nullptr;
-    GameObject2D* difficultySelectButtonUI_ = nullptr;
-    GameObject2D* backButtonUI_ = nullptr;
-    GameObject2D* modeChangeButtonUI_ = nullptr;
+    SEED::GameObject2D* songSelectButtonUI_ = nullptr;
+    SEED::GameObject2D* difficultySelectButtonUI_ = nullptr;
+    SEED::GameObject2D* backButtonUI_ = nullptr;
+    SEED::GameObject2D* modeChangeButtonUI_ = nullptr;
 
     // マウスカーソル
-    GameObject2D* pMouseCursor_ = nullptr;
+    SEED::GameObject2D* pMouseCursor_ = nullptr;
 
     // 入力格納変数
-    InputHandler<UpDown> verticalInput_;
-    InputHandler<LR> modeChangeInput_;
-    InputHandler<LR> difficultyChangeInput_;
-    InputHandler<bool> decideInput_;
-    InputHandler<bool> backInput_;
-    UpDown mouseInputVertical_ = UpDown::NONE;
-    LR mouseInputModeChange_ = LR::NONE;
+    SEED::InputHandler<SEED::GeneralEnum::UpDown> verticalInput_;
+    SEED::InputHandler<SEED::GeneralEnum::LR> modeChangeInput_;
+    SEED::InputHandler<SEED::GeneralEnum::LR> difficultyChangeInput_;
+    SEED::InputHandler<bool> decideInput_;
+    SEED::InputHandler<bool> backInput_;
+    SEED::GeneralEnum::UpDown mouseInputVertical_ = SEED::GeneralEnum::UpDown::NONE;
+    SEED::GeneralEnum::LR mouseInputModeChange_ = SEED::GeneralEnum::LR::NONE;
     bool mouseDecideInput_ = false;
     bool mouseBackInput_ = false;
 
     // Timer
-    Timer inputTimer_;
-    Timer itemShiftTimer_;
-    Timer toDifficultySelectTimer_;
-    Timer playWaitTimer_;
-    Timer cameraMoveTimer_;
-    Timer buttonUIScalingTimer_;
-    Timer buttonUIPressScaleTimer_Up_;
-    Timer buttonUIPressScaleTimer_Down_;
-    Timer buttonUIPressScaleTimer_Q_;
-    Timer buttonUIPressScaleTimer_E_;
-    Timer sceneOutTimer_;
-    Timer songVolumeFadeInTimer_;
-    Timer songVolumeFadeOutTimer_;
+    SEED::Timer inputTimer_;
+    SEED::Timer itemShiftTimer_;
+    SEED::Timer toDifficultySelectTimer_;
+    SEED::Timer playWaitTimer_;
+    SEED::Timer cameraMoveTimer_;
+    SEED::Timer buttonUIScalingTimer_;
+    SEED::Timer buttonUIPressScaleTimer_Up_;
+    SEED::Timer buttonUIPressScaleTimer_Down_;
+    SEED::Timer buttonUIPressScaleTimer_Q_;
+    SEED::Timer buttonUIPressScaleTimer_E_;
+    SEED::Timer sceneOutTimer_;
+    SEED::Timer songVolumeFadeInTimer_;
+    SEED::Timer songVolumeFadeOutTimer_;
 
     // フラグ類
     static inline bool isFirstPlay_ = true;
@@ -138,17 +138,17 @@ private:
     bool isSelectBGMPlaying_ = false;
 
     // 色
-    std::array<Color, (int)TrackDifficulty::kMaxDifficulty> uiBackColors_;
+    std::array<SEED::Color, (int)TrackDifficulty::kMaxDifficulty> uiBackColors_;
 
     // その他細かいもの
-    BaseCamera* camera_ = nullptr; // カメラ
-    Quad jacket3D_;
+    SEED::BaseCamera* camera_ = nullptr; // カメラ
+    SEED::Topology::Quad jacket3D_;
     std::string preGroupName_;
     std::string preSongName_;
-    Transform2D songUICenterTransform_;
-    Transform2D difficultyUICenterTransform_;
+    SEED::Transform2D songUICenterTransform_;
+    SEED::Transform2D difficultyUICenterTransform_;
     int32_t cameraControlIdx_;
     int32_t preCameraControlIdx_;
-    Transform preCameraTransform_;
+    SEED::Transform preCameraTransform_;
     std::array<float, 4> cameraInterpolationTimes_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 };

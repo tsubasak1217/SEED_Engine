@@ -9,8 +9,7 @@
 #include <Game/Objects/SongSelect/SongInfo.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 #include <SEED/Lib/Structs/Range2D.h>
-#include <SEED/Lib/Functions/MyFunc.h>
-#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/Math.h>
 #include <Game/Objects/Notes/Note_Base.h>
 
 /// <summary>
@@ -138,11 +137,11 @@ private:
     SongGenre songGenre_; // 曲のジャンル
     float offsetTime_ = 0.0f; // 曲のオフセット時間
     float audioVolume_ = 1.0f; // 音声の音量
-    Range1D previewRange_{ 0.0f, 1.0f }; // 音源プレビュー範囲
+    SEED::Range1D previewRange_{ 0.0f, 1.0f }; // 音源プレビュー範囲
 
     // 表示する情報
-    unordered_map<std::string, ImTextureID> textureIDs_;
-    unordered_map<LaneBit, std::string> laneTextureNameMap_;
+    std::unordered_map<std::string, ImTextureID> textureIDs_;
+    std::unordered_map<LaneBit, std::string> laneTextureNameMap_;
     std::list<TempoData> tempoDataList_;
 
     // ポインタ

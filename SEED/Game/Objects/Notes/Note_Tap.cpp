@@ -3,7 +3,7 @@
 Note_Tap::Note_Tap() : Note_Base(){
     noteType_ = NoteType::Tap;// ノーツの種類をタップに設定
     noteQuad_.get()->color = { 1.0f, 1.0f, 1.0f, 1.0f };// 色を白に
-    noteQuad_.get()->lightingType = LIGHTINGTYPE_NONE;// ライティングを無効に
+    noteQuad_.get()->lightingType = SEED::LIGHTINGTYPE_NONE;// ライティングを無効に
 }
 
 Note_Tap::~Note_Tap(){
@@ -13,7 +13,7 @@ void Note_Tap::Update(){
 }
 
 void Note_Tap::Draw(float currentTime, float appearLength){
-    static Quad noteRect;
+    static SEED::Topology::Quad noteRect;
     float timeRatio = (time_ - currentTime) / appearLength;
 
     // 描画用の矩形を計算
@@ -87,9 +87,9 @@ void Note_Tap::FromJson(const nlohmann::json& json){
     Note_Base::FromJson(json);
 
     if(isExtraNote_){
-        noteQuad_->GH = TextureManager::LoadTexture("Notes/tapNoteEx.png");
+        noteQuad_->GH = SEED::TextureManager::LoadTexture("Notes/tapNoteEx.png");
     } else{
-        noteQuad_->GH = TextureManager::LoadTexture("Notes/tapNote.png");
+        noteQuad_->GH = SEED::TextureManager::LoadTexture("Notes/tapNote.png");
     }
 }
 

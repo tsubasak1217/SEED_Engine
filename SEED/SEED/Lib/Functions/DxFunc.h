@@ -25,92 +25,99 @@
 #pragma comment(lib,"dxcompiler.lib")
 
 // local
-#include <SEED/Lib/Functions/MyFunc.h>
+#include <SEED/Lib/Functions/StringFunc.h>
 
-class DxManager;
+namespace SEED{
 
-enum DX_RESOURCE_STATE : int{
-    STATE_SHADER_RESOURCE,
-    STATE_RENDER_TARGET,
-    STATE_UNORDERED_ACCESS
-};
+    class DxManager;
 
-// ログ関数
-void Log(const std::string& message);
-void Log(const std::wstring& message);
+    namespace Methods{
+        namespace DxFunc{
+            enum DX_RESOURCE_STATE : int{
+                STATE_SHADER_RESOURCE,
+                STATE_RENDER_TARGET,
+                STATE_UNORDERED_ACCESS
+            };
 
-//
-uint32_t Align(uint32_t size, uint32_t alignment);
+            // ログ関数
+            void Log(const std::string& message);
+            void Log(const std::wstring& message);
 
-// HLSLをコンパイルする関数
-ComPtr<IDxcBlob> CompileShader(
-    // CompilerするShaderファイルへのパス
-    const std::wstring& filePath,
-    // CompilerProfile
-    const wchar_t* profile,
-    const wchar_t* entryPoint,
-    //初期化で生成したものを3つ
-    IDxcUtils* dxcUtils,
-    IDxcCompiler3* dxcCompiler,
-    IDxcIncludeHandler* includeHandler
-);
+            //
+            uint32_t Align(uint32_t size, uint32_t alignment);
 
-// DescriptorHeap作成関数
-ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(
-    ID3D12Device* device,
-    D3D12_DESCRIPTOR_HEAP_TYPE heapType, 
-    UINT numDescriptors, 
-    bool shaderVisible
-);
+            // HLSLをコンパイルする関数
+            ComPtr<IDxcBlob> CompileShader(
+                // CompilerするShaderファイルへのパス
+                const std::wstring& filePath,
+                // CompilerProfile
+                const wchar_t* profile,
+                const wchar_t* entryPoint,
+                //初期化で生成したものを3つ
+                IDxcUtils* dxcUtils,
+                IDxcCompiler3* dxcCompiler,
+                IDxcIncludeHandler* includeHandler
+            );
 
-void CreateDescriptorHeap(
-    ID3D12Device* device,
-    ComPtr<ID3D12DescriptorHeap>& heap,
-    D3D12_DESCRIPTOR_HEAP_TYPE heapType, 
-    UINT numDescriptors,
-    bool shaderVisible
-);
+            // DescriptorHeap作成関数
+            ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(
+                ID3D12Device* device,
+                D3D12_DESCRIPTOR_HEAP_TYPE heapType,
+                UINT numDescriptors,
+                bool shaderVisible
+            );
 
-// テクスチャを読み込む関数
-DirectX::ScratchImage LoadTextureImage(const std::string& filePath);
-DirectX::ScratchImage LoadEmbeddedTextureImage(const aiTexture* embeddedTexture);
-ComPtr<ID3D12Resource> InitializeTextureResource(ID3D12Device* device, uint32_t width, uint32_t height, DXGI_FORMAT format, DX_RESOURCE_STATE state);
+            void CreateDescriptorHeap(
+                ID3D12Device* device,
+                ComPtr<ID3D12DescriptorHeap>& heap,
+                D3D12_DESCRIPTOR_HEAP_TYPE heapType,
+                UINT numDescriptors,
+                bool shaderVisible
+            );
 
-// Resource作成関数
-ComPtr<ID3D12Resource> CreateBufferResource(
-    ID3D12Device* device, size_t sizeInBytes, 
-    D3D12_HEAP_TYPE heapLocation = D3D12_HEAP_TYPE_UPLOAD,
-    D3D12_RESOURCE_FLAGS resourceFlag = D3D12_RESOURCE_FLAG_NONE,
-    D3D12_RESOURCE_STATES initialState = D3D12_RESOURCE_STATE_GENERIC_READ
-);
+            // テクスチャを読み込む関数
+            DirectX::ScratchImage LoadTextureImage(const std::string& filePath);
+            DirectX::ScratchImage LoadEmbeddedTextureImage(const aiTexture* embeddedTexture);
+            ComPtr<ID3D12Resource> InitializeTextureResource(ID3D12Device* device, uint32_t width, uint32_t height, DXGI_FORMAT format, DX_RESOURCE_STATE state);
 
-ComPtr<ID3D12Resource> CreateTextureResource(ID3D12Device* device,const DirectX::TexMetadata& metadata);
-ComPtr<ID3D12Resource> CreateRenderTargetTextureResource(ID3D12Device* device, int32_t width, int32_t height);
-ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(ID3D12Device* device, int32_t width, int32_t height);
+            // Resource作成関数
+            ComPtr<ID3D12Resource> CreateBufferResource(
+                ID3D12Device* device, size_t sizeInBytes,
+                D3D12_HEAP_TYPE heapLocation = D3D12_HEAP_TYPE_UPLOAD,
+                D3D12_RESOURCE_FLAGS resourceFlag = D3D12_RESOURCE_FLAG_NONE,
+                D3D12_RESOURCE_STATES initialState = D3D12_RESOURCE_STATE_GENERIC_READ
+            );
 
-// TextureResourceにデータを転送する関数
-[[nodiscard]]
-ComPtr<ID3D12Resource> UploadTextureData(
-    ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, ID3D12Device* device,
-    ID3D12GraphicsCommandList* commandList);
+            ComPtr<ID3D12Resource> CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata);
+            ComPtr<ID3D12Resource> CreateRenderTargetTextureResource(ID3D12Device* device, int32_t width, int32_t height);
+            ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(ID3D12Device* device, int32_t width, int32_t height);
 
-// ディスクリプタのハンドルを取得する関数
-D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(
-    ID3D12DescriptorHeap* descriptorHeap,
-    uint32_t descriptorSize,
-    uint32_t index);
+            // TextureResourceにデータを転送する関数
+            [[nodiscard]]
+            ComPtr<ID3D12Resource> UploadTextureData(
+                ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, ID3D12Device* device,
+                ID3D12GraphicsCommandList* commandList);
 
-D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(
-    ID3D12DescriptorHeap* descriptorHeap,
-    uint32_t descriptorSize,
-    uint32_t index);
+            // ディスクリプタのハンドルを取得する関数
+            D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(
+                ID3D12DescriptorHeap* descriptorHeap,
+                uint32_t descriptorSize,
+                uint32_t index);
 
-// Matrix4x4 を DirectX::XMMATRIX に変換する関数
-DirectX::XMMATRIX ConvertToXMMATRIX(const Matrix4x4& matrix);
+            D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(
+                ID3D12DescriptorHeap* descriptorHeap,
+                uint32_t descriptorSize,
+                uint32_t index);
 
-// resourceの状態を遷移させる関数
-void TransitionResourceState(
-    ID3D12GraphicsCommandList* commandList,
-    ID3D12Resource* resource,
-    D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter
-);
+            // Matrix4x4 を DirectX::XMMATRIX に変換する関数
+            DirectX::XMMATRIX ConvertToXMMATRIX(const Matrix4x4& matrix);
+
+            // resourceの状態を遷移させる関数
+            void TransitionResourceState(
+                ID3D12GraphicsCommandList* commandList,
+                ID3D12Resource* resource,
+                D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter
+            );
+        }
+    }
+} // namespace SEED

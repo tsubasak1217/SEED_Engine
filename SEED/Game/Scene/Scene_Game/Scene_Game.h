@@ -20,7 +20,7 @@
 /// ゲームシーンクラス
 /// </summary>
 class Scene_Game
-    : public Scene_Base{
+    : public SEED::Scene_Base{
 
 public:
     Scene_Game();

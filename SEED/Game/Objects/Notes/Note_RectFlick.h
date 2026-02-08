@@ -22,5 +22,5 @@ public:
 #endif // _DEBUG
 
 private:
-    bool CheckBit(DIRECTION8 dir) const;
+    bool CheckBit(SEED::GeneralEnum::DIRECTION8 dir) const;
 };

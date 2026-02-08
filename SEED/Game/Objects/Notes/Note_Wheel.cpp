@@ -2,12 +2,12 @@
 
 Note_Wheel::Note_Wheel() : Note_Base(){
     noteType_ = NoteType::Wheel;// ノーツの種類をタップに設定
-    noteQuad_.get()->lightingType = LIGHTINGTYPE_NONE;// ライティングを無効に
+    noteQuad_.get()->lightingType = SEED::LIGHTINGTYPE_NONE;// ライティングを無効に
 
     // GHを取得
-    wheelDirectionGH_ = TextureManager::LoadTexture("Notes/wheel_Direction.png");
-    wheelAuraGH_ = TextureManager::LoadTexture("Notes/wheel_aura.png");
-    // UpDownColorを設定(Up:マゼンタ,Down:シアン)
+    wheelDirectionGH_ = SEED::TextureManager::LoadTexture("Notes/wheel_Direction.png");
+    wheelAuraGH_ = SEED::TextureManager::LoadTexture("Notes/wheel_aura.png");
+    // SEED::GeneralEnum::UpDownColorを設定(Up:マゼンタ,Down:シアン)
     upDownColor_[0] = { 1.0f, 0.0f, 1.0f, 1.0f }; // Magenta
     upDownColor_[1] = { 0.0f, 1.0f, 1.0f, 1.0f }; // Cyan
 }
@@ -19,17 +19,17 @@ void Note_Wheel::Update(){
 }
 
 void Note_Wheel::Draw(float currentTime, float appearLength){
-    static Quad noteFloorRect;
-    static Quad noteDirectionRect;
-    static Quad noteAuraRect;
+    static SEED::Topology::Quad noteFloorRect;
+    static SEED::Topology::Quad noteDirectionRect;
+    static SEED::Topology::Quad noteAuraRect;
 
     float timeRatio = 1.0f - ((time_ - currentTime) / appearLength);
-    uv_translate_.y += 2.0f * ClockManager::DeltaTime();
+    uv_translate_.y += 2.0f * SEED::ClockManager::DeltaTime();
 
     // 描画設定
-    noteDirectionRect.blendMode = BlendMode::ADD; // ブレンドモードを加算に設定
-    noteFloorRect.blendMode = BlendMode::ADD; // ブレンドモードを加算に設定
-    noteAuraRect.blendMode = BlendMode::ADD; // ブレンドモードを加算に設定
+    noteDirectionRect.blendMode = SEED::BlendMode::ADD; // ブレンドモードを加算に設定
+    noteFloorRect.blendMode = SEED::BlendMode::ADD; // ブレンドモードを加算に設定
+    noteAuraRect.blendMode = SEED::BlendMode::ADD; // ブレンドモードを加算に設定
 
     // 描画用の矩形を計算
     noteFloorRect = PlayField::GetInstance()->GetWheelFloorQuad(timeRatio, layer_, 0.005f * (4.0f/appearLength));
@@ -42,7 +42,7 @@ void Note_Wheel::Draw(float currentTime, float appearLength){
     }
 
     // 色やテクスチャの設定
-    if(direction_ == UpDown::UP){
+    if(direction_ == SEED::GeneralEnum::UpDown::UP){
         noteFloorRect.color = upDownColor_[0]; // マゼンタ
         noteAuraRect.color = upDownColor_[0];
         noteAuraRect.color.value.w = 0.5f;
@@ -54,14 +54,14 @@ void Note_Wheel::Draw(float currentTime, float appearLength){
 
     // uvをスクロールする
     float directionScale = 2.0f;
-    if(direction_ == UpDown::DOWN){
+    if(direction_ == SEED::GeneralEnum::UpDown::DOWN){
         directionScale *= -1.0f; // 下方向ならUVを反転
     }
-    if(layer_ == UpDown::DOWN){
+    if(layer_ == SEED::GeneralEnum::UpDown::DOWN){
         directionScale *= -1.0f; // レイヤーが下ならUVを反転
     }
 
-    noteDirectionRect.uvTransform = AffineMatrix({ 1.0f,directionScale,1.0f }, { 0.0f,0.0f,0.0f }, uv_translate_);
+    noteDirectionRect.uvTransform = SEED::Methods::Matrix::AffineMatrix({ 1.0f,directionScale,1.0f }, { 0.0f,0.0f,0.0f }, uv_translate_);
 
     // テクスチャの設定
     noteAuraRect.GH = wheelAuraGH_;
@@ -92,7 +92,7 @@ Judgement::Evaluation Note_Wheel::Judge(float curTime){
     }
 
     // 自身のレーンと押したレーンに含まれているか
-    LaneBit lane = input->GetWheelScrollDirection() == UpDown::UP ?
+    LaneBit lane = input->GetWheelScrollDirection() == SEED::GeneralEnum::UpDown::UP ?
         LaneBit::WHEEL_UP : LaneBit::WHEEL_DOWN;
 
     // MISS以外はPERFECT扱いにする
@@ -129,7 +129,7 @@ nlohmann::json Note_Wheel::ToJson(){
 
 void Note_Wheel::FromJson(const nlohmann::json& json){
     Note_Base::FromJson(json);
-    direction_ = (UpDown)json["direction"];
+    direction_ = (SEED::GeneralEnum::UpDown)json["direction"];
 }
 
 #ifdef _DEBUG
@@ -138,14 +138,14 @@ void Note_Wheel::Edit(){
     Note_Base::Edit();
     ImGui::Separator();
     // ホールドノーツの情報の編集
-    if(ImFunc::ComboPair("フリック方向", direction_,
+    if(SEED::ImFunc::ComboPair("フリック方向", direction_,
         {
-            {"↑", UpDown::UP},
-            {"↓", UpDown::DOWN},
+            {"↑", SEED::GeneralEnum::UpDown::UP},
+            {"↓", SEED::GeneralEnum::UpDown::DOWN},
         }
         )){
         // フリック方向が変更された場合、レーンビットを更新
-        laneBit_ = direction_ == UpDown::UP ? LaneBit::WHEEL_UP : LaneBit::WHEEL_DOWN;
+        laneBit_ = direction_ == SEED::GeneralEnum::UpDown::UP ? LaneBit::WHEEL_UP : LaneBit::WHEEL_DOWN;
     }
 }
 #endif // _DEBUG

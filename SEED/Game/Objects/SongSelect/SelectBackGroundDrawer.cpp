@@ -15,9 +15,9 @@ SelectBackGroundDrawer::SelectBackGroundDrawer(){
 
 void SelectBackGroundDrawer::Initialize(){
     // 色オブジェクトから色を取得
-    auto* hierarchy = GameSystem::GetScene()->GetHierarchy();
+    auto* hierarchy = SEED::GameSystem::GetScene()->GetHierarchy();
     bgColorListObj_ = hierarchy->LoadObject("SelectScene/bgColorList.prefab");
-    auto& colorList = bgColorListObj_->GetComponent<ColorListComponent>()->GetColors();
+    auto& colorList = bgColorListObj_->GetComponent<SEED::ColorListComponent>()->GetColors();
     for(int i = 0; i < (int)TrackDifficulty::kMaxDifficulty; i++){
         if(colorList.size() <= i){ break; }
         clearColors_[i] = colorList[i];
@@ -26,13 +26,13 @@ void SelectBackGroundDrawer::Initialize(){
 
 void SelectBackGroundDrawer::Update(){
 
-    auto& colorList = bgColorListObj_->GetComponent<ColorListComponent>()->GetColors();
+    auto& colorList = bgColorListObj_->GetComponent<SEED::ColorListComponent>()->GetColors();
     for(int i = 0; i < (int)TrackDifficulty::kMaxDifficulty; i++){
         if(colorList.size() <= i){ break; }
         clearColors_[i] = colorList[i];
     }
 
-    if(Input::IsTriggerKey(DIK_G)){
+    if(SEED::Input::IsTriggerKey(DIK_G)){
         isGrooveStart_ = true;
     }
 }
@@ -54,28 +54,28 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
 
     struct GrooveObj{
         Vector2 position; // 位置
-        Quad2D quad; // 描画用のQuad
+        SEED::Topology::Quad2D quad; // 描画用のQuad
     };
 
     static float kGridSize = 120.0f;
     static std::vector<std::vector<GrooveObj>> scrollObjects;
     static Vector2 kItemListSize;
-    static std::list<Timer> grooveTimers;
+    static std::list<SEED::Timer> grooveTimers;
     static float kGrooveTime = 0.6f; // グルーヴの時間
     static float kVisivleTimeRate = 0.4f;
     static bool isInitialized = false;
 
     // スクロール
-    static Vector2 scrollDir = MyMath::Normalize({ -1.0f,1.0f });// スクロール方向(左下)
+    static Vector2 scrollDir = SEED::Methods::Math::Normalize({ -1.0f,1.0f });// スクロール方向(左下)
     static float scrollSpeed = 20.0f; // スクロール速度
-    static Quad2D backQuad = MakeQuad2D(kWindowSize); // 背景のQuad
+    static SEED::Topology::Quad2D backQuad = SEED::Methods::Shape::MakeQuad2D(kWindowSize); // 背景のQuad
 
     // 初期化がまだならグリッドの位置を計算
     if(!isInitialized){
 
         Vector2 center = kWindowCenter;
         backQuad.translate = center; // 背景Quadの位置を中央に設定
-        backQuad.drawLocation = DrawLocation::Back; // 背景Quadの描画位置を設定
+        backQuad.drawLocation = SEED::DrawLocation::Back; // 背景Quadの描画位置を設定
         backQuad.layer = 0;
         backQuad.isApplyViewMat = false;
         backQuad.color = clearColors_[(int)currentDifficulty];
@@ -91,12 +91,12 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
                 // グリッドの位置を計算
                 GrooveObj obj;
                 obj.position = center + Vector2((j - cols / 2) * kGridSize, (i - rows / 2) * kGridSize);
-                obj.quad = MakeQuad2D(kGridSize * 0.8f);
+                obj.quad = SEED::Methods::Shape::MakeQuad2D(kGridSize * 0.8f);
                 obj.quad.translate = obj.position;
-                obj.quad.color = MyFunc::RandomColor({ 0x314072FF, 0xe94c76FF, 0x6c3f82FF, 0xede690FF }); // ランダムな色
+                obj.quad.color = SEED::Methods::Rand::RandomColor({ 0x314072FF, 0xe94c76FF, 0x6c3f82FF, 0xede690FF }); // ランダムな色
                 obj.quad.layer = 1;
                 obj.quad.isApplyViewMat = false;
-                obj.quad.drawLocation = DrawLocation::Back;
+                obj.quad.drawLocation = SEED::DrawLocation::Back;
                 scrollObjects[i].push_back(obj);
             }
         }
@@ -111,26 +111,26 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
 
     // グルーブフラグがあればタイマーを追加
     if(isGrooveStart_){
-        grooveTimers.emplace_back(Timer(kGrooveTime));
+        grooveTimers.emplace_back(SEED::Timer(kGrooveTime));
     }
 
     // グルーブオブジェクトの位置を更新
     static Vector2 minPos = { -kGridSize * 0.5f, -kGridSize * 0.5f };
     static Vector2 maxPos = { kWindowSize.x + kGridSize * 0.5f, kWindowSize.y + kGridSize * 0.5f };
-    static Range2D exsistRange = { minPos, maxPos };
+    static SEED::Range2D exsistRange = { minPos, maxPos };
     for(int i = 0; i < scrollObjects.size(); i++){
         for(int j = 0; j < scrollObjects[i].size(); j++){
 
             auto& quad = scrollObjects[i][j].quad;
-            quad.translate += scrollDir * scrollSpeed * ClockManager::DeltaTime();
+            quad.translate += scrollDir * scrollSpeed * SEED::ClockManager::DeltaTime();
 
             // 範囲外に出たら位置を反転
-            if(!MyFunc::IsContain(exsistRange, quad.translate)){
+            if(!SEED::Methods::Math::IsContain(exsistRange, quad.translate)){
 
                 Vector2 outVec = quad.translate - kWindowCenter;
 
                 // 進行方向に出た場合にのみ位置を調整
-                if(MyMath::Dot(outVec, scrollDir) < 0.0f){ continue; }
+                if(SEED::Methods::Math::Dot(outVec, scrollDir) < 0.0f){ continue; }
 
                 // x座標の調整
                 if(quad.translate.x < minPos.x || quad.translate.x > maxPos.x){
@@ -152,7 +152,7 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
             for(auto& timer : grooveTimers){
 
                 float t = 1.0f - timer.GetProgress();
-                float ease = EaseOutBack(t);
+                float ease = SEED::Methods::Easing::OutBack(t);
                 float scale = 1.0f + 0.1f * ease;
 
                 // パラメータの更新
@@ -171,15 +171,15 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
     }
 
     // 終了したタイマーの削除
-    grooveTimers.remove_if([](const Timer& timer){
+    grooveTimers.remove_if([](const SEED::Timer& timer){
         return timer.IsFinished();
     });
 
 
     {// 色の更新
 
-        Color aimColor = clearColors_[(int)currentDifficulty].ToHSVA();
-        Color curColor = MyMath::RGB_to_HSV(backQuad.color.value);
+        SEED::Color aimColor = clearColors_[(int)currentDifficulty].ToHSVA();
+        SEED::Color curColor = SEED::Methods::Math::RGB_to_HSV(backQuad.color.value);
         static float lerpRate = 0.2f;
 
         // 色相補間（最短距離補間）
@@ -201,11 +201,11 @@ void SelectBackGroundDrawer::DrawScrollingBackground(){
         float newV = curColor.value.z + (aimColor.value.z - curColor.value.z) * lerpRate;
         float newA = curColor.value.w + (aimColor.value.w - curColor.value.w) * lerpRate;
 
-        Color nextColor(newHue, newS, newV, newA);
-        backQuad.color = MyMath::HSV_to_RGB(nextColor.value);
+        SEED::Color nextColor(newHue, newS, newV, newA);
+        backQuad.color = SEED::Methods::Math::HSV_to_RGB(nextColor.value);
     }
 
-   SEED::Instance::DrawQuad2D(backQuad); // 背景Quadを描画
+   SEED::Instance::DrawQuad2D(backQuad); // 背景SEED::Topology::Quadを描画
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -216,12 +216,12 @@ void SelectBackGroundDrawer::DrawGrooveObjects(){
     struct GrooveObj{
         Vector2 position; // 位置
         float time; // 時間
-        Quad2D quad; // 描画用のQuad
+        SEED::Topology::Quad2D quad; // 描画用のSEED::Topology::Quad
     };
 
     static float kGridSize = 60.0f;
     static std::vector<std::vector<GrooveObj>> grooveObjects;
-    static std::list<Timer> grooveTimers;
+    static std::list<SEED::Timer> grooveTimers;
     static float kGrooveTime = 0.6f; // グルーヴの時間
     static float kVisivleTimeRate = 0.4f;
     static bool isInitialized = false;
@@ -241,13 +241,13 @@ void SelectBackGroundDrawer::DrawGrooveObjects(){
                 // グリッドの位置を計算
                 GrooveObj obj;
                 obj.position = center + Vector2((j - cols / 2) * kGridSize, (i - rows / 2) * kGridSize);
-                obj.time = (MyMath::Length(center - obj.position) / (kWindowSize.x * 1.0f)) * kGrooveTime; // 時間を計算
-                obj.quad = MakeQuad2D(kGridSize);
+                obj.time = (SEED::Methods::Math::Length(center - obj.position) / (kWindowSize.x * 1.0f)) * kGrooveTime; // 時間を計算
+                obj.quad = SEED::Methods::Shape::MakeQuad2D(kGridSize);
                 obj.quad.translate = obj.position;
-                obj.quad.GH = TextureManager::LoadTexture("DefaultAssets/ellipse.png");
+                obj.quad.GH = SEED::TextureManager::LoadTexture("DefaultAssets/ellipse.png");
                 obj.quad.layer = 2;
-                obj.quad.drawLocation = DrawLocation::Back;
-                obj.quad.blendMode = BlendMode::ADD;
+                obj.quad.drawLocation = SEED::DrawLocation::Back;
+                obj.quad.blendMode = SEED::BlendMode::ADD;
                 grooveObjects[i].push_back(obj);
             }
         }
@@ -257,7 +257,7 @@ void SelectBackGroundDrawer::DrawGrooveObjects(){
 
     // グルーブフラグがあればタイマーを追加
     if(isGrooveStart_){
-        grooveTimers.emplace_back(Timer(kGrooveTime));
+        grooveTimers.emplace_back(SEED::Timer(kGrooveTime));
     }
 
     // グルーブオブジェクトの更新
@@ -275,9 +275,9 @@ void SelectBackGroundDrawer::DrawGrooveObjects(){
 
                 // パラメータの更新
                 float t = 1.0f - 1.0f * (timeDist / timeRange);
-                float ease = EaseOutQuad(t);
+                float ease = SEED::Methods::Easing::OutQuad(t);
                 grooveObjects[i][j].quad.scale = { ease,ease };
-                grooveObjects[i][j].quad.color = MyMath::HSV_to_RGB(grooveObjects[i][j].time / (kGrooveTime * 0.2f), 1.0f, 1.0f, 0.1f);
+                grooveObjects[i][j].quad.color = SEED::Methods::Math::HSV_to_RGB(grooveObjects[i][j].time / (kGrooveTime * 0.2f), 1.0f, 1.0f, 0.1f);
 
                 // 描画
                SEED::Instance::DrawQuad2D(grooveObjects[i][j].quad);
@@ -292,7 +292,7 @@ void SelectBackGroundDrawer::DrawGrooveObjects(){
     }
 
     // 終了したタイマーの削除
-    grooveTimers.remove_if([](const Timer& timer){
+    grooveTimers.remove_if([](const SEED::Timer& timer){
         return timer.IsFinished();
     });
 

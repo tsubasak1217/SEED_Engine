@@ -32,10 +32,13 @@
 #include <SEED/Lib/Structs/TextBox.h>
 
 // math
+#include <SEED/Lib/Functions/Math.h>
+#include <SEED/Lib/Functions/MatrixMath.h>
 #include <SEED/Lib/Functions/ShapeMath.h>
-#include <SEED/Lib/Functions/MatrixFunc.h>
-#include <SEED/Lib/Functions/MyMath.h>
-#include <SEED/Lib/Functions/MyFunc.h>
+#include <SEED/Lib/Functions/RandomFunc.h>
+#include <SEED/Lib/Functions/FileFunc.h>
+#include <SEED/Lib/Functions/StringFunc.h>
+#include <SEED/Lib/Functions/SRTFunc.h>
 #include <SEED/Lib/Functions/Easing.h>
 
 // dict
@@ -93,7 +96,7 @@ namespace SEED{
         /*==========================三角形の描画関数==========================*/
 
         // 3D三角形
-        static void DrawTriangle(const Triangle& triangle);
+        static void DrawTriangle(const Topology::Triangle& triangle);
         static void AddTriangle3DPrimitive(
             const Vector4& v1, const Vector4& v2, const Vector4& v3,
             const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Color& color,
@@ -102,12 +105,12 @@ namespace SEED{
         );
 
         // 2D三角形
-        static void DrawTriangle2D(const Triangle2D& triangle);
+        static void DrawTriangle2D(const Topology::Triangle2D& triangle);
 
         /*=========================矩形の描画関数========================*/
 
         // 3D矩形
-        static void DrawQuad(const Quad& quad);
+        static void DrawQuad(const Topology::Quad& quad);
         static void AddQuad3DPrimitive(
             const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector4& v4,
             const Vector2& texCoordV1, const Vector2& texCoordV2, const Vector2& texCoordV3, const Vector2& texCoordV4,
@@ -116,7 +119,7 @@ namespace SEED{
         );
 
         // 2D矩形
-        static void DrawQuad2D(const Quad2D& quad, const Color& masterColor = Color(1.0f));
+        static void DrawQuad2D(const Topology::Quad2D& quad, const Color& masterColor = Color(1.0f));
 
         // スプライト
         static void DrawSprite(const Sprite& sprite, const std::optional<Color>& masterColor = std::nullopt);
@@ -149,15 +152,15 @@ namespace SEED{
 
         /*==========================リングの描画関数==========================*/
 
-        static void DrawRing(const Ring& ring);
+        static void DrawRing(const Topology::Ring& ring);
 
         /*=========================デバッグ用の描画関数=======================*/
 
-        // AABB, OBBの描画関数
-        static void DrawAABB(const AABB& aabb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
-        static void DrawAABB2D(const AABB2D& aabb, const Color& color = { 1.0f,1.0f,1.0f,1.0f }, bool isIgnoreDepth = false);
-        static void DrawOBB(const OBB& obb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
-        static void DrawOBB2D(const OBB2D& obb, const Color& color = { 1.0f,1.0f,1.0f,1.0f }, bool isIgnoreDepth = false);
+        // Topology::AABB, OBBの描画関数
+        static void DrawAABB(const Topology::AABB& aabb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+        static void DrawAABB2D(const Topology::AABB2D& aabb, const Color& color = { 1.0f,1.0f,1.0f,1.0f }, bool isIgnoreDepth = false);
+        static void DrawOBB(const Topology::OBB& obb, const Color& color = { 1.0f,1.0f,1.0f,1.0f });
+        static void DrawOBB2D(const Topology::OBB2D& obb, const Color& color = { 1.0f,1.0f,1.0f,1.0f }, bool isIgnoreDepth = false);
 
         // 六角形の描画
         static void DrawHexagon(

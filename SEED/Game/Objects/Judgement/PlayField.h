@@ -47,17 +47,17 @@ public:
     void Draw();
 
 public:
-    void SetEvaluation(LaneBit laneBit,UpDown layer,const Color& color);
-    void SetLanePressed(int32_t lane, const Color& color);
+    void SetEvaluation(LaneBit laneBit,SEED::GeneralEnum::UpDown layer,const SEED::Color& color);
+    void SetLanePressed(int32_t lane, const SEED::Color& color);
     void SetLaneReleased(int32_t lane);
     void SetNoteData(NotesData* noteData){ noteData_ = noteData; }
     // 流れてくるノーツ描画に使う頂点情報を取得
-    Quad GetNoteQuad(float timeRatio, int32_t lane, UpDown layer, float ratioWidth = 0.0f);
-    Quad GetWheelFloorQuad(float timeRatio, UpDown layer, float ratioWidth = 0.0f);
-    Quad GetWheelDirectionQuad(float timeRatio, UpDown layer);
-    Quad2D GetRectFlickQuad(float timeRatio, DIRECTION8 dir, float ratioWidth = 0.0f);
+    SEED::Topology::Quad GetNoteQuad(float timeRatio, int32_t lane, SEED::GeneralEnum::UpDown layer, float ratioWidth = 0.0f);
+    SEED::Topology::Quad GetWheelFloorQuad(float timeRatio, SEED::GeneralEnum::UpDown layer, float ratioWidth = 0.0f);
+    SEED::Topology::Quad GetWheelDirectionQuad(float timeRatio, SEED::GeneralEnum::UpDown layer);
+    SEED::Topology::Quad2D GetRectFlickQuad(float timeRatio, SEED::GeneralEnum::DIRECTION8 dir, float ratioWidth = 0.0f);
     // エフェクトの発生
-    void EmitEffect(LaneBit laneBit, UpDown layer, int evaluation,Timing timing);
+    void EmitEffect(LaneBit laneBit, SEED::GeneralEnum::UpDown layer, int evaluation,Timing timing);
     // 座標や大きさを返す
     Vector3 GetCursorWorldPos(float cursorX);
     const Vector3& GetPlayFieldPointWorld(int index) const{ return playFieldPointsWorld_[index]; }
@@ -66,8 +66,8 @@ public:
 private:
     void CalcEffectEmitPoints();
     int GetLaneBitIndex(uint32_t laneBit);
-    void LaneEffect(int evaluation, LaneBit laneBit,UpDown layer, Timing timing);
-    void WheelEffect(int evaluation, LaneBit laneBit, UpDown layer, Timing timing);
+    void LaneEffect(int evaluation, LaneBit laneBit,SEED::GeneralEnum::UpDown layer, Timing timing);
+    void WheelEffect(int evaluation, LaneBit laneBit, SEED::GeneralEnum::UpDown layer, Timing timing);
     void RectFlickEffect(int evaluation, LaneBit laneBit);
 
 public:
@@ -89,23 +89,23 @@ private:
     std::array<Vector3, kKeyCount_ + 1> keyboardBorderPoints_;// 鍵盤の境界線の座標(ワールド座標系)
 
     // 描画用の矩形
-    std::array<std::array<Triangle, kKeyCount_>,2> lane_;// レーン描画用
+    std::array<std::array<SEED::Topology::Triangle, kKeyCount_>,2> lane_;// レーン描画用
     std::array<std::array<AnswerLane, kKeyCount_>,2> laneAnswer_;// レーンに判定が入ったときに表示するやつ
-    std::array<std::array<Triangle, kKeyCount_ + 1>,2> laneBorderLine_;// レーンの境界線
-    std::array<std::array<Triangle, kKeyCount_ + 1>, 2> laneBorderLineAura_;// レーンの境界線のオーラ
+    std::array<std::array<SEED::Topology::Triangle, kKeyCount_ + 1>,2> laneBorderLine_;// レーンの境界線
+    std::array<std::array<SEED::Topology::Triangle, kKeyCount_ + 1>, 2> laneBorderLineAura_;// レーンの境界線のオーラ
     std::unordered_map<LaneBit, Vector3>effectEmitPoints_;// エフェクトの発生位置(ワールド座標系)
 
     // エフェクトオブジェクト
-    std::array<GameObject*, kKeyCount_> laneEffectObjects_;
-    std::array<GameObject*,2> wheelEffectObjects_;
-    std::array<GameObject2D*,4> rectFlickEffectObjects_;
-    GameObject* fastLateObj_ = nullptr;
+    std::array<SEED::GameObject*, kKeyCount_> laneEffectObjects_;
+    std::array<SEED::GameObject*,2> wheelEffectObjects_;
+    std::array<SEED::GameObject2D*,4> rectFlickEffectObjects_;
+    SEED::GameObject* fastLateObj_ = nullptr;
     std::string fastLateObjNames_[2][2];
 
     // UIオブジェクト
-    GameObject2D* buttonUIObject_;// ボタンUIオブジェクト
+    SEED::GameObject2D* buttonUIObject_;// ボタンUIオブジェクト
 
     // その他のオブジェクト
-    GameObject2D* backLightObject_;// 背景光オブジェクト
-    GameObject* bgColorObj_;// 背景色オブジェクト
+    SEED::GameObject2D* backLightObject_;// 背景光オブジェクト
+    SEED::GameObject* bgColorObj_;// 背景色オブジェクト
 };

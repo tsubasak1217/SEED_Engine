@@ -41,7 +41,7 @@ void Scene_Title::Initialize(){
     sceneOutTimer_.Initialize(1.0f,0.0f,true);
 
     // videoPlayerの初期化
-    videoPlayer_ = std::make_unique<VideoPlayer>("demoMovie.mp4", false);
+    videoPlayer_ = std::make_unique<SEED::VideoPlayer>("demoMovie.mp4", false);
     videoPlayer_->Play(0.0f, 1.0f, true);
 
     // マウスカーソルの読み込み
@@ -53,10 +53,10 @@ void Scene_Title::Initialize(){
     // カメラ関連
     cameraParents_ = hierarchy_->LoadObject("Title/cameraParents.prefab");
     toSelectCamerawork_ = hierarchy_->LoadObject("Title/toSelectCamerawork.prefab");
-    toSelectCamerawork_->GetComponent<Routine3DComponent>()->Pause();
+    toSelectCamerawork_->GetComponent<SEED::Routine3DComponent>()->Pause();
 
     // 何も見えない場所にカメラを移動しておく
-    Transform firstCameraTransform;
+    SEED::Transform firstCameraTransform;
     firstCameraTransform.translate = Vector3(0.0f, -10000.0f, 0.0f);
    SEED::Instance::GetMainCamera()->SetTransform(firstCameraTransform);
 
@@ -66,7 +66,7 @@ void Scene_Title::Initialize(){
 
 
     // displayに動画テクスチャを設定
-    display_->GetComponent<ModelRenderComponent>()->GetModel()->materials_[0].GH = videoPlayer_->GetVideoGH();
+    display_->GetComponent<SEED::ModelRenderComponent>()->GetModel()->materials_[0].GH = videoPlayer_->GetVideoGH();
 
     // 背景オブジェクトの読み込み
     rotateRects_ = hierarchy_->LoadObject2D("Title/rotateRects.prefab");
@@ -81,16 +81,16 @@ void Scene_Title::Initialize(){
     hierarchy_->LoadObject2D("Title/titleStart.prefab");
 
     // BGM読み込み
-    AudioManager::LoadAudio("BGM/NETHMi_title.wav");
+    SEED::AudioManager::LoadAudio("BGM/NETHMi_title.wav");
 
     // ポストプロセスの初期化
-    PostEffectSystem::DeleteAll();
-    PostEffectSystem::Load("TitleScene.json");
+    SEED::PostEffectSystem::DeleteAll();
+    SEED::PostEffectSystem::Load("TitleScene.json");
 
     // 入力の初期化
     tutorialSelectInput_.Trigger = [&]{
         if(tutorialSelectItems_){
-            if(Input::IsTriggerMouse(MOUSE_BUTTON::LEFT)){
+            if(SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT)){
                 if(isPlayTutorial_){
                     if(tutorialSelectItems_->GetChild(2)->GetIsCollided(mouseCursor_)){
                         return true;
@@ -103,7 +103,7 @@ void Scene_Title::Initialize(){
             }
         }
 
-        return Input::IsTriggerKey({ DIK_A,DIK_D,DIK_LEFT,DIK_RIGHT });
+        return SEED::Input::IsTriggerKey({ DIK_A,DIK_D,DIK_LEFT,DIK_RIGHT });
     };
 
     decideButtonInput_.Trigger = [&]{
@@ -111,7 +111,7 @@ void Scene_Title::Initialize(){
         if(isTrigger){
             return false;
         }
-        return Input::IsTriggerKey({DIK_SPACE,DIK_RETURN}) or Input::IsTriggerMouse(MOUSE_BUTTON::LEFT);
+        return SEED::Input::IsTriggerKey({ DIK_SPACE,DIK_RETURN }) or SEED::Input::IsTriggerMouse(SEED::MOUSE_BUTTON::LEFT);
     };
 }
 
@@ -140,7 +140,7 @@ void Scene_Title::Update(){
         // 大きいインデックスほど速く回転する
         for(auto& child : children){
             float rotateSpeed = baseRotateSpeed + (addRotateSpeed * childIndex);
-            child->aditionalTransform_.rotate += rotateSpeed * ClockManager::DeltaTime();
+            child->aditionalTransform_.rotate += rotateSpeed * SEED::ClockManager::DeltaTime();
             childIndex++;
         }
     }
@@ -151,8 +151,8 @@ void Scene_Title::Update(){
         // 開始タイマーが終了した直後の処理
         if(titleStartTimer_.IsFinishedNow()){
             pressSpace_->SetIsActive(true);
-            bgmHandle_ = AudioManager::PlayAudio(AudioDictionary::Get("TitleBGM"), true, 0.5f);
-            cameraParents_->GetChild(0)->GetComponent<Routine3DComponent>()->Reset();
+            bgmHandle_ = SEED::AudioManager::PlayAudio(AudioDictionary::Get("TitleBGM"), true, 0.5f);
+            cameraParents_->GetChild(0)->GetComponent<SEED::Routine3DComponent>()->Reset();
         }
 
         // スタートボタンが押されていない場合の処理
@@ -172,7 +172,7 @@ void Scene_Title::Update(){
 
                     // ルーチンを最初から再生し直す(カメラが切り替わった瞬間)
                     if(prevCameraParentIdx_ != cameraIdx){
-                        (*it)->GetComponent<Routine3DComponent>()->Reset();
+                        (*it)->GetComponent<SEED::Routine3DComponent>()->Reset();
                     }
 
                     // 前のカメラ番号を保存
@@ -185,13 +185,13 @@ void Scene_Title::Update(){
                 isStartButtonPressed_ = true;
                 if(toSelectCamerawork_){
                     // カメラワークルーチンを初期位置に
-                    toSelectCamerawork_->GetComponent<Routine3DComponent>()->Play();
+                    toSelectCamerawork_->GetComponent<SEED::Routine3DComponent>()->Play();
                     // フェードオブジェクトを読み込む
-                    hierarchy_->LoadObject2D("Title/fade.prefab")->masterColor_ = Color(0.0f);
+                    hierarchy_->LoadObject2D("Title/fade.prefab")->masterColor_ = SEED::Color(0.0f);
                 }
 
                 // 音声再生
-                AudioManager::PlayAudio(AudioDictionary::Get("DecideTitle"), false, 0.5f);
+                SEED::AudioManager::PlayAudio(AudioDictionary::Get("DecideTitle"), false, 0.5f);
             }
 
         } else{
@@ -200,20 +200,20 @@ void Scene_Title::Update(){
                SEED::Instance::GetMainCamera()->SetTransform(toSelectCamerawork_->GetWorldTransform());
 
                 // カメラワークが終了したらチュートリアル選択UIを表示開始
-                auto* routine = toSelectCamerawork_->GetComponent<Routine3DComponent>();
+                auto* routine = toSelectCamerawork_->GetComponent<SEED::Routine3DComponent>();
                 if(routine->IsEndRoutine()){
                     if(!tutorialSelectItems_){
                         // チュートリアル選択UIを読み込む
                         tutorialSelectItems_ = hierarchy_->LoadObject2D("Title/tutorialSelectItems.prefab");
                         // "はい"項目をアクティブ化
                         auto* item_yes = tutorialSelectItems_->GetChild(1);
-                        item_yes->GetComponent<Routine2DComponent>()->Play();// アニメーションを再生
+                        item_yes->GetComponent<SEED::Routine2DComponent>()->Play();// アニメーションを再生
                         // "いいえ"項目を非アクティブ化
                         auto* item_no = tutorialSelectItems_->GetChild(2);
-                        item_no->masterColor_ = Color(0.5f, 0.5f, 0.5f, 1.0f);// "いいえ"を灰色に
-                        item_no->GetComponent<Routine2DComponent>()->Play();// アニメーションを再生
-                        item_no->GetComponent<Routine2DComponent>()->RevercePlay();// アニメーションを逆再生に
-                        item_no->GetComponent<ColorControlComponent>()->SetIsActive(false);// 色変化を無効化
+                        item_no->masterColor_ = SEED::Color(0.5f, 0.5f, 0.5f, 1.0f);// "いいえ"を灰色に
+                        item_no->GetComponent<SEED::Routine2DComponent>()->Play();// アニメーションを再生
+                        item_no->GetComponent<SEED::Routine2DComponent>()->RevercePlay();// アニメーションを逆再生に
+                        item_no->GetComponent<SEED::ColorControlComponent>()->SetIsActive(false);// 色変化を無効化
                         // 最初はscale0にしておく
                         item_yes->aditionalTransform_.scale = Vector2(0.0f);
                         item_no->aditionalTransform_.scale = Vector2(0.0f);
@@ -236,7 +236,7 @@ void Scene_Title::Update(){
                 // 音量を設定
                 if(routine->GetTimer().GetProgress() > 0.7f){
                     float volumeRate = 1.0f - (routine->GetTimer().GetProgress() - 0.7f) / 0.3f;
-                    AudioManager::SetAudioVolume(bgmHandle_, 0.5f * volumeRate);
+                    SEED::AudioManager::SetAudioVolume(bgmHandle_, 0.5f * volumeRate);
                 }
             }
 
@@ -252,19 +252,19 @@ void Scene_Title::Update(){
             float waitTime = 1.0f;
             float appearTime = 1.0f;
             float t = std::clamp((totalTime_ - waitTime) / appearTime, 0.0f, 1.0f);
-            float ease = EaseInOutExpo(t);
+            float ease = SEED::Methods::Easing::InOutExpo(t);
             pressSpace_->aditionalTransform_.scale = Vector2(ease);
         }
 
         // マウスカーソルの更新
         if(mouseCursor_){
-            Vector2 mousePos = Input::GetMousePosition();
+            Vector2 mousePos = SEED::Input::GetMousePosition();
             mouseCursor_->localTransform_.translate = mousePos;
             mouseCursor_->UpdateMatrix();
         }
 
         // 総経過時間の更新
-        totalTime_ += ClockManager::DeltaTime();
+        totalTime_ += SEED::ClockManager::DeltaTime();
     }
 }
 
@@ -303,7 +303,7 @@ void Scene_Title::EndFrame(){
     if(toSelectCamerawork_){
         if(sceneChangeOrder_){
             Scene_Game::SetIsPlayTutorial(isPlayTutorial_);
-            AudioManager::EndAudio(bgmHandle_);
+            SEED::AudioManager::EndAudio(bgmHandle_);
                 ChangeScene("Game");
             return;
         }
@@ -336,7 +336,7 @@ void Scene_Title::SelectTutorial(){
     float startTime = 0.3f; // 選択開始時の時間
     float waitTime = 0.5f; // 選択開始までの待機時間
     float t = std::clamp((tutorialSelectItems_->GetAliveTime() - waitTime) / startTime, 0.0f, 1.0f);
-    float ease = EaseOutExpo(t);
+    float ease = SEED::Methods::Easing::OutExpo(t);
     item_yes->aditionalTransform_.scale = Vector2(ease);
     item_no->aditionalTransform_.scale = Vector2(ease);
 
@@ -353,34 +353,34 @@ void Scene_Title::SelectTutorial(){
 
         // "はい"項目の処理
         if(isPlayTutorial_){
-            item_yes->GetComponent<ColorControlComponent>()->SetIsActive(true);// 色変化を有効化
-            item_no->GetComponent<ColorControlComponent>()->SetIsActive(false);// 色変化を無効化
-            item_no->masterColor_ = Color(0.5f, 0.5f, 0.5f, 1.0f);// "いいえ"を灰色に
+            item_yes->GetComponent<SEED::ColorControlComponent>()->SetIsActive(true);// 色変化を有効化
+            item_no->GetComponent<SEED::ColorControlComponent>()->SetIsActive(false);// 色変化を無効化
+            item_no->masterColor_ = SEED::Color(0.5f, 0.5f, 0.5f, 1.0f);// "いいえ"を灰色に
 
         } else{// "いいえ"項目の処理
-            item_yes->GetComponent<ColorControlComponent>()->SetIsActive(false);// 色変化を無効化
-            item_no->GetComponent<ColorControlComponent>()->SetIsActive(true);// 色変化を有効化
-            item_yes->masterColor_ = Color(0.5f, 0.5f, 0.5f, 1.0f);// "はい"を灰色に
+            item_yes->GetComponent<SEED::ColorControlComponent>()->SetIsActive(false);// 色変化を無効化
+            item_no->GetComponent<SEED::ColorControlComponent>()->SetIsActive(true);// 色変化を有効化
+            item_yes->masterColor_ = SEED::Color(0.5f, 0.5f, 0.5f, 1.0f);// "はい"を灰色に
         }
 
         // アニメーションを逆再生
-        item_yes->GetComponent<Routine2DComponent>()->RevercePlay();
-        item_no->GetComponent<Routine2DComponent>()->RevercePlay();
+        item_yes->GetComponent<SEED::Routine2DComponent>()->RevercePlay();
+        item_no->GetComponent<SEED::Routine2DComponent>()->RevercePlay();
 
         // 音声再生
-        AudioManager::PlayAudio(AudioDictionary::Get("TutorialSelect"), false, 0.5f);
+        SEED::AudioManager::PlayAudio(AudioDictionary::Get("TutorialSelect"), false, 0.5f);
     
     }
     // 決定処理
     else if(decideButtonInput_.Trigger()){
         // シーン遷移フラグを立てる
         sceneOutTimer_.Restart();
-        auto* transition = SceneTransitionDrawer::AddTransition<HexagonTransition>();
+        auto* transition = SEED::SceneTransitionDrawer::AddTransition<SEED::HexagonTransition>();
         transition->SetHexagonInfo(32.0f);
-        transition->StartTransition(sceneOutTimer_.duration - ClockManager::DeltaTime() , 1.0f);
+        transition->StartTransition(sceneOutTimer_.duration - SEED::ClockManager::DeltaTime() , 1.0f);
 
         // 音声再生
-        AudioManager::PlayAudio(AudioDictionary::Get("DecideTutorial"), false, 0.5f);
+        SEED::AudioManager::PlayAudio(AudioDictionary::Get("DecideTutorial"), false, 0.5f);
     }
 
 }

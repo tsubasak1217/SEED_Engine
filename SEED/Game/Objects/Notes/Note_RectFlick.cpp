@@ -12,20 +12,20 @@ void Note_RectFlick::Update(){
 }
 
 void Note_RectFlick::Draw(float currentTime, float appearLength){
-    Quad2D q;
+    SEED::Topology::Quad2D q;
     float timeRatio = 1.0f - ((time_ - currentTime) / (appearLength * 0.2f));
     float alpha = 0.0f;
 
-    std::vector<DIRECTION8> dirs;
-    if(laneBit_ & LaneBit::RECTFLICK_LT){ dirs.push_back(DIRECTION8::LEFTTOP); }
-    if(laneBit_ & LaneBit::RECTFLICK_LB){ dirs.push_back(DIRECTION8::LEFTBOTTOM); }
-    if(laneBit_ & LaneBit::RECTFLICK_RT){ dirs.push_back(DIRECTION8::RIGHTTOP); }
-    if(laneBit_ & LaneBit::RECTFLICK_RB){ dirs.push_back(DIRECTION8::RIGHTBOTTOM); }
+    std::vector<SEED::GeneralEnum::DIRECTION8> dirs;
+    if(laneBit_ & LaneBit::RECTFLICK_LT){ dirs.push_back(SEED::GeneralEnum::DIRECTION8::LEFTTOP); }
+    if(laneBit_ & LaneBit::RECTFLICK_LB){ dirs.push_back(SEED::GeneralEnum::DIRECTION8::LEFTBOTTOM); }
+    if(laneBit_ & LaneBit::RECTFLICK_RT){ dirs.push_back(SEED::GeneralEnum::DIRECTION8::RIGHTTOP); }
+    if(laneBit_ & LaneBit::RECTFLICK_RB){ dirs.push_back(SEED::GeneralEnum::DIRECTION8::RIGHTBOTTOM); }
 
     if(timeRatio <= 1.0f){
-        alpha = EaseOutSine(std::clamp(timeRatio, 0.0f, 1.0f));
+        alpha = SEED::Methods::Easing::OutSine(std::clamp(timeRatio, 0.0f, 1.0f));
     } else{
-        alpha = 1.0f - EaseOutSine(std::clamp((timeRatio - 1.0f) / 0.2f, 0.0f, 1.0f));
+        alpha = 1.0f - SEED::Methods::Easing::OutSine(std::clamp((timeRatio - 1.0f) / 0.2f, 0.0f, 1.0f));
     }
 
     // フリック矩形の描画
@@ -37,10 +37,10 @@ void Note_RectFlick::Draw(float currentTime, float appearLength){
        SEED::Instance::DrawQuad2D(q);
 
         // 予告矩形の描画
-        float ease = EaseOutQuart(std::clamp(timeRatio, 0.0f, 1.0f));
+        float ease = SEED::Methods::Easing::OutQuart(std::clamp(timeRatio, 0.0f, 1.0f));
         q = PlayField::GetInstance()->GetRectFlickQuad(1.0f + 0.05f * ease, dirs[i], 0.1f * ease);
         q.color = { 1.0f,0.0f,0.0f,alpha };
-        q.blendMode = BlendMode::ADD;
+        q.blendMode = SEED::BlendMode::ADD;
        SEED::Instance::DrawQuad2D(q);
     }
 }
@@ -53,7 +53,7 @@ Judgement::Evaluation Note_RectFlick::Judge(float curTime){
 
     // 入力情報を取得
     static auto input = PlayerInput::GetInstance();
-    DIRECTION8 flickDirection = input->GetRectFlickDirection();
+    SEED::GeneralEnum::DIRECTION8 flickDirection = input->GetRectFlickDirection();
 
     // フリックの方向が自身のレーンと一致しているか
     if(!CheckBit(flickDirection)){
@@ -84,19 +84,19 @@ void Note_RectFlick::FromJson(const nlohmann::json& json){
 
 
 // 範囲内のフリックか、ビットで確認する関数
-bool Note_RectFlick::CheckBit(DIRECTION8 dir) const{
+bool Note_RectFlick::CheckBit(SEED::GeneralEnum::DIRECTION8 dir) const{
     LaneBit bit;
     switch(dir){
-    case DIRECTION8::LEFTTOP:
+    case SEED::GeneralEnum::DIRECTION8::LEFTTOP:
         bit = LaneBit::RECTFLICK_LT;
         break;
-    case DIRECTION8::LEFTBOTTOM:
+    case SEED::GeneralEnum::DIRECTION8::LEFTBOTTOM:
         bit = LaneBit::RECTFLICK_LB;
         break;
-    case DIRECTION8::RIGHTTOP:
+    case SEED::GeneralEnum::DIRECTION8::RIGHTTOP:
         bit = LaneBit::RECTFLICK_RT;
         break;
-    case DIRECTION8::RIGHTBOTTOM:
+    case SEED::GeneralEnum::DIRECTION8::RIGHTBOTTOM:
         bit = LaneBit::RECTFLICK_RB;
         break;
     default:
@@ -112,7 +112,7 @@ void Note_RectFlick::Edit(){
     Note_Base::Edit();
     ImGui::Separator();
     // ホールドノーツの情報の編集
-    ImFunc::ComboPair("フリック方向", laneBit_,
+    SEED::ImFunc::ComboPair("フリック方向", laneBit_,
         {
             {"", LaneBit::RECTFLICK_LT},
             {"左上(ワイド)", LaneBit::RECTFLICK_LT_EX},

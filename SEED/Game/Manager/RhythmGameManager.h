@@ -29,7 +29,7 @@ public:
 
 public:
     // ゲームカメラの取得
-    BaseCamera* GetCamera(){ return gameCamera_.get(); }
+    SEED::BaseCamera* GetCamera(){ return gameCamera_.get(); }
 
     // ポーズ・再開
     void Pause();
@@ -54,12 +54,12 @@ private:
 private:
     SongInfo songInfo_;// 曲情報
     int32_t playDifficulty_; // プレイ中の難易度
-    std::unique_ptr<BaseCamera> gameCamera_;// カメラ
+    std::unique_ptr<SEED::BaseCamera> gameCamera_;// カメラ
     std::unique_ptr<NotesData> notesData_;// 譜面データ
     std::unique_ptr<ComboObject> comboObject_; // コンボオブジェクト
     std::unique_ptr<NotesEditor> notesEditor_; // ノーツエディタ
     PlayResult playResult_; // プレイ結果
-    Timer playEndTimer_;
+    SEED::Timer playEndTimer_;
     bool isPaused_ = false; // ポーズ中かどうか
     std::optional<std::unique_ptr<TutorialObjectManager>> tutorialManager_; // チュートリアルマネージャ
     std::unique_ptr<LivelyEffectsOwner> livelyEffectsOwner_;// 背景盛り上がりエフェクト

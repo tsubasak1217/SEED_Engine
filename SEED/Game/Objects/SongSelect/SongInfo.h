@@ -24,7 +24,7 @@ struct SongInfo{
     const std::optional<SongGenre>& GetGenre() const { return genre; }
     float GetBpm() const { return bpm; }
     float GetSongOffsetTime() const { return songOffsetTime; }
-    const Range1D& GetSongPreviewRange() const { return songPreviewRange; }
+    const SEED::Range1D& GetSongPreviewRange() const { return songPreviewRange; }
     float GetSongVolume() const { return songVolume; }
     bool IsInitialized() const { return isInitialized; }
     float GetScore(int idx) const { return score[idx]; }
@@ -43,7 +43,7 @@ struct SongInfo{
     std::optional<SongGenre> genre;
     float bpm;
     float songOffsetTime;
-    Range1D songPreviewRange;
+    SEED::Range1D songPreviewRange;
     float songVolume = 0.5f;
     bool isInitialized = false;
 

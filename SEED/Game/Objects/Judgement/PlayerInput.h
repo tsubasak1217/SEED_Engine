@@ -31,9 +31,9 @@ public:// 入力情報を取得する関数
     bool GetIsTap(int32_t key);
     bool GetIsPress(int32_t key);
     bool GetIsRelease(int32_t key);
-    LR GetSideFlickDirection(){ return sideFlick_.Value(); }
+    SEED::GeneralEnum::LR GetSideFlickDirection(){ return sideFlick_.Value(); }
     bool GetIsSideFlick(){ return sideFlick_.Trigger(); }
-    DIRECTION8 GetRectFlickDirection(){ return rectFlick_.Value(); }
+    SEED::GeneralEnum::DIRECTION8 GetRectFlickDirection(){ return rectFlick_.Value(); }
     bool GetIsRectFlick(){ return rectFlick_.Trigger(); }
     bool GetIsHold(){ return hold_.Press(); }
     int32_t GetCursorLane(){ return cursorLane_.Value(); }
@@ -43,7 +43,7 @@ public:// 入力情報を取得する関数
     const std::unordered_set<int32_t>& GetReleaseLane(){ return releaseLane_; }
     const std::unordered_set<int32_t>& GetUnTapLane();
     bool GetIsWheelTrigger(){ return wheelScroll_.Trigger(); }
-    UpDown GetWheelScrollDirection(){ return wheelScroll_.Value(); }
+    SEED::GeneralEnum::UpDown GetWheelScrollDirection(){ return wheelScroll_.Value(); }
     float GetFlickDeadZone(){ return flickDeadZone_; }
 
 public:// setter
@@ -67,17 +67,17 @@ private:
 
 private:
     // 入力を格納するハンドラ群
-    InputHandler<bool> tap_;
-    InputHandler<std::unordered_set<int32_t>> hold_;
-    InputHandler<LR> sideFlick_;
-    InputHandler<DIRECTION8> rectFlick_;
-    InputHandler<int32_t>cursorLane_;
-    InputHandler<UpDown> wheelScroll_;
+    SEED::InputHandler<bool> tap_;
+    SEED::InputHandler<std::unordered_set<int32_t>> hold_;
+    SEED::InputHandler<SEED::GeneralEnum::LR> sideFlick_;
+    SEED::InputHandler<SEED::GeneralEnum::DIRECTION8> rectFlick_;
+    SEED::InputHandler<int32_t>cursorLane_;
+    SEED::InputHandler<SEED::GeneralEnum::UpDown> wheelScroll_;
 
     // 入力のUI表示用
-    Triangle cursor_[2];
-    Triangle2D cursor2D_[2];
-    Quad cursorLine_[2];
+    SEED::Topology::Triangle cursor_[2];
+    SEED::Topology::Triangle2D cursor2D_[2];
+    SEED::Topology::Quad cursorLine_[2];
     std::unique_ptr<MouseVectorCircle> mouseVectorCircle_;// マウスの動きを表すサークル
 
     // 判定のたびに無駄な計算を行わないように毎フレーム最初にこいつらに情報を入れる
@@ -86,5 +86,5 @@ private:
     std::unordered_set<int32_t> releaseLane_;
 
     // カーソル位置に表示するアイコンオブジェクト
-    GameObject2D* cursorIconObj_ = nullptr;
+    SEED::GameObject2D* cursorIconObj_ = nullptr;
 };

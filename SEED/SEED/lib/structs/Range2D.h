@@ -1,31 +1,36 @@
 #pragma once
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <algorithm>
+#include <json.hpp>
 
-/// <summary>
-/// 2次元の範囲を表す構造体
-/// </summary>
-struct Range2D{
+namespace SEED{
 
-    Range2D() = default;
-    Range2D(const Vector2& min, const Vector2& max){
-        this->min = Vector2((std::min)(min.x,max.x), (std::min)(min.y,max.y));
-        this->max = Vector2((std::max)(min.x,max.x), (std::max)(min.y,max.y));
+    /// <summary>
+    /// 2次元の範囲を表す構造体
+    /// </summary>
+    struct Range2D{
+
+        Range2D() = default;
+        Range2D(const Vector2& min, const Vector2& max){
+            this->min = Vector2((std::min)(min.x, max.x), (std::min)(min.y, max.y));
+            this->max = Vector2((std::max)(min.x, max.x), (std::max)(min.y, max.y));
+        }
+
+        Vector2 min;
+        Vector2 max;
+    };
+
+    // Range2DをJSONに変換する関数
+    inline void to_json(nlohmann::json& j, const Range2D& range){
+        j["min"] = range.min;
+        j["max"] = range.max;
     }
 
-    Vector2 min;
-    Vector2 max;
-};
 
-// Range2DをJSONに変換する関数
-inline void to_json(nlohmann::json& j, const Range2D& range){
-    j["min"] = range.min;
-    j["max"] = range.max;
-}
+    // JSON から Range1D に変換
+    inline void from_json(const nlohmann::json& j, Range2D& range){
+        range.min = j.value("min", Vector2(0.0f));
+        range.max = j.value("max", Vector2(0.0f));
+    }
 
-
-// JSON から Range1D に変換
-inline void from_json(const nlohmann::json& j, Range2D& range){
-    range.min = j.value("min", Vector2(0.0f));
-    range.max = j.value("max", Vector2(0.0f));
-}
+} // namespace SEED

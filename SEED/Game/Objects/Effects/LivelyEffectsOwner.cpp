@@ -3,7 +3,7 @@
 
 LivelyEffectsOwner::LivelyEffectsOwner(){
 
-    nlohmann::json json = MyFunc::GetJson("Resources/Jsons/Settings/LivelyEffectConfig.json");
+    nlohmann::json json = SEED::Methods::File::GetJson("Resources/Jsons/Settings/LivelyEffectConfig.json");
 
     emitTimer_.Initialize(json.value("emitInterval", 1.0f));
     numEmitEvery_ = json.value("numEmitEvery", 12);
@@ -21,7 +21,7 @@ LivelyEffectsOwner::LivelyEffectsOwner(){
 /// </summary>
 void LivelyEffectsOwner::Update(){
     emitTimer_.Update(1.0f, true);
-    curRotateAngle_ += rotateSpeed_ * ClockManager::DeltaTime();
+    curRotateAngle_ += rotateSpeed_ * SEED::ClockManager::DeltaTime();
 
     if(emitTimer_.IsLoopedNow()){
 
@@ -30,7 +30,7 @@ void LivelyEffectsOwner::Update(){
 
             float angle = curRotateAngle_ + (std::numbers::pi_v<float> *2.0f / numEmitEvery_) * i;
             Vector2 dir = { std::cosf(angle),sinf(angle) };
-            float dot = MyMath::Dot(Vector2(0.0f, 1.0f), dir);
+            float dot = SEED::Methods::Math::Dot(Vector2(0.0f, 1.0f), dir);
 
             // ボーダー外なら出現させない(上下)
             if(std::fabsf(dot) > emitBorder_){
@@ -40,14 +40,14 @@ void LivelyEffectsOwner::Update(){
 
             // エフェクトオブジェクトを生成
             LivelyEffect effect;
-            Hierarchy* hierarchy = GameSystem::GetInstance()->GetScene()->GetHierarchy();
+            SEED::Hierarchy* hierarchy = SEED::GameSystem::GetInstance()->GetScene()->GetHierarchy();
             effect.parentObj_ = hierarchy->CreateEmptyObject();
             effect.effectObj_ = hierarchy->LoadObject("PlayScene/Effects/livelyEffect.prefab");
             effect.effectObj_->SetParent(effect.parentObj_);
 
 
             // トランスフォームを初期化
-            Transform transform;
+            SEED::Transform transform;
             transform.translate = {
                 emitRangeRadius_ * dir.x,
                 emitRangeRadius_ * dir.y,
@@ -92,7 +92,7 @@ void LivelyEffectsOwner::Update(){
 void LivelyEffectsOwner::EndFrame(){
 
     // 終了したエフェクトを削除
-    Hierarchy* hierarchy = GameSystem::GetInstance()->GetScene()->GetHierarchy();
+    SEED::Hierarchy* hierarchy = SEED::GameSystem::GetInstance()->GetScene()->GetHierarchy();
     effects_.remove_if([&](const LivelyEffect& effect){
         if(effect.moveTimer_.IsFinished()){
             // オブジェクトを削除
@@ -109,7 +109,7 @@ void LivelyEffectsOwner::EndFrame(){
 /// 編集処理
 /// </summary>
 void LivelyEffectsOwner::Edit(){
-    ImFunc::CustomBegin("盛り上がりエフェクト設定", MoveOnly_TitleBar);
+    SEED::ImFunc::CustomBegin("盛り上がりエフェクト設定", SEED::MoveOnly_TitleBar);
     {
         ImGui::DragFloat("出現間隔", &emitTimer_.duration, 0.01f, 0.1f, 10.0f);
         ImGui::SliderInt("出現数", &numEmitEvery_, 1, 64);
@@ -133,7 +133,7 @@ void LivelyEffectsOwner::Edit(){
             json["moveTime"] = moveTime_;
             json["rotateSpeed"] = rotateSpeed_;
             json["endScale"] = endScale_;
-            MyFunc::CreateJsonFile("Resources/Jsons/Settings/LivelyEffectConfig.json", json);
+            SEED::Methods::File::CreateJsonFile("Resources/Jsons/Settings/LivelyEffectConfig.json", json);
         }
 
         ImGui::End();

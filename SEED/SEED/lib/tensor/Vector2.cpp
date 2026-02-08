@@ -1,14 +1,14 @@
 #include <SEED/Lib/Tensor/Vector2.h>
 #include <SEED/Lib/Tensor/Vector3.h>
-#include <SEED/Lib/Functions/MatrixFunc.h>
-#include <SEED/Lib/Functions/MyMath.h>
+#include <SEED/Lib/Functions/MatrixMath.h>
+#include <SEED/Lib/Functions/Math.h>
 
 Vector2 Vector2::operator*(const Matrix3x3& mat) const{
-    return Multiply(*this, mat);
+    return SEED::Methods::Matrix::Multiply(*this, mat);
 }
 
 void Vector2::operator*=(const Matrix3x3& mat){
-    *this = Multiply(*this, mat);
+    *this = SEED::Methods::Matrix::Multiply(*this, mat);
 }
 
 Vector3 Vector2::ToVec3() const{
@@ -16,15 +16,15 @@ Vector3 Vector2::ToVec3() const{
 }
 
 void Vector2::Normalize(){
-    Vector2 normalized = MyMath::Normalize(*this);
+    Vector2 normalized = SEED::Methods::Math::Normalize(*this);
     x = normalized.x;
     y = normalized.y;
 }
 
 Vector2 Vector2::Normalized() const{
-    return MyMath::Normalize(*this);
+    return SEED::Methods::Math::Normalize(*this);
 }
 
 float Vector2::Length() const{
-    return MyMath::Length(*this);
+    return SEED::Methods::Math::Length(*this);
 }

@@ -1,9 +1,9 @@
 #include "Matrix3x3.h"
 #include "Matrix4x4.h"
-#include <SEED/Lib/Functions/MatrixFunc.h>
+#include <SEED/Lib/Functions/MatrixMath.h>
 
 Matrix4x4 Matrix3x3::ToMat4x4() const{
-    Matrix4x4 mat4 = IdentityMat4();
+    Matrix4x4 mat4 = SEED::Methods::Matrix::IdentityMat4();
 
     // z回転、xyスケール、xy平面移動を4x4行列に反映
     mat4.m[0][0] = m[0][0];

@@ -3,7 +3,7 @@
 
 Note_Base::Note_Base(){
     noteID_ = nextNoteID_++;
-    noteQuad_ = std::make_unique<Quad>(MakeEqualQuad(1.0f, {1.0f,1.0f,1.0f,1.0f}));
+    noteQuad_ = std::make_unique<SEED::Topology::Quad>(SEED::Methods::Shape::MakeEqualQuad(1.0f, {1.0f,1.0f,1.0f,1.0f}));
 }
 
 void Note_Base::Draw(float currentTime, float appearLength){
@@ -24,7 +24,7 @@ nlohmann::json Note_Base::ToJson() {
 
 void Note_Base::FromJson(const nlohmann::json& j) {
     lane_ = j["lane"];
-    layer_ = (UpDown)j["layer"];
+    layer_ = (SEED::GeneralEnum::UpDown)j["layer"];
     laneBit_ = (LaneBit)j["laneBit"];
     time_ = j["time"];
     isExtraNote_ = j["isExtraNote"];

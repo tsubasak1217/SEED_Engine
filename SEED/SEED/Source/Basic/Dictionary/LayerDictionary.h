@@ -2,7 +2,7 @@
 #include <string>
 #include <cstdint>
 #include <unordered_map>
-#include <SEED/Lib/Functions/MyFunc.h>
+#include <SEED/Lib/Functions/FileFunc.h>
 
 
 /// <summary>

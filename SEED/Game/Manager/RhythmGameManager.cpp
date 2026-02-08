@@ -15,7 +15,7 @@ RhythmGameManager::RhythmGameManager(){
 
 RhythmGameManager::~RhythmGameManager(){
     // カメラの登録解除
-   SEED::Instance::RemoveCamera("gameCamera");
+    SEED::Instance::RemoveCamera("gameCamera");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,17 +31,17 @@ RhythmGameManager* RhythmGameManager::GetInstance(){
 //////////////////////////////////////////////////////////////////////////////////
 void RhythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty){
     // カメラの初期化
-    gameCamera_ = std::make_unique<BaseCamera>();
+    gameCamera_ = std::make_unique<SEED::BaseCamera>();
     gameCamera_->SetTranslation(Vector3(0.0f, 0.0f, 0.0f));
     gameCamera_->UpdateMatrix();
 
     // カメラの登録,設定
-   SEED::Instance::RemoveCamera("gameCamera");// 既存の物があることを想定して登録前に削除
-   SEED::Instance::RegisterCamera("gameCamera", gameCamera_.get());
-   SEED::Instance::SetMainCamera("gameCamera");
+    SEED::Instance::RemoveCamera("gameCamera");// 既存の物があることを想定して登録前に削除
+    SEED::Instance::RegisterCamera("gameCamera", gameCamera_.get());
+    SEED::Instance::SetMainCamera("gameCamera");
 
     // gameObjectをクリア
-    GameSystem::GetScene()->GetHierarchy()->EraseAllObject();
+    SEED::GameSystem::GetScene()->GetHierarchy()->EraseAllObject();
 
     // settingsの初期化
     PlaySettings::GetInstance();
@@ -103,14 +103,14 @@ void RhythmGameManager::Initialize(const SongInfo& songInfo, int32_t difficulty)
 //////////////////////////////////////////////////////////////////////////////////
 void RhythmGameManager::BeginFrame(){
     if(isPaused_){
-        Input::SetMouseCursorVisible(true);
+        SEED::Input::SetMouseCursorVisible(true);
         return;
     }
 
     // inputのフレーム開始処理
-    Input::SetMouseCursorVisible(false);
+    SEED::Input::SetMouseCursorVisible(false);
 #ifdef _DEBUG
-    Input::RepeatCursor(ImFunc::GetSceneWindowRange("GameWindow"));
+    SEED::Input::RepeatCursor(SEED::ImFunc::GetSceneWindowRange("GameWindow"));
 #else
     Input::RepeatCursor();
 #endif
@@ -129,8 +129,8 @@ void RhythmGameManager::EndFrame(){
 
     // escapeでポーズ画面を出す
     if(!isPaused_){
-        if(Input::IsTriggerKey(DIK_ESCAPE)){
-            auto* scene = GameSystem::GetScene();
+        if(SEED::Input::IsTriggerKey(DIK_ESCAPE)){
+            auto* scene = SEED::GameSystem::GetScene();
             scene->CauseEvent(new GameState_Pause(scene));
             Pause();
         }
@@ -155,7 +155,7 @@ void RhythmGameManager::EndFrame(){
             Scene_Clear::SetResult(playResult_);
 
             // クリアエフェクトを出す
-            auto* scene = GameSystem::GetScene();
+            auto* scene = SEED::GameSystem::GetScene();
             auto* hierarchy = scene->GetHierarchy();
             hierarchy;
             if(playResult_.isAllPerfect){
@@ -182,7 +182,7 @@ void RhythmGameManager::EndFrame(){
 
             // scoreDataを書き込む(無ければ作成)
             std::string path = "Resources/ScoreDatas/" + songInfo_.folderName + "/scoreData.json";
-            nlohmann::json scoreJson = MyFunc::GetJson(path, true);
+            nlohmann::json scoreJson = SEED::Methods::File::GetJson(path, true);
             static std::string difficultyName[4] = { "Basic", "Expert", "Master", "Parallel" };
 
             // クリアアイコンの決定
@@ -221,7 +221,7 @@ void RhythmGameManager::EndFrame(){
             }
 
             // ファイルを置き換える
-            MyFunc::CreateJsonFile(path, scoreJson);
+            SEED::Methods::File::CreateJsonFile(path, scoreJson);
 
             // チュートリアルマネージャの終了処理
             tutorialManager_.reset();
@@ -235,13 +235,13 @@ void RhythmGameManager::EndFrame(){
         // タイマーが終了したらシーン遷移
         if(playEndTimer_.IsFinished()){
             // Inputのカーソルを表示状態に戻す
-            Input::SetMouseCursorVisible(true);
+            SEED::Input::SetMouseCursorVisible(true);
 
             // チュートリアルマネージャの解放
             tutorialManager_.reset();
 
             // リザルト画面へ移行
-            GameSystem::ChangeScene("Clear");
+            SEED::GameSystem::ChangeScene("Clear");
             return;
         }
     }
@@ -321,7 +321,7 @@ void RhythmGameManager::Draw(){
 
     // ゲームカメラ画面の描画
 #ifdef _DEBUG
-    ImFunc::SceneWindowBegin("GameScene", "gameCamera", MoveOnly_TitleBar);
+    SEED::ImFunc::SceneWindowBegin("GameScene", "gameCamera", SEED::MoveOnly_TitleBar);
     ImGui::End();
 
     PlaySettings::GetInstance()->Edit();

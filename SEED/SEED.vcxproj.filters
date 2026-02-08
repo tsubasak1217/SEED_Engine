@@ -1,295 +1,241 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <ItemGroup>
     <Filter Include="Environment">
-      <UniqueIdentifier>{359538B1-11AF-42D1-8424-789481D398A4}</UniqueIdentifier>
+      <UniqueIdentifier>{7C803327-32B5-4A8D-84A0-AA7CF720767F}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game">
-      <UniqueIdentifier>{A7328FB3-649E-4D7D-92BE-D48D6A673F92}</UniqueIdentifier>
+      <UniqueIdentifier>{CEB2F720-3B70-4B6F-B4A7-D467D60E1A76}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources">
-      <UniqueIdentifier>{087F53A3-E30E-43A6-B4E9-A75C01F60EDB}</UniqueIdentifier>
+      <UniqueIdentifier>{B525586A-578F-423D-9A08-193331EA7489}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED">
-      <UniqueIdentifier>{6FE378D9-BEEE-4386-B55C-1C0E2D4684BA}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Components">
-      <UniqueIdentifier>{02F50130-B72F-4D8B-88E9-8BB3317453D2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Config">
-      <UniqueIdentifier>{AC259CFA-0958-4042-87C1-8613BE0620C2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Manager">
-      <UniqueIdentifier>{6B26244D-9466-4083-98C8-411F867CDA4A}</UniqueIdentifier>
+      <UniqueIdentifier>{49D69226-5871-4E4A-B60D-0C75FE9BB472}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Objects">
-      <UniqueIdentifier>{CA836929-6C08-400C-A7FD-CFF009E46503}</UniqueIdentifier>
+      <UniqueIdentifier>{8CBCEFAF-A999-4BC9-B127-A4C71243EAC6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Scene">
-      <UniqueIdentifier>{4128CA65-F84E-47F0-8B52-7686D22DC7A1}</UniqueIdentifier>
+      <UniqueIdentifier>{DED52C5A-B5EB-4E01-A7D2-7C595711DEE5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders">
-      <UniqueIdentifier>{129A8E58-A864-4EE1-929A-3FBDE78FBD98}</UniqueIdentifier>
+      <UniqueIdentifier>{CE2EE114-9654-4715-9800-DDDA7DD4D3B3}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\External">
-      <UniqueIdentifier>{D992FCBF-A876-41B4-A6E3-AF8422A75EAF}</UniqueIdentifier>
+      <UniqueIdentifier>{2CDAA88F-1B73-4D28-AD8A-10E5CBF22E90}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Lib">
-      <UniqueIdentifier>{BA50BDDD-F08F-4CE8-93A8-E44F62FD4A39}</UniqueIdentifier>
+      <UniqueIdentifier>{A8A8DA86-2E81-4499-A4D1-2617A8477D36}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source">
-      <UniqueIdentifier>{D2BE3EDC-165E-42FE-86DC-5C359A68D15B}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\Combo">
-      <UniqueIdentifier>{6516AF69-6FE4-4D6D-95DC-C8918E04D439}</UniqueIdentifier>
+      <UniqueIdentifier>{CDF9A384-7E28-4951-8C40-A897CD12E43A}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Objects\Enums">
-      <UniqueIdentifier>{2EFC79B0-0D69-44DD-955C-84999ABB4980}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\Judgement">
-      <UniqueIdentifier>{F37B356F-99A4-48BC-8B56-C5AAB69616AE}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\Notes">
-      <UniqueIdentifier>{DE173F8B-E882-4393-B28C-EF82D0C4E5A2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\Result">
-      <UniqueIdentifier>{8E300593-40A4-4F60-80FE-0D54D8E39D7C}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\SongSelect">
-      <UniqueIdentifier>{0CA5E1CE-0A76-4D04-8BFA-B1CF6C9DB40A}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\Tutorial">
-      <UniqueIdentifier>{3C276D71-9D43-42E2-9DA7-0B29FC9BE4EE}</UniqueIdentifier>
+      <UniqueIdentifier>{7E6FD910-1BD5-41D2-9C2E-C9D8DB394576}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Scene\Scene_Clear">
-      <UniqueIdentifier>{25FD0699-49DF-4C37-8ED4-6AE7E50E547E}</UniqueIdentifier>
+      <UniqueIdentifier>{FD8E6FCE-A273-49BF-8EB7-1BAE3E25E341}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Scene\Scene_Game">
-      <UniqueIdentifier>{474D63C1-9CAB-4431-9D4D-2DA5B7B5FE31}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Scene\Scene_Load">
-      <UniqueIdentifier>{352857B4-2505-4431-8370-0DDF439CBF51}</UniqueIdentifier>
+      <UniqueIdentifier>{19479A1D-7F8D-4539-B068-1BE74EF498C7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Scene\Scene_Title">
-      <UniqueIdentifier>{545880D5-4DC8-4268-8674-9578C85D7F66}</UniqueIdentifier>
+      <UniqueIdentifier>{152D70D8-A7EF-4CB3-97CE-4C29E8E8131A}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders\GPUParticle">
-      <UniqueIdentifier>{1C80072F-382E-452F-B3CD-EA123E968A29}</UniqueIdentifier>
+      <UniqueIdentifier>{207CCDA6-857F-489D-871D-EE67693249BA}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders\GaussianFilter">
-      <UniqueIdentifier>{CFA5FBF4-B38B-4FFE-9A31-62579FD0D228}</UniqueIdentifier>
+      <UniqueIdentifier>{B0B828D3-6FA7-422E-A224-323B4D77A216}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders\Math">
-      <UniqueIdentifier>{CC99565C-D7E8-4548-9884-79EB74E93C4B}</UniqueIdentifier>
+      <UniqueIdentifier>{EBEB0E01-AA57-4A92-8C73-BF9A07818278}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders\Random">
-      <UniqueIdentifier>{73C9B3B4-2BF5-479E-A551-FA0909B2C38B}</UniqueIdentifier>
+      <UniqueIdentifier>{B78052A4-9A7D-4018-9F0B-CB3CF6D3C99A}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders\Video">
-      <UniqueIdentifier>{0771CD03-0ADC-4355-8880-38203D16DF2A}</UniqueIdentifier>
+      <UniqueIdentifier>{16924D89-9222-40EC-886D-057F8A62A824}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\External\stb">
-      <UniqueIdentifier>{2721B2B9-7880-4F6E-AA12-A0A3140C653A}</UniqueIdentifier>
+      <UniqueIdentifier>{EFF1D82D-934E-43D5-AB09-411E488F281F}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Lib\Functions">
-      <UniqueIdentifier>{9336A110-2FBA-49CE-978E-6E4FE5FE84DD}</UniqueIdentifier>
+      <UniqueIdentifier>{806A2A26-4914-4295-924C-6E9EB2B2A100}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Lib\Includes">
-      <UniqueIdentifier>{BD9E2C78-39AB-40AB-8A8D-29607DBCB57D}</UniqueIdentifier>
+      <UniqueIdentifier>{4A5825FF-326D-42F2-9899-EEDA553FCE88}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Lib\Shapes">
-      <UniqueIdentifier>{A9C96356-4513-4B6B-B731-B1D7AA7C7EE3}</UniqueIdentifier>
+      <UniqueIdentifier>{660C8492-7536-4E24-9D4B-FCA8CC763880}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Lib\Structs">
-      <UniqueIdentifier>{37EFFB3A-FC4C-4AF2-B357-4B26654004BA}</UniqueIdentifier>
+      <UniqueIdentifier>{3E2F1AE4-21F7-4FB9-A8CA-60978FAC66D2}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Lib\Tensor">
-      <UniqueIdentifier>{A7D67C4C-A11E-4CEF-811C-C9732EA7A47C}</UniqueIdentifier>
+      <UniqueIdentifier>{F1BE01A9-9D4B-4A3C-8EBD-52D6337E4632}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Lib\enums">
-      <UniqueIdentifier>{F5A27329-0BA2-4A5F-B702-460057E22942}</UniqueIdentifier>
+      <UniqueIdentifier>{D7DD669E-03D0-4FA0-A2BA-FE0523151B20}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic">
-      <UniqueIdentifier>{A319C26C-3A15-45A5-9483-3061F8743826}</UniqueIdentifier>
+      <UniqueIdentifier>{4EE1A52E-1D23-4484-ACD0-085B8812780E}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Editor">
-      <UniqueIdentifier>{FE698AC8-946B-4F55-9B5A-40926D6445B9}</UniqueIdentifier>
+      <UniqueIdentifier>{BA3D039D-02C7-40B6-86D4-77F4B59F7BD9}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager">
-      <UniqueIdentifier>{600FE84C-58FA-4E15-968C-28461122F564}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Scene\Scene_Game\State">
-      <UniqueIdentifier>{22E3FB54-35C5-4C9E-9E61-B7631DA13F0A}</UniqueIdentifier>
+      <UniqueIdentifier>{6D2DB8F9-5E6C-4BF6-A027-63B8D643F2C0}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\Camera">
-      <UniqueIdentifier>{0B5B193B-03B3-4CAE-BB7A-F9AF7766D32A}</UniqueIdentifier>
+      <UniqueIdentifier>{1A3019C2-D258-48FC-9BD8-2F15687E49F9}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\Collision">
-      <UniqueIdentifier>{3D4C1923-DE77-47CA-9AAF-740D6EF3BD9B}</UniqueIdentifier>
+      <UniqueIdentifier>{6E05A84A-1B0E-4939-AF89-D569000D1BB5}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\Components">
-      <UniqueIdentifier>{CD8AE53E-726B-4C6B-8FD9-4E855D2698AA}</UniqueIdentifier>
+      <UniqueIdentifier>{C653FDC0-9E2D-4800-ACB0-35E9A572D512}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\Dictionary">
-      <UniqueIdentifier>{CE7B78B6-30A4-4210-8CD6-2DCB8158388F}</UniqueIdentifier>
+      <UniqueIdentifier>{5E17EA73-3EA5-4A9D-8082-C0B4DF8794C9}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\Object">
-      <UniqueIdentifier>{AC2C071A-4DF8-49C6-ABDC-0E4BFA2016EA}</UniqueIdentifier>
+      <UniqueIdentifier>{4784E430-EB8C-489D-A239-7696685F36BB}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\PostProcess">
-      <UniqueIdentifier>{586F138E-ED53-4B13-BDA6-9FB9D1719CF8}</UniqueIdentifier>
+      <UniqueIdentifier>{FD0E16A7-8A07-4B80-AA0E-A3E5A58A7007}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\Scene">
-      <UniqueIdentifier>{478E9ABA-238B-4907-A854-E4BEF6A33822}</UniqueIdentifier>
+      <UniqueIdentifier>{2E1EB196-CFCC-42FB-99BA-E5CB3D1F7B40}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\SceneTransition">
-      <UniqueIdentifier>{A8A61EB9-BB2C-4251-ABDA-15628E26723C}</UniqueIdentifier>
+      <UniqueIdentifier>{3EABB849-4F8A-4DD5-9083-FA516110F4B0}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Editor\CurveEditor">
-      <UniqueIdentifier>{6CC2B058-9245-4ED1-8034-93F3AFCE7329}</UniqueIdentifier>
+      <UniqueIdentifier>{88759C50-D9C7-4616-80F7-5F45A90A53F5}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\AudioManager">
-      <UniqueIdentifier>{CC20EB78-66C6-4DFA-82F3-141C4E2D83A4}</UniqueIdentifier>
+      <UniqueIdentifier>{3B367E1E-D8CB-4655-ADA1-66F982D01054}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\CameraManager">
-      <UniqueIdentifier>{7F19193B-9EF0-4029-8717-A422F190C157}</UniqueIdentifier>
+      <UniqueIdentifier>{89CD0063-E55D-4529-A9DB-E775D94BCB05}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\ClockManager">
-      <UniqueIdentifier>{C3591F5B-3326-4E0C-9819-7B0B14DE23B4}</UniqueIdentifier>
+      <UniqueIdentifier>{68566886-3F83-4C0A-8178-E8B868B2F190}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\CollisionManager">
-      <UniqueIdentifier>{85B46469-9F59-4833-9F0A-3DBDBA621CCA}</UniqueIdentifier>
+      <UniqueIdentifier>{0B363F12-C1E9-4C79-941C-551021A60D24}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\DxManager">
-      <UniqueIdentifier>{C036202B-2BAA-48EA-B75E-FB2088540FF1}</UniqueIdentifier>
+      <UniqueIdentifier>{0B70512E-7AE1-492F-9289-56EB416C1BB6}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\Hierarchy">
-      <UniqueIdentifier>{75AC1474-B2AB-43E0-9029-0466A3D0021F}</UniqueIdentifier>
+      <UniqueIdentifier>{04D90275-4FBF-4A26-82E7-79FD55D0CFEF}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\ImGuiManager">
-      <UniqueIdentifier>{FF301313-D77C-434D-9E15-1EE1B1F3FE81}</UniqueIdentifier>
+      <UniqueIdentifier>{D9BDDB16-C8FC-4374-914A-43B151CA3A19}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\InputManager">
-      <UniqueIdentifier>{C98A9977-8ACE-4BC2-9BB4-EA3FBF67A725}</UniqueIdentifier>
+      <UniqueIdentifier>{A93F41F3-CCD6-4FD1-9B4A-9C56E7AA8B5A}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\ModelManager">
-      <UniqueIdentifier>{BBEAB557-584C-4D8D-8F5D-B96F2B1C7E0F}</UniqueIdentifier>
+      <UniqueIdentifier>{A74F24C9-4CFC-467C-9E10-7135717581D8}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\ParticleManager">
-      <UniqueIdentifier>{4D11163B-9D33-4C52-8113-A826637FC5D5}</UniqueIdentifier>
+      <UniqueIdentifier>{138AE698-603A-44DE-9869-FDD2DBCC1F9D}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\PostEffectSystem">
-      <UniqueIdentifier>{94C78BB4-251D-4550-9CA8-A88B60AACE45}</UniqueIdentifier>
+      <UniqueIdentifier>{BB49B1C3-80F2-4FAC-9C72-E662F9768423}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\RuntimeScriptSystem">
-      <UniqueIdentifier>{F909B752-DA7F-45DC-A670-8A7A24D4B9B6}</UniqueIdentifier>
+      <UniqueIdentifier>{459239B5-8494-430E-9708-9030FF562362}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\SceneManager">
-      <UniqueIdentifier>{5F16C009-5502-4FE6-BF34-8B85A1644D1A}</UniqueIdentifier>
+      <UniqueIdentifier>{97A8827F-24A6-424C-AF2E-496CCD40FF09}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\SceneTransitionDrawer">
-      <UniqueIdentifier>{D7F9456C-680F-4182-B82C-981666F9AE58}</UniqueIdentifier>
+      <UniqueIdentifier>{57EBFE54-4DD3-4B33-BFD2-C94E75A9CACB}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\TextSystem">
-      <UniqueIdentifier>{62619577-A2FB-48D3-928B-1885E18116EF}</UniqueIdentifier>
+      <UniqueIdentifier>{1FC0601A-0F5E-45F6-BE7C-A44C56BF9AAF}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\TextureManager">
-      <UniqueIdentifier>{F7DED5EB-FBF1-4595-B813-8C6C80C4E79C}</UniqueIdentifier>
+      <UniqueIdentifier>{BA039FCB-61B2-4CB9-96BF-B489CF26B283}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\VideoManager">
-      <UniqueIdentifier>{55F87243-BD58-4BE1-B54F-E7849711021A}</UniqueIdentifier>
+      <UniqueIdentifier>{520A308E-3EDB-4965-90EF-8FB3195C081E}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\WindowManager">
-      <UniqueIdentifier>{B26480BF-105A-40F1-A224-2CDDE47872DC}</UniqueIdentifier>
+      <UniqueIdentifier>{B91602FA-7BDA-4D9C-815B-483AD4D6544A}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\Collision\2D">
-      <UniqueIdentifier>{7F61A3AF-7443-4845-A0F9-B4B044689A5E}</UniqueIdentifier>
+      <UniqueIdentifier>{2D51B006-76DF-4A62-A3AF-AE1AA54EF87E}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\Collision\3D">
-      <UniqueIdentifier>{15D1FD7C-934B-4C27-998D-A1B46C41725D}</UniqueIdentifier>
+      <UniqueIdentifier>{4903D211-3F61-4B05-906E-DB1C69373CF2}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\Components\3D&amp;2D">
-      <UniqueIdentifier>{4F0FDE47-62E0-4413-B595-6CF8F98B8CDE}</UniqueIdentifier>
+      <UniqueIdentifier>{DE79C3A4-BAD9-4BBF-BD30-57652E26E360}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\Components\Only2D">
-      <UniqueIdentifier>{65979A3D-7606-47E5-A53F-5822495D72C4}</UniqueIdentifier>
+      <UniqueIdentifier>{B2C9B144-8FC7-457B-AFCE-2F2E68CDCB46}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\Components\Only3D">
-      <UniqueIdentifier>{C278CE37-EFDD-4E1F-B687-BE0E95354DDC}</UniqueIdentifier>
+      <UniqueIdentifier>{4F8D391E-9672-42A6-8D04-A3C303F31100}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\PostProcess\Bloom">
-      <UniqueIdentifier>{22D71D9F-9B14-42E5-8556-AC6370BEC9CC}</UniqueIdentifier>
+      <UniqueIdentifier>{E02064FC-33E2-489B-8DC9-88961EACCEFF}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\PostProcess\DoF">
-      <UniqueIdentifier>{A3649464-A8FB-4BC2-86EA-1E7819C1F1CB}</UniqueIdentifier>
+      <UniqueIdentifier>{DF5ECF48-24F4-4E3C-9CA1-6B816D36D599}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\PostProcess\Fog">
-      <UniqueIdentifier>{96576CCC-D1C1-423F-8E43-9111EB3E1383}</UniqueIdentifier>
+      <UniqueIdentifier>{39AA32AA-8312-4E23-A453-6C2A4E05F463}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\PostProcess\GaussianFilter">
-      <UniqueIdentifier>{1380523E-D81C-43C9-B1D3-36AA3B26E91E}</UniqueIdentifier>
+      <UniqueIdentifier>{82770BA0-6822-4D84-BAAF-539ABB6B3BD9}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\PostProcess\Glitch">
-      <UniqueIdentifier>{D3A0F3D6-1AD8-421B-A6D3-489215915A05}</UniqueIdentifier>
+      <UniqueIdentifier>{4AE38F74-38A8-4C69-B8E1-2E06507CCFBF}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\PostProcess\GrayScale">
-      <UniqueIdentifier>{307279E6-4598-4370-B172-B7FA56DB0A4E}</UniqueIdentifier>
+      <UniqueIdentifier>{43C23094-138B-473D-B7FB-CA46D7182CD1}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\PostProcess\RGBShift">
-      <UniqueIdentifier>{DBC2758D-52DD-4F9B-A4DC-488740B4FA61}</UniqueIdentifier>
+      <UniqueIdentifier>{33CDED06-6027-4B5A-AF08-C7E8B0CB078F}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\PostProcess\ScanLine">
-      <UniqueIdentifier>{F80960DE-DC16-4076-B71D-EB768595DBF9}</UniqueIdentifier>
+      <UniqueIdentifier>{11C29F46-5208-4FB4-BC9B-D10DEE8DFF4C}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Basic\PostProcess\Vignette">
-      <UniqueIdentifier>{8D92F6FA-5D8C-43E4-9765-DB3EEEEF3ECB}</UniqueIdentifier>
+      <UniqueIdentifier>{C636FF1D-E366-4467-B5A3-8693B34B2994}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\AudioManager\XAPO">
-      <UniqueIdentifier>{15158348-2883-4697-831B-C0BE76DB7CD3}</UniqueIdentifier>
+      <UniqueIdentifier>{DB3898DB-9925-4111-A247-F22389358A3E}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\DxManager\DescriptorHeap">
-      <UniqueIdentifier>{0B51D08D-0AC4-4E73-910D-87B2191EBD4E}</UniqueIdentifier>
+      <UniqueIdentifier>{0711A030-12F6-4F7F-BAF9-BA11F0B5BC32}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\DxManager\PSO">
-      <UniqueIdentifier>{79CED115-3640-4323-83C2-CB6027B8B1F1}</UniqueIdentifier>
+      <UniqueIdentifier>{F0DEF262-4813-406E-A556-BFEB78AA66B5}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\ParticleManager\CPUParticle">
-      <UniqueIdentifier>{3CFC9498-5042-4491-9BA6-D3035B8F0413}</UniqueIdentifier>
+      <UniqueIdentifier>{431321E2-A201-4944-A839-F421FB89DBF9}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\ParticleManager\GPUParticle">
-      <UniqueIdentifier>{6B20F4FB-93D9-4E9F-ABFA-5892827C1819}</UniqueIdentifier>
+      <UniqueIdentifier>{382E7038-11B7-481C-A734-97E0CBF275E3}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\ParticleManager\CPUParticle\Emitter">
-      <UniqueIdentifier>{1A9320EE-DD21-4DCA-8449-D9988F9D338A}</UniqueIdentifier>
+      <UniqueIdentifier>{542651AF-EBFD-4AEB-8F2A-DF49D1F488F6}</UniqueIdentifier>
     </Filter>
     <Filter Include="SEED\Source\Manager\ParticleManager\CPUParticle\Particle">
-      <UniqueIdentifier>{5DF4885B-3349-4351-AEC8-98CF9EF2D0D3}</UniqueIdentifier>
+      <UniqueIdentifier>{0D7FD4C8-981E-49E6-B6AE-F907397DEDE1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Objects\Judgement\MouseVectorCircle.cpp">
-      <Filter>Game\Objects\Judgement</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Tutorial\TutorialObjectManager.cpp">
-      <Filter>Game\Objects\Tutorial</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.cpp">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\Color.cpp">
       <Filter>SEED\Lib\Structs</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Components\ResultUpdateComponent.cpp">
-      <Filter>Game\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Config\PlaySettings.cpp">
-      <Filter>Game\Config</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Notes\Note_Warning.cpp">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Result\PlayResult.cpp">
-      <Filter>Game\Objects\Result</Filter>
     </ClCompile>
     <ClCompile Include="SEED\Lib\Structs\Curve.cpp">
       <Filter>SEED\Lib\Structs</Filter>
@@ -324,74 +270,11 @@
     <ClCompile Include="Game\GameSystem.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Manager\NotesEditor.cpp">
-      <Filter>Game\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\RhythmGameManager.cpp">
-      <Filter>Game\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\SongSelector.cpp">
-      <Filter>Game\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Combo\ComboObject.cpp">
-      <Filter>Game\Objects\Combo</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp">
-      <Filter>Game\Objects\Judgement</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Judgement\Judgement.cpp">
-      <Filter>Game\Objects\Judgement</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Judgement\PlayerInput.cpp">
-      <Filter>Game\Objects\Judgement</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Judgement\PlayField.cpp">
-      <Filter>Game\Objects\Judgement</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Notes\NotesData.cpp">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Notes\Note_Base.cpp">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\SongSelect\SelectBackGroundDrawer.cpp">
-      <Filter>Game\Objects\SongSelect</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp">
-      <Filter>Game\Objects\SongSelect</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Clear\Scene_Clear.cpp">
       <Filter>Game\Scene\Scene_Clear</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Game\Scene_Game.cpp">
       <Filter>Game\Scene\Scene_Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Scene\Scene_Load\Scene_Load.cpp">
-      <Filter>Game\Scene\Scene_Load</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scene\Scene_Title\Scene_Title.cpp">
       <Filter>Game\Scene\Scene_Title</Filter>
@@ -580,15 +463,6 @@
     <ClCompile Include="SEED\Lib\Functions\Easing.cpp">
       <Filter>SEED\Lib\Functions</Filter>
     </ClCompile>
-    <ClCompile Include="SEED\Lib\Functions\MatrixFunc.cpp">
-      <Filter>SEED\Lib\Functions</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Lib\Functions\MyFunc.cpp">
-      <Filter>SEED\Lib\Functions</Filter>
-    </ClCompile>
-    <ClCompile Include="SEED\Lib\Functions\MyMath.cpp">
-      <Filter>SEED\Lib\Functions</Filter>
-    </ClCompile>
     <ClCompile Include="SEED\Lib\Functions\ShapeMath.cpp">
       <Filter>SEED\Lib\Functions</Filter>
     </ClCompile>
@@ -760,32 +634,11 @@
     <ClCompile Include="SEED\Source\SEED.cpp">
       <Filter>SEED\Source</Filter>
     </ClCompile>
-    <ClInclude Include="Game\Objects\Judgement\MouseVectorCircle.h">
-      <Filter>Game\Objects\Judgement</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\SongSelect\SongSelectUtils.h">
-      <Filter>Game\Objects\SongSelect</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Tutorial\TutorialObjectManager.h">
-      <Filter>Game\Objects\Tutorial</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.h">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\Lib\enums\ColorMode.h">
       <Filter>SEED\Lib\enums</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\Color.h">
       <Filter>SEED\Lib\Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Components\ResultUpdateComponent.h">
-      <Filter>Game\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Config\PlaySettings.h">
-      <Filter>Game\Config</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Notes\Note_Warning.h">
-      <Filter>Game\Objects\Notes</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Lib\enums\InterpolateType.h">
       <Filter>SEED\Lib\enums</Filter>
@@ -826,80 +679,11 @@
     <ClInclude Include="Game\GameSystem.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Manager\NotesEditor.h">
-      <Filter>Game\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\RhythmGameManager.h">
-      <Filter>Game\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\SongSelector.h">
-      <Filter>Game\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Combo\ComboObject.h">
-      <Filter>Game\Objects\Combo</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Judgement\AnswerLane.h">
-      <Filter>Game\Objects\Judgement</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Judgement\Judgement.h">
-      <Filter>Game\Objects\Judgement</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Judgement\LaneBit.h">
-      <Filter>Game\Objects\Judgement</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Judgement\PlayerInput.h">
-      <Filter>Game\Objects\Judgement</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Judgement\PlayField.h">
-      <Filter>Game\Objects\Judgement</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Notes\NotesData.h">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Notes\Note_Base.h">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Notes\Note_Hold.h">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Notes\Note_SideFlick.h">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Notes\Note_Tap.h">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Notes\Note_Wheel.h">
-      <Filter>Game\Objects\Notes</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Result\PlayResult.h">
-      <Filter>Game\Objects\Result</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\SongSelect\SelectBackGroundDrawer.h">
-      <Filter>Game\Objects\SongSelect</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\SongSelect\SongInfo.h">
-      <Filter>Game\Objects\SongSelect</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Clear\Scene_Clear.h">
       <Filter>Game\Scene\Scene_Clear</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Game\Scene_Game.h">
       <Filter>Game\Scene\Scene_Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h">
-      <Filter>Game\Scene\Scene_Game\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Scene\Scene_Load\Scene_Load.h">
-      <Filter>Game\Scene\Scene_Load</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scene\Scene_Title\Scene_Title.h">
       <Filter>Game\Scene\Scene_Title</Filter>
@@ -1192,15 +976,6 @@
     <ClInclude Include="SEED\Lib\Functions\Easing.h">
       <Filter>SEED\Lib\Functions</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Lib\Functions\MatrixFunc.h">
-      <Filter>SEED\Lib\Functions</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\Functions\MyFunc.h">
-      <Filter>SEED\Lib\Functions</Filter>
-    </ClInclude>
-    <ClInclude Include="SEED\Lib\Functions\MyMath.h">
-      <Filter>SEED\Lib\Functions</Filter>
-    </ClInclude>
     <ClInclude Include="SEED\Lib\Functions\ShapeMath.h">
       <Filter>SEED\Lib\Functions</Filter>
     </ClInclude>
@@ -1237,7 +1012,7 @@
     <ClInclude Include="SEED\Lib\Structs\AccelerarionField.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
-    <ClInclude Include="SEED\Lib\Structs\blendMode.h">
+    <ClInclude Include="SEED\Lib\Structs\BlendMode.h">
       <Filter>SEED\Lib\Structs</Filter>
     </ClInclude>
     <ClInclude Include="SEED\Lib\Structs\CS_Buffers.h">
@@ -1526,8 +1301,76 @@
       <Filter>Resources\Shaders\Random</Filter>
     </None>
     <ClCompile Include="Game\Objects\Effects\LivelyEffectsOwner.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\MouseVectorCircle.cpp" />
+    <ClCompile Include="Game\Objects\Tutorial\TutorialObjectManager.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.cpp" />
+    <ClCompile Include="Game\Components\ResultUpdateComponent.cpp" />
+    <ClCompile Include="Game\Config\PlaySettings.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Warning.cpp" />
+    <ClCompile Include="Game\Objects\Result\PlayResult.cpp" />
+    <ClCompile Include="Game\Manager\NotesEditor.cpp" />
+    <ClCompile Include="Game\Manager\RhythmGameManager.cpp" />
+    <ClCompile Include="Game\Manager\SongSelector.cpp" />
+    <ClCompile Include="Game\Objects\Combo\ComboObject.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\AnswerLane.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\Judgement.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\PlayerInput.cpp" />
+    <ClCompile Include="Game\Objects\Judgement\PlayField.cpp" />
+    <ClCompile Include="Game\Objects\Notes\NotesData.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Base.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Hold.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_RectFlick.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_SideFlick.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Tap.cpp" />
+    <ClCompile Include="Game\Objects\Notes\Note_Wheel.cpp" />
+    <ClCompile Include="Game\Objects\SongSelect\SelectBackGroundDrawer.cpp" />
+    <ClCompile Include="Game\Objects\SongSelect\SongInfo.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Pause.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Play.cpp" />
+    <ClCompile Include="Game\Scene\Scene_Game\State\GameState_Select.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\FileFunc.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\Math.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\MatrixMath.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\SRTFunc.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\StringFunc.cpp" />
+    <ClCompile Include="SEED\Lib\Functions\RandomFunc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Effects\LivelyEffectsOwner.h" />
+    <ClInclude Include="Game\Objects\Judgement\MouseVectorCircle.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SongSelectUtils.h" />
+    <ClInclude Include="Game\Objects\Tutorial\TutorialObjectManager.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.h" />
+    <ClInclude Include="Game\Components\ResultUpdateComponent.h" />
+    <ClInclude Include="Game\Config\PlaySettings.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Warning.h" />
+    <ClInclude Include="Game\Manager\NotesEditor.h" />
+    <ClInclude Include="Game\Manager\RhythmGameManager.h" />
+    <ClInclude Include="Game\Manager\SongSelector.h" />
+    <ClInclude Include="Game\Objects\Combo\ComboObject.h" />
+    <ClInclude Include="Game\Objects\Judgement\AnswerLane.h" />
+    <ClInclude Include="Game\Objects\Judgement\Judgement.h" />
+    <ClInclude Include="Game\Objects\Judgement\LaneBit.h" />
+    <ClInclude Include="Game\Objects\Judgement\PlayerInput.h" />
+    <ClInclude Include="Game\Objects\Judgement\PlayField.h" />
+    <ClInclude Include="Game\Objects\Notes\NotesData.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Base.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Hold.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_RectFlick.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_SideFlick.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Tap.h" />
+    <ClInclude Include="Game\Objects\Notes\Note_Wheel.h" />
+    <ClInclude Include="Game\Objects\Result\PlayResult.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SelectBackGroundDrawer.h" />
+    <ClInclude Include="Game\Objects\SongSelect\SongInfo.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Pause.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Play.h" />
+    <ClInclude Include="Game\Scene\Scene_Game\State\GameState_Select.h" />
+    <ClInclude Include="SEED\Lib\Functions\Math.h" />
+    <ClInclude Include="SEED\Lib\Functions\FileFunc.h" />
+    <ClInclude Include="SEED\Lib\Functions\MatrixMath.h" />
+    <ClInclude Include="SEED\Lib\Functions\SRTFunc.h" />
+    <ClInclude Include="SEED\Lib\Functions\StringFunc.h" />
+    <ClInclude Include="SEED\Lib\Functions\RandomFunc.h" />
   </ItemGroup>
 </Project>

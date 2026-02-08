@@ -10,8 +10,8 @@ public:
     void Draw();
 
 public:
-    Triangle tri;// 押したアンサー表示用の矩形
-    Triangle evaluationPolygon;// 判定表示用のポリゴン
+    SEED::Topology::Triangle tri;// 押したアンサー表示用の矩形
+    SEED::Topology::Triangle evaluationPolygon;// 判定表示用のポリゴン
     inline static const float kVisibleTime = 0.2f;// 判定の表示時間
     float leftTime = 0.0f;// 判定の残り時間
     float evaluationLeftTime = 0.0f;// 判定結果描画の残り時間

@@ -14,7 +14,7 @@
 /// <summary>
 /// タイトルシーン(まだ実装してない)
 /// </summary>
-class Scene_Title : public Scene_Base{
+class Scene_Title : public SEED::Scene_Base{
 public:
     Scene_Title();
     ~Scene_Title() override;
@@ -33,29 +33,29 @@ private:// 内部関数
 
 private:
     // 読み込むオブジェクト類
-    GameObject2D* titleLogo_ = nullptr;
-    GameObject2D* pressSpace_ = nullptr;
-    GameObject2D* rotateRects_ = nullptr;
-    GameObject2D* tutorialSelectItems_ = nullptr;
-    GameObject2D* mouseCursor_ = nullptr;
-    GameObject* cameraParents_ = nullptr;
-    GameObject* toSelectCamerawork_ = nullptr;
-    GameObject* models_ = nullptr;
-    GameObject* display_ = nullptr;
+    SEED::GameObject2D* titleLogo_ = nullptr;
+    SEED::GameObject2D* pressSpace_ = nullptr;
+    SEED::GameObject2D* rotateRects_ = nullptr;
+    SEED::GameObject2D* tutorialSelectItems_ = nullptr;
+    SEED::GameObject2D* mouseCursor_ = nullptr;
+    SEED::GameObject* cameraParents_ = nullptr;
+    SEED::GameObject* toSelectCamerawork_ = nullptr;
+    SEED::GameObject* models_ = nullptr;
+    SEED::GameObject* display_ = nullptr;
 
     // タイマー類
-    Timer titleStartTimer_;
-    Timer titleEndTimer_;
-    Timer sceneOutTimer_;
+    SEED::Timer titleStartTimer_;
+    SEED::Timer titleEndTimer_;
+    SEED::Timer sceneOutTimer_;
     float totalTime_ = 0.0f;
     float cameraParentTime_ = 3.0f;
 
     // Video
-    std::unique_ptr<VideoPlayer> videoPlayer_;
+    std::unique_ptr<SEED::VideoPlayer> videoPlayer_;
 
     // 入力格納用
-    InputHandler<bool> decideButtonInput_;
-    InputHandler<bool> tutorialSelectInput_;
+    SEED::InputHandler<bool> decideButtonInput_;
+    SEED::InputHandler<bool> tutorialSelectInput_;
 
     // BGM
     AudioHandle bgmHandle_;

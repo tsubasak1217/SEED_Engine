@@ -19,8 +19,7 @@
 /// <summary>
 /// クリアシーンクラス
 /// </summary>
-class Scene_Clear
-    : public Scene_Base{
+class Scene_Clear : public SEED::Scene_Base{
 public:
     Scene_Clear();
     ~Scene_Clear()override;
@@ -44,8 +43,8 @@ private:
     static inline std::string jacketPath_ = "DefaultAssets/uvChecker.png";
     int32_t step_ = 0;
     int32_t kMaxStep_ = 4;// 最大ステップ数
-    Timer stepTimer_ = Timer(0.7f);
-    GameObject2D* resultUpdater_ = nullptr;
+    SEED::Timer stepTimer_ = SEED::Timer(0.7f);
+    SEED::GameObject2D* resultUpdater_ = nullptr;
     bool sceneChangeOrder = false; // シーン変更のオーダーが出ているかどうか
 
     // BGMハンドル

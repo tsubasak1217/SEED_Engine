@@ -373,3 +373,14 @@ FodyWeavers.xsd
 /SEED/SEED/External/**/*.obj
 /SEED/SEED/External/**/*.pdb
 /SEED/SEED/External/**/*.ilk
+
+# Exception: Include required imgui build artifacts
+!/SEED/SEED/External/imgui/Generated/
+!/SEED/SEED/External/imgui/Generated/Obj/
+!/SEED/SEED/External/imgui/Generated/Obj/imgui/
+!/SEED/SEED/External/imgui/Generated/Obj/imgui/Debug/
+!/SEED/SEED/External/imgui/Generated/Obj/imgui/Debug/imgui.lib
+!/SEED/SEED/External/imgui/Generated/Obj/imgui/Debug/imgui.pdb
+!/SEED/SEED/External/imgui/Generated/Obj/imgui/Release/
+!/SEED/SEED/External/imgui/Generated/Obj/imgui/Release/imgui.lib
+!/SEED/SEED/External/imgui/Generated/Obj/imgui/Release/imgui.pdb

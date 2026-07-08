@@ -6,6 +6,7 @@
 #include <SEED/Lib/Structs/CS_Buffers.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 #include <SEED/Source/Basic/PostProcess/IPostProcess.h>
+#include <SEED/Lib/Functions/ErrorLog.h>
 
 // external
 #include <cmath>
@@ -375,10 +376,10 @@ namespace SEED{
                 file.close();
                 return instance_->nextHandle_++;
             } else{
-                assert(false); // ファイル読み込み失敗
+                SEED::Methods::LogCriticalError("PostEffectSystem: failed to open \"" + filePath.string() + "\".");
             }
         } else{
-            assert(false); // ファイルが存在しない
+            SEED::Methods::LogCriticalError("PostEffectSystem: file does not exist: \"" + filePath.string() + "\".");
         }
 
         return -1;

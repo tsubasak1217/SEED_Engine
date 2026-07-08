@@ -1,4 +1,5 @@
 #include <SEED/Lib/Functions/FileFunc.h>
+#include <SEED/Lib/Functions/ErrorLog.h>
 #include <Windows.h>
 #include <shobjidl.h>
 
@@ -128,7 +129,7 @@ namespace SEED {
                         // ファイル作成
                         std::ofstream newFile(filePath);
                         if(!newFile.is_open()){
-                            assert(false && "Jsonファイルの作成に失敗しました");
+                            SEED::Methods::LogCriticalError("GetJson: failed to create \"" + filePath.string() + "\".");
                             return nlohmann::json();
                         }
                         newFile << "{}"; // 空のJSONオブジェクトを書き込む
@@ -157,7 +158,7 @@ namespace SEED {
                 // ファイルを開く
                 std::ofstream file(filePath);
                 if(!file.is_open()){
-                    assert(false && "Jsonファイルの作成に失敗");
+                    SEED::Methods::LogCriticalError("CreateJsonFile: failed to create \"" + filePath.string() + "\".");
                     return;
                 }
 
@@ -214,7 +215,7 @@ namespace SEED {
                     ShellExecuteA(NULL, "open", parentPath.string().c_str(), NULL, NULL, SW_SHOW);
 
                 } else{
-                    assert(false && "指定したパスが存在しません");
+                    SEED::Methods::LogCriticalError("OpenInExplorer: path does not exist: \"" + pathFixed.string() + "\".");
                 }
             }
 

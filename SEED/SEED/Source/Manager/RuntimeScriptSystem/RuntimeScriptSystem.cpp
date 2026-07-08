@@ -1,4 +1,5 @@
 #include "RuntimeScriptSystem.h"
+#include <SEED/Lib/Functions/ErrorLog.h>
 
 namespace SEED{
     // .NETでC#関数を.dllから呼び出すまでの大まかな手順メモ
@@ -24,7 +25,7 @@ namespace SEED{
 
         // どれか一つでも取得できなかったらエラー
         if(!initFxr || !getDelegate || !closeFxr){
-            assert(false);
+            SEED::Methods::LogCriticalError("RuntimeScriptSystem: failed to load hostfxr.dll or its exports. C# scripting will be unavailable.");
         }
     }
 

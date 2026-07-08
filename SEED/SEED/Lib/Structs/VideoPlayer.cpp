@@ -5,6 +5,7 @@
 #include <SEED/Source/Manager/VideoManager/VideoManager.h>
 #include <SEED/Source/Manager/DxManager/PSO/PSOManager.h>
 #include <SEED/Lib/Functions/DxFunc.h>
+#include <SEED/Lib/Functions/ErrorLog.h>
 #include <SEED/Source/SEED.h>
 
 namespace SEED{
@@ -51,8 +52,20 @@ namespace SEED{
         // ソースリーダーの作成
         CreateReader(pDevice, videoData_.filePath);
 
+        // リーダー作成に失敗した場合はこの動画をロードせず終了する(GPUデコード無効環境や
+        // コーデック未搭載環境、ファイル破損時などに発生しうる)
+        if(!videoItem_->reader_){
+            SEED::Methods::LogCriticalError("LoadVideo: failed to create source reader for \"" + videoData_.filePath + "\". Video will not play.");
+            return;
+        }
+
         // 出力形式 NV12
         SetMediaFormat(MFVideoFormat_NV12);
+
+        // リーダー設定に失敗した場合もここで打ち切る
+        if(!videoItem_->reader_){
+            return;
+        }
 
         // メディア情報取得
         GetVideoInfo();
@@ -251,10 +264,16 @@ namespace SEED{
         ComPtr<IMFDXGIDeviceManager> dxgiDeviceManager;
         UINT resetToken = 0;
         HRESULT hr = MFCreateDXGIDeviceManager(&resetToken, &dxgiDeviceManager);
-        if(FAILED(hr)) throw std::runtime_error("MFCreateDXGIDeviceManager failed");
+        if(FAILED(hr)){
+            SEED::Methods::LogCriticalError("CreateReader: MFCreateDXGIDeviceManager failed.");
+            return;
+        }
 
         hr = dxgiDeviceManager->ResetDevice(pDevice, resetToken);
-        if(FAILED(hr)) throw std::runtime_error("ResetDevice failed");
+        if(FAILED(hr)){
+            SEED::Methods::LogCriticalError("CreateReader: ResetDevice failed.");
+            return;
+        }
 
         // Attributes
         ComPtr<IMFAttributes> attr;
@@ -277,7 +296,10 @@ namespace SEED{
             attr.Get(),
             &videoItem_->reader_
         );
-        assert(SUCCEEDED(hr));
+        if(FAILED(hr)){
+            SEED::Methods::LogCriticalError("CreateReader: MFCreateSourceReaderFromURL failed for \"" + path.string() + "\" (codec missing or file corrupted?).");
+            videoItem_->reader_ = nullptr;
+        }
     }
 
 
@@ -288,10 +310,18 @@ namespace SEED{
         ComPtr<IMFMediaType> mediaTypeOut;
         HRESULT hr;
         hr = MFCreateMediaType(&mediaTypeOut);
-        assert(SUCCEEDED(hr));
+        if(FAILED(hr)){
+            SEED::Methods::LogCriticalError("SetMediaFormat: MFCreateMediaType failed.");
+            videoItem_->reader_ = nullptr;
+            return;
+        }
         mediaTypeOut->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
         mediaTypeOut->SetGUID(MF_MT_SUBTYPE, format);
-        videoItem_->reader_->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, nullptr, mediaTypeOut.Get());
+        hr = videoItem_->reader_->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM, nullptr, mediaTypeOut.Get());
+        if(FAILED(hr)){
+            SEED::Methods::LogCriticalError("SetMediaFormat: SetCurrentMediaType failed (this NV12 decode may be unsupported on this environment).");
+            videoItem_->reader_ = nullptr;
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 #include <SEED/Source/Manager/AudioManager/AudioManager.h>
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Lib/Functions/DxFunc.h>
+#include <SEED/Lib/Functions/ErrorLog.h>
 #include <cassert>
 
 namespace SEED{
@@ -44,15 +45,15 @@ namespace SEED{
         // 初期化
         HRESULT hr;
         hr = XAudio2Create(&instance_->xAudio2_, 0, XAUDIO2_DEFAULT_PROCESSOR);
-        assert(SUCCEEDED(hr));
+        SEED_CHECK_RETURN(SUCCEEDED(hr), "XAudio2Create failed. Audio will be unavailable.");
 
         hr = instance_->xAudio2_->CreateMasteringVoice(&instance_->masteringVoice_);
-        assert(SUCCEEDED(hr));
+        SEED_CHECK_RETURN(SUCCEEDED(hr), "CreateMasteringVoice failed. Audio will be unavailable.");
 
         // mp3用の初期化
         //CoInitializeEx(nullptr, COINIT_MULTITHREADED);
         hr = instance_->InitializeMediaFoundation();
-        assert(SUCCEEDED(hr));
+        SEED_CHECK_RETURN(SUCCEEDED(hr), "InitializeMediaFoundation failed. Video/MP3 playback will be unavailable.");
 
         StartUpLoad();
     }
@@ -164,7 +165,11 @@ namespace SEED{
 
         // ソースボイスの作成
         hr = xAudio2->CreateSourceVoice(&sourceVoices_[nextAudioHandle_], &soundData.wfex);
-        assert(SUCCEEDED(hr));
+        if(FAILED(hr)){
+            SEED::Methods::LogCriticalError("CreateSourceVoice failed for \"" + filename + "\". Skipping playback.");
+            sourceVoices_.erase(nextAudioHandle_);
+            return -1;
+        }
 
         // 秒 → サンプル位置へ変換
         uint32_t sampleRate = soundData.wfex.nSamplesPerSec;
@@ -181,9 +186,10 @@ namespace SEED{
         if(sampleOffset >= totalSamples){
             if(totalSamples == 0){
                 // 音声が壊れてるなど → 再生不能
+                SEED::Methods::LogCriticalError("Audio data \"" + filename + "\" has 0 samples. Skipping playback.");
                 sourceVoices_[nextAudioHandle_]->DestroyVoice();
                 sourceVoices_.erase(nextAudioHandle_);
-                assert(0);
+                return -1;
             }
             sampleOffset = totalSamples - 1;
         }
@@ -202,11 +208,11 @@ namespace SEED{
 
         // Submit & 再生
         hr = sourceVoices_[nextAudioHandle_]->SubmitSourceBuffer(&buf);
-        assert(SUCCEEDED(hr));
+        SEED_CHECK(SUCCEEDED(hr), "SubmitSourceBuffer failed for \"" + filename + "\".");
         hr = sourceVoices_[nextAudioHandle_]->SetVolume(volume * systemVolumeRate_);
-        assert(SUCCEEDED(hr));
+        SEED_CHECK(SUCCEEDED(hr), "SetVolume failed for \"" + filename + "\".");
         hr = sourceVoices_[nextAudioHandle_]->Start();
-        assert(SUCCEEDED(hr));
+        SEED_CHECK(SUCCEEDED(hr), "Start (voice playback) failed for \"" + filename + "\".");
 
         return nextAudioHandle_++;
     }
@@ -284,7 +290,7 @@ namespace SEED{
             }
         }
 
-        assert(SUCCEEDED(hr));
+        SEED_CHECK(SUCCEEDED(hr), "EndAudio: Stop/FlushSourceBuffers failed.");
     }
 
     /// <summary>
@@ -321,7 +327,7 @@ namespace SEED{
         //　停止
         HRESULT hr;
         hr = instance_->sourceVoices_[handle]->Stop();
-        assert(SUCCEEDED(hr));
+        SEED_CHECK(SUCCEEDED(hr), "PauseAudio: Stop failed.");
 
         //再生フラグをおろす
         instance_->isPlaying_[handle] = false;
@@ -544,15 +550,17 @@ namespace SEED{
 
         // ファイルをバイナリで開く
         file.open(filename, std::ios_base::binary);
-        assert(file.is_open());
+        SEED_CHECK_RETURN(file.is_open(), std::string("LoadWave: failed to open file \"") + filename + "\".", SoundData{});
 
         // waveの読み込み
         RiffHeader riff;
         file.read((char*)&riff, sizeof(riff));
 
-        // アサートチェック
-        assert(strncmp(riff.chunk.id, "RIFF", 4) == 0);
-        assert(strncmp(riff.type, "WAVE", 4) == 0);
+        // ヘッダチェック(壊れた/非対応形式のファイルの場合はロードを中止する)
+        SEED_CHECK_RETURN(
+            strncmp(riff.chunk.id, "RIFF", 4) == 0 && strncmp(riff.type, "WAVE", 4) == 0,
+            std::string("LoadWave: \"") + filename + "\" is not a valid RIFF/WAVE file.", SoundData{}
+        );
 
         // フォーマットチャンクの読み込み
         FormatChunk format = {};
@@ -563,17 +571,24 @@ namespace SEED{
             file.read((char*)&chunkHeader, sizeof(ChunkHeader));
             if(strncmp(chunkHeader.id, "fmt ", 4) == 0){
                 format.chunk = chunkHeader;
+
+                // fmtチャンクがformat.fmtのサイズを超える場合は破損データとみなし、
+                // バッファオーバーフローを避けるため読み込みサイズをクランプする
+                SEED_CHECK_RETURN(
+                    format.chunk.size >= 0 && static_cast<size_t>(format.chunk.size) <= sizeof(format.fmt),
+                    std::string("LoadWave: \"") + filename + "\" has an invalid 'fmt ' chunk size.", SoundData{}
+                );
+
                 file.read((char*)&format.fmt, format.chunk.size);
-                assert(format.chunk.size <= sizeof(format.fmt));
                 break;
 
             } else{
                 file.seekg(chunkHeader.size, std::ios_base::cur);
             }
 
-            // ファイルの終端に達した場合アサート
+            // ファイルの終端に達した場合は中止する
             if(file.eof()){
-                assert(0 && "Reached end of file without finding 'fmt ' chunk");
+                SEED::Methods::LogCriticalError(std::string("LoadWave: \"") + filename + "\" reached EOF without finding 'fmt ' chunk.");
                 return SoundData{};
             }
         }
@@ -590,12 +605,18 @@ namespace SEED{
                 file.seekg(data.size, std::ios_base::cur);
             }
 
-            // ファイルの終端に達した場合アサート
+            // ファイルの終端に達した場合は中止する
             if(file.eof()){
-                assert(0 && "Reached end of file without finding 'fmt ' chunk");
+                SEED::Methods::LogCriticalError(std::string("LoadWave: \"") + filename + "\" reached EOF without finding 'data' chunk.");
                 return SoundData{};
             }
         }
+
+        // dataチャンクのサイズが不正(負値など、破損ファイル)な場合は中止する
+        SEED_CHECK_RETURN(
+            data.size >= 0,
+            std::string("LoadWave: \"") + filename + "\" has an invalid 'data' chunk size.", SoundData{}
+        );
 
         // 読み込み結果を格納
         SoundData soundData{};
@@ -618,16 +639,19 @@ namespace SEED{
         IMFMediaType* pOutputType = nullptr;
 
         // MP3ファイルのSource Readerを作成
+        // (コーデック未搭載環境(Windows N/KNエディション等)やファイル破損時はここで失敗しうる)
         HRESULT hr = MFCreateSourceReaderFromURL(filename, nullptr, &pReader);
         if(FAILED(hr)){
-            throw std::runtime_error("Failed to create Source Reader.");
+            SEED::Methods::LogCriticalError("LoadMP3: MFCreateSourceReaderFromURL failed (codec missing or file corrupted?).");
+            return SoundData{};
         }
 
         // 出力タイプをPCM (WAV) に設定
         hr = MFCreateMediaType(&pOutputType);
         if(FAILED(hr)){
             pReader->Release();
-            throw std::runtime_error("Failed to create output media type.");
+            SEED::Methods::LogCriticalError("LoadMP3: MFCreateMediaType failed.");
+            return SoundData{};
         }
 
         hr = pOutputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
@@ -637,7 +661,8 @@ namespace SEED{
         if(FAILED(hr)){
             pOutputType->Release();
             pReader->Release();
-            throw std::runtime_error("Failed to set media type.");
+            SEED::Methods::LogCriticalError("LoadMP3: SetCurrentMediaType failed (PCM decode not supported on this environment?).");
+            return SoundData{};
         }
 
         pOutputType->Release();
@@ -650,14 +675,23 @@ namespace SEED{
         while(true){
             IMFSample* pMFSample{ nullptr };
             DWORD dwStreamFlags{ 0 };
-            pReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &dwStreamFlags, nullptr, &pMFSample);
+            hr = pReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &dwStreamFlags, nullptr, &pMFSample);
 
-            if(dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM){
+            if(FAILED(hr) || (dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM)){
+                if(pMFSample){ pMFSample->Release(); }
                 break;
+            }
+            if(!pMFSample){
+                // サンプルなし(ストリーム切り替え等)は次のReadSampleへ
+                continue;
             }
 
             IMFMediaBuffer* pMFMediaBuffer{ nullptr };
             pMFSample->ConvertToContiguousBuffer(&pMFMediaBuffer);
+            if(!pMFMediaBuffer){
+                pMFSample->Release();
+                continue;
+            }
 
             BYTE* pBuffer{ nullptr };
             DWORD cbCurrentLength{ 0 };
@@ -677,6 +711,12 @@ namespace SEED{
         soundData.pBuffer = std::make_unique<BYTE[]>(audioData.size());
         std::copy(audioData.begin(), audioData.end(), soundData.pBuffer.get());
         soundData.bufferSize = static_cast<uint32_t>(audioData.size());
+
+        if(!pOutputType){
+            pReader->Release();
+            SEED::Methods::LogCriticalError("LoadMP3: GetCurrentMediaType returned null. Skipping format info.");
+            return SoundData{};
+        }
 
         // フォーマット情報を取得
         hr = pOutputType->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, (UINT32*)&soundData.wfex.nChannels);
@@ -700,15 +740,18 @@ namespace SEED{
         IMFSourceReader* pReader = nullptr;
         IMFMediaType* pOutputType = nullptr;
         // MP4ファイルのSource Readerを作成
+        // (コーデック未搭載環境(Windows N/KNエディション等)やファイル破損時はここで失敗しうる)
         HRESULT hr = MFCreateSourceReaderFromURL(filename, nullptr, &pReader);
         if(FAILED(hr)){
-            throw std::runtime_error("Failed to create Source Reader.");
+            SEED::Methods::LogCriticalError("LoadMP4: MFCreateSourceReaderFromURL failed (codec missing or file corrupted?).");
+            return SoundData{};
         }
         // 出力タイプをPCM (WAV) に設定
         hr = MFCreateMediaType(&pOutputType);
         if(FAILED(hr)){
             pReader->Release();
-            throw std::runtime_error("Failed to create output media type.");
+            SEED::Methods::LogCriticalError("LoadMP4: MFCreateMediaType failed.");
+            return SoundData{};
         }
         hr = pOutputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
         hr = pOutputType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
@@ -716,7 +759,8 @@ namespace SEED{
         if(FAILED(hr)){
             pOutputType->Release();
             pReader->Release();
-            throw std::runtime_error("Failed to set media type.");
+            SEED::Methods::LogCriticalError("LoadMP4: SetCurrentMediaType failed (PCM decode not supported on this environment?).");
+            return SoundData{};
         }
         pOutputType->Release();
         pOutputType = nullptr;
@@ -726,12 +770,20 @@ namespace SEED{
         while(true){
             IMFSample* pMFSample{ nullptr };
             DWORD dwStreamFlags{ 0 };
-            pReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &dwStreamFlags, nullptr, &pMFSample);
-            if(dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM){
+            hr = pReader->ReadSample((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &dwStreamFlags, nullptr, &pMFSample);
+            if(FAILED(hr) || (dwStreamFlags & MF_SOURCE_READERF_ENDOFSTREAM)){
+                if(pMFSample){ pMFSample->Release(); }
                 break;
+            }
+            if(!pMFSample){
+                continue;
             }
             IMFMediaBuffer* pMFMediaBuffer{ nullptr };
             pMFSample->ConvertToContiguousBuffer(&pMFMediaBuffer);
+            if(!pMFMediaBuffer){
+                pMFSample->Release();
+                continue;
+            }
             BYTE* pBuffer{ nullptr };
             DWORD cbCurrentLength{ 0 };
             pMFMediaBuffer->Lock(&pBuffer, nullptr, &cbCurrentLength);
@@ -747,6 +799,12 @@ namespace SEED{
         soundData.pBuffer = std::make_unique<BYTE[]>(audioData.size());
         std::copy(audioData.begin(), audioData.end(), soundData.pBuffer.get());
         soundData.bufferSize = static_cast<uint32_t>(audioData.size());
+
+        if(!pOutputType){
+            pReader->Release();
+            SEED::Methods::LogCriticalError("LoadMP4: GetCurrentMediaType returned null. Skipping format info.");
+            return SoundData{};
+        }
 
         // フォーマット情報を取得
         hr = pOutputType->GetUINT32(MF_MT_AUDIO_NUM_CHANNELS, (UINT32*)&soundData.wfex.nChannels);

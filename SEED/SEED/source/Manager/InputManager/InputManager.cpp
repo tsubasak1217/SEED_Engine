@@ -1,6 +1,7 @@
 #include <SEED/Source/Manager/InputManager/InputManager.h>
 #include <SEED/Source/SEED.h>
 #include <SEED/Lib/Functions/Math.h>
+#include <SEED/Lib/Functions/ErrorLog.h>
 #include <SEED/Source/Manager/ImGuiManager/ImGuiManager.h>
 
 namespace SEED{
@@ -88,7 +89,7 @@ namespace SEED{
             WindowManager::GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8,
             (void**)&directInput, nullptr
         );
-        assert(SUCCEEDED(hr));
+        SEED_CHECK_RETURN(SUCCEEDED(hr), "InitializeDInput: DirectInput8Create failed. Keyboard/mouse input will be unavailable.");
 
         // ウィンドウハンドルの一覧
         auto hwnds = WindowManager::GetAllHWNDs();
@@ -100,34 +101,42 @@ namespace SEED{
             //  キーボードデバイスの生成
             keyboards_[hwnd] = nullptr;
             hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboards_[hwnd], NULL);
-            assert(SUCCEEDED(hr));
+            if(FAILED(hr)){
+                SEED::Methods::LogCriticalError("InitializeDInput: CreateDevice(keyboard) failed. Keyboard input will be unavailable for this window.");
+                keyboards_[hwnd] = nullptr;
+            } else{
+                // 入力形式のセット
+                hr = keyboards_[hwnd]->SetDataFormat(&c_dfDIKeyboard);// 標準
+                SEED_CHECK(SUCCEEDED(hr), "InitializeDInput: keyboard SetDataFormat failed.");
 
-            // 入力形式のセット
-            hr = keyboards_[hwnd]->SetDataFormat(&c_dfDIKeyboard);// 標準
-            assert(SUCCEEDED(hr));
-
-            // 制御レベルの設定
-            hr = keyboards_[hwnd]->SetCooperativeLevel(
-                hwnd,
-                DISCL_FOREGROUND | DISCL_NOWINKEY | DISCL_NONEXCLUSIVE
-            );
-            assert(SUCCEEDED(hr));
+                // 制御レベルの設定
+                hr = keyboards_[hwnd]->SetCooperativeLevel(
+                    hwnd,
+                    DISCL_FOREGROUND | DISCL_NOWINKEY | DISCL_NONEXCLUSIVE
+                );
+                SEED_CHECK(SUCCEEDED(hr), "InitializeDInput: keyboard SetCooperativeLevel failed.");
+            }
 
             /*========================== マウス ==========================*/
 
             // マウスデバイスの生成
             hr = directInput->CreateDevice(GUID_SysMouse, &mouses_[hwnd], NULL);
-            assert(SUCCEEDED(hr));
+            if(FAILED(hr)){
+                SEED::Methods::LogCriticalError("InitializeDInput: CreateDevice(mouse) failed. Mouse input will be unavailable for this window.");
+                mouses_[hwnd] = nullptr;
+                continue;
+            }
 
             // 入力形式のセット
             hr = mouses_[hwnd]->SetDataFormat(&c_dfDIMouse);
-            assert(SUCCEEDED(hr));
+            SEED_CHECK(SUCCEEDED(hr), "InitializeDInput: mouse SetDataFormat failed.");
 
             // 制御レベルの設定
             hr = mouses_[hwnd]->SetCooperativeLevel(
                 hwnd,
                 DISCL_FOREGROUND | DISCL_NONEXCLUSIVE
             );
+            SEED_CHECK(SUCCEEDED(hr), "InitializeDInput: mouse SetCooperativeLevel failed.");
         }
     }
 
@@ -190,24 +199,33 @@ namespace SEED{
 
         // 現在フォーカスされているウィンドウを取得
         HWND activeWindow = GetForegroundWindow();
-        if(keyboards_.find(activeWindow) == keyboards_.end()){
-            // フォーカスされているウィンドウがない場合は何もしない
+        auto keyboardIt = keyboards_.find(activeWindow);
+        bool hasKeyboard = keyboardIt != keyboards_.end() && keyboardIt->second != nullptr;
+        auto mouseIt = mouses_.find(activeWindow);
+        bool hasMouse = mouseIt != mouses_.end() && mouseIt->second != nullptr;
+
+        if(!hasKeyboard && !hasMouse){
+            // フォーカスされているウィンドウがない、またはデバイスが未生成の場合は何もしない
             return;
         }
 
-        // DirectInputのキーボード情報取得開始
-        keyboards_[activeWindow]->Acquire();
-        // 前のフレームのキー情報を保存
-        std::memcpy(preKeys_, keys_, sizeof(BYTE) * kMaxKey_);
-        // 現在の全キーの状態を取得する
-        keyboards_[activeWindow]->GetDeviceState(sizeof(keys_), keys_);
+        if(hasKeyboard){
+            // DirectInputのキーボード情報取得開始
+            keyboardIt->second->Acquire();
+            // 前のフレームのキー情報を保存
+            std::memcpy(preKeys_, keys_, sizeof(BYTE) * kMaxKey_);
+            // 現在の全キーの状態を取得する
+            keyboardIt->second->GetDeviceState(sizeof(keys_), keys_);
+        }
 
-        // マウスの情報取得開始
-        mouses_[activeWindow]->Acquire();
-        // 前のフレームのマウス情報を保存
-        std::memcpy(&mouseStates_[(int)INPUT_STATE::BEFORE], &mouseStates_[(int)INPUT_STATE::CURRENT], sizeof(DIMOUSESTATE));
-        // 現在のマウス状態を取得
-        mouses_[activeWindow]->GetDeviceState(sizeof(DIMOUSESTATE), &mouseStates_[(int)INPUT_STATE::CURRENT]);
+        if(hasMouse){
+            // マウスの情報取得開始
+            mouseIt->second->Acquire();
+            // 前のフレームのマウス情報を保存
+            std::memcpy(&mouseStates_[(int)INPUT_STATE::BEFORE], &mouseStates_[(int)INPUT_STATE::CURRENT], sizeof(DIMOUSESTATE));
+            // 現在のマウス状態を取得
+            mouseIt->second->GetDeviceState(sizeof(DIMOUSESTATE), &mouseStates_[(int)INPUT_STATE::CURRENT]);
+        }
     }
 
     // XInputの状態取得--------------------------------------------------------

@@ -1,5 +1,6 @@
 #include "ShaderDictionary.h"
 #include <SEED/Lib/Functions/FileFunc.h>
+#include <SEED/Lib/Functions/ErrorLog.h>
 
 namespace SEED{
     ////////////////////////////////////////////////////////////////
@@ -36,13 +37,13 @@ namespace SEED{
         // インスタンスの作成
         HRESULT hr;
         hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(dxcUtils.GetAddressOf()));
-        assert(SUCCEEDED(hr));
+        SEED_CHECK_RETURN(SUCCEEDED(hr), "ShaderDictionary::Initialize: DxcCreateInstance(DxcUtils) failed. dxcompiler.dll may be missing/corrupted.");
         hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(dxcCompiler.GetAddressOf()));
-        assert(SUCCEEDED(hr));
+        SEED_CHECK_RETURN(SUCCEEDED(hr), "ShaderDictionary::Initialize: DxcCreateInstance(DxcCompiler) failed. dxcompiler.dll may be missing/corrupted.");
 
         // 現時点でincludeはしないが、 includeに対応するための設定を行っておく
         hr = dxcUtils->CreateDefaultIncludeHandler(includeHandler.GetAddressOf());
-        assert(SUCCEEDED(hr));
+        SEED_CHECK_RETURN(SUCCEEDED(hr), "ShaderDictionary::Initialize: CreateDefaultIncludeHandler failed.");
     }
 
     ////////////////////////////////////////////////////////////////
@@ -91,7 +92,7 @@ namespace SEED{
                 // メッシュシェーダーに対応しているか確認
                 D3D12_FEATURE_DATA_D3D12_OPTIONS7 features = {};
                 hr = device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS7, &features, sizeof(features));
-                assert(SUCCEEDED(hr));
+                SEED_CHECK(SUCCEEDED(hr), "ShaderDictionary::LoadFromDirectory: CheckFeatureSupport(OPTIONS7) failed.");
 
 
             } else if(strFileName.find(".CS") != std::string::npos){// CS
@@ -102,14 +103,15 @@ namespace SEED{
                 shaderProfile = L"as_6_5";
 
             } else{
-                assert(false && "Shader file name is not correct");
+                SEED::Methods::LogCriticalError("ShaderDictionary::LoadFromDirectory: unrecognized shader file name \"" + strFileName + "\". Skipping.");
+                continue;
             }
 
             // 6.5に対応しているか確認
             if(shaderProfile == L"ms_6_5" || shaderProfile == L"as_6_5"){
                 D3D12_FEATURE_DATA_SHADER_MODEL shaderModel = { D3D_SHADER_MODEL_6_5 };
                 hr = device->CheckFeatureSupport(D3D12_FEATURE_SHADER_MODEL, &shaderModel, sizeof(shaderModel));
-                assert(SUCCEEDED(hr));
+                SEED_CHECK(SUCCEEDED(hr), "ShaderDictionary::LoadFromDirectory: CheckFeatureSupport(SHADER_MODEL) failed.");
             }
 
             // コンパイルする
@@ -121,7 +123,12 @@ namespace SEED{
                 dxcCompiler.Get(),
                 includeHandler.Get()
             );
-            assert(blobs_[strFileName] != nullptr);
+            if(blobs_[strFileName] == nullptr){
+                // コンパイル失敗(シェーダーソース欠落・dxcompiler.dll不整合など) → このシェーダーはスキップして続行する
+                SEED::Methods::LogCriticalError("ShaderDictionary::LoadFromDirectory: failed to compile shader \"" + strFileName + "\". This shader will be unavailable.");
+                blobs_.erase(strFileName);
+                continue;
+            }
 
             // DxcBuffer を作成
             DxcBuffer dxcBuffer = {};
@@ -135,7 +142,7 @@ namespace SEED{
                 &dxcBuffer,
                 IID_PPV_ARGS(&reflection)
             );
-            assert(SUCCEEDED(hr));
+            SEED_CHECK(SUCCEEDED(hr), "ShaderDictionary::LoadFromDirectory: CreateReflection failed for \"" + strFileName + "\".");
             reflections_[strFileName] = reflection;
 
         }

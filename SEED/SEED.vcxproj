@@ -123,6 +123,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
         <ClCompile Include="Game\Objects\Tutorial\TutorialObjectManager.cpp"/>
         <ClCompile Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.cpp"/>
         <ClCompile Include="SEED\Lib\Functions\FileFunc.cpp"/>
+        <ClCompile Include="SEED\Lib\Functions\ErrorLog.cpp"/>
         <ClCompile Include="SEED\Lib\Functions\Math.cpp"/>
         <ClCompile Include="SEED\Lib\Functions\MatrixMath.cpp"/>
         <ClCompile Include="SEED\Lib\Functions\RandomFunc.cpp"/>
@@ -299,6 +300,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
         <ClInclude Include="Game\Scene\Scene_Game\State\GameState_SelectMenu.h"/>
         <ClInclude Include="SEED\Lib\enums\ColorMode.h"/>
         <ClInclude Include="SEED\Lib\Functions\FileFunc.h"/>
+        <ClInclude Include="SEED\Lib\Functions\ErrorLog.h"/>
         <ClInclude Include="SEED\Lib\Functions\Math.h"/>
         <ClInclude Include="SEED\Lib\Functions\MatrixMath.h"/>
         <ClInclude Include="SEED\Lib\Functions\RandomFunc.h"/>
